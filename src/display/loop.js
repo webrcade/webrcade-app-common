@@ -84,9 +84,9 @@ export class DisplayLoop {
       }
     }
 
-    let nextTimestamp = Date.now() + frameTicks;
+    let nextTimestamp = Date.now();
     this.pause(false);
-    setTimeout(() => this.sync(f, true), nextTimestamp);
+    setTimeout(() => this.sync(f, true), 0);
   }
 
   getFps() {
