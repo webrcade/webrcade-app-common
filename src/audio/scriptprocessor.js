@@ -3,7 +3,7 @@ export class ScriptAudioProcessor {
     channelCount = 2,
     frequency = 48000,
     bufferSize = 16384,
-    scriptBufferSize = 512) {
+    scriptBufferSize = 2048) {
     this.frequency = frequency;
     this.bufferSize = bufferSize;
     this.scriptBufferSize = scriptBufferSize;
