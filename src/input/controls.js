@@ -115,6 +115,7 @@ export class KeyCodeToControlMapping {
   handleKeyEvent(e, down) {
     const cid = this.keyCodeToControlId[e.code];
     if (cid !== undefined) {
+      e.preventDefault();
       this.controlIdState[cid] = down;
 
       switch (cid) {
@@ -234,23 +235,22 @@ export class Controller {
       return true;
     }
 
-    if ((cid === CIDS.ESCAPE) ||
-      (this.isXbox && (cid === CIDS.START || cid == CIDS.SELECT))) {
-      if (this.isXbox) {
-        if (this.isPadButtonDown(CIDS.LTRIG) || this.isPadButtonDown(CIDS.RTRIG)) {
-          if (cid === CIDS.ESCAPE) {
-            return (this.isPadButtonDown(CIDS.RANALOG) &&
-              this.isPadButtonDown(CIDS.LANALOG))
-          } else if (cid == CIDS.START) {
-            return this.isPadButtonDown(CIDS.RANALOG);
-          } else if (cid === CIDS.SELECT) {
-            return this.isPadButtonDown(CIDS.LANALOG);
-          }
-        }
-      } else {
+    if (cid === CIDS.ESCAPE || cid === CIDS.START || cid == CIDS.SELECT) {
+      if (this.isPadButtonDown(CIDS.LTRIG) || this.isPadButtonDown(CIDS.RTRIG)) {
         if (cid === CIDS.ESCAPE) {
-          return (this.isPadButtonDown(CIDS.START) &&
-            this.isPadButtonDown(CIDS.SELECT));
+          return (this.isPadButtonDown(CIDS.RANALOG) && this.isPadButtonDown(CIDS.LANALOG));
+        } else if (cid == CIDS.START) {
+          return this.isPadButtonDown(CIDS.RANALOG);
+        } else if (cid === CIDS.SELECT) {
+          return this.isPadButtonDown(CIDS.LANALOG);
+        }
+      } else if (!this.isXbox) {
+        if (cid === CIDS.ESCAPE) {
+          return (this.isPadButtonDown(CIDS.START) && this.isPadButtonDown(CIDS.SELECT))
+        } else if (cid == CIDS.START) {
+          return this.isPadButtonDown(CIDS.START);
+        } else if (cid == CIDS.SELECT) {
+          return this.isPadButtonDown(CIDS.SELECT);
         }
       }
       return false;
@@ -285,7 +285,7 @@ export class Controllers {
       let pad = gamepads[idx];
       if (pad) {
         this.controllers[padIdx].setPad(pad);
-        // TODO: Set mapping (IOS, etc.)
+        // TODO: Set custom mappings (if necessary)
         padIdx++;
       }
     }

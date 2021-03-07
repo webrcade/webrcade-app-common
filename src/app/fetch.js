@@ -1,24 +1,47 @@
+import { isDev } from '../dev'
+
 export class FetchAppData {
   constructor(url) {
     this.url = url;
   }
 
-  P = "192.168.1.179/?y="
+  P = (isDev() ? "192.168.1.179/?y=" : "api.allorigins.win/raw?url=");
 
   async fetch() {
     const { P } = this;
     const url = this.url;
     const s = url.toLowerCase().startsWith("https");
-
     const h = s => (s ? "https://" : "http://");
 
+    const getText = async r => {
+      const text = await r.text();
+      return `${text}: ${r.status}`;
+    };
+
+    const doFetch = url => {
+      return new Promise(async (resolve, reject) => {
+        try {
+          const res = await fetch(url);
+          if (res.ok) {
+            resolve(res);
+          } else {
+            reject(await getText(res));
+          }
+        } catch (e) {
+          reject(e);
+        }
+      });
+    }
+
     try {
-      return await fetch(url);
-    } catch (ex) {
+      return await doFetch(url);
+    } catch (e) {
+      console.error(e);
       try {
-        return await fetch(`${h(s)}${P}${url}`);
-      } catch (ex) {
-        return await fetch(`${h(!s)}${P}${url}`);
+        return await doFetch(`${h(s)}${P}${url}`);
+      } catch (e) {
+        console.error(e);
+        return await doFetch(`${h(!s)}${P}${url}`);
       }
     }
   }
