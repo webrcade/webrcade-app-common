@@ -1,11 +1,12 @@
 import { zip } from './3rdparty/zip.js'
 
 export class Unzip {
-  static unzip(file, exts) {
+  static unzip(file, exts, prefExts) {
     zip.useWebWorkers = false;
     return new Promise((success, failure) => {
       const entryProcessor = (entries) => {
         let romEntry = null;
+        let prefRomEntry = null;
         if (entries.length == 1) {
           romEntry = entries[0];
         } else if (entries.length > 0) {
@@ -17,7 +18,17 @@ export class Unzip {
                 romEntry = entry;
               }
             }
+            if (prefExts !== undefined) {
+              for (let i = 0; i < prefExts.length; i++) {
+                if (filename.endsWith(prefExts[i])) {
+                  prefRomEntry = entry;
+                }
+              }
+            }
           }
+        }
+        if (prefRomEntry) {
+          romEntry = prefRomEntry;
         }
         if (romEntry) {
           let writer = new zip.BlobWriter();

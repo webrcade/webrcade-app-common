@@ -88,7 +88,7 @@ export class StandardPadMapping extends PadMapping {
     if (stick === 0)
       return isX ? 0 : 1;
     else if (stick === 1) {
-      return isX ? 3 : 4;
+      return isX ? 2 : 3;
     } else {
       return -1;
     }
@@ -213,21 +213,46 @@ export class Controller {
     if (!bdown) {
       switch (cid) {
         case CIDS.LEFT:
-          bdown = padMapping.getAxisValue(this.pad, 0, true) < -0.5;
+          bdown = this.isAxisLeft(0);
           break;
         case CIDS.RIGHT:
-          bdown = padMapping.getAxisValue(this.pad, 0, true) > 0.5;
+          bdown = this.isAxisRight(0);
           break;
         case CIDS.UP:
-          bdown = padMapping.getAxisValue(this.pad, 0, false) < -0.5;
+          bdown = this.isAxisUp(0);
           break;
         case CIDS.DOWN:
-          bdown = padMapping.getAxisValue(this.pad, 0, false) > 0.5;
+          bdown = this.isAxisDown(0);
           break;
       }
     }
 
     return bdown;
+  }
+
+  getAxisValue(stick, isX) {
+    const { padMapping } = this;
+    return padMapping.getAxisValue(stick, isX);
+  }
+
+  isAxisLeft(stick) {
+    const { padMapping } = this;
+    return padMapping.getAxisValue(this.pad, stick, true) < -0.5;
+  }
+
+  isAxisRight(stick) {
+    const { padMapping } = this;
+    return padMapping.getAxisValue(this.pad, stick, true) > 0.5;
+  }
+
+  isAxisUp(stick) {
+    const { padMapping } = this;
+    return padMapping.getAxisValue(this.pad, stick, false) < -0.5;
+  }
+
+  isAxisDown(stick) {
+    const { padMapping } = this;
+    return padMapping.getAxisValue(this.pad, stick, false) > 0.5;
   }
 
   isControlDown(cid) {
