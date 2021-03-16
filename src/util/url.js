@@ -9,6 +9,18 @@ class UrlUtil {
     const val = reg.exec(url);
     return val ? decodeURIComponent(val[1]) : null;
   }
+
+  static getFileName(url) {
+    const slash = url.lastIndexOf("/");
+    if (slash >= 0 && (url.length > (slash + 1))) {
+      url = url.substring(slash + 1);
+    }
+    const ques = url.lastIndexOf("?");
+    if (ques >= 0) {
+      url = url.substring(0, ques);
+    }
+    return decodeURIComponent(url);
+  }
 }
 
 export { UrlUtil };

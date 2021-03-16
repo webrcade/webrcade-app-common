@@ -1,8 +1,17 @@
 import { zip } from './3rdparty/zip.js'
 
 export class Unzip {
-  static unzip(file, exts, prefExts) {
+  constructor() {
+    this.name = null;
+  }
+
+  getName() {
+    return this.name;
+  }
+
+  unzip(file, exts, prefExts) {
     zip.useWebWorkers = false;
+    const that = this;
     return new Promise((success, failure) => {
       const entryProcessor = (entries) => {
         let romEntry = null;
@@ -31,6 +40,7 @@ export class Unzip {
           romEntry = prefRomEntry;
         }
         if (romEntry) {
+          that.name = romEntry.filename;
           let writer = new zip.BlobWriter();
           romEntry.getData(writer, success);
         } else {
