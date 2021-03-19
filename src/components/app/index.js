@@ -14,6 +14,9 @@ export class WebrcadeApp extends Component {
     };
 
     this.exited = false;
+
+    // Add to window to allow for access from menu
+    window.app = this;
   }
 
   ModeEnum = {
@@ -36,25 +39,49 @@ export class WebrcadeApp extends Component {
       window.location.search, AppProps.RP_PROPS);
     if (propsEncoded) {
       this.appProps = AppProps.decode(propsEncoded);
+      this.type = this.appProps.type;
     } else {
       this.appProps = {};
     }
+  }
+
+  getAppType() {
+    return this.type;
+  }
+
+  getStoragePath(postfix) {
+    return `/wrc/${this.getAppType()}/${postfix}`;
   }
 
   renderLoading() {
     return (<div className={styles.loading}>Loading...</div>);
   }
 
-  exit(error) {
+  // Async to allow for asynchronous saves, etc.
+  async onPreExit() {
+    console.log('onPreExit...');
+  }
+
+  async exit(error, navigateBack = true) {
     if (error) {
       console.log(error);
     }
     if (!this.exited) {
-      if (error) {
-        alert(error);
-      }
       this.exited = true;
-      window.history.back();
+      console.log("exiting application...")
+
+      if (error) {
+        alert(error); // TODO: Proper logging
+      }
+
+      // Asynchronous to allow for async saves, etc.
+      try {
+        await this.onPreExit();
+      } catch (e) {
+        alert(e); // TODO: Proper logging
+      }
+
+      if (navigateBack) window.history.back();
     }
   }
 }

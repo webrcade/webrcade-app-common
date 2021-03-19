@@ -6,3 +6,4 @@ export * from './zip';
 export * from './util';
 export * from './components/app';
 export * from './dev'
+export * from './storage'
