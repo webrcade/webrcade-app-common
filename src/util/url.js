@@ -5,9 +5,14 @@ class UrlUtil {
   }
 
   static getParam(url, name) {
-    const reg = new RegExp('[?&]' + encodeURIComponent(name) + '=([^&]*)');
+    const reg = new RegExp('[?&]' + encodeURIComponent(name) + '=([^&#]*)');
     const val = reg.exec(url);
     return val ? decodeURIComponent(val[1]) : null;
+  }
+
+  static getBoolParam(url, name) {
+    const val = this.getParam(url, name);
+    return (!!val && (val.toLowerCase() === 'true' || val === '1'));
   }
 
   static getFileName(url) {

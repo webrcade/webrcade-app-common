@@ -34,15 +34,21 @@ export class WebrcadeApp extends Component {
       }
     }
 
-    console.log(window.location.search);
+    const url = window.location.search;
+    console.log(url);
+
+    // Get props
     const propsEncoded = UrlUtil.getParam(
-      window.location.search, AppProps.RP_PROPS);
+      url, AppProps.RP_PROPS);
     if (propsEncoded) {
       this.appProps = AppProps.decode(propsEncoded);
       this.type = this.appProps.type;
     } else {
       this.appProps = {};
     }
+
+    // Set debug flag
+    this.debug = UrlUtil.getBoolParam(url, AppProps.RP_DEBUG);
   }
 
   getAppType() {
@@ -55,6 +61,10 @@ export class WebrcadeApp extends Component {
 
   renderLoading() {
     return (<div className={styles.loading}>Loading...</div>);
+  }
+
+  isDebug() {
+    return this.debug;
   }
 
   // Async to allow for asynchronous saves, etc.
