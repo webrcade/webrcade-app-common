@@ -10,7 +10,8 @@ export class WebrcadeApp extends Component {
     super();
 
     this.state = {
-      mode: this.ModeEnum.LOADING
+      mode: this.ModeEnum.LOADING,
+      loadingPercent: null
     };
 
     this.exited = false;
@@ -60,7 +61,14 @@ export class WebrcadeApp extends Component {
   }
 
   renderLoading() {
-    return (<div className={styles.loading}>Loading...</div>);
+    const { loadingPercent } = this.state;
+    return (
+      <div>
+        <div className={styles.loading}>Loading...</div>
+        {loadingPercent !== null ?
+          <div className={styles.loadingPercent}>{loadingPercent}%</div> : null}
+      </div>
+    );
   }
 
   isDebug() {
