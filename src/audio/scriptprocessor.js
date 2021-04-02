@@ -1,4 +1,20 @@
-export class ScriptAudioProcessor {
+const registerAudioResume = (audioCtx) => {
+  // Audio resume
+  const resumeFunc = () => {
+    audioCtx.resume();
+    if (audioCtx.state !== 'running') {
+      audioCtx.resume();
+    }
+  }
+  const docElement = document.documentElement;
+  docElement.addEventListener("keydown", resumeFunc);
+  docElement.addEventListener("click", resumeFunc);
+  docElement.addEventListener("drop", resumeFunc);
+  docElement.addEventListener("dragdrop", resumeFunc);
+  docElement.addEventListener("touchstart", resumeFunc);
+}
+
+class ScriptAudioProcessor {
   constructor(
     channelCount = 2,
     frequency = 48000,
@@ -71,18 +87,8 @@ export class ScriptAudioProcessor {
       this.audioNode.connect(this.audioCtx.destination);
       this.paused = false;
 
-      // Audio resume
-      const resumeFunc = () => {
-        this.audioCtx.resume();
-        if (this.audioCtx.state !== 'running') {
-          this.audioCtx.resume();
-        }
-      }
-      const docElement = document.documentElement;
-      docElement.addEventListener("keydown", resumeFunc);
-      docElement.addEventListener("click", resumeFunc);
-      docElement.addEventListener("drop", resumeFunc);
-      docElement.addEventListener("dragdrop", resumeFunc);
+      // Add audio resume
+      registerAudioResume(this.audioCtx);
     }
   }
 
@@ -97,3 +103,5 @@ export class ScriptAudioProcessor {
     }
   }
 }
+
+export { ScriptAudioProcessor, registerAudioResume }
