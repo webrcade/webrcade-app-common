@@ -84,15 +84,10 @@ class Storage {
 
     if (idxDb) {
       return new Promise((resolve, reject) => {
-        const request = idxDb.transaction([DB_STORE], "readwrite")
-          .objectStore(DB_STORE)
-          .put(value, name);
-        request.onsuccess = (e) => {
-          resolve(true);
-        };
-        request.onerror = (e) => {
-          reject(e);
-        }
+        const txn = idxDb.transaction([DB_STORE], "readwrite");
+        txn.oncomplete = (e) => { resolve(true); };
+        txn.onerror = (e) => { reject(e); };
+        txn.objectStore(DB_STORE).put(value, name);
       });
     } else if (localStorageAvailable) {
       // Uint8Array conversion to base64
@@ -125,15 +120,12 @@ class Storage {
 
     if (idxDb) {
       return new Promise((resolve, reject) => {
-        const request = idxDb.transaction([DB_STORE], "readwrite")
-          .objectStore(DB_STORE)
-          .get(name);
+        const txn = idxDb.transaction([DB_STORE], "readonly");
+        txn.onerror = (e) => { reject(e); }
+        const request = txn.objectStore(DB_STORE).get(name);
         request.onsuccess = (e) => {
           resolve(request.result ? request.result : null);
         };
-        request.onerror = (e) => {
-          reject(e);
-        }
       });
     } else if (localStorageAvailable) {
       let value = localStorage.getItem(name);

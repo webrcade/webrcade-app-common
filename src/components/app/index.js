@@ -18,6 +18,7 @@ export class WebrcadeApp extends Component {
 
     // Add to window to allow for access from menu
     window.app = this;
+
   }
 
   ModeEnum = {
@@ -25,7 +26,21 @@ export class WebrcadeApp extends Component {
     LOADED: "loaded"
   }
 
+  messageListener = (e) => {
+    if (e.data === 'exit') {
+      this.exit(null, false)
+        .catch((e) => console.error(e)) // TODO: Proper error handling
+        .finally(() => {
+          setTimeout(() => {
+            e.source.postMessage("exitComplete", "*");
+          }, 0)
+        });
+    }
+  }
+
   componentDidMount() {
+    window.addEventListener("message", this.messageListener);
+
     // Avoid the white flash
     if (!isDev()) {
       try {
@@ -50,6 +65,10 @@ export class WebrcadeApp extends Component {
 
     // Set debug flag
     this.debug = UrlUtil.getBoolParam(url, AppProps.RP_DEBUG);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("message", this.messageListener);
   }
 
   getAppType() {
