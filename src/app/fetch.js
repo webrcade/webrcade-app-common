@@ -5,7 +5,7 @@ export class FetchAppData {
     this.url = url;
   }
 
-  P = (isDev() ? "192.168.1.179/?y=" : "api.allorigins.win/raw?url=");
+  P = (isDev() ? "192.168.1.179/?y=" : "proxy.webrcade.workers.dev?");
 
   async fetch() {
     const { P } = this;
