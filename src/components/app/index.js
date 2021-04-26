@@ -18,7 +18,6 @@ export class WebrcadeApp extends Component {
 
     // Add to window to allow for access from menu
     window.app = this;
-
   }
 
   ModeEnum = {
