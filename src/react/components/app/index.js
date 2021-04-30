@@ -1,7 +1,7 @@
 import React, { Component } from "react";
-import { UrlUtil } from '../../util';
-import { AppProps } from '../../app';
-import { isDev } from '../../dev'
+import { UrlUtil } from '../../../util';
+import { AppProps } from '../../../app';
+import { isDev } from '../../../dev'
 
 import styles from './style.scss'
 
