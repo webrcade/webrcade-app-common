@@ -2,8 +2,10 @@ import React, { Component } from "react";
 import { UrlUtil } from '../../../util';
 import { AppProps } from '../../../app';
 import { isDev } from '../../../dev'
+import { ErrorScreen } from "../../screens/error";
 
 import styles from './style.scss'
+import { Resources, TEXT_IDS } from "../../../resources";
 
 export class WebrcadeApp extends Component {
   constructor() {
@@ -11,7 +13,8 @@ export class WebrcadeApp extends Component {
 
     this.state = {
       mode: this.ModeEnum.LOADING,
-      loadingPercent: null
+      loadingPercent: null,
+      errorMessage: null
     };
 
     this.exited = false;
@@ -22,7 +25,8 @@ export class WebrcadeApp extends Component {
 
   ModeEnum = {
     LOADING: "loading",
-    LOADED: "loaded"
+    LOADED: "loaded",
+    ERROR: "error"
   }
 
   messageListener = (e) => {
@@ -82,10 +86,18 @@ export class WebrcadeApp extends Component {
     const { loadingPercent } = this.state;
     return (
       <div>
-        <div className={styles.loading}>Loading...</div>
+        <div className={styles.loading}>{Resources.getText(TEXT_IDS.LOADING)}...</div>
         {loadingPercent !== null ?
-          <div className={styles.loadingPercent}>{loadingPercent}%</div> : null}
+          <div className={styles['loading-percent']}>{loadingPercent}%</div> : null}
       </div>
+    );
+  }
+
+  renderError() {
+    const { errorMessage, errorCloseCallback } = this.state;
+
+    return (
+       <ErrorScreen message={errorMessage} onClose={errorCloseCallback}/>
     );
   }
 
@@ -93,31 +105,55 @@ export class WebrcadeApp extends Component {
     return this.debug;
   }
 
+  render() {
+    const { ModeEnum } = this;
+    const { mode } = this.state;
+
+    if (mode === ModeEnum.ERROR) {
+      return this.renderError();
+    }
+
+    return null;
+  }
+
   // Async to allow for asynchronous saves, etc.
   async onPreExit() {
     console.log('onPreExit...');
   }
 
-  async exit(error, navigateBack = true) {
-    if (error) {
-      console.log(error);
+  async _exit(navigateBack) {
+    // Asynchronous to allow for async saves, etc.
+    try {
+      await this.onPreExit();
+    } catch (e) {
+      console.error(e); // TODO: Proper logging
     }
+
+    if (navigateBack) window.history.back();
+  }
+
+  async exit(error, navigateBack = true) {
+    const { ModeEnum } = this;
+
+    if (error) {
+      console.error(error);
+    }
+
     if (!this.exited) {
       this.exited = true;
       console.log("exiting application...")
 
       if (error) {
-        alert(error); // TODO: Proper logging
+        this.setState({
+          mode: ModeEnum.ERROR,
+          errorMessage: error,
+          errorCloseCallback: async () => {
+            await this._exit(navigateBack);
+          }
+        });
+      } else {
+        await this._exit(navigateBack);
       }
-
-      // Asynchronous to allow for async saves, etc.
-      try {
-        await this.onPreExit();
-      } catch (e) {
-        alert(e); // TODO: Proper logging
-      }
-
-      if (navigateBack) window.history.back();
     }
   }
 }
