@@ -9,4 +9,5 @@ export * from './storage'
 export * from './resources'
 export * from './react/components/app';
 export * from './react/components/image-button';
+export * from './react/screens/pause';
 export * from './react/context/webrcadecontext.js';

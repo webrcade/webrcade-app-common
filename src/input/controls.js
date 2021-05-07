@@ -1,3 +1,5 @@
+import { isXbox } from '../util/browser.js'
+
 export const CIDS = {
   UP: 0,
   DOWN: 1,
@@ -50,6 +52,8 @@ export class PadMapping {
   }
 
   getAxisIndex(stick, isX) { return -1 };
+
+  getHotKeyIds() { return null; }
 
   getAxisValue(pad, stick, isX) {
     if (pad && pad.axes) {
@@ -190,7 +194,7 @@ export class Controller {
     this.keyCodeToControlMapping = keyCodeToControlMapping;
     this.padMapping = new StandardPadMapping();
     this.pad = null;
-    this.isXbox = navigator.userAgent.toLowerCase().includes("xbox");
+    this.isXbox = isXbox();
   }
 
   setPad(pad) {
@@ -256,27 +260,27 @@ export class Controller {
   }
 
   isControlDown(cid) {
+    const { isXbox } = this;
     if (this.keyCodeToControlMapping.isControlDown(cid)) {
       return true;
     }
 
     if (cid === CIDS.ESCAPE || cid === CIDS.START || cid == CIDS.SELECT) {
-      if (this.isPadButtonDown(CIDS.LTRIG) || this.isPadButtonDown(CIDS.RTRIG)) {
-        if (cid === CIDS.ESCAPE) {
-          return (this.isPadButtonDown(CIDS.RANALOG) && this.isPadButtonDown(CIDS.LANALOG));
-        } else if (cid == CIDS.START) {
-          return this.isPadButtonDown(CIDS.RANALOG);
-        } else if (cid === CIDS.SELECT) {
-          return this.isPadButtonDown(CIDS.LANALOG);
-        }
-      } else if (!this.isXbox) {
-        if (cid === CIDS.ESCAPE) {
-          return (this.isPadButtonDown(CIDS.START) && this.isPadButtonDown(CIDS.SELECT))
-        } else if (cid == CIDS.START) {
-          return this.isPadButtonDown(CIDS.START);
-        } else if (cid == CIDS.SELECT) {
-          return this.isPadButtonDown(CIDS.SELECT);
-        }
+      // left trigger + (right analog/left analog)
+      // left trigger + (start/select) (not on xbox)
+      if (cid === CIDS.ESCAPE) {
+        return (this.isPadButtonDown(CIDS.LTRIG) && (this.isPadButtonDown(CIDS.RANALOG) || this.isPadButtonDown(CIDS.LANALOG))) ||
+          (!isXbox && (this.isPadButtonDown(CIDS.LTRIG) && (this.isPadButtonDown(CIDS.START) || this.isPadButtonDown(CIDS.SELECT))));
+      // right trigger + right analog
+      // start (not available for xbox)
+      } else if (cid == CIDS.START) {
+        return (this.isPadButtonDown(CIDS.RTRIG) && this.isPadButtonDown(CIDS.RANALOG)) ||
+          (!isXbox && this.isPadButtonDown(CIDS.START));
+      // right trigger + left analog
+      // select (not available for xbox)
+      } else if (cid == CIDS.SELECT) {
+        return (this.isPadButtonDown(CIDS.RTRIG) && this.isPadButtonDown(CIDS.LANALOG)) ||
+        (!isXbox && this.isPadButtonDown(CIDS.SELECT));
       }
       return false;
     }
@@ -289,15 +293,51 @@ export class Controllers {
   constructor(controllerArray) {
     this.controllers = controllerArray;
 
+    this.enabled = false;
+    this.setEnabled(true);
+  }
+
+  keyDownListener = e => {
+    this.handleKeyEvent(e, true);
+  }
+
+  keyUpListener = e => {
+    this.handleKeyEvent(e, false);
+  }
+
+  setEnabled(enable) {
     const docElement = document.documentElement;
-    docElement.addEventListener("keydown", e => this.handleKeyEvent(e, true));
-    docElement.addEventListener("keyup", e => this.handleKeyEvent(e, false));
+
+    if (enable && !this.enabled) {
+      this.enabled = true;
+      docElement.addEventListener("keydown", this.keyDownListener);
+      docElement.addEventListener("keyup", this.keyUpListener);
+    } else if (!enable && this.enabled) {
+      this.enabled = false;
+      docElement.removeEventListener("keydown", this.keyDownListener);
+      docElement.removeEventListener("keyup", this.keyUpListener);
+    }
   }
 
   handleKeyEvent(e, down) {
     for (let i = 0; i < this.controllers.length; i++) {
       this.controllers[i].handleKeyEvent(e, down);
     }
+  }
+
+  waitUntilControlReleased(controllerIdx, cid) {
+    const INTERVAL = 50;
+    return new Promise((resolve, reject) => {
+      const f = () => {
+        this.poll();
+        if (!this.isControlDown(controllerIdx, cid)) {
+          resolve();
+        } else {
+          setTimeout(f, INTERVAL);
+        }
+      }
+      setTimeout(f, INTERVAL);
+    });
   }
 
   poll() {

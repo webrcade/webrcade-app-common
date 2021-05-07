@@ -18,7 +18,7 @@ export class ImageButton extends Component {
     const { onPad } = this.props;
     const { focused } = this.state;
 
-    if (!focused) return;
+    if (!focused) return false;
 
     switch (e.type) {
       case GamepadEnum.A:

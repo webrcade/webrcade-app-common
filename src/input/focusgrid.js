@@ -52,14 +52,14 @@ class FocusGrid {
         case GamepadEnum.LEFT:
           x--;
           while (x >= 0 && !comp) {
-            comp = this.checkComp([y][x]);
+            comp = this.checkComp(row[x]);
             x--;
           }
           break;
         case GamepadEnum.RIGHT:
           x++;
           while (x < row.length && !comp) {
-            comp = this.checkComp([y][x]);
+            comp = this.checkComp(row[x]);
             x++;
           }
           break;

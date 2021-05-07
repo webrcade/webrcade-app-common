@@ -3,9 +3,10 @@ import { UrlUtil } from '../../../util';
 import { AppProps } from '../../../app';
 import { isDev } from '../../../dev'
 import { ErrorScreen } from "../../screens/error";
+import { PauseScreen } from "../../screens/pause";
+import { Resources, TEXT_IDS } from "../../../resources";
 
 import styles from './style.scss'
-import { Resources, TEXT_IDS } from "../../../resources";
 
 export class WebrcadeApp extends Component {
   constructor() {
@@ -26,7 +27,8 @@ export class WebrcadeApp extends Component {
   ModeEnum = {
     LOADING: "loading",
     LOADED: "loaded",
-    ERROR: "error"
+    ERROR: "error",
+    PAUSE: "pause"
   }
 
   messageListener = (e) => {
@@ -93,11 +95,23 @@ export class WebrcadeApp extends Component {
     );
   }
 
-  renderError() {
+  renderErrorScreen() {
     const { errorMessage, errorCloseCallback } = this.state;
 
     return (
-       <ErrorScreen message={errorMessage} onClose={errorCloseCallback}/>
+       <ErrorScreen message={errorMessage} closeCallback={errorCloseCallback}/>
+    );
+  }
+
+  renderPauseScreen() {
+    const { appProps } = this;
+
+    return (
+      <PauseScreen
+        appProps={appProps}
+        closeCallback={() => this.resume()}
+        exitCallback={() => this.exit()}
+      />
     );
   }
 
@@ -110,10 +124,45 @@ export class WebrcadeApp extends Component {
     const { mode } = this.state;
 
     if (mode === ModeEnum.ERROR) {
-      return this.renderError();
+      return this.renderErrorScreen();
     }
 
     return null;
+  }
+
+  pause(resumeCallback) {
+    const { mode } = this.state;
+    const { ModeEnum } = this;
+
+    if (mode !== ModeEnum.PAUSE) {
+      this.setState({
+        mode: ModeEnum.PAUSE,
+        resumeCallback: resumeCallback
+      })
+      return true;
+    }
+    return false;
+  }
+
+  resume() {
+    const { mode, resumeCallback } = this.state;
+    const { ModeEnum } = this;
+
+    if (mode === ModeEnum.PAUSE) {
+      this.setState({
+        mode: ModeEnum.LOADED,
+        resumeCallback: null
+      }, () => resumeCallback());
+      return true;
+    }
+    return false;
+  }
+
+  isPauseScreen() {
+    const { mode } = this.state;
+    const { ModeEnum } = this;
+
+    return mode === ModeEnum.PAUSE;
   }
 
   // Async to allow for asynchronous saves, etc.

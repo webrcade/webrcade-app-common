@@ -1,6 +1,12 @@
-const registerAudioResume = (audioCtx) => {
+const registerAudioResume = (processor) => {
   // Audio resume
+  const audioCtx = processor.audioCtx;
+
   const resumeFunc = () => {
+    if (processor.paused) {
+      return;
+    }
+
     audioCtx.resume();
     if (audioCtx.state !== 'running') {
       audioCtx.resume();
@@ -88,7 +94,7 @@ class ScriptAudioProcessor {
       this.paused = false;
 
       // Add audio resume
-      registerAudioResume(this.audioCtx);
+      registerAudioResume(this);
     }
   }
 

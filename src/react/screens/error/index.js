@@ -1,12 +1,12 @@
-import React, { Component } from "react";
+import React from "react";
+import { Screen } from "../../components/screen"
 import { ImageButton } from "../../components/image-button";
-import { FocusGrid, GamepadNotifier } from "../../../input"
 import { WebrcadeContext } from "../../context/webrcadecontext.js"
 import { Resources, TEXT_IDS } from "../../../resources"
 
 import styles from './style.scss'
 
-export class ErrorScreen extends Component {
+export class ErrorScreen extends Screen {
   constructor() {
     super();
 
@@ -17,10 +17,6 @@ export class ErrorScreen extends Component {
     ]);
   }
 
-  focusGrid = new FocusGrid();
-  gamepadNotifier = new GamepadNotifier();
-  screenContext = {gamepadNotifier: this.gamepadNotifier};
-
   formatMessage(message) {
     return (
       message.split("\n").map((item) => {
@@ -29,30 +25,8 @@ export class ErrorScreen extends Component {
     );
   }
 
-  gamepadCallback = e => {
-    const { focusGrid } = this;
-    focusGrid.focus();
-    return true;
-  }
-
-  componentDidMount() {
-    const { gamepadNotifier, focusGrid } = this;
-
-    gamepadNotifier.start();
-    gamepadNotifier.setDefaultCallback(this.gamepadCallback);
-
-    focusGrid.focus();
-  }
-
-  componentWillUnmount() {
-    const { gamepadNotifier } = this;
-
-    gamepadNotifier.stop();
-    gamepadNotifier.setDefaultCallback(null);
-  }
-
   render() {
-    const { okButtonRef, screenContext } = this;
+    const { okButtonRef, screenContext, screenStyles } = this;
     const { onClose } = this.props;
     let { message } = this.props;
 
@@ -67,7 +41,7 @@ export class ErrorScreen extends Component {
 
     return (
       <WebrcadeContext.Provider value={screenContext}>
-        <div className={styles['error-screen']}>
+        <div className={styles['error-screen'] + " " + screenStyles.screen }>
           <div className={styles['error-screen-inner']}>
             <div className={styles['error-screen-heading']}>
               {Resources.getText(TEXT_IDS.SOMETHING_WENT_WRONG)}
@@ -83,7 +57,7 @@ export class ErrorScreen extends Component {
               <ImageButton
                 ref={okButtonRef}
                 label={Resources.getText(TEXT_IDS.OK)}
-                onClick={() => {if (onClose) onClose();}}
+                onClick={() => this.close()}
               />
             </div>
           </div>
@@ -92,4 +66,3 @@ export class ErrorScreen extends Component {
     );
   }
 }
-

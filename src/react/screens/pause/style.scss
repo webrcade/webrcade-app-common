@@ -1,0 +1,58 @@
+.pause-screen {
+  position: absolute;
+  display: flex;
+  z-index: 51;
+  top: 0px;
+  right: 0px;
+  left: 0px;
+  bottom: 0px;
+  align-items: center;
+  // border: 10px solid red;
+
+  &-inner {
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    max-width: 1920px;
+    margin: 0 auto;
+    position: relative;
+    // border: 5px solid blue;
+
+    &-info {
+      display: flex;
+      flex-direction: column;
+      padding: 2rem;
+
+      &-title {
+        font-size: 2.3rem;
+        font-weight: 700;
+        color: white;
+      }
+
+      &-app {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #777777;
+      }
+    }
+
+    &-buttons {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      z-index: 60;
+      font-size: 3rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+
+      &-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+      }
+    }
+  }
+}

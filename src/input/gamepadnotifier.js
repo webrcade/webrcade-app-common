@@ -1,17 +1,32 @@
 import { GamepadEnum } from './gamepadenum.js'
+import { isXbox } from '../util/browser.js'
+import { StandardPadMapping, CIDS } from  './controls.js'
+
 
 class GamepadNotifier {
-  running = false;
-  callbacks = [];
-  padDown = false;
-  firstPollDelayEnd = -1;
-  defaultCallback = null;
+  constructor() {
+    this.isXbox = isXbox();
+    this.running = false;
+    this.callbacks = [];
+    this.globalCallbacks = [];
+    this.padDown = false;
+    this.firstPollDelayEnd = -1;
+    this.defaultCallback = null;
+    this.escapePressed = null;
+    this.aPressed = null;
+    this.mapping = new StandardPadMapping();
+    this.buttons = new Array(16);
+  }
 
   FIRST_POLL_DELAY = 100;
+  NULL_BUTTON = { pressed: false };
 
   fireEvent(type) {
-    const { callbacks, defaultCallback } = this;
+    const { callbacks, globalCallbacks, defaultCallback } = this;
     const e = { "type": type }
+    for (let i = 0; i < globalCallbacks.length; i++) {
+      globalCallbacks[i](e);
+    }
     for (let i = 0; i < callbacks.length; i++) {
       if (callbacks[i](e)) return;
     }
@@ -19,7 +34,7 @@ class GamepadNotifier {
   }
 
   pollGamepads = () => {
-    const { running, FIRST_POLL_DELAY } = this;
+    const { running, FIRST_POLL_DELAY, mapping, buttons, NULL_BUTTON } = this;
     const gamepads = navigator.getGamepads ?
       navigator.getGamepads() : (navigator.webkitGetGamepads ?
         navigator.webkitGetGamepads : []);
@@ -45,26 +60,65 @@ class GamepadNotifier {
 
         let padDown = this.padDown;
         let pad = gamepads[i];
-        let buttons = pad.buttons;
 
-        if (buttons && buttons.length >= 16) {
+        if (pad.buttons) {
           hit = true;
-          if (buttons[12].pressed) {
+
+          for (let i = 0; i < buttons.length; i++) {
+            if (i < pad.buttons.length) {
+              buttons[i] = pad.buttons[i];
+            } else {
+              buttons[i] = NULL_BUTTON;
+            }
+          }
+
+          // Left trigger + (start/right analog/select/left analog) = escape
+          if (buttons[mapping.getButtonNum(CIDS.LTRIG)].pressed &&
+              (buttons[mapping.getButtonNum(CIDS.START)].pressed || buttons[mapping.getButtonNum(CIDS.SELECT)].pressed ||
+               buttons[mapping.getButtonNum(CIDS.RANALOG)].pressed || buttons[mapping.getButtonNum(CIDS.LANALOG)].pressed)) {
+            if (this.escapePressed === false) {
+              this.escapePressed = true;
+            }
+          } else if (this.escapePressed === true && (
+            buttons[mapping.getButtonNum(CIDS.LTRIG)].pressed || buttons[mapping.getButtonNum(CIDS.RANALOG)].pressed ||
+            buttons[mapping.getButtonNum(CIDS.LANALOG)].pressed || buttons[mapping.getButtonNum(CIDS.SELECT)].pressed ||
+            buttons[mapping.getButtonNum(CIDS.START)].pressed)) {
+            // Nothing... just make sure buttons are released prior to escape handling
+          } else if (buttons[mapping.getButtonNum(CIDS.UP)].pressed) {
             if (!padDown && !firstPoll) this.fireEvent(GamepadEnum.UP);
-          } else if (buttons[13].pressed) {
+          } else if (buttons[mapping.getButtonNum(CIDS.DOWN)].pressed) {
             if (!padDown && !firstPoll) this.fireEvent(GamepadEnum.DOWN);
-          } else if (buttons[14].pressed) {
+          } else if (buttons[mapping.getButtonNum(CIDS.LEFT)].pressed) {
             if (!padDown && !firstPoll) this.fireEvent(GamepadEnum.LEFT);
-          } else if (buttons[15].pressed) {
+          } else if (buttons[mapping.getButtonNum(CIDS.RIGHT)].pressed) {
             if (!padDown && !firstPoll) this.fireEvent(GamepadEnum.RIGHT);
-          } else if (buttons[4].pressed) {
+          } else if (buttons[mapping.getButtonNum(CIDS.LBUMP)].pressed) {
             if (!padDown && !firstPoll) this.fireEvent(GamepadEnum.LBUMP);
-          } else if (buttons[5].pressed) {
+          } else if (buttons[mapping.getButtonNum(CIDS.RBUMP)].pressed) {
             if (!padDown && !firstPoll) this.fireEvent(GamepadEnum.RBUMP);
-          } else if (buttons[0].pressed) {
-            if (!padDown && !firstPoll) this.fireEvent(GamepadEnum.A);
+          } else if (buttons[mapping.getButtonNum(CIDS.A)].pressed) {
+            if (this.aPressed === false) {
+              this.aPressed = true;
+            }
+          } else if (this.aPressed === true &&
+            buttons[mapping.getButtonNum(CIDS.A)].pressed) {
+            // Nothing... just make sure button is released prior to handling
           } else {
             hit = false;
+
+            if (this.escapePressed !== false) {
+              if (this.escapePressed === true) {
+                this.fireEvent(GamepadEnum.ESC);
+              }
+              this.escapePressed = false;
+            }
+
+            if (this.aPressed !== false) {
+              if (this.aPressed === true) {
+                this.fireEvent(GamepadEnum.A);
+              }
+              this.aPressed = false;
+            }
           }
         }
 
@@ -112,6 +166,14 @@ class GamepadNotifier {
 
   removeCallback(cb) {
     this.callbacks = this.callbacks.filter(value => value !== cb);
+  }
+
+  addGlobalCallback(cb) {
+    this.globalCallbacks.push(cb);
+  }
+
+  removeGlobalCallback(cb) {
+    this.globalCallbacks = this.globalCallbacks.filter(value => value !== cb);
   }
 
   setDefaultCallback(cb) {

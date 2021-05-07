@@ -1,0 +1,50 @@
+.screen {
+  animation: fadein .5s;
+}
+
+@keyframes fadein {
+  from { opacity: 0}
+  to   { opacity: 1}
+}
+
+@media only screen and (max-width: 864px) {
+  .screen {
+    max-height: 90vw;
+  }
+}
+
+@media only screen and (max-width: 1152px) and (min-width: 864px) {
+  .screen {
+    max-height: 75vw;
+  }
+}
+
+@media only screen and (min-width: 1920px) {
+  .screen {
+    max-height: 1080px;
+  }
+}
+
+.screen-transparency {
+  font-size: 2rem;
+  text-align: center;
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  left: 0px;
+  bottom: 0px;
+  background-color: black;
+  z-index: 50;
+  opacity: 0.8;
+  animation: fadeinpause .5s;
+}
+
+@keyframes fadeinpause {
+  from {
+    opacity: 0
+  }
+
+  to {
+    opacity: .8
+  }
+}
