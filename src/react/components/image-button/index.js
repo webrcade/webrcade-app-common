@@ -76,11 +76,12 @@ export class ImageButton extends Component {
   }
 
   render() {
-    const { label, imgSrc, hoverImgSrc } = this.props;
+    const { label, imgSrc, hoverImgSrc, type, className } = this.props;
     const { focused } = this.state;
+
     return (
       <button
-        className={styles['image-button']}
+        className={className === undefined ? styles['image-button'] : className}
         ref={(button) => { this.button = button; }}
         onClick={this.onClick}
         onFocus={this.onFocus}

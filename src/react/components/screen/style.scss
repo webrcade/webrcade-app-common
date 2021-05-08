@@ -35,16 +35,16 @@
   bottom: 0px;
   background-color: black;
   z-index: 50;
-  opacity: 0.8;
+  opacity: 0.85;
   animation: fadeinpause .5s;
 }
 
 @keyframes fadeinpause {
   from {
-    opacity: 0
+    opacity: 0;
   }
 
   to {
-    opacity: .8
+    opacity: .85;
   }
 }

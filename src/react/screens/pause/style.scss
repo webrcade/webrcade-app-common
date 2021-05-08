@@ -55,4 +55,52 @@
       }
     }
   }
+
+  &-image-button {
+    border: 0;
+    padding: .7rem;
+    margin: 1rem;
+    width: 9rem;
+    height: 9rem;
+    font-size: 1.4rem;
+    line-height: 1.8rem;
+    border-radius: .9rem;
+    background-color: transparent;
+    color: white;
+    cursor: pointer;
+    outline: none;
+    overflow: hidden;
+    opacity: .9;
+
+    &>img {
+      width: 3.5rem;
+      height: 3.5rem;
+    }
+
+    &>div {
+      height: 4.5rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    &:hover:not(:focus) {
+      opacity: .9;
+      transition: 0.5s;
+      background-color: #292929;
+    }
+
+    &:focus {
+      outline: none;
+      background-color: #aa0000;
+      transition: 0.5s;
+      opacity: .9;
+    }
+
+    &:active {
+      outline: none;
+    }
+  }
 }
+
+
+

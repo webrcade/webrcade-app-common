@@ -2,9 +2,10 @@ import React from "react";
 import { Screen } from '../../components/screen'
 import { ImageButton } from "../../components/image-button";
 import { WebrcadeContext } from "../../context/webrcadecontext.js"
+import { Resources, TEXT_IDS } from "../../../resources";
+import { ArrowBackWhiteImage, PlayArrowWhiteImage } from "../../../images";
 
 import styles from './style.scss'
-import appStyles from '../../components/app/style.scss'
 
 export class PauseScreen extends Screen {
   constructor() {
@@ -49,14 +50,18 @@ export class PauseScreen extends Screen {
             <div className={styles['pause-screen-inner-buttons']}>
               <div className={styles['pause-screen-inner-buttons-container']}>
                 <ImageButton
+                  className={styles["pause-screen-image-button"]}
+                  imgSrc={ArrowBackWhiteImage}
                   ref={exitButtonRef}
-                  label="Exit" /*{Resources.getText(TEXT_IDS.OK)}*/
+                  label={Resources.getText(TEXT_IDS.RETURN_TO_BROWSE)}
                   onPad={e => focusGrid.moveFocus(e.type, exitButtonRef)}
                   onClick={() => {if (exitCallback) exitCallback()}}
                 />
                 <ImageButton
+                  className={styles["pause-screen-image-button"]}
+                  imgSrc={PlayArrowWhiteImage}
                   ref={this.resumeButtonRef}
-                  label="Resume" /*{Resources.getText(TEXT_IDS.OK)}*/
+                  label={Resources.getText(TEXT_IDS.RESUME)}
                   onPad={e => focusGrid.moveFocus(e.type, resumeButtonRef)}
                   onClick={() => this.close()}
                 />

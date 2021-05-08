@@ -73,15 +73,22 @@ class GamepadNotifier {
           }
 
           // Left trigger + (start/right analog/select/left analog) = escape
-          if (buttons[mapping.getButtonNum(CIDS.LTRIG)].pressed &&
-              (buttons[mapping.getButtonNum(CIDS.START)].pressed || buttons[mapping.getButtonNum(CIDS.SELECT)].pressed ||
-               buttons[mapping.getButtonNum(CIDS.RANALOG)].pressed || buttons[mapping.getButtonNum(CIDS.LANALOG)].pressed)) {
+          if ((buttons[mapping.getButtonNum(CIDS.LTRIG)].pressed && (
+                buttons[mapping.getButtonNum(CIDS.START)].pressed ||
+                buttons[mapping.getButtonNum(CIDS.SELECT)].pressed ||
+                buttons[mapping.getButtonNum(CIDS.RANALOG)].pressed ||
+                buttons[mapping.getButtonNum(CIDS.LANALOG)].pressed)) ||
+              (buttons[mapping.getButtonNum(CIDS.SELECT)].pressed &&
+                buttons[mapping.getButtonNum(CIDS.X)].pressed)) {
             if (this.escapePressed === false) {
               this.escapePressed = true;
             }
           } else if (this.escapePressed === true && (
-            buttons[mapping.getButtonNum(CIDS.LTRIG)].pressed || buttons[mapping.getButtonNum(CIDS.RANALOG)].pressed ||
-            buttons[mapping.getButtonNum(CIDS.LANALOG)].pressed || buttons[mapping.getButtonNum(CIDS.SELECT)].pressed ||
+            buttons[mapping.getButtonNum(CIDS.LTRIG)].pressed ||
+            buttons[mapping.getButtonNum(CIDS.RANALOG)].pressed ||
+            buttons[mapping.getButtonNum(CIDS.LANALOG)].pressed ||
+            buttons[mapping.getButtonNum(CIDS.X)].pressed ||
+            buttons[mapping.getButtonNum(CIDS.SELECT)].pressed ||
             buttons[mapping.getButtonNum(CIDS.START)].pressed)) {
             // Nothing... just make sure buttons are released prior to escape handling
           } else if (buttons[mapping.getButtonNum(CIDS.UP)].pressed) {

@@ -269,8 +269,13 @@ export class Controller {
       // left trigger + (right analog/left analog)
       // left trigger + (start/select) (not on xbox)
       if (cid === CIDS.ESCAPE) {
-        return (this.isPadButtonDown(CIDS.LTRIG) && (this.isPadButtonDown(CIDS.RANALOG) || this.isPadButtonDown(CIDS.LANALOG))) ||
-          (!isXbox && (this.isPadButtonDown(CIDS.LTRIG) && (this.isPadButtonDown(CIDS.START) || this.isPadButtonDown(CIDS.SELECT))));
+        return (
+          this.isPadButtonDown(CIDS.LTRIG) && (this.isPadButtonDown(CIDS.RANALOG) || this.isPadButtonDown(CIDS.LANALOG))) ||
+          (!isXbox && (
+            (this.isPadButtonDown(CIDS.LTRIG) && (this.isPadButtonDown(CIDS.START) || this.isPadButtonDown(CIDS.SELECT))) ||
+            (this.isPadButtonDown(CIDS.SELECT) && this.isPadButtonDown(CIDS.X))
+          )
+        );
       // right trigger + right analog
       // start (not available for xbox)
       } else if (cid == CIDS.START) {

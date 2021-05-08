@@ -7,6 +7,7 @@ export * from './util';
 export * from './dev'
 export * from './storage'
 export * from './resources'
+export * from './images'
 export * from './react/components/app';
 export * from './react/components/image-button';
 export * from './react/screens/pause';

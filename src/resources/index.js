@@ -6,6 +6,8 @@ const TEXT_IDS = {
   LOADING: "Loading",
   OK: "OK",
   PLAY_UC: "PLAY",
+  RESUME: "Resume",
+  RETURN_TO_BROWSE: "Return to Browse",
   SEE_CONSOLE_LOG: "See console log for details.",
   SELECT_UC: "SELECT",
   SHOW_CATEGORIES: "Show Categories",
