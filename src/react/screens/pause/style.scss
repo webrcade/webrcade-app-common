@@ -59,7 +59,7 @@
   &-image-button {
     border: 0;
     padding: .7rem;
-    margin: 1rem;
+    margin: 1.3rem;
     width: 9rem;
     height: 9rem;
     font-size: 1.4rem;
@@ -70,7 +70,7 @@
     cursor: pointer;
     outline: none;
     overflow: hidden;
-    opacity: .9;
+    opacity: .7;
 
     &>img {
       width: 3.5rem;
@@ -83,17 +83,19 @@
       text-overflow: ellipsis;
     }
 
-    &:hover:not(:focus) {
-      opacity: .9;
+    &:hover {
+      //opacity: .7;
       transition: 0.5s;
       background-color: #292929;
+      transform: scale(1.2);
     }
 
-    &:focus {
+    &:focus:not(:hover) {
       outline: none;
-      background-color: #aa0000;
+      background-color: #292929;
       transition: 0.5s;
       opacity: .9;
+      transform: scale(1.2);
     }
 
     &:active {

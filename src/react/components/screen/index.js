@@ -50,7 +50,7 @@ export class Screen extends Component {
     const docElement = document.documentElement;
     docElement.addEventListener("keyup", this.handleKeyUpEvent);
 
-    this.focus();
+    setTimeout(() => { this.focus() }, 10);
   }
 
   componentWillUnmount() {

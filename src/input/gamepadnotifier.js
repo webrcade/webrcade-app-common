@@ -16,6 +16,7 @@ class GamepadNotifier {
     this.aPressed = null;
     this.mapping = new StandardPadMapping();
     this.buttons = new Array(16);
+    this.padCount = 0;
   }
 
   FIRST_POLL_DELAY = 100;
@@ -39,6 +40,8 @@ class GamepadNotifier {
       navigator.getGamepads() : (navigator.webkitGetGamepads ?
         navigator.webkitGetGamepads : []);
 
+    this.padCount = gamepads.length;
+
     // This is a bit of a hack to avoid having a button press accepted
     // when the page is initally displayed. There is a pause before
     // accepting any button presses
@@ -55,8 +58,10 @@ class GamepadNotifier {
     }
 
     let hit = false;
+    let pCount = 0;
     for (let i = 0; i < gamepads.length && !hit; i++) {
       if (gamepads[i]) {
+        pCount++;
 
         let padDown = this.padDown;
         let pad = gamepads[i];
@@ -150,6 +155,7 @@ class GamepadNotifier {
       }
     }
     this.padDown = hit;
+    this.padCount = pCount;
 
     if (running) {
       requestAnimationFrame(this.pollGamepads);
