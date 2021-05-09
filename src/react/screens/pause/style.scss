@@ -83,18 +83,19 @@
       text-overflow: ellipsis;
     }
 
-    &:hover {
-      //opacity: .7;
-      transition: 0.5s;
-      background-color: #292929;
-      transform: scale(1.2);
-    }
-
+    &:hover,
     &:focus:not(:hover) {
       outline: none;
       background-color: #292929;
       transition: 0.5s;
-      opacity: .9;
+      opacity: .8;
+      transform: scale(1.2);
+    }
+
+    &:hover:focus {
+      opacity: .75;
+      transition: 0.5s;
+      background-color: #191919;
       transform: scale(1.2);
     }
 
