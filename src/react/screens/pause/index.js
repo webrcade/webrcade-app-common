@@ -24,7 +24,9 @@ export class PauseScreen extends Screen {
     const { resumeButtonRef } = this;
 
     if (this.gamepadNotifier.padCount > 0) {
-      resumeButtonRef.current.focus();
+      if (resumeButtonRef && resumeButtonRef.current) {
+        resumeButtonRef.current.focus();
+      }
     }
   }
 

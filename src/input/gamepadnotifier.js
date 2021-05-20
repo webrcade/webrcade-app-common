@@ -36,11 +36,18 @@ class GamepadNotifier {
 
   pollGamepads = () => {
     const { running, FIRST_POLL_DELAY, mapping, buttons, NULL_BUTTON } = this;
-    const gamepads = navigator.getGamepads ?
+    let gamepads = navigator.getGamepads ?
       navigator.getGamepads() : (navigator.webkitGetGamepads ?
         navigator.webkitGetGamepads : []);
 
-    this.padCount = gamepads.length;
+    let pCount = 0;
+    for (let i = 0; i < gamepads.length; i++) {
+      if (gamepads[i]) pCount++;
+    }
+    this.padCount = pCount;
+    if (pCount === 0) {
+      gamepads = [{buttons:[]}]; // Fake gamepad to allow loop to process
+    }
 
     // This is a bit of a hack to avoid having a button press accepted
     // when the page is initally displayed. There is a pause before
@@ -58,7 +65,6 @@ class GamepadNotifier {
     }
 
     let hit = false;
-    let pCount = 0;
     for (let i = 0; i < gamepads.length && !hit; i++) {
       if (gamepads[i]) {
         pCount++;
@@ -85,10 +91,10 @@ class GamepadNotifier {
                 buttons[mapping.getButtonNum(CIDS.LANALOG)].pressed)) ||
               (buttons[mapping.getButtonNum(CIDS.SELECT)].pressed &&
                 buttons[mapping.getButtonNum(CIDS.X)].pressed)) {
-            if (this.escapePressed === false) {
+            if (!padDown && !firstPoll && this.escapePressed === false) {
               this.escapePressed = true;
             }
-          } else if (this.escapePressed === true && (
+          } else if ((this.escapePressed == true) && (
             buttons[mapping.getButtonNum(CIDS.LTRIG)].pressed ||
             buttons[mapping.getButtonNum(CIDS.RANALOG)].pressed ||
             buttons[mapping.getButtonNum(CIDS.LANALOG)].pressed ||
@@ -109,12 +115,9 @@ class GamepadNotifier {
           } else if (buttons[mapping.getButtonNum(CIDS.RBUMP)].pressed) {
             if (!padDown && !firstPoll) this.fireEvent(GamepadEnum.RBUMP);
           } else if (buttons[mapping.getButtonNum(CIDS.A)].pressed) {
-            if (this.aPressed === false) {
+            if (!padDown && !firstPoll && this.aPressed === false) {
               this.aPressed = true;
             }
-          } else if (this.aPressed === true &&
-            buttons[mapping.getButtonNum(CIDS.A)].pressed) {
-            // Nothing... just make sure button is released prior to handling
           } else {
             hit = false;
 
@@ -155,7 +158,6 @@ class GamepadNotifier {
       }
     }
     this.padDown = hit;
-    this.padCount = pCount;
 
     if (running) {
       requestAnimationFrame(this.pollGamepads);

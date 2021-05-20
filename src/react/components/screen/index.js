@@ -41,7 +41,7 @@ export class Screen extends Component {
   }
 
   componentDidMount() {
-    const { gamepadNotifier, focusGrid } = this;
+    const { gamepadNotifier } = this;
 
     gamepadNotifier.start();
     gamepadNotifier.setDefaultCallback(this.defaultGamepadCallback);
@@ -50,7 +50,7 @@ export class Screen extends Component {
     const docElement = document.documentElement;
     docElement.addEventListener("keyup", this.handleKeyUpEvent);
 
-    setTimeout(() => { this.focus() }, 10);
+    setTimeout(() => { this.focus() }, 50);
   }
 
   componentWillUnmount() {

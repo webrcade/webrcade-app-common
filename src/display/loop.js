@@ -1,4 +1,3 @@
-import { check } from "prettier";
 import { addDebugDiv } from './debug.js'
 
 export class DisplayLoop {
@@ -18,30 +17,39 @@ export class DisplayLoop {
     this.checkNativeFps();
   }
 
-  TEST_COUNT = 1200;
+  TEST_BEGIN = 300;
+  TEST_COUNT = 300;
 
   checkNativeFps() {
     if (!this.vsync) return;
 
     let fc = 0;
-    const start = Date.now();
+    let start = 0;
     let end = start;
+    let maxFps = 0;
 
     const f = () => {
       fc++; end = Date.now();
-      if (fc == this.TEST_COUNT) {
+      if (start === 0 && fc === this.TEST_BEGIN) {
+        start = Date.now();
+        fc = 0;
+        console.log('native fps test beginning.')
+        requestAnimationFrame(f);
+      } else if (fc === this.TEST_COUNT) {
         const fps = (1000/((end - start)/fc));
         const round = Math.round(fps/10)*10;
         const diff = Math.abs(round - fps);
         const nFaster = fps > this.frequency;
 
-        console.log('Native FPS: ' + fps + ", " + round);
+        console.log('Native FPS: ' + fps + ", round: " + round);
         if ((round === this.frequency) && (diff < 0.5)) {
           console.log('Native matches frequency.');
           this.isNative = true;
+          this.forceAdjustTimestamp = true;
         } else if (round < this.frequency || (!nFaster && diff >= 0.5)) {
           console.log('Native frequency too slow, vsync disabled.');
           this.vsync = false;
+          this.forceAdjustTimestamp = true;
         } else {
           console.log('Native not close enough to frequency: ' + fps);
         }
@@ -90,20 +98,20 @@ export class DisplayLoop {
 
     const f = () => {
       if (!this.paused) {
-        nextTimestamp = (
-          nextTimestamp == -1 ?
+        nextTimestamp = (nextTimestamp === -1 ?
             Date.now() + frameTicks : nextTimestamp + frameTicks);
 
         cb();
-
+        fc++;
         let now = Date.now();
+
         if (((nextTimestamp + adjustTolerance) < now) || this.forceAdjustTimestamp) {
           this.forceAdjustTimestamp = false;
-          nextTimestamp = now; fc = 0; start = now; avgWait = 0;
+          nextTimestamp = -1; fc = 0; start = now; avgWait = 0;
           console.log("adjusted next timestamp.");
         }
 
-        let wait = (nextTimestamp - now);
+        let wait = nextTimestamp == -1 ? 0 : (nextTimestamp - now);
         avgWait += wait;
 
         if (!this.isNative && wait > 0) {
@@ -112,8 +120,7 @@ export class DisplayLoop {
           this.sync(f, false);
         }
 
-        fc++;
-        if ((fc % debugFrequency) == 0) {
+        if (fc > debugFrequency) {
           let elapsed = Date.now() - start;
           if (this.debug) {
             const fps = (1000.0 / (elapsed / fc)).toFixed(2);

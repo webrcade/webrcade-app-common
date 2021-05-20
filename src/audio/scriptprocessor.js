@@ -1,9 +1,15 @@
-const registerAudioResume = (processor) => {
+const registerAudioResume = (obj) => {
   // Audio resume
-  const audioCtx = processor.audioCtx;
+  let audioCtx = obj;
+  let isProcessor = false;
+  if (obj.audioCtx) {
+    audioCtx = obj.audioCtx;
+    isProcessor = true;
+  }
+
 
   const resumeFunc = () => {
-    if (processor.paused) {
+    if (isProcessor && obj.paused) {
       return;
     }
 
@@ -42,6 +48,11 @@ class ScriptAudioProcessor {
     for (let i = 0; i < channelCount; i++) {
       this.mixbuffer[i] = new Array(bufferSize);
     }
+  }
+
+  isPlaying() {
+    const { audioCtx } = this;
+    return audioCtx && audioCtx.state === 'running';
   }
 
   getFrequency() { return this.frequency; }

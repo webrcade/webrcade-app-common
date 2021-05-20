@@ -6,13 +6,14 @@
   right: 0px;
   left: 0px;
   bottom: 0px;
+  // border: 1px solid red;
 
   &-inner {
     position: absolute;
     top: 50%;
     left: 50%;
     width: 100vw;
-    transform: translate(-50%, -50%)
+    transform: translate(-50%, -50%);
   }
 
   &-heading {
@@ -21,6 +22,7 @@
   }
 
   &-message {
+    padding: 0 2rem 0 2rem;
     line-height: 140%;
   }
 

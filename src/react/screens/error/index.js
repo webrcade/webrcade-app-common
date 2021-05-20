@@ -27,7 +27,6 @@ export class ErrorScreen extends Screen {
 
   render() {
     const { okButtonRef, screenContext, screenStyles } = this;
-    const { onClose } = this.props;
     let { message } = this.props;
 
     if (message.message) {
@@ -41,8 +40,8 @@ export class ErrorScreen extends Screen {
 
     return (
       <WebrcadeContext.Provider value={screenContext}>
-        <div className={styles['error-screen'] + " " + screenStyles.screen }>
-          <div className={styles['error-screen-inner']}>
+        <div className={styles['error-screen'] }>
+          <div className={styles['error-screen-inner'] + " " + screenStyles.screen}>
             <div className={styles['error-screen-heading']}>
               {Resources.getText(TEXT_IDS.SOMETHING_WENT_WRONG)}
             </div>
