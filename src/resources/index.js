@@ -11,7 +11,8 @@ const TEXT_IDS = {
   SEE_CONSOLE_LOG: "See console log for details.",
   SELECT_UC: "SELECT",
   SHOW_CATEGORIES: "Show Categories",
-  SOMETHING_WENT_WRONG: "Whoops, something went wrong..."
+  SOMETHING_WENT_WRONG: "Whoops, something went wrong...",
+  TAP_TO_UNMUTE: "Tap Screen to Unmute"
 };
 
 class Resources {

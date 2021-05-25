@@ -67,7 +67,6 @@ class GamepadNotifier {
     let hit = false;
     for (let i = 0; i < gamepads.length && !hit; i++) {
       if (gamepads[i]) {
-        pCount++;
 
         let padDown = this.padDown;
         let pad = gamepads[i];

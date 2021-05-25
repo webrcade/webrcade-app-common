@@ -19,7 +19,6 @@ export class PauseScreen extends Screen {
     ]);
   }
 
-
   focus() {
     const { resumeButtonRef } = this;
 

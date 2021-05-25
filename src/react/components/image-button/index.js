@@ -76,7 +76,7 @@ export class ImageButton extends Component {
   }
 
   render() {
-    const { label, imgSrc, hoverImgSrc, type, className } = this.props;
+    const { label, imgSrc, hoverImgSrc, className } = this.props;
     const { focused } = this.state;
 
     return (

@@ -4,6 +4,7 @@ import { AppProps } from '../../../app';
 import { isDev } from '../../../dev'
 import { ErrorScreen } from "../../screens/error";
 import { PauseScreen } from "../../screens/pause";
+import { OverlayScreen } from "../../screens/overlay"
 import { Resources, TEXT_IDS } from "../../../resources";
 
 import styles from './style.scss'
@@ -15,7 +16,8 @@ export class WebrcadeApp extends Component {
     this.state = {
       mode: this.ModeEnum.LOADING,
       loadingPercent: null,
-      errorMessage: null
+      errorMessage: null,
+      showOverlay: false
     };
 
     this.exited = false;
@@ -115,16 +117,24 @@ export class WebrcadeApp extends Component {
     );
   }
 
+  renderOverlayScreen() {
+    return (
+      <OverlayScreen/>
+    );
+  }
+
   isDebug() {
     return this.debug;
   }
 
   render() {
     const { ModeEnum } = this;
-    const { mode } = this.state;
+    const { mode, showOverlay } = this.state;
 
     if (mode === ModeEnum.ERROR) {
       return this.renderErrorScreen();
+    } else if (showOverlay) {
+      return this.renderOverlayScreen();
     }
 
     return null;
@@ -179,6 +189,18 @@ export class WebrcadeApp extends Component {
     }
 
     if (navigateBack) window.history.back();
+  }
+
+  setShowOverlay(show) {
+    const { showOverlay } = this.state;
+    if (show != showOverlay) {
+      this.setState({showOverlay: show});
+    }
+  }
+
+  isShowOverlay() {
+    const { showOverlay } = this.state;
+    return showOverlay;
   }
 
   async exit(error, navigateBack = true) {

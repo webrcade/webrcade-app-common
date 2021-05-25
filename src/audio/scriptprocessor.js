@@ -1,29 +1,36 @@
-const registerAudioResume = (obj) => {
+const registerAudioResume = (obj, cb) => {
   // Audio resume
   let audioCtx = obj;
   let isProcessor = false;
+  let running = false;
+
   if (obj.audioCtx) {
     audioCtx = obj.audioCtx;
     isProcessor = true;
   }
-
 
   const resumeFunc = () => {
     if (isProcessor && obj.paused) {
       return;
     }
 
-    audioCtx.resume();
     if (audioCtx.state !== 'running') {
-      audioCtx.resume();
+      audioCtx.resume()
+        .then(() => {
+          if (!running && audioCtx.state === 'running' && cb) {
+            running = true;
+            cb(true);
+          }
+        })
     }
   }
+
   const docElement = document.documentElement;
   docElement.addEventListener("keydown", resumeFunc);
   docElement.addEventListener("click", resumeFunc);
   docElement.addEventListener("drop", resumeFunc);
   docElement.addEventListener("dragdrop", resumeFunc);
-  docElement.addEventListener("touchstart", resumeFunc);
+  docElement.addEventListener("touchend", resumeFunc);
 }
 
 class ScriptAudioProcessor {
@@ -42,6 +49,7 @@ class ScriptAudioProcessor {
     this.audioNode = null;
     this.mixhead = 0;
     this.mixtail = 0;
+    this.callback = null;
 
     this.tmpBuffers = new Array(channelCount);
     this.mixbuffer = new Array(channelCount);
@@ -53,6 +61,10 @@ class ScriptAudioProcessor {
   isPlaying() {
     const { audioCtx } = this;
     return audioCtx && audioCtx.state === 'running';
+  }
+
+  setCallback(cb) {
+    this.callback = cb;
   }
 
   getFrequency() { return this.frequency; }
@@ -105,7 +117,11 @@ class ScriptAudioProcessor {
       this.paused = false;
 
       // Add audio resume
-      registerAudioResume(this);
+      registerAudioResume(this, this.callback);
+
+      if (!this.isPlaying()) {
+        if (this.callback) this.callback(false);
+      }
     }
   }
 

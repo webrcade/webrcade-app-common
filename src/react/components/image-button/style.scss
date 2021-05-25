@@ -22,9 +22,11 @@
     padding-left: .25rem;
   }
 
-  &:hover:not(:focus) {
-    opacity: .6;
-    transition: 0.5s;
+  @media (hover) {
+    &:hover:not(:focus) {
+      opacity: .6;
+      transition: 0.5s;
+    }
   }
 
   &:focus {
