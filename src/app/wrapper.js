@@ -20,6 +20,9 @@ export class AppWrapper {
     this.storage = this.createStorage();
     this.visibilityMonitor = this.createVisibilityMonitor();
     this.audioProcessor = this.createAudioProcessor();
+    if (this.audioProcessor) {
+      this.addAudioProcessorCallback(this.audioProcessor);
+    }
   }
 
   createControllers() {
@@ -54,13 +57,16 @@ export class AppWrapper {
   }
 
   createAudioProcessor() {
-    const { app } = this;
+    return new ScriptAudioProcessor();
+  }
 
-    const audioProcessor = new ScriptAudioProcessor();
-    audioProcessor.setCallback((running) => {
+  addAudioProcessorCallback(processor) {
+    if (!processor) return;
+
+    const { app } = this;
+    processor.setCallback((running) => {
       setTimeout(() => app.setShowOverlay(!running), 50);
     });
-    return audioProcessor;
   }
 
   onPause(p) {}
