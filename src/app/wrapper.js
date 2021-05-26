@@ -1,8 +1,8 @@
 import { Controller, Controllers, DefaultKeyCodeToControlMapping } from '../input/controls.js'
 import { Storage } from '../storage/storage.js'
-import { TouchEndListener } from '../util/touchendlistener.js'
 import { VisibilityChangeMonitor } from '../display/visibilitymonitor.js'
 import { ScriptAudioProcessor } from '../audio/scriptprocessor.js'
+import { TouchEndListener } from '../input/touch/touchendlistener.js'
 import { hideInactiveMouse } from '../input/hidemouse.js'
 
 export class AppWrapper {
