@@ -2,30 +2,41 @@ const registerAudioResume = (obj, cb) => {
   // Audio resume
   let audioCtx = obj;
   let isProcessor = false;
-  let running = false;
 
   if (obj.audioCtx) {
     audioCtx = obj.audioCtx;
     isProcessor = true;
   }
 
+  const docElement = document.documentElement;
+
   const resumeFunc = () => {
     if (isProcessor && obj.paused) {
       return;
     }
 
+    const fSuccess = () => {
+      if (cb) cb(true);
+
+      docElement.removeEventListener("keydown", resumeFunc);
+      docElement.removeEventListener("click", resumeFunc);
+      docElement.removeEventListener("drop", resumeFunc);
+      docElement.removeEventListener("dragdrop", resumeFunc);
+      docElement.removeEventListener("touchend", resumeFunc);
+    };
+
     if (audioCtx.state !== 'running') {
       audioCtx.resume()
         .then(() => {
-          if (!running && audioCtx.state === 'running' && cb) {
-            running = true;
-            cb(true);
+          if (audioCtx.state === 'running') {
+            fSuccess();
           }
-        })
+        });
+    } else {
+      fSuccess();
     }
   }
 
-  const docElement = document.documentElement;
   docElement.addEventListener("keydown", resumeFunc);
   docElement.addEventListener("click", resumeFunc);
   docElement.addEventListener("drop", resumeFunc);
@@ -116,12 +127,12 @@ class ScriptAudioProcessor {
       this.audioNode.connect(this.audioCtx.destination);
       this.paused = false;
 
-      // Add audio resume
-      registerAudioResume(this, this.callback);
-
+     // Add audio resume
+     setTimeout(() => {
       if (!this.isPlaying()) {
+        registerAudioResume(this, this.callback);
         if (this.callback) this.callback(false);
-      }
+      }}, 100);
     }
   }
 

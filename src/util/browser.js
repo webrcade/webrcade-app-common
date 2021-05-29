@@ -11,4 +11,18 @@ const isMobileSafari = () => {
     userAgent.includes('version/');
 }
 
-export { isXbox, isMobileSafari }
+const applyIosNavBarHack = () => {
+  if (isMobileSafari()) {
+    window.addEventListener('orientationchange', () => {
+      document.body.style.overflow = 'scroll';
+      window.scrollTo(0, 0);
+      setTimeout(() => {
+        document.body.style.overflow = 'hidden';
+        window.scrollTo(0, 1);
+        setTimeout(() => window.scrollTo(0, 0), 50);
+      }, 500);
+    });
+  }
+}
+
+export { isXbox, isMobileSafari, applyIosNavBarHack }

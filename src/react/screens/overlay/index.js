@@ -10,13 +10,25 @@ export class OverlayScreen extends Screen {
   constructor() {
     super();
 
+    this.unmuteTextTimeoutId = null;
     this.state = {
       hideUnmuteText: false
     };
   }
 
   componentDidMount() {
-    setTimeout(() => { this.setState({hideUnmuteText: true}); }, 5000);
+    this.unmuteTextTimeoutId = setTimeout(() => {
+      this.unmuteTextTimeoutId = null;
+      this.setState({hideUnmuteText: true});
+    }, 5000);
+  }
+
+  componentWillUnmount() {
+    const { unmuteTextTimeoutId } = this;
+
+    if (unmuteTextTimeoutId) {
+      clearTimeout(unmuteTextTimeoutId);
+    }
   }
 
   render() {
