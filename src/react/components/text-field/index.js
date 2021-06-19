@@ -90,6 +90,7 @@ export class TextField extends Component {
         ref={(field) => { this.field = field; }}
         onFocus={this.onFocus}
         onBlur={this.onBlur}
+      />
     );
   }
 };
