@@ -8,6 +8,7 @@ class Storage {
   DB_NAME = "webrcade";
   DB_STORE = "STORAGE";
   UINT8_ARRAY_MARKER = "_u8a_:";
+  OBJECT_MARKER = "_obj_:";
 
   async init() {
     if (this.initialized) return;
@@ -79,7 +80,8 @@ class Storage {
       idxDb,
       localStorageAvailable,
       DB_STORE,
-      UINT8_ARRAY_MARKER
+      UINT8_ARRAY_MARKER,
+      OBJECT_MARKER
     } = this;
 
     if (idxDb) {
@@ -98,6 +100,8 @@ class Storage {
           binary += String.fromCharCode(value[j]);
         }
         value = UINT8_ARRAY_MARKER + btoa(binary);
+      } else if (typeof value === 'object') {
+        value = OBJECT_MARKER + JSON.stringify(value);
       }
 
       localStorage.setItem(name, value);
@@ -115,7 +119,8 @@ class Storage {
       idxDb,
       localStorageAvailable,
       DB_STORE,
-      UINT8_ARRAY_MARKER
+      UINT8_ARRAY_MARKER,
+      OBJECT_MARKER
     } = this;
 
     if (idxDb) {
@@ -139,6 +144,8 @@ class Storage {
               bytes[j] = binary.charCodeAt(j);
           }
           value = bytes;
+        } else if (value.startsWith(OBJECT_MARKER)) {
+          value = JSON.parse(value.substring(OBJECT_MARKER.length));
         }
       }
       return value;

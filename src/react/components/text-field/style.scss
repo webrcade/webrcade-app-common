@@ -1,0 +1,14 @@
+.text-field {
+  font-size: 1.4rem;
+  background: #090909;
+  color: #ccc;
+  border: .2rem solid #444;
+  border-radius: .4rem;
+  padding: .2rem .4rem;
+
+  &:focus {
+    outline: none !important;
+    border: .2rem solid red;
+    box-shadow: 0 0 .8rem #aaa;
+  }
+}

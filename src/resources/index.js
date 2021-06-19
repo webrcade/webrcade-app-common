@@ -1,5 +1,7 @@
 const TEXT_IDS = {
+  ADD: "Add",
   ADD_UC: "ADD",
+  CANCEL: "Cancel",
   CATEGORIES: "Categories",
   DELETE_UC: "DELETE",
   ERROR_LOADING_GAME: "An error occurred attempting to load the selected game.",
@@ -8,7 +10,9 @@ const TEXT_IDS = {
   FEEDS: "Feeds",
   LOAD_UC: "LOAD",
   LOADING: "Loading",
+  LOADING_DOTS: "Loading...",
   LOADING_FEED: "Loading feed...",
+  NO: "No",
   OK: "OK",
   PLAY_UC: "PLAY",
   RESUME: "Resume",
@@ -18,7 +22,9 @@ const TEXT_IDS = {
   SHOW_CATEGORIES: "Show Categories",
   SHOW_FEEDS: "Show Feeds",
   SOMETHING_WENT_WRONG: "Whoops, something went wrong...",
-  TAP_TO_UNMUTE: "Tap Screen to Unmute"
+  SPECIFY_LOCATION_OF_FEED: "Specify the location of the feed to add (URL)",
+  TAP_TO_UNMUTE: "Tap Screen to Unmute",
+  YES: "Yes"
 };
 
 class Resources {
