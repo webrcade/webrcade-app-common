@@ -1,0 +1,62 @@
+.message {
+  visibility: hidden;
+  color: #fff;
+  text-align: center;
+  border-radius: .6rem;
+  padding: .54rem;
+  position: fixed;
+  z-index: 60;
+  left: 50%;
+  top: 7.34rem;
+  font-size: 1.5rem;
+  opacity: .98;
+  // box-shadow: 0 .5rem 1rem 0 rgba(0, 0, 0, 0.4), 0 .8rem 2.7rem 0 rgba(0, 0, 0, 0.39);
+  box-shadow: 0 .5rem 1rem 0 rgba(0, 0, 0, 0.9), 0 .8rem 2.7rem 0 rgba(0, 0, 0, 0.9);
+  word-wrap: break-word;
+}
+
+#snackbar {
+  // background-color: #393939;
+  background-color: #a00000;
+  border: .2rem solid rgba(200, 0, 0, 0.4);
+  min-width: 30rem;
+  max-width: 30rem;
+  margin-left: -15rem;
+}
+
+#snackbar.show,
+#errormsg.show {
+  visibility: visible;
+  animation: message--fadein 0.5s;
+}
+
+#snackbar.hide,
+#errormsg.hide {
+  visibility: hidden;
+  animation: message--fadeout 0.5s;
+  transition: visibility 0.5s;
+}
+
+@keyframes message--fadein {
+  from {
+    top: 4.67rem;
+    opacity: 0;
+  }
+
+  to {
+    top: 7.34rem;
+    opacity: .98;
+  }
+}
+
+@keyframes message--fadeout {
+  from {
+    top: 7.34rem;
+    opacity: .98;
+  }
+
+  to {
+    top: 4.67rem;
+    opacity: 0;
+  }
+}

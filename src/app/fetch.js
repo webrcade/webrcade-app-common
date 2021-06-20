@@ -1,4 +1,5 @@
-import { isDev } from '../dev'
+import { isDev } from '../dev';
+import * as LOG from '../log';
 
 export class FetchAppData {
   constructor(url) {
@@ -36,11 +37,11 @@ export class FetchAppData {
     try {
       return await doFetch(url);
     } catch (e) {
-      console.error(e);
+      LOG.error(e);
       try {
         return await doFetch(`${h(s)}${P}${url}`);
       } catch (e) {
-        console.error(e);
+        LOG.error(e);
         return await doFetch(`${h(!s)}${P}${url}`);
       }
     }

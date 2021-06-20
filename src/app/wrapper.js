@@ -1,9 +1,10 @@
-import { Controller, Controllers, DefaultKeyCodeToControlMapping } from '../input/controls.js'
-import { Storage } from '../storage/storage.js'
-import { VisibilityChangeMonitor } from '../display/visibilitymonitor.js'
-import { ScriptAudioProcessor } from '../audio/scriptprocessor.js'
-import { TouchEndListener } from '../input/touch/touchendlistener.js'
+import * as LOG from '../log'
 import { hideInactiveMouse } from '../input/hidemouse.js'
+import { Controller, Controllers, DefaultKeyCodeToControlMapping } from '../input/controls.js'
+import { ScriptAudioProcessor } from '../audio/scriptprocessor.js'
+import { Storage } from '../storage/storage.js'
+import { TouchEndListener } from '../input/touch/touchendlistener.js'
+import { VisibilityChangeMonitor } from '../display/visibilitymonitor.js'
 
 export class AppWrapper {
   constructor(app, debug = false) {
@@ -64,6 +65,7 @@ export class AppWrapper {
     if (!processor) return;
 
     const { app } = this;
+
     processor.setCallback((running) => {
       setTimeout(() => app.setShowOverlay(!running), 50);
     });
@@ -76,7 +78,7 @@ export class AppWrapper {
   async onStart(canvas) {}
 
   showPauseMenu() {
-    const { controllers, app } = this;
+    const { app, controllers } = this;
 
     if (controllers) {
       controllers.setEnabled(false);
@@ -89,11 +91,11 @@ export class AppWrapper {
         }
         this.pause(false);
       }))
-      .catch(e => console.error(e));
+      .catch(e => LOG.error(e));
   }
 
   pause(p) {
-    const { displayLoop, audioProcessor } = this;
+    const { audioProcessor, displayLoop } = this;
 
     if ((p && !this.paused) || (!p && this.paused)) {
       this.paused = p;

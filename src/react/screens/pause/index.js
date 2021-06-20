@@ -1,9 +1,9 @@
 import React from "react";
-import { Screen } from '../../components/screen'
-import { ImageButton } from "../../components/image-button";
-import { WebrcadeContext } from "../../context/webrcadecontext.js"
-import { Resources, TEXT_IDS } from "../../../resources";
 import { ArrowBackWhiteImage, PlayArrowWhiteImage } from "../../../images";
+import { ImageButton } from "../../components/image-button";
+import { Resources, TEXT_IDS } from "../../../resources";
+import { Screen } from '../../components/screen'
+import { WebrcadeContext } from "../../context/webrcadecontext.js"
 
 import styles from './style.scss'
 
@@ -30,17 +30,9 @@ export class PauseScreen extends Screen {
   }
 
   render() {
-    const {
-      screenContext,
-      screenStyles,
-      exitButtonRef,
-      resumeButtonRef,
-      focusGrid
-    } = this;
-    const {
-      appProps,
-      exitCallback
-    } = this.props;
+    const { exitButtonRef, focusGrid, resumeButtonRef, screenContext,
+      screenStyles } = this;
+    const { appProps, exitCallback } = this.props;
 
     return (
       <WebrcadeContext.Provider value={screenContext}>

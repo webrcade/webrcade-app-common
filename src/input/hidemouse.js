@@ -2,7 +2,9 @@ const hideInactiveMouse = (element, timeout = 2500) => {
   let timeoutId = null;
 
   const fTimeout = () => {
-    clearTimeout(timeoutId);
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
     timeoutId = null;
     element.style.cursor = 'none';
   }
@@ -20,7 +22,8 @@ const hideInactiveMouse = (element, timeout = 2500) => {
   element.addEventListener('mouseup', f);
   element.addEventListener('wheel', f);
 
-  setTimeout(fTimeout, timeout);
+  element.style.cursor = 'auto';
+  timeoutId = setTimeout(fTimeout, timeout);
 }
 
 export { hideInactiveMouse };

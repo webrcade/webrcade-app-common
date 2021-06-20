@@ -1,8 +1,8 @@
 import React from "react";
-import { Screen } from '../../components/screen'
-import { WebrcadeContext } from "../../context/webrcadecontext.js"
-import { VolumeOffBlack } from "../../../images/index.js"
 import { Resources, TEXT_IDS } from "../../../resources";
+import { Screen } from '../../components/screen'
+import { VolumeOffBlack } from "../../../images/index.js"
+import { WebrcadeContext } from "../../context/webrcadecontext.js"
 
 import styles from './style.scss'
 
@@ -32,13 +32,8 @@ export class OverlayScreen extends Screen {
   }
 
   render() {
-    const {
-      screenContext,
-      screenStyles,
-    } = this;
-    const {
-      hideUnmuteText
-    } = this.state;
+    const { screenContext, screenStyles, } = this;
+    const { hideUnmuteText } = this.state;
 
     const buttonPrefix = "overlay-screen-inner-unmute-button";
 

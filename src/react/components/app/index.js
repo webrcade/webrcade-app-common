@@ -1,11 +1,12 @@
 import React, { Component } from "react";
-import { UrlUtil } from '../../../util';
-import { AppProps } from '../../../app';
+import * as LOG from '../../../log'
 import { isDev } from '../../../dev'
+import { AppProps } from '../../../app';
 import { ErrorScreen } from "../../screens/error";
-import { PauseScreen } from "../../screens/pause";
 import { OverlayScreen } from "../../screens/overlay"
+import { PauseScreen } from "../../screens/pause";
 import { Resources, TEXT_IDS } from "../../../resources";
+import { UrlUtil } from '../../../util';
 
 import styles from './style.scss'
 
@@ -36,7 +37,7 @@ export class WebrcadeApp extends Component {
   messageListener = (e) => {
     if (e.data === 'exit') {
       this.exit(null, false)
-        .catch((e) => console.error(e)) // TODO: Proper error handling
+        .catch((e) => LOG.error(e))
         .finally(() => {
           setTimeout(() => {
             e.source.postMessage("exitComplete", "*");
@@ -53,12 +54,12 @@ export class WebrcadeApp extends Component {
       try {
         window.frameElement.style.display = 'block';
       } catch(e) {
-        console.log('error attempting to make application visible: ' + e)
+        LOG.info('error attempting to make application visible: ' + e)
       }
     }
 
     const url = window.location.search;
-    console.log(url);
+    LOG.info(url);
 
     // Get props
     const propsEncoded = UrlUtil.getParam(
@@ -98,7 +99,7 @@ export class WebrcadeApp extends Component {
   }
 
   renderErrorScreen() {
-    const { errorMessage, errorCloseCallback } = this.state;
+    const { errorCloseCallback, errorMessage } = this.state;
 
     return (
        <ErrorScreen message={errorMessage} closeCallback={errorCloseCallback}/>
@@ -177,7 +178,7 @@ export class WebrcadeApp extends Component {
 
   // Async to allow for asynchronous saves, etc.
   async onPreExit() {
-    console.log('onPreExit...');
+    LOG.info('onPreExit...');
   }
 
   async _exit(navigateBack) {
@@ -185,7 +186,7 @@ export class WebrcadeApp extends Component {
     try {
       await this.onPreExit();
     } catch (e) {
-      console.error(e); // TODO: Proper logging
+      LOG.error(e);
     }
 
     if (navigateBack) window.history.back();
@@ -207,12 +208,12 @@ export class WebrcadeApp extends Component {
     const { ModeEnum } = this;
 
     if (error) {
-      console.error(error);
+      LOG.error(error);
     }
 
     if (!this.exited) {
       this.exited = true;
-      console.log("exiting application...")
+      LOG.info("exiting application...")
 
       if (error) {
         this.setState({

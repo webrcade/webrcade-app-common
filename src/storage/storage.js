@@ -1,3 +1,5 @@
+import * as LOG from '../log'
+
 class Storage {
   constructor() {
     this.initialized = false;
@@ -18,7 +20,7 @@ class Storage {
     try {
       this.idxDb = await this.openIndexedDb();
     } catch (ex) {
-      console.error("IndexDB error: " + ex);
+      LOG.error("IndexDB error: " + ex);
     }
   }
 
@@ -27,10 +29,10 @@ class Storage {
     try {
       localStorage.setItem(TEST, TEST);
       localStorage.removeItem(TEST);
-      console.info("Local storage is available.");
+      LOG.info("Local storage is available.");
       return true;
     } catch (e) {
-      console.info("Local storage is not available.");
+      LOG.info("Local storage is not available.");
     }
     return false;
   }
@@ -54,16 +56,16 @@ class Storage {
     return new Promise((resolve, reject) => {
       const request = window.indexedDB.open(DB_NAME, 1);
       request.onerror = (e) => {
-        console.log('Indexed DB error.');
+        LOG.info('Indexed DB error.');
         reject(e);
       };
       request.onsuccess = (e) => {
-        console.log('Indexed DB success.');
+        LOG.info('Indexed DB success.');
         resolve(request.result);
       };
       request.onupgradeneeded = (e) => {
         try {
-          console.log('Indexed DB upgrade.');
+          LOG.info('Indexed DB upgrade.');
           var db = e.target.result;
           db.createObjectStore(DB_STORE);
         } catch (ex) {
@@ -76,13 +78,8 @@ class Storage {
   async put(name, value) {
     await this.init();
 
-    const {
-      idxDb,
-      localStorageAvailable,
-      DB_STORE,
-      UINT8_ARRAY_MARKER,
-      OBJECT_MARKER
-    } = this;
+    const { idxDb, localStorageAvailable, DB_STORE, OBJECT_MARKER,
+      UINT8_ARRAY_MARKER } = this;
 
     if (idxDb) {
       return new Promise((resolve, reject) => {
@@ -108,20 +105,15 @@ class Storage {
       return true;
     }
 
-    console.info("Unable to perform put, storage not available.")
+    LOG.info("Unable to perform put, storage not available.")
     return false;
   }
 
   async get(name) {
     await this.init();
 
-    const {
-      idxDb,
-      localStorageAvailable,
-      DB_STORE,
-      UINT8_ARRAY_MARKER,
-      OBJECT_MARKER
-    } = this;
+    const { idxDb, localStorageAvailable, DB_STORE, OBJECT_MARKER,
+      UINT8_ARRAY_MARKER } = this;
 
     if (idxDb) {
       return new Promise((resolve, reject) => {
@@ -151,7 +143,7 @@ class Storage {
       return value;
     }
 
-    console.info("Unable to perform get, storage not available.")
+    LOG.info("Unable to perform get, storage not available.")
     return null;
   }
 }

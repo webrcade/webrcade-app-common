@@ -1,3 +1,4 @@
+import * as LOG from '../log'
 import { zip } from './3rdparty/zip.js'
 
 export class Unzip {
@@ -59,7 +60,7 @@ export class Unzip {
         new zip.BlobReader(file),
         blobReader,
         (failure) => {
-          console.log(`${failure}, processing as a non-zip`);
+          LOG.info(`${failure}, processing as a non-zip`);
           success(file);
         }
       );

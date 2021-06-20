@@ -1,8 +1,8 @@
 import React from "react";
-import { Screen } from "../../components/screen"
 import { ImageButton } from "../../components/image-button";
-import { WebrcadeContext } from "../../context/webrcadecontext.js"
 import { Resources, TEXT_IDS } from "../../../resources"
+import { Screen } from "../../components/screen"
+import { WebrcadeContext } from "../../context/webrcadecontext.js"
 
 import styles from './style.scss'
 

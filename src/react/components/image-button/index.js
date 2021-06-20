@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 
-import { WebrcadeContext } from '../../context/webrcadecontext.js'
 import { GamepadEnum } from "../../../input"
+import { WebrcadeContext } from '../../context/webrcadecontext.js'
 
 import styles from './style.scss'
 
@@ -76,7 +76,7 @@ export class ImageButton extends Component {
   }
 
   render() {
-    const { label, imgSrc, hoverImgSrc, className } = this.props;
+    const { className, hoverImgSrc, imgSrc, label } = this.props;
     const { focused } = this.state;
 
     return (

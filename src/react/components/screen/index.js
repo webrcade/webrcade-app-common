@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import { FocusGrid, GamepadNotifier, GamepadEnum, KCODES } from "../../../input"
+import { Component } from "react";
+import { FocusGrid, GamepadEnum, GamepadNotifier, KCODES } from "../../../input"
 
 import styles from './style.scss'
 
@@ -20,11 +20,13 @@ export class Screen extends Component {
 
   focus() {
     const { focusGrid } = this;
+
     focusGrid.focus();
   }
 
   close() {
     const { closeCallback } = this.props;
+
     if (closeCallback) closeCallback();
   }
 

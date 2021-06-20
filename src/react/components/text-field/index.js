@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 
-import { WebrcadeContext } from '../../context/webrcadecontext.js'
 import { GamepadEnum } from "../../../input"
+import { WebrcadeContext } from '../../context/webrcadecontext.js'
 
 import styles from './style.scss'
 
@@ -68,6 +68,7 @@ export class TextField extends Component {
   focus() {
     const { focused } = this.state;
     const { field } = this;
+
     if (!focused && field) {
       field.focus();
       return true;
@@ -76,8 +77,7 @@ export class TextField extends Component {
   }
 
   render() {
-    const { label, width } = this.props;
-    const { focused } = this.state;
+    const { width } = this.props;
 
     let style = {};
     if (width) style.width = width;
