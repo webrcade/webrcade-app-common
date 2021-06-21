@@ -1,13 +1,17 @@
+.message-container {
+  position: relative;
+}
+
 .message {
   visibility: hidden;
   color: #fff;
   text-align: center;
   border-radius: .6rem;
   padding: .54rem;
-  position: fixed;
+  position: absolute;
+  top: 2rem;
   z-index: 60;
   left: 50%;
-  top: 7.34rem;
   font-size: 1.5rem;
   opacity: .98;
   // box-shadow: 0 .5rem 1rem 0 rgba(0, 0, 0, 0.4), 0 .8rem 2.7rem 0 rgba(0, 0, 0, 0.39);
@@ -39,24 +43,24 @@
 
 @keyframes message--fadein {
   from {
-    top: 4.67rem;
+    top: -5rem;
     opacity: 0;
   }
 
   to {
-    top: 7.34rem;
+    top: 2rem;
     opacity: .98;
   }
 }
 
 @keyframes message--fadeout {
   from {
-    top: 7.34rem;
+    top: 2rem;
     opacity: .98;
   }
 
   to {
-    top: 4.67rem;
+    top: -5rem;
     opacity: 0;
   }
 }

@@ -15,11 +15,13 @@ export class Message extends Component {
 
   render() {
     return (
-      <div
-        id={styles['snackbar']}
-        className={styles['message']}
-        onClick={() => hideMessage()}
-      />
+      <div className={styles['message-container']}>
+        <div
+          id={styles['snackbar']}
+          className={styles['message']}
+          onClick={() => hideMessage()}
+        />
+      </div>
     );
   }
 };
