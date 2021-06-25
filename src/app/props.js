@@ -5,10 +5,10 @@ export class AppProps {
   static RP_ROM = "rom";
 
   static encode(props) {
-    return btoa(JSON.stringify(props));
+    return btoa(encodeURIComponent(JSON.stringify(props)));
   }
 
   static decode(encodedProps) {
-    return JSON.parse(atob(encodedProps));
+    return JSON.parse(decodeURIComponent(atob(encodedProps)));
   }
 };
