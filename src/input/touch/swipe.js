@@ -20,6 +20,8 @@ export class Swipe {
     }
   }
 
+  PERCENT = .05;
+
   register(element) {
     this.element = element;
     this.element.addEventListener('touchstart', this.startListener);
@@ -63,12 +65,14 @@ export class Swipe {
     this.yDiff = this.yDown - yUp;
 
     if (Math.abs(this.xDiff) > Math.abs(this.yDiff)) { // Most significant.
+      if (Math.abs(this.xDiff) < (window.innerWidth*this.PERCENT)) return;
       if (this.xDiff > 0) {
         if (this.onLeft) this.onLeft(this.xDiff);
       } else {
         if (this.onRight) this.onRight(this.xDiff);
       }
     } else {
+      if (Math.abs(this.yDiff) < (window.innerHeight*this.PERCENT)) return;
       if (this.yDiff > 0) {
         if (this.onUp) this.onUp(this.yDiff);
       } else {
