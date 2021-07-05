@@ -3,6 +3,7 @@ const TEXT_IDS = {
   ADD_UC: "ADD",
   CANCEL: "Cancel",
   CATEGORIES: "Categories",
+  CLICK_TO_UNMUTE: "Click Screen to Unmute",
   CONFIRM_DELETE_FEED: "Are you sure you want to delete the selected feed?",
   DELETE_UC: "DELETE",
   ERROR_LOADING_GAME: "An error occurred attempting to load the selected game.",

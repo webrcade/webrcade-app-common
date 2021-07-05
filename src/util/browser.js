@@ -25,4 +25,8 @@ const applyIosNavBarHack = () => {
   }
 }
 
-export { isXbox, isMobileSafari, applyIosNavBarHack }
+const isTouchSupported = () => {
+  return matchMedia('(hover: none)').matches;
+}
+
+export { isXbox, isMobileSafari, applyIosNavBarHack, isTouchSupported }

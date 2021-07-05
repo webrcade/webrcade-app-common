@@ -1,4 +1,5 @@
 import React from "react";
+import { isTouchSupported } from "../../../util/browser";
 import { Resources, TEXT_IDS } from "../../../resources";
 import { Screen } from '../../components/screen'
 import { VolumeOffBlack } from "../../../images/index.js"
@@ -37,6 +38,9 @@ export class OverlayScreen extends Screen {
 
     const buttonPrefix = "overlay-screen-inner-unmute-button";
 
+    const tapText = Resources.getText(
+      isTouchSupported() ? TEXT_IDS.TAP_TO_UNMUTE : TEXT_IDS.CLICK_TO_UNMUTE);
+
     return (
       <WebrcadeContext.Provider value={screenContext}>
         <div className={styles['overlay-screen']}>
@@ -45,9 +49,9 @@ export class OverlayScreen extends Screen {
               <button
                 tabIndex="-1"
                 className={styles[buttonPrefix]}>
-                <img className={styles[buttonPrefix + '-img']} alt={Resources.getText(TEXT_IDS.TAP_TO_UNMUTE)} src={VolumeOffBlack}></img>
+                <img className={styles[buttonPrefix + '-img']} alt={tapText} src={VolumeOffBlack}></img>
                 <div className={styles[buttonPrefix + '-label'] + " " + (hideUnmuteText ? styles[buttonPrefix + '-label--hide'] : "")}>
-                  <div className={styles[buttonPrefix + '-label-inner']}>{Resources.getText(TEXT_IDS.TAP_TO_UNMUTE)}</div>
+                  <div className={styles[buttonPrefix + '-label-inner']}>{tapText}</div>
                 </div>
               </button>
             </div>
