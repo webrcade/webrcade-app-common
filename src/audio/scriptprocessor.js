@@ -1,4 +1,4 @@
-const registerAudioResume = (obj, cb) => {
+const registerAudioResume = (obj, cb, interval) => {
   // Audio resume
   let audioCtx = obj;
   let isProcessor = false;
@@ -10,12 +10,19 @@ const registerAudioResume = (obj, cb) => {
 
   const docElement = document.documentElement;
 
+  let audioSucceeded = false;
+
   const resumeFunc = () => {
     if (isProcessor && obj.paused) {
       return;
     }
 
+    console.log('### resume func.');
     const fSuccess = () => {
+      if (audioSucceeded) return;
+      audioSucceeded = true;
+
+      console.log('### success.');
       if (cb) cb(true);
 
       docElement.removeEventListener("keydown", resumeFunc);
@@ -30,11 +37,19 @@ const registerAudioResume = (obj, cb) => {
         .then(() => {
           if (audioCtx.state === 'running') {
             fSuccess();
+          } else {
+            if (interval !== undefined) {
+              setTimeout(resumeFunc, interval);
+            }
           }
         });
     } else {
       fSuccess();
     }
+  }
+
+  if (interval !== undefined) {
+    setTimeout(resumeFunc, interval);
   }
 
   docElement.addEventListener("keydown", resumeFunc);
@@ -53,6 +68,8 @@ class ScriptAudioProcessor {
     this.frequency = frequency;
     this.bufferSize = bufferSize;
     this.scriptBufferSize = scriptBufferSize;
+// this.bufferSize = 16384;
+// this.scriptBufferSize = 4096;
     this.channelCount = channelCount;
     this.paused = true;
 
