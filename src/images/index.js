@@ -2,7 +2,7 @@ import { isApp } from '../app'
 import { isDev } from '../dev'
 
 const resolvePath = (path) => {
-  return isDev() ? "http://localhost:3000/" + path :
+  return isDev() ? "http://192.168.1.179:3000/" + path :
       isApp() ? "../../" + path : path;
 };
 
@@ -18,6 +18,7 @@ const PlayArrowWhiteImage = resolvePath("images/common/play_arrow_white_24dp.svg
 const VolumeOffBlackImage = resolvePath("images/common/volume_off_black_24dp.svg");
 const WebrcadeLogoDarkImage = resolvePath("images/common/webrcade-logo-dark.svg");
 const WebrcadeLogoLargeImage = resolvePath("images/common/webrcade-logo-large.svg");
+
 
 export {
   AddCircleBlackImage,
