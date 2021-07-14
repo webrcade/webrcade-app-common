@@ -2,7 +2,7 @@ import React from "react";
 import { isTouchSupported } from "../../../util/browser";
 import { Resources, TEXT_IDS } from "../../../resources";
 import { Screen } from '../../components/screen'
-import { VolumeOffBlack } from "../../../images/index.js"
+import { VolumeOffBlackImage } from "../../../images/index.js"
 import { WebrcadeContext } from "../../context/webrcadecontext.js"
 
 import styles from './style.scss'
@@ -49,7 +49,7 @@ export class OverlayScreen extends Screen {
               <button
                 tabIndex="-1"
                 className={styles[buttonPrefix]}>
-                <img className={styles[buttonPrefix + '-img']} alt={tapText} src={VolumeOffBlack}></img>
+                <img className={styles[buttonPrefix + '-img']} alt={tapText} src={VolumeOffBlackImage}></img>
                 <div className={styles[buttonPrefix + '-label'] + " " + (hideUnmuteText ? styles[buttonPrefix + '-label--hide'] : "")}>
                   <div className={styles[buttonPrefix + '-label-inner']}>{tapText}</div>
                 </div>

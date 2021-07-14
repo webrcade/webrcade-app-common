@@ -1,15 +1,24 @@
-import AddCircleBlackImage from "add_circle_outline_black_24dp.svg"
-import AddCircleWhiteImage from "add_circle_outline_white_24dp.svg"
-import ArrowBackWhiteImage from "arrow_back_white_24dp.svg"
-import CloudDownloadBlackImage from "cloud_download_black_24dp.svg"
-import CloudDownloadWhiteImage from "cloud_download_white_24dp.svg"
-import DeleteForeverBlackImage from "delete_forever_black_24dp.svg"
-import DeleteForeverWhiteImage from "delete_forever_white_24dp.svg"
-import PlayArrowBlackImage from "play_arrow_black_24dp.svg"
-import PlayArrowWhiteImage from "play_arrow_white_24dp.svg"
-import VolumeOffBlack from "volume_off_black_24dp.svg"
-import WebrcadeLogoDarkImage from "webrcade-logo-dark.svg"
-import WebrcadeLogoLargeImage from "webrcade-logo-large.svg"
+import { isApp } from '../app'
+import { isDev } from '../dev'
+
+const resolvePath = (path) => {
+  console.log(isApp());
+  return isDev() ? "http://localhost:3000/" + path :
+      isApp() ? "../../" + path : path;
+};
+
+const ArrowBackWhiteImage = resolvePath("images/common/arrow_back_white_24dp.svg");
+const CloudDownloadBlackImage = resolvePath("images/common/cloud_download_black_24dp.svg");
+const CloudDownloadWhiteImage = resolvePath("images/common/cloud_download_white_24dp.svg");
+const DeleteForeverBlackImage = resolvePath("images/common/delete_forever_black_24dp.svg");
+const DeleteForeverWhiteImage = resolvePath("images/common/delete_forever_white_24dp.svg");
+const AddCircleBlackImage = resolvePath("images/common/add_circle_outline_black_24dp.svg");
+const AddCircleWhiteImage = resolvePath("images/common/add_circle_outline_white_24dp.svg");
+const PlayArrowBlackImage = resolvePath("images/common/play_arrow_black_24dp.svg");
+const PlayArrowWhiteImage = resolvePath("images/common/play_arrow_white_24dp.svg");
+const VolumeOffBlackImage = resolvePath("images/common/volume_off_black_24dp.svg");
+const WebrcadeLogoDarkImage = resolvePath("images/common/webrcade-logo-dark.svg");
+const WebrcadeLogoLargeImage = resolvePath("images/common/webrcade-logo-large.svg");
 
 export {
   AddCircleBlackImage,
@@ -23,5 +32,5 @@ export {
   PlayArrowWhiteImage,
   WebrcadeLogoDarkImage,
   WebrcadeLogoLargeImage,
-  VolumeOffBlack
+  VolumeOffBlackImage
 }
