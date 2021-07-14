@@ -2,7 +2,6 @@ import { isApp } from '../app'
 import { isDev } from '../dev'
 
 const resolvePath = (path) => {
-  console.log(isApp());
   return isDev() ? "http://localhost:3000/" + path :
       isApp() ? "../../" + path : path;
 };
