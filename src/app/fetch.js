@@ -1,3 +1,4 @@
+import { config } from '../conf'
 import { isDev } from '../dev';
 import * as LOG from '../log';
 
@@ -6,7 +7,7 @@ export class FetchAppData {
     this.url = url;
   }
 
-  P = (isDev() ? "192.168.1.179/?y=" : "proxy.webrcade.workers.dev?");
+  P = (isDev() ? (config.getLocalIp() + "/?y=") : "proxy.webrcade.workers.dev?");
 
   async fetch() {
     const { P } = this;

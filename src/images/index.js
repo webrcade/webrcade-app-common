@@ -1,8 +1,9 @@
+import { config } from '../conf'
 import { isApp } from '../app'
 import { isDev } from '../dev'
 
 const resolvePath = (path) => {
-  return isDev() ? "http://192.168.1.179:3000/" + path :
+  return isDev() ? "http://" + config.getLocalIp() + ":3000/" + path :
       isApp() ? "../../" + path : path;
 };
 

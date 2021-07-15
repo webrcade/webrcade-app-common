@@ -1,5 +1,6 @@
 export * from './app';
 export * from './audio';
+export * from './conf';
 export * from './display';
 export * from './input';
 export * from './zip';
