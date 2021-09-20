@@ -1,30 +1,19 @@
-# @webrcade/app-common
+# webЯcade Common Library
 
-> webrcade app-common
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-[![NPM](https://img.shields.io/npm/v/@webrcade/app-common.svg)](https://www.npmjs.com/package/@webrcade/app-common) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
+This repository contains common components that are available for use by the webЯcade [front-end](https://docs.webrcade.com/userguide/) and [applications](https://docs.webrcade.com/apps/) ([emulators](https://docs.webrcade.com/apps/emulators/), [engines](https://docs.webrcade.com/apps/engines/), etc.).
 
-## Install
+<p align="center">
+ <a href="https://play.webrcade.com">
+  <img src="https://docs.webrcade.com/assets/images/feed/format/feeds.png" width="97%">
+ </a>
+</p>
 
-```bash
-npm install --save @webrcade/app-common
-```
+## LICENSE
 
-## Usage
+Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
-```jsx
-import React, { Component } from 'react'
+http://www.apache.org/licenses/LICENSE-2.0
 
-import MyComponent from '@webrcade/app-common'
-import '@webrcade/app-common/dist/index.css'
-
-class Example extends Component {
-  render() {
-    return <MyComponent />
-  }
-}
-```
-
-## License
-
-MIT © [raz0red](https://github.com/raz0red)
+Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
