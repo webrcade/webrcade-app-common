@@ -6,7 +6,7 @@ This repository contains common components that are available for use by the web
 
 <p align="center">
  <a href="https://play.webrcade.com">
-  <img src="https://docs.webrcade.com/assets/images/feed/format/feeds.png" width="97%">
+  <img src="https://docs.webrcade.com/assets/images/platforms/osx/chrome-fullscreen-toolbar.png" width="97%">
  </a>
 </p>
 
