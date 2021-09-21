@@ -8,6 +8,8 @@ This repository contains common components that are available for use by the web
  <a href="https://play.webrcade.com">
   <img src="https://docs.webrcade.com/assets/images/platforms/osx/chrome-fullscreen-toolbar.png" width="97%">
  </a>
+ <br>
+ <i>webЯcade on Chrome for macOS</i>
 </p>
 
 ## LICENSE
