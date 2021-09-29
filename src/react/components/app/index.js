@@ -6,7 +6,7 @@ import { ErrorScreen } from "../../screens/error";
 import { OverlayScreen } from "../../screens/overlay"
 import { PauseScreen } from "../../screens/pause";
 import { Resources, TEXT_IDS } from "../../../resources";
-import { UrlUtil } from '../../../util';
+import { UrlUtil, applyXboxFullscreenHack} from '../../../util';
 
 import styles from './style.scss'
 
@@ -48,6 +48,9 @@ export class WebrcadeApp extends Component {
 
   componentDidMount() {
     window.addEventListener("message", this.messageListener);
+
+    // Apply the Xbox full screen hack
+    applyXboxFullscreenHack();
 
     // Avoid the white flash
     if (!isDev()) {
