@@ -49,6 +49,11 @@ export class WebrcadeApp extends Component {
   componentDidMount() {
     window.addEventListener("message", this.messageListener);
 
+    // Inform that the application was laoded
+    if (!isDev() && window.parent) {
+      window.parent.postMessage("appLoaded", "*");
+    }
+
     // Apply the Xbox full screen hack
     applyXboxFullscreenHack();
 

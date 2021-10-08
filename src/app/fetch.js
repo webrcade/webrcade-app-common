@@ -14,37 +14,51 @@ export class FetchAppData {
     const url = this.url;
     const s = url.toLowerCase().startsWith("https");
     const h = s => (s ? "https://" : "http://");
+    const RETRIES = 1;
 
     const getText = async r => {
       const text = await r.text();
       return `${text}: ${r.status}`;
     };
 
-    const doFetch = url => {
-      return new Promise(async (resolve, reject) => {
-        try {
-          const res = await fetch(url);
-          if (res.ok) {
-            resolve(res);
-          } else {
-            reject(await getText(res));
-          }
-        } catch (e) {
-          reject(e);
-        }
-      });
-    }
-
-    try {
-      return await doFetch(url);
-    } catch (e) {
-      LOG.error(e);
-      try {
-        return await doFetch(`${h(s)}${P}${url}`);
-      } catch (e) {
-        LOG.error(e);
-        return await doFetch(`${h(!s)}${P}${url}`);
+    const doFetch = async url => {
+      const res = await fetch(url);
+      if (res.ok) {
+        return res;
+      } else {
+        throw new Error(await getText(res));
       }
     }
+
+    let res = null;
+    let error = null;
+    for (let x = 0; x <= RETRIES; x++) {
+      if (x > 0) {
+        LOG.info("Retry: " + x);
+      }
+      try {
+        res = await doFetch(url);
+        if (!res) throw new Error("result is undefined");
+        return res;
+      } catch (e) {
+        LOG.error(e);
+        try {
+          res = await doFetch(`${h(s)}${P}${url}`);
+          if (!res) throw new Error("result is undefined");
+          return res;
+        } catch (e) {
+          LOG.error(e);
+          try {
+            res = await doFetch(`${h(!s)}${P}${url}`);
+            if (!res) throw new Error("result is undefined");
+            return res;
+          } catch (e) {
+            LOG.error(e);
+            error = e;
+          }
+        }
+      }
+    }
+    throw error;
   }
 }
