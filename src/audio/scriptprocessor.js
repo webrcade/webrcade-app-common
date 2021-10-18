@@ -163,6 +163,17 @@ class ScriptAudioProcessor {
         this.mixhead = 0;
     }
   }
+
+  storeSoundCombinedInput(channels, channelCount, length, offset = 0, divisor = 1) {
+    for (let i = 0; i < length;) {
+      for (let j = 0; j < channelCount; j++) {
+        this.mixbuffer[j][this.mixhead] = channels[offset + i++] / divisor;
+      }
+      this.mixhead++;
+      if (this.mixhead == this.bufferSize)
+        this.mixhead = 0;
+    }
+  }
 }
 
 export { ScriptAudioProcessor, registerAudioResume }
