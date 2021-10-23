@@ -6,13 +6,25 @@ import { ErrorScreen } from "../../screens/error";
 import { OverlayScreen } from "../../screens/overlay"
 import { PauseScreen } from "../../screens/pause";
 import { Resources, TEXT_IDS } from "../../../resources";
-import { UrlUtil, applyXboxFullscreenHack} from '../../../util';
+import { UrlUtil, applyXboxFullscreenHack, preloadImages} from '../../../util';
+import {
+  VolumeOffBlackImage,
+  ArrowBackWhiteImage,
+  PlayArrowWhiteImage
+} from "../../../images/index.js"
+
 
 import styles from './style.scss'
 
 export class WebrcadeApp extends Component {
   constructor() {
     super();
+
+    preloadImages([
+      VolumeOffBlackImage,
+      ArrowBackWhiteImage,
+      PlayArrowWhiteImage
+    ]);
 
     this.state = {
       mode: this.ModeEnum.LOADING,
