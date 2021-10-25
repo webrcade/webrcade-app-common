@@ -20,7 +20,6 @@ const VolumeOffBlackImage = resolvePath("images/common/volume_off_black_24dp.svg
 const WebrcadeLogoDarkImage = resolvePath("images/common/webrcade-logo-dark.svg");
 const WebrcadeLogoLargeImage = resolvePath("images/common/webrcade-logo-large.svg");
 
-
 export {
   AddCircleBlackImage,
   AddCircleWhiteImage,

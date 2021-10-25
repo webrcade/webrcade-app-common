@@ -100,10 +100,12 @@ class ScriptAudioProcessor {
   pause(p) {
     if (p == this.paused)
       return;
-    if (!p) {
-      this.audioCtx.resume();
-    } else {
-      this.audioCtx.suspend();
+    if (this.audioCtx) {
+      if (!p) {
+        this.audioCtx.resume();
+      } else {
+        this.audioCtx.suspend();
+      }
     }
     this.paused = p;
   }
