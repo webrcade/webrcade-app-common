@@ -1,5 +1,5 @@
 import { config } from '../conf'
-import { isDev } from '../dev';
+import { isDev, limitString } from '../util';
 import * as LOG from '../log';
 
 export class FetchAppData {
@@ -18,7 +18,10 @@ export class FetchAppData {
 
     const getText = async r => {
       const text = await r.text();
-      return `${text}: ${r.status}`;
+      if (r.status === 404) {
+        return "404 (Not found)";
+      }
+      return `${r.status}: ${limitString(text, 80)}`;
     };
 
     const doFetch = async url => {

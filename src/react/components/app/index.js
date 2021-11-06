@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import * as LOG from '../../../log'
-import { isDev } from '../../../dev'
+import { isDev } from '../../../util'
 import { AppProps } from '../../../app';
 import { ErrorScreen } from "../../screens/error";
 import { OverlayScreen } from "../../screens/overlay"

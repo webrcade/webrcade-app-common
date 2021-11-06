@@ -14,4 +14,13 @@ const blobToStr = (blob) => {
   });
 }
 
-export { blobToStr }
+const limitString = (str, limit) => {
+  const len = str.length;
+  if (str <= limit) {
+    return str;
+  } else {
+    return str.substring(0, limit) + "...";
+  }
+}
+
+export { blobToStr, limitString }

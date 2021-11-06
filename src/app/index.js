@@ -3,5 +3,6 @@ export * from "./fetch.js"
 export * from "./wrapper.js"
 
 export function isApp() {
-  return window.self !== window.top;
+  return (window.location.href.toLowerCase().indexOf('/app/') != -1) ||
+    (window.self !== window.top);
 }
