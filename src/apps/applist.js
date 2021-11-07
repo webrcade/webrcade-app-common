@@ -1,4 +1,4 @@
-import { isDev } from '../util';
+import { isDev, isEmptyString } from '../util';
 import { config } from '../conf';
 
 const localIp = config.getLocalIp();
@@ -13,32 +13,32 @@ const locSnes = isDev() ? `http://${localIp}:3060` : 'app/snes';
 const locGba = isDev() ? `http://${localIp}:3070` : 'app/gba';
 
 const checkRom = app => {
-  if (app.props === undefined || app.props.rom === undefined) {
+  if (app.props === undefined || isEmptyString(app.props.rom)) {
     throw new Error("Missing 'rom' property");
   }
 }
 
 const APP_TYPE_KEYS = Object.freeze({
   // Types
-  FCEUX:          "fceux",
-  GENPLUSGX_GG:   "genplusgx-gg",
-  GENPLUSGX_MD:   "genplusgx-md",
-  GENPLUSGX_SMS:  "genplusgx-sms",
-  JAVATARI:       "javatari",
-  JS7800:         "js7800",
-  PRBOOM:         "prboom",
-  SNES9X:         "snes9x",
-  VBA_M_GBA:      "vba-m-gba",
+  FCEUX: "fceux",
+  GENPLUSGX_GG: "genplusgx-gg",
+  GENPLUSGX_MD: "genplusgx-md",
+  GENPLUSGX_SMS: "genplusgx-sms",
+  JAVATARI: "javatari",
+  JS7800: "js7800",
+  PRBOOM: "prboom",
+  SNES9X: "snes9x",
+  VBA_M_GBA: "vba-m-gba",
   // Aliases
-  A2600:          "2600",
-  A7800:          "7800",
-  DOOM:           "doom",
-  GBA:            "gba",
-  GENESIS:        "genesis",
-  GG:             "gg",
-  NES:            "nes",
-  SMS:            "sms",
-  SNES:           "snes"
+  A2600: "2600",
+  A7800: "7800",
+  DOOM: "doom",
+  GBA: "gba",
+  GENESIS: "genesis",
+  GG: "gg",
+  NES: "nes",
+  SMS: "sms",
+  SNES: "snes"
 });
 
 let types = [
@@ -109,7 +109,7 @@ let types = [
     background: 'images/app/doom-background.png',
     thumbnail: 'images/app/doom-thumb.png',
     validate: app => {
-      if (app.props === undefined || app.props.game === undefined) {
+      if (app.props === undefined || isEmptyString(app.props.game)) {
         throw new Error("Missing 'game' property");
       }
     }
@@ -143,4 +143,4 @@ addAlias(types, APP_TYPE_KEYS.SNES, APP_TYPE_KEYS.SNES9X);
 
 const APP_TYPES = types;
 
-export {APP_TYPE_KEYS, APP_TYPES};
+export { APP_TYPE_KEYS, APP_TYPES };

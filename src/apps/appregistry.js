@@ -1,5 +1,10 @@
 import { APP_TYPES } from './applist.js';
-import { AppProps, UrlUtil } from '@webrcade/app-common';
+import { AppProps } from '../app/props.js';
+import {
+  UrlUtil,
+  isEmptyString,
+  isValidString
+} from '../util';
 
 class AppRegistry {
   static instance = AppRegistry.instance || new AppRegistry();
@@ -16,10 +21,10 @@ class AppRegistry {
 
   validate(app) {
     const APP_TYPES = this.APP_TYPES;
-    if (app.title === undefined) {
+    if (isEmptyString(app.title)) {
       throw new Error("Missing 'title' property");
     }
-    if (app.type === undefined) {
+    if (isEmptyString(app.type)) {
       throw new Error("Missing 'type' property");
     }
     if (APP_TYPES[app.type] === undefined) {
@@ -39,18 +44,18 @@ class AppRegistry {
   }
 
   getBackground(app) {
-    return app.background !== undefined ?
+    return isValidString(app.background) ?
       app.background : this.getDefaultBackground(app);
   }
 
   getThumbnail(app) {
-    return app.thumbnail !== undefined ?
+    return isValidString(app.thumbnail) ?
       app.thumbnail : this.getDefaultThumbnail(app);
   }
 
   getDescription(app) {
     const APP_TYPES = this.APP_TYPES;
-    return app.description !== undefined ?
+    return isValidString(app.description) ?
       app.description : APP_TYPES[app.type].description;
   }
 
@@ -91,7 +96,7 @@ class AppRegistry {
   }
 
   getLongTitle(app) {
-    return app.longTitle !== undefined ?
+    return isValidString(app.longTitle) ?
       app.longTitle : this.getTitle(app);
   }
 

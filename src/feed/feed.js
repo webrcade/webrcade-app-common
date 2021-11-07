@@ -3,10 +3,11 @@ import { FeedBase } from './feedbase.js'
 import { cloneObject } from '../util';
 
 class Feed extends FeedBase {
-  constructor(feed, minLength) {
+  constructor(feed, minLength, filterCategories = true) {
     super(minLength);
     // Non-destructive
     // feed = cloneObject(feed);
+    this.filterCategories = filterCategories;
     this._parseFeed(feed);
     this.originalFeed = feed;
   }
@@ -33,8 +34,12 @@ class Feed extends FeedBase {
         this._logInvalidObject('Category missing title', c);
         return false;
       } else if (c.items === undefined || c.items.length === 0) {
-        this._logInvalidObject('Category missing items', c);
-        return false;
+        if (!this.filterCategories) {
+          c.items = [];
+        } else {
+          this._logInvalidObject('Category missing items', c);
+          return false;
+        }
       }
       return true;
     });
@@ -58,9 +63,9 @@ class Feed extends FeedBase {
 
     // Expand valid categories
     categories = this._expandItems(categories.filter(c => {
-      return c.items.length > 0;
+      return c.items.length > 0 || !this.filterCategories;
     }));
-    if (categories.length === 0) {
+    if (categories.length === 0 && this.filterCategories) {
       throw new Error("No valid categories found.");
     }
     this.categories = categories;
@@ -82,7 +87,8 @@ class Feed extends FeedBase {
     // Clone the original feed
     const feed = cloneObject(this.originalFeed);
     // Clone the updated categories (and items)
-    feed.categories = cloneObject(this.categories);
+    feed.categories =
+      this.categories ? cloneObject(this.categories) : [];
     return feed;
   }
 }

@@ -14,6 +14,14 @@ const blobToStr = (blob) => {
   });
 }
 
+const isEmptyString = (str) => {
+  return str === undefined || str.length === 0;
+}
+
+const isValidString = (str) => {
+  return str !== undefined && str.length > 0;
+}
+
 const limitString = (str, limit) => {
   const len = str.length;
   if (str <= limit) {
@@ -23,4 +31,9 @@ const limitString = (str, limit) => {
   }
 }
 
-export { blobToStr, limitString }
+export {
+  blobToStr,
+  isEmptyString,
+  isValidString,
+  limitString
+}
