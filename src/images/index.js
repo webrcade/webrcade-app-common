@@ -22,6 +22,7 @@ const WebrcadeLogoLargeImage = resolvePath("images/common/webrcade-logo-large.sv
 const CategoryThumbImage = resolvePath("images/folder.png");
 const CategoryBackgroundImage = resolvePath("images/folder-background.png");
 const FeedThumbImage = resolvePath("images/feed.png");
+const FeedBackgroundImage = resolvePath("images/feed-background.png");
 
 export {
   AddCircleBlackImage,
@@ -34,6 +35,7 @@ export {
   DeleteForeverBlackImage,
   DeleteForeverWhiteImage,
   FeedThumbImage,
+  FeedBackgroundImage,
   PlayArrowBlackImage,
   PlayArrowWhiteImage,
   WebrcadeLogoDarkImage,
