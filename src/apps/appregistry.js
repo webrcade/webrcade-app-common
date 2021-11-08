@@ -5,6 +5,7 @@ import {
   isEmptyString,
   isValidString
 } from '../util';
+import { resolveImagePath } from '../images'
 
 class AppRegistry {
   static instance = AppRegistry.instance || new AppRegistry();
@@ -139,6 +140,26 @@ class AppRegistry {
     const APP_TYPES = this.APP_TYPES;
     const t = APP_TYPES[type];
     return `${this.getShortNameForType(type)} (${t.coreName})`;
+  }
+
+  getThumbnailForType(type, imgSrc) {
+    return isValidString(imgSrc) ?
+      imgSrc : this.getDefaultThumbnailForType(type);
+  }
+
+  getDefaultThumbnailForType(type) {
+    const APP_TYPES = this.APP_TYPES;
+    return resolveImagePath(APP_TYPES[type].thumbnail);
+  }
+
+  getBackgroundForType(type, imgSrc) {
+    return isValidString(imgSrc) ?
+      imgSrc : this.getDefaultBackgroundForType(type);
+  }
+
+  getDefaultBackgroundForType(type) {
+    const APP_TYPES = this.APP_TYPES;
+    return resolveImagePath(APP_TYPES[type].background);
   }
 };
 
