@@ -116,7 +116,7 @@ class AppRegistry {
 
     return (t.absoluteKey ?
       this.getGeneralShortNameForType(type) :
-      this.getCoreShortNameForType(type));
+      this.getShortCoreNameForType(type));
   }
 
   getGeneralNameForType(type) {
@@ -139,7 +139,7 @@ class AppRegistry {
   getShortCoreNameForType(type) {
     const APP_TYPES = this.APP_TYPES;
     const t = APP_TYPES[type];
-    return `${this.getShortNameForType(type)} (${t.coreName})`;
+    return `${this.getGeneralShortNameForType(type)} (${t.coreName})`;
   }
 
   getThumbnailForType(type, imgSrc) {
@@ -160,6 +160,15 @@ class AppRegistry {
   getDefaultBackgroundForType(type) {
     const APP_TYPES = this.APP_TYPES;
     return resolveImagePath(APP_TYPES[type].background);
+  }
+
+  getDefaultsForType(type) {
+    const APP_TYPES = this.APP_TYPES;
+    return APP_TYPES[type].defaults;
+  }
+
+  getAppTypes() {
+    return this.APP_TYPES;
   }
 };
 

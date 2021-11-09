@@ -50,7 +50,11 @@ let types = [
     location: locSnes,
     thumbnail: "images/app/snes-thumb.png",
     background: "images/app/snes-background.png",
-    validate: checkRom
+    validate: checkRom,
+    defaults: {
+      rom: "",
+      pal: false
+    }
   },
   {
     key: APP_TYPE_KEYS.JAVATARI,
@@ -59,7 +63,11 @@ let types = [
     location: loc2600,
     thumbnail: "images/app/2600-thumb.png",
     background: "images/app/2600-background.png",
-    validate: checkRom
+    validate: checkRom,
+    defaults: {
+      rom: "",
+      swap: false
+    }
   }, {
     key: APP_TYPE_KEYS.JS7800,
     name: 'Atari 7800',
@@ -67,7 +75,10 @@ let types = [
     location: loc7800,
     background: 'images/app/7800-background.png',
     thumbnail: 'images/app/7800-thumb.png',
-    validate: checkRom
+    validate: checkRom,
+    defaults: {
+      rom: ""
+    }
   }, {
     key: APP_TYPE_KEYS.GENPLUSGX_MD,
     name: 'Sega Genesis',
@@ -75,7 +86,11 @@ let types = [
     location: locGenesis,
     background: 'images/app/genesis-background.png',
     thumbnail: 'images/app/genesis-thumb.png',
-    validate: checkRom
+    validate: checkRom,
+    defaults: {
+      rom: "",
+      pal: false
+    }
   }, {
     key: APP_TYPE_KEYS.FCEUX,
     name: 'Nintendo Entertainment System',
@@ -84,7 +99,11 @@ let types = [
     location: locNes,
     background: 'images/app/nes-background.png',
     thumbnail: 'images/app/nes-thumb.png',
-    validate: checkRom
+    validate: checkRom,
+    defaults: {
+      rom: "",
+      pal: false
+    }
   }, {
     key: APP_TYPE_KEYS.GENPLUSGX_SMS,
     name: 'Sega Master System',
@@ -92,7 +111,13 @@ let types = [
     location: locSms,
     background: 'images/app/mastersystem-background.png',
     thumbnail: 'images/app/mastersystem-thumb.png',
-    validate: checkRom
+    validate: checkRom,
+    defaults: {
+      rom: "",
+      pal: false,
+      sms2: false,
+      ym2413: false
+    }
   }, {
     key: APP_TYPE_KEYS.GENPLUSGX_GG,
     name: 'Sega Game Gear',
@@ -100,7 +125,10 @@ let types = [
     location: locSms,
     background: 'images/app/gamegear-background.png',
     thumbnail: 'images/app/gamegear-thumb.png',
-    validate: checkRom
+    validate: checkRom,
+    defaults: {
+      rom: ""
+    }
   }, {
     key: APP_TYPE_KEYS.PRBOOM,
     name: 'Doom Classic',
@@ -112,6 +140,9 @@ let types = [
       if (app.props === undefined || isEmptyString(app.props.game)) {
         throw new Error("Missing 'game' property");
       }
+    },
+    defaults: {
+      game: ""
     }
   }, {
     key: APP_TYPE_KEYS.VBA_M_GBA,
@@ -121,7 +152,15 @@ let types = [
     location: locGba,
     background: 'images/app/gba-background.png',
     thumbnail: 'images/app/gba-thumb.png',
-    validate: checkRom
+    validate: checkRom,
+    defaults: {
+      rom: "",
+      rotation: 0,
+      rtc: false,
+      mirroring: false,
+      saveType: 0,
+      flashSize: 65536
+    }
   }
 ];
 
