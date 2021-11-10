@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 
 import * as LOG from '../../../log';
+import { AppProps } from '../../../app';
 import { AppRegistry } from '../../../apps';
 import { isDev } from '../../../util';
 
@@ -55,6 +56,10 @@ export class AppScreen extends Component {
   render() {
     const { app, context, frameRef } = this.props;
     const reg = AppRegistry.instance;
+    let location = reg.getLocation(app, context);
+    if (!isDev() && context && context === AppProps.RV_CONTEXT_EDITOR) {
+      location = "../../" + location;
+    }
 
     return (
       <div className="webrcade-app">
@@ -67,7 +72,7 @@ export class AppScreen extends Component {
           height="100%"
           frameBorder="0"
           allow="autoplay; gamepad"
-          src={reg.getLocation(app, context)} />
+          src={location} />
       </div>
     )
   }
