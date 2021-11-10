@@ -20,6 +20,7 @@ const TEXT_IDS = {
   PLAY_UC: "PLAY",
   RESUME: "Resume",
   RETURN_TO_BROWSE: "Return to Browse",
+  RETURN_TO_EDITOR: "Return to Editor",
   SEE_CONSOLE_LOG: "See console log for details.",
   SELECT_UC: "SELECT",
   SHOW_CATEGORIES: "Show Categories",

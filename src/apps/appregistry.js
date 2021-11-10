@@ -65,8 +65,8 @@ class AppRegistry {
     return APP_TYPES[app.type].name;
   }
 
-  getLocation(app) {
-    const { RP_DEBUG, RP_PROPS } = AppProps;
+  getLocation(app, context) {
+    const { RP_CONTEXT, RP_DEBUG, RP_PROPS } = AppProps;
     const { props } = app;
     const { APP_TYPES } = this;
 
@@ -88,6 +88,9 @@ class AppRegistry {
       window.location.search, RP_DEBUG);
     if (debug) {
       loc = UrlUtil.addParam(loc, RP_DEBUG, 'true');
+    }
+    if (context) {
+      loc = UrlUtil.addParam(loc, RP_CONTEXT, context);
     }
     return loc;
   }

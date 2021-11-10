@@ -15,6 +15,7 @@ export * from './react/components/message';
 export * from './react/components/image-button';
 export * from './react/components/text-field';
 export * from './react/screens/pause';
+export * from './react/screens/app';
 export * from './react/context/webrcadecontext.js';
 export * from './react/components/screen';
 export * as LOG from './log';
