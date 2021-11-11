@@ -11,8 +11,6 @@ const isMobileSafari = () => {
     userAgent.includes('version/');
 }
 
-let prevIosOverflow = null;
-
 const iosNavBarHackListener = () => {
   document.body.style.overflow = 'scroll';
   window.scrollTo(0, 0);
@@ -25,7 +23,6 @@ const iosNavBarHackListener = () => {
 
 const applyIosNavBarHack = () => {
   if (isMobileSafari()) {
-    prevIosOverflow = document.body.style.overflow;
     window.addEventListener('orientationchange', iosNavBarHackListener);
   }
 }
@@ -33,7 +30,6 @@ const applyIosNavBarHack = () => {
 const removeIosNavBarHack = () => {
   if (isMobileSafari()) {
     window.removeEventListener('orientationchange', iosNavBarHackListener);
-    document.body.style.overflow = prevIosOverflow;
   }
 }
 

@@ -19,13 +19,8 @@ function isDev() {
   return process.env.NODE_ENV !== 'production';
 }
 
-function isStaging() {
-  return (window.location.href.toLowerCase().indexOf('/webrcade-staging/') != -1)
-}
-
 export {
   cloneObject,
   isDev,
-  isStaging,
   preloadImages
 };
