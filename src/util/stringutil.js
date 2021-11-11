@@ -14,4 +14,26 @@ const blobToStr = (blob) => {
   });
 }
 
-export { blobToStr }
+const isEmptyString = (str) => {
+  return str === undefined || str.length === 0;
+}
+
+const isValidString = (str) => {
+  return str !== undefined && str.length > 0;
+}
+
+const limitString = (str, limit) => {
+  const len = str.length;
+  if (str <= limit) {
+    return str;
+  } else {
+    return str.substring(0, limit) + "...";
+  }
+}
+
+export {
+  blobToStr,
+  isEmptyString,
+  isValidString,
+  limitString
+}

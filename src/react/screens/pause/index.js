@@ -32,7 +32,7 @@ export class PauseScreen extends Screen {
   render() {
     const { exitButtonRef, focusGrid, resumeButtonRef, screenContext,
       screenStyles } = this;
-    const { appProps, exitCallback } = this.props;
+    const { appProps, exitCallback, isEditor } = this.props;
 
     return (
       <WebrcadeContext.Provider value={screenContext}>
@@ -49,7 +49,8 @@ export class PauseScreen extends Screen {
                   className={styles["pause-screen-image-button"]}
                   imgSrc={ArrowBackWhiteImage}
                   ref={exitButtonRef}
-                  label={Resources.getText(TEXT_IDS.RETURN_TO_BROWSE)}
+                  label={Resources.getText( isEditor ?
+                    TEXT_IDS.RETURN_TO_EDITOR : TEXT_IDS.RETURN_TO_BROWSE)}
                   onPad={e => focusGrid.moveFocus(e.type, exitButtonRef)}
                   onClick={() => {if (exitCallback) exitCallback()}}
                 />

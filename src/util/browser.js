@@ -11,17 +11,25 @@ const isMobileSafari = () => {
     userAgent.includes('version/');
 }
 
+const iosNavBarHackListener = () => {
+  document.body.style.overflow = 'scroll';
+  window.scrollTo(0, 0);
+  setTimeout(() => {
+    document.body.style.overflow = 'hidden';
+    window.scrollTo(0, 1);
+    setTimeout(() => window.scrollTo(0, 0), 50);
+  }, 500);
+}
+
 const applyIosNavBarHack = () => {
   if (isMobileSafari()) {
-    window.addEventListener('orientationchange', () => {
-      document.body.style.overflow = 'scroll';
-      window.scrollTo(0, 0);
-      setTimeout(() => {
-        document.body.style.overflow = 'hidden';
-        window.scrollTo(0, 1);
-        setTimeout(() => window.scrollTo(0, 0), 50);
-      }, 500);
-    });
+    window.addEventListener('orientationchange', iosNavBarHackListener);
+  }
+}
+
+const removeIosNavBarHack = () => {
+  if (isMobileSafari()) {
+    window.removeEventListener('orientationchange', iosNavBarHackListener);
   }
 }
 
@@ -50,4 +58,11 @@ const isTouchSupported = () => {
   return matchMedia('(hover: none)').matches;
 }
 
-export { isXbox, isMobileSafari, applyIosNavBarHack, isTouchSupported, applyXboxFullscreenHack }
+export {
+  isXbox,
+  isMobileSafari,
+  applyIosNavBarHack,
+  removeIosNavBarHack,
+  isTouchSupported,
+  applyXboxFullscreenHack
+}

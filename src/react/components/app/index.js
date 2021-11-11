@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import * as LOG from '../../../log'
-import { isDev } from '../../../dev'
+import { isDev } from '../../../util'
 import { AppProps } from '../../../app';
 import { ErrorScreen } from "../../screens/error";
 import { OverlayScreen } from "../../screens/overlay"
@@ -91,6 +91,10 @@ export class WebrcadeApp extends Component {
       this.appProps = {};
     }
 
+    //  Is editor
+    const context = UrlUtil.getParam(url, AppProps.RP_CONTEXT);
+    this.isEditor = context && context === AppProps.RV_CONTEXT_EDITOR;
+
     // Set debug flag
     this.debug = UrlUtil.getBoolParam(url, AppProps.RP_DEBUG);
   }
@@ -134,6 +138,7 @@ export class WebrcadeApp extends Component {
         appProps={appProps}
         closeCallback={() => this.resume()}
         exitCallback={() => this.exit()}
+        isEditor={this.isEditor}
       />
     );
   }

@@ -2,6 +2,11 @@ export * from './url.js'
 export * from './md5.js'
 export * from './stringutil.js'
 export * from './browser.js'
+export * from './uuid.js'
+
+const cloneObject = (obj) => {
+  return JSON.parse(JSON.stringify(obj));
+}
 
 const preloadImages = (images) => {
   images.forEach((image) => {
@@ -10,4 +15,12 @@ const preloadImages = (images) => {
   });
 };
 
-export { preloadImages };
+function isDev() {
+  return process.env.NODE_ENV !== 'production';
+}
+
+export {
+  cloneObject,
+  isDev,
+  preloadImages
+};
