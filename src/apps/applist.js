@@ -51,6 +51,7 @@ let types = [
     thumbnail: "images/app/snes-thumb.png",
     background: "images/app/snes-background.png",
     validate: checkRom,
+    extensions: ['smc', 'sfc', 'swc'],
     defaults: {
       rom: "",
       pal: false
@@ -64,6 +65,7 @@ let types = [
     thumbnail: "images/app/2600-thumb.png",
     background: "images/app/2600-background.png",
     validate: checkRom,
+    extensions: ['a26'],
     defaults: {
       rom: "",
       swap: false
@@ -76,6 +78,7 @@ let types = [
     background: 'images/app/7800-background.png',
     thumbnail: 'images/app/7800-thumb.png',
     validate: checkRom,
+    extensions: ['a78'],
     defaults: {
       rom: ""
     }
@@ -87,6 +90,7 @@ let types = [
     background: 'images/app/genesis-background.png',
     thumbnail: 'images/app/genesis-thumb.png',
     validate: checkRom,
+    extensions: ['smd', 'md', 'gen', 'sg'],
     defaults: {
       rom: "",
       pal: false
@@ -100,6 +104,7 @@ let types = [
     background: 'images/app/nes-background.png',
     thumbnail: 'images/app/nes-thumb.png',
     validate: checkRom,
+    extensions: ['nes'],
     defaults: {
       rom: "",
       pal: false
@@ -112,6 +117,7 @@ let types = [
     background: 'images/app/mastersystem-background.png',
     thumbnail: 'images/app/mastersystem-thumb.png',
     validate: checkRom,
+    extensions: ['sms'],
     defaults: {
       rom: "",
       pal: false,
@@ -126,6 +132,7 @@ let types = [
     background: 'images/app/gamegear-background.png',
     thumbnail: 'images/app/gamegear-thumb.png',
     validate: checkRom,
+    extensions: ['gg'],
     defaults: {
       rom: ""
     }
@@ -153,6 +160,7 @@ let types = [
     background: 'images/app/gba-background.png',
     thumbnail: 'images/app/gba-thumb.png',
     validate: checkRom,
+    extensions: ['gba'],
     defaults: {
       rom: "",
       rotation: 0,

@@ -173,6 +173,39 @@ class AppRegistry {
   getAppTypes() {
     return this.APP_TYPES;
   }
-};
+
+  getTypeForExtension(ext) {
+    const APP_TYPES = this.APP_TYPES;
+    ext = ext.toLowerCase();
+
+    let retType = null;
+    for (const name in APP_TYPES) {
+      const type = APP_TYPES[name];
+      if (type.extensions) {
+        for (let j = 0; j < type.extensions.length; j++) {
+          if (ext === type.extensions[j] &&
+            (retType === null || type.absoluteKey)) {
+            retType = type;
+          }
+        }
+      }
+    }
+    return retType;
+  }
+
+  getAllExtensions(dotted = true) {
+    const extensions = []
+    const APP_TYPES = this.APP_TYPES;
+    for (const name in APP_TYPES) {
+      const type = APP_TYPES[name];
+      if (type.extensions && !type.absoluteKey) {
+        for (let j = 0; j < type.extensions.length; j++) {
+          extensions.push((dotted ? "." : "") + type.extensions[j]);
+        }
+      }
+    }
+    return extensions;
+  }
+}
 
 export { AppRegistry };
