@@ -15,11 +15,11 @@ const blobToStr = (blob) => {
 }
 
 const isEmptyString = (str) => {
-  return str === undefined || str.length === 0;
+  return str === undefined || !str || str.length === 0;
 }
 
 const isValidString = (str) => {
-  return str !== undefined && str.length > 0;
+  return str !== undefined && str && str.length > 0;
 }
 
 const limitString = (str, limit) => {
