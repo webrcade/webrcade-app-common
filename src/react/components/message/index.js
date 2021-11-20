@@ -41,7 +41,7 @@ export function showMessage(message, addConsoleMessage = true) {
   }
 }
 
-function hideMessage() {
+export function hideMessage() {
   const el = document.getElementById(styles['snackbar']);
   if (el) {
     window.setTimeout(() => {

@@ -1,12 +1,13 @@
 import React, { Component } from "react";
 import * as LOG from '../../../log'
 import { isDev } from '../../../util'
+import { AlertScreen } from "../../screens/alert";
 import { AppProps } from '../../../app';
 import { ErrorScreen } from "../../screens/error";
 import { OverlayScreen } from "../../screens/overlay"
 import { PauseScreen } from "../../screens/pause";
 import { Resources, TEXT_IDS } from "../../../resources";
-import { UrlUtil, applyXboxFullscreenHack, preloadImages} from '../../../util';
+import { UrlUtil, addXboxFullscreenCallback, getXboxViewMessage, preloadImages } from '../../../util';
 import {
   VolumeOffBlackImage,
   ArrowBackWhiteImage,
@@ -30,7 +31,8 @@ export class WebrcadeApp extends Component {
       mode: this.ModeEnum.LOADING,
       loadingPercent: null,
       errorMessage: null,
-      showOverlay: false
+      showOverlay: false,
+      showXboxViewMessage: false
     };
 
     this.exited = false;
@@ -66,14 +68,16 @@ export class WebrcadeApp extends Component {
       window.parent.postMessage("appLoaded", "*");
     }
 
-    // Apply the Xbox full screen hack
-    applyXboxFullscreenHack();
+    // Xbox view button bug
+    addXboxFullscreenCallback((show) => {
+      this.setState({ showXboxViewMessage: show })
+    });
 
     // Avoid the white flash
     if (!isDev()) {
       try {
         window.frameElement.style.display = 'block';
-      } catch(e) {
+      } catch (e) {
         LOG.info('error attempting to make application visible: ' + e)
       }
     }
@@ -126,7 +130,7 @@ export class WebrcadeApp extends Component {
     const { errorCloseCallback, errorMessage } = this.state;
 
     return (
-       <ErrorScreen message={errorMessage} closeCallback={errorCloseCallback}/>
+      <ErrorScreen message={errorMessage} closeCallback={errorCloseCallback} />
     );
   }
 
@@ -143,9 +147,18 @@ export class WebrcadeApp extends Component {
     );
   }
 
+  renderXboxViewScreen() {
+    return (
+      <AlertScreen
+        message={getXboxViewMessage()}
+        showButtons={false}
+      />
+    );
+  }
+
   renderOverlayScreen() {
     return (
-      <OverlayScreen/>
+      <OverlayScreen />
     );
   }
 
@@ -155,9 +168,11 @@ export class WebrcadeApp extends Component {
 
   render() {
     const { ModeEnum } = this;
-    const { mode, showOverlay } = this.state;
+    const { mode, showOverlay, showXboxViewMessage } = this.state;
 
-    if (mode === ModeEnum.ERROR) {
+    if (showXboxViewMessage) {
+      return this.renderXboxViewScreen();
+    } else if (mode === ModeEnum.ERROR) {
       return this.renderErrorScreen();
     } else if (showOverlay) {
       return this.renderOverlayScreen();
@@ -220,7 +235,7 @@ export class WebrcadeApp extends Component {
   setShowOverlay(show) {
     const { showOverlay } = this.state;
     if (show != showOverlay) {
-      this.setState({showOverlay: show});
+      this.setState({ showOverlay: show });
     }
   }
 

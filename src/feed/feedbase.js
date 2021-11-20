@@ -1,4 +1,5 @@
-import * as LOG from '../log'
+import * as LOG from '../log';
+import { uuidv4 } from '../util/uuid';
 
 class FeedBase {
   constructor(minLength) {
@@ -16,11 +17,11 @@ class FeedBase {
 
     if (items.length === 0 || minLength === 0) return items;
 
-    let itemsOut = [], index = [0];
+    let itemsOut = [];
     while (itemsOut.length < minLength) {
       items.forEach(i => {
         const {...item} = i;
-        item.id = index[0]++;
+        item.id = uuidv4();
         itemsOut.push(item);
         if (itemsOut.length > items.length) {
           item.duplicate = true;
