@@ -206,7 +206,7 @@ class Feeds extends FeedBase {
       feedId: Feeds.ADD_ID,
       title: "Add Feed",
       longTitle: "Add Feed",
-      description: "Use the \"Add\" button below to register a new feed with webЯcade. Provide the location (URL) of the feed when prompted, and then press the \"OK\" button.",
+      description: "Register a new feed with webЯcade by selecting one of the buttons below. Use the \"URL\" button to register a cloud-based feed or the \"FILE\" button for a locally stored feed file.",
       url: Feeds.NONE_URL,
       thumbnail: "images/add-thumb.png",
       background: "images/add-background.png"
