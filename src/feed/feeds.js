@@ -1,13 +1,15 @@
 import { storage } from '../storage'
 import { FeedBase } from './feedbase.js'
+import { uuidv4 } from '../util/uuid';
+import { isEmptyString } from '../util/stringutil';
 import * as LOG from '../log'
 
 const FEEDS_PROP = "feeds";
+const LOCAL_FEEDS_PREFIX = "localFeeds.";
 
 class Feeds extends FeedBase {
   constructor(feeds, minLength) {
     super(minLength);
-    this.nextFeedId = 0;
     this.parsedFeeds = [];
     this.feeds = [];
     feeds.forEach(f => this._addFeed(f));
@@ -18,18 +20,122 @@ class Feeds extends FeedBase {
   static ADD_ID = -2;
   static NONE_URL = "none";
 
-  validate(f) {
-    if (f.title === undefined) {
+  static isDeleteEnabled(feed) {
+    return feed.feedId !== Feeds.DEFAULT_ID &&
+      feed.feedId !== Feeds.ADD_ID;
+  }
+
+  static getUrl(feed) {
+    return feed.url ?
+      feed.url === Feeds.NONE_URL ? null : feed.url :
+      null;
+  }
+
+  async addLocalFeed(feed) {
+    if (!feed.title) {
+      return;
+    }
+
+    const index = this._getFeedIndexForTitle(feed.title);
+    if (index >= 0) {
+      const oldFeed = this.feeds[index];
+      await this.removeFeed(oldFeed.feedId);
+    }
+
+    const newFeed = {
+      localId: uuidv4(),
+      title: feed.title,
+    }
+    if (feed.longTitle) newFeed.longTitle = feed.longTitle;
+    if (feed.description) newFeed.description = feed.description;
+    if (feed.thumbnail) newFeed.thumbnail = feed.thumbnail;
+    if (feed.background) newFeed.background = feed.background;
+
+    const addedFeed = this._addFeed(newFeed);
+    if (addedFeed) {
+      // Store the feed contents
+      await storage.put(
+        LOCAL_FEEDS_PREFIX + addedFeed.localId, feed);
+      // Store the feeds
+      await this._storeFeeds();
+      this._expand();
+      return addedFeed;
+    }
+
+    return null;
+  }
+
+  async getLocalFeed(localId) {
+    return await storage.get(LOCAL_FEEDS_PREFIX + localId);
+  }
+
+  async addRemoteFeed(url, inFeed) {
+    const index = this._getFeedIndexForUrl(url);
+    const exists = index >= 0;
+    const feed = exists ? this.feeds[index] :
+      this._addFeed({title: "New feed", url: url});
+    if (feed) {
+      const updated = this._updateFeed(url, inFeed);
+      if (!exists || updated) {
+        await this._storeFeeds();
+      }
+      this._expand();
+      return feed;
+    }
+    return null;
+  }
+
+  async removeFeed(feedId) {
+    const index = this.feeds.findIndex(f => {
+      return f.feedId === feedId;
+    });
+    if (index >= 0) {
+      const feed = this.feeds[index];
+      if (feed.localId) {
+        await storage.remove(LOCAL_FEEDS_PREFIX + feed.localId);
+      }
+      this.feeds.splice(index, 1);
+      await this._storeFeeds();
+
+      this._expand();
+    }
+  }
+
+  getFeedForUrl(url) {
+    const index = this._getFeedIndexForUrl(url);
+    return index !== -1 ? this.feeds[index] : null;
+  }
+
+  getFeedWithId(id) {
+    for(let i = 0; i < this.feeds.length; i++) {
+      const feed = this.feeds[i];
+      if (feed.feedId === id) {
+        return feed;
+      }
+    }
+    return null;
+  }
+
+  getDistinctFeeds() {
+    return this.feeds;
+  }
+
+  getFeeds() {
+    return this.expandedFeeds;
+  }
+
+  _validate(f) {
+    if (isEmptyString(f.title)) {
       this._logInvalidObject('Feed missing title', f);
       return false;
-    } else if (f.url === undefined) {
-      this._logInvalidObject('Feed missing url', f);
+    } else if (isEmptyString(f.url) && isEmptyString(f.localId)) {
+      this._logInvalidObject('Feed missing url or local identifier', f);
       return false;
     }
     return true;
   }
 
-  updateFeed(url, feed) {
+  _updateFeed(url, feed) {
     const index = this._getFeedIndexForUrl(url);
     let changed = false;
     if (index >= 0) {
@@ -54,54 +160,28 @@ class Feeds extends FeedBase {
     return changed;
   }
 
-  addFeed(f) {
-    if (f && f.url) {
-      const index = this._getFeedIndexForUrl(f.url);
-      if (index >= 0) return;
+  _addFeed(f) {
+    let feed = {...f};
+    if (this._validate(feed)) {
+      if (!feed.feedId) {
+        feed.feedId = uuidv4();
+      }
+      this.feeds.push(feed);
+      return feed;
     }
-    if (this._addFeed(f)) {
-      this._expand();
-    }
+    return null;
   }
 
   _getFeedIndexForUrl(url) {
     const index = this.feeds.findIndex(
-      feed => feed.url.toUpperCase() === url.toUpperCase());
+      feed => feed.url && (feed.url.toUpperCase() === url.toUpperCase()));
     return index;
   }
 
-  getFeedForUrl(url) {
-    const index = this._getFeedIndexForUrl(url);
-    return index !== -1 ? this.feeds[index] : null;
-  }
-
-  removeFeed(feedId) {
-    const index = this.feeds.findIndex(f => {
-      return f.feedId === feedId;
-    });
-    if (index >= 0) {
-      this.feeds.splice(index, 1);
-      this._expand();
-    }
-  }
-
-  _addFeed(f) {
-    const feed = {...f};
-    if (this.validate(feed)) {
-      feed.feedId = this.nextFeedId++;
-      this.feeds.push(feed);
-      return true;
-    }
-    return false;
-  }
-
-  static isDeleteEnabled(feed) {
-    return feed.feedId !== Feeds.DEFAULT_ID &&
-      feed.feedId !== Feeds.ADD_ID;
-  }
-
-  static getUrl(feed) {
-    return feed.url === Feeds.NONE_URL ? null : feed.url;
+  _getFeedIndexForTitle(title, isLocal = true) {
+    const index = this.feeds.findIndex(
+      feed => (feed.title === title) && (!isLocal || feed.localId));
+    return index;
   }
 
   _expand() {
@@ -136,12 +216,17 @@ class Feeds extends FeedBase {
     this.expandedFeeds = expandedFeeds;
   }
 
-  getDistinctFeeds() {
-    return this.feeds;
-  }
-
-  getFeeds() {
-    return this.expandedFeeds;
+  _storeFeeds = async () => {
+    const outFeeds = [];
+    this.getDistinctFeeds().forEach(e => {
+      const f = {...e};
+      outFeeds.push(f);
+    });
+    try {
+      await storage.put(FEEDS_PROP, outFeeds);
+    } catch (e) {
+      LOG.error("Error storing feeds: " + e);
+    }
   }
 }
 
@@ -155,18 +240,4 @@ const loadFeeds = async (minSlidesLength) => {
   }
 }
 
-const storeFeeds = async (feeds) => {
-  const outFeeds = [];
-  feeds.getDistinctFeeds().forEach(e => {
-    const f = {...e};
-    delete f.feedId;
-    outFeeds.push(f);
-  });
-  try {
-    await storage.put(FEEDS_PROP, outFeeds);
-  } catch (e) {
-    LOG.error("Error storing feeds: " + e);
-  }
-}
-
-export { Feeds, loadFeeds, storeFeeds }
+export { Feeds, loadFeeds }

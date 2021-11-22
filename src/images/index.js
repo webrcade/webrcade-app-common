@@ -8,10 +8,14 @@ const resolvePath = (path) => {
 };
 
 const ArrowBackWhiteImage = resolvePath("images/common/arrow_back_white_24dp.svg");
+const CloudBlackImage = resolvePath("images/common/cloud_black_24dp.svg");
+const CloudWhiteImage = resolvePath("images/common/cloud_white_24dp.svg");
 const CloudDownloadBlackImage = resolvePath("images/common/cloud_download_black_24dp.svg");
 const CloudDownloadWhiteImage = resolvePath("images/common/cloud_download_white_24dp.svg");
 const DeleteForeverBlackImage = resolvePath("images/common/delete_forever_black_24dp.svg");
 const DeleteForeverWhiteImage = resolvePath("images/common/delete_forever_white_24dp.svg");
+const DescriptionBlackImage = resolvePath("images/common/description_black_24dp.svg");
+const DescriptionWhiteImage = resolvePath("images/common/description_white_24dp.svg");
 const AddCircleBlackImage = resolvePath("images/common/add_circle_outline_black_24dp.svg");
 const AddCircleWhiteImage = resolvePath("images/common/add_circle_outline_white_24dp.svg");
 const PlayArrowBlackImage = resolvePath("images/common/play_arrow_black_24dp.svg");
@@ -30,10 +34,14 @@ export {
   ArrowBackWhiteImage,
   CategoryThumbImage,
   CategoryBackgroundImage,
+  CloudBlackImage,
+  CloudWhiteImage,
   CloudDownloadBlackImage,
   CloudDownloadWhiteImage,
   DeleteForeverBlackImage,
   DeleteForeverWhiteImage,
+  DescriptionBlackImage,
+  DescriptionWhiteImage,
   FeedThumbImage,
   FeedBackgroundImage,
   PlayArrowBlackImage,

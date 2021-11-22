@@ -6,15 +6,18 @@ const TEXT_IDS = {
   CLICK_TO_UNMUTE: "Click Screen to Unmute",
   CONFIRM_DELETE_FEED: "Are you sure you want to delete the selected feed?",
   DELETE_UC: "DELETE",
+  ERROR_DELETING_FEED: "An error has occurred attempting to delete the selected feed.",
   ERROR_LOADING_GAME: "An error occurred attempting to load the selected game.",
   ERROR_LOADING_FEED: "An error occurred attempting to load the selected feed.",
   ERROR_RETRIEVING_GAME: "An error has occurred attempting to retrieve the selected game.",
   ERROR_UNKNOWN: "An unknown error has occurred.",
   FEEDS: "Feeds",
+  FILE_UC: "FILE",
   LOAD_UC: "LOAD",
   LOADING: "Loading",
   LOADING_DOTS: "Loading...",
   LOADING_FEED: "Loading feed...",
+  LOCAL_PARENS: "(Local)",
   NO: "No",
   OK: "OK",
   PLAY_UC: "PLAY",
@@ -28,6 +31,7 @@ const TEXT_IDS = {
   SOMETHING_WENT_WRONG: "Whoops, something went wrong...",
   SPECIFY_LOCATION_OF_FEED: "Specify the location of the feed to add (URL)",
   TAP_TO_UNMUTE: "Tap Screen to Unmute",
+  URL: "URL",
   YES: "Yes"
 };
 

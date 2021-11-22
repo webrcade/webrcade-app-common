@@ -146,6 +146,30 @@ class Storage {
     LOG.info("Unable to perform get, storage not available.")
     return null;
   }
+
+  async remove(name) {
+    await this.init();
+
+    const { idxDb, localStorageAvailable, DB_STORE, OBJECT_MARKER,
+      UINT8_ARRAY_MARKER } = this;
+
+    if (idxDb) {
+      return new Promise((resolve, reject) => {
+        const txn = idxDb.transaction([DB_STORE], "readwrite");
+        txn.onerror = (e) => { reject(e); }
+        const request = txn.objectStore(DB_STORE).delete(name);
+        request.onsuccess = (e) => {
+          resolve(true);
+        };
+      });
+    } else if (localStorageAvailable) {
+      localStorage.removeItem(name);
+      return true;
+    }
+
+    LOG.info("Unable to perform remove, storage not available.")
+    return false;
+  }
 }
 
 export { Storage }
