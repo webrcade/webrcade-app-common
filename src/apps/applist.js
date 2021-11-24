@@ -1,5 +1,8 @@
 import { isDev, isEmptyString } from '../util';
 import { config } from '../conf';
+import * as Genesis from './type/genesis';
+import * as Atari7800 from './type/7800';
+import * as Nes from './type/nes';
 
 const localIp = config.getLocalIp();
 const locGenesis = isDev() ? `http://${localIp}:3010` : 'app/genesis';
@@ -79,6 +82,7 @@ let types = [
     thumbnail: 'images/app/7800-thumb.png',
     validate: checkRom,
     extensions: ['a78'],
+    testMagic: Atari7800.testMagic,
     defaults: {
       rom: ""
     }
@@ -91,6 +95,7 @@ let types = [
     thumbnail: 'images/app/genesis-thumb.png',
     validate: checkRom,
     extensions: ['smd', 'md', 'gen', 'sg'],
+    testMagic: Genesis.testMagic,
     defaults: {
       rom: "",
       pal: false
@@ -105,6 +110,7 @@ let types = [
     thumbnail: 'images/app/nes-thumb.png',
     validate: checkRom,
     extensions: ['nes'],
+    testMagic: Nes.testMagic,
     defaults: {
       rom: "",
       pal: false

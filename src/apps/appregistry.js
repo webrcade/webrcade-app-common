@@ -193,8 +193,11 @@ class AppRegistry {
     return retType;
   }
 
-  getAllExtensions(dotted = true) {
+  getAllExtensions(dotted = true, nonUnique = false) {
     const extensions = []
+    if (nonUnique) {
+      extensions.push((dotted ? "." : "") + "bin");
+    }
     const APP_TYPES = this.APP_TYPES;
     for (const name in APP_TYPES) {
       const type = APP_TYPES[name];
@@ -205,6 +208,17 @@ class AppRegistry {
       }
     }
     return extensions;
+  }
+
+  testMagic(bytes) {
+    const APP_TYPES = this.APP_TYPES;
+    for (const name in APP_TYPES) {
+      const type = APP_TYPES[name];
+      if (type.absoluteKey && type.testMagic && type.testMagic(bytes)) {
+        return type;
+      }
+    }
+    return null;
   }
 }
 

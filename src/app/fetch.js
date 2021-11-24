@@ -9,6 +9,20 @@ export class FetchAppData {
 
   P = (isDev() ? (config.getLocalIp() + "/?y=") : "proxy.webrcade.workers.dev?");
 
+  getHeaders(res) {
+    const headers = res.headers;
+    const headerObj = {};
+    if (headers) {
+      const keys = headers.keys();
+      let header = keys.next();
+      while (header.value) {
+        headerObj[header.value] = headers.get(header.value);
+        header = keys.next();
+      }
+    }
+    return headerObj;
+  };
+
   async fetch() {
     const { P } = this;
     const url = this.url;
