@@ -1,8 +1,8 @@
 import {
-  LOG,
   blobToStr,
   md5,
 } from '../../util';
+import * as LOG from '../../log';
 
 const testInesMagic = (bytes) => {
   if (bytes.length < 4) return false;
