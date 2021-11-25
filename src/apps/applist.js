@@ -83,6 +83,7 @@ let types = [
     validate: checkRom,
     extensions: ['a78'],
     testMagic: Atari7800.testMagic,
+    getMd5: Atari7800.getMd5,
     defaults: {
       rom: ""
     }
@@ -111,6 +112,7 @@ let types = [
     validate: checkRom,
     extensions: ['nes'],
     testMagic: Nes.testMagic,
+    getMd5: Nes.getMd5,
     defaults: {
       rom: "",
       pal: false

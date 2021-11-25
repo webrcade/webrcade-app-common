@@ -1,6 +1,8 @@
 import { APP_TYPES } from './applist.js';
 import { AppProps } from '../app/props.js';
 import {
+  blobToStr,
+  md5,
   UrlUtil,
   isEmptyString,
   isValidString
@@ -219,6 +221,16 @@ class AppRegistry {
       }
     }
     return null;
+  }
+
+  async getMd5(blob, type = null) {
+    let result = null;
+
+    if (type && type.getMd5) {
+      result = await type.getMd5(blob);
+    }
+
+    return result != null ? result : md5(await blobToStr(blob));
   }
 }
 

@@ -1,10 +1,7 @@
-import { config } from '../conf'
-import { isApp } from '../app'
-import { isDev } from '../util'
+import * as Util from '../util'
 
 const resolvePath = (path) => {
-  return isDev() ? `${config.getLocalUrl()}/${path}` :
-      isApp() ? `../../${path}` : path;
+  return Util.resolvePath(path);
 };
 
 const ArrowBackWhiteImage = resolvePath("images/common/arrow_back_white_24dp.svg");

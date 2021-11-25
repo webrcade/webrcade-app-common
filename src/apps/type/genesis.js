@@ -1,6 +1,4 @@
 const testMagic = (bytes) => {
-  //console.log('GENESIS: testMagic!');
-
   if (bytes.length < 0x100 + 15) return false;
 
   let str = "";

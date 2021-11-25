@@ -6,7 +6,7 @@ class Feed extends FeedBase {
   constructor(feed, minLength, filterCategories = true) {
     super(minLength);
     // Non-destructive
-    // feed = cloneObject(feed);
+    feed = cloneObject(feed);
     this.filterCategories = filterCategories;
     this._parseFeed(feed);
     this.originalFeed = feed;
