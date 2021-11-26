@@ -5,6 +5,8 @@ import * as LOG from '../log';
 export class FetchAppData {
   constructor(url) {
     this.url = url;
+    this.retries = 1;
+    this.proxyDisabled = false;
   }
 
   P = (isDev() ? (config.getLocalIp() + "/?y=") : "proxy.webrcade.workers.dev?");
@@ -23,12 +25,22 @@ export class FetchAppData {
     return headerObj;
   };
 
-  async fetch() {
-    const { P } = this;
+  setRetries(retries) {
+    this.retries = retries;
+    return this;
+  }
+
+  setProxyDisabled(disabled) {
+    this.proxyDisabled = disabled;
+    return this;
+  }
+
+  async fetch(props) {
+    const { P, retries, proxyDisabled } = this;
     const url = this.url;
     const s = url.toLowerCase().startsWith("https");
     const h = s => (s ? "https://" : "http://");
-    const RETRIES = 1;
+
 
     const getText = async r => {
       const text = await r.text();
@@ -39,7 +51,7 @@ export class FetchAppData {
     };
 
     const doFetch = async url => {
-      const res = await fetch(url);
+      const res = await fetch(url, props);
       if (res.ok) {
         return res;
       } else {
@@ -49,7 +61,7 @@ export class FetchAppData {
 
     let res = null;
     let error = null;
-    for (let x = 0; x <= RETRIES; x++) {
+    for (let x = 0; x <= retries; x++) {
       if (x > 0) {
         LOG.info("Retry: " + x);
       }
@@ -59,19 +71,21 @@ export class FetchAppData {
         return res;
       } catch (e) {
         LOG.error(e);
-        try {
-          res = await doFetch(`${h(s)}${P}${url}`);
-          if (!res) throw new Error("result is undefined");
-          return res;
-        } catch (e) {
-          LOG.error(e);
+        if (!proxyDisabled) {
           try {
-            res = await doFetch(`${h(!s)}${P}${url}`);
+            res = await doFetch(`${h(s)}${P}${url}`);
             if (!res) throw new Error("result is undefined");
             return res;
           } catch (e) {
             LOG.error(e);
-            error = e;
+            try {
+              res = await doFetch(`${h(!s)}${P}${url}`);
+              if (!res) throw new Error("result is undefined");
+              return res;
+            } catch (e) {
+              LOG.error(e);
+              error = e;
+            }
           }
         }
       }

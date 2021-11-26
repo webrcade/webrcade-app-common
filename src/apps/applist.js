@@ -95,7 +95,7 @@ let types = [
     background: 'images/app/genesis-background.png',
     thumbnail: 'images/app/genesis-thumb.png',
     validate: checkRom,
-    extensions: ['smd', 'md', 'gen', 'sg'],
+    extensions: ['smd', 'md', 'gen'],
     testMagic: Genesis.testMagic,
     defaults: {
       rom: "",
@@ -125,7 +125,7 @@ let types = [
     background: 'images/app/mastersystem-background.png',
     thumbnail: 'images/app/mastersystem-thumb.png',
     validate: checkRom,
-    extensions: ['sms'],
+    extensions: ['sms', 'sg'],
     defaults: {
       rom: "",
       pal: false,
