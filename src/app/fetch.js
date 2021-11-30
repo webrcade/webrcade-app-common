@@ -41,7 +41,6 @@ export class FetchAppData {
     const s = url.toLowerCase().startsWith("https");
     const h = s => (s ? "https://" : "http://");
 
-
     const getText = async r => {
       const text = await r.text();
       if (r.status === 404) {
@@ -73,13 +72,13 @@ export class FetchAppData {
         LOG.error(e);
         if (!proxyDisabled) {
           try {
-            res = await doFetch(`${h(s)}${P}${url}`);
+            res = await doFetch(`${h(s)}${P}${encodeURIComponent(encodeURI(url))}`);
             if (!res) throw new Error("result is undefined");
             return res;
           } catch (e) {
             LOG.error(e);
             try {
-              res = await doFetch(`${h(!s)}${P}${url}`);
+              res = await doFetch(`${h(!s)}${P}${encodeURIComponent(encodeURI(url))}`);
               if (!res) throw new Error("result is undefined");
               return res;
             } catch (e) {
