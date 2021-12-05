@@ -31,19 +31,28 @@ class Feeds extends FeedBase {
       null;
   }
 
+  isExistingLocalFeed(title) {
+    return this._getFeedIndexForTitle(title, true) !== -1;
+  }
+
   async addLocalFeed(feed) {
     if (!feed.title) {
       return;
     }
 
     const index = this._getFeedIndexForTitle(feed.title);
+    let oldFeedId = null;
+    let oldLocalId = null;
     if (index >= 0) {
       const oldFeed = this.feeds[index];
-      await this.removeFeed(oldFeed.feedId);
+      oldFeedId = oldFeed.feedId;
+      oldLocalId = oldFeed.localId;
+      await this.removeFeed(oldFeedId);
     }
 
     const newFeed = {
-      localId: uuidv4(),
+      feedId: oldFeedId ? oldFeedId : uuidv4(),
+      localId: oldLocalId ? oldLocalId : uuidv4(),
       title: feed.title,
     }
     if (feed.longTitle) newFeed.longTitle = feed.longTitle;
