@@ -99,7 +99,8 @@ let types = [
     testMagic: Genesis.testMagic,
     defaults: {
       rom: "",
-      pal: false
+      pal: false,
+      pad3button: false
     }
   }, {
     key: APP_TYPE_KEYS.FCEUX,
