@@ -10,7 +10,7 @@ export class Unzip {
     return this.name;
   }
 
-  unzip(file, exts, prefExts) {
+  unzip(file, exts, prefExts, scorer) {
     zip.useWebWorkers = false;
     const that = this;
     return new Promise((success, failure) => {
@@ -20,26 +20,50 @@ export class Unzip {
         if (entries.length == 1) {
           romEntry = entries[0];
         } else if (entries.length > 0) {
+          const scores = {};
+
           for (let i = 0; i < entries.length; i++) {
-            let entry = entries[i];
-            let filename = entry.filename.toLowerCase();
+            const entry = entries[i];
+            const filename = entry.filename.toLowerCase();
+            // Walk through extensions, only add to scores if
+            // file name has appropriate extension
             for (let i = 0; i < exts.length; i++) {
               if (filename.endsWith(exts[i])) {
-                romEntry = entry;
-              }
-            }
-            if (prefExts !== undefined) {
-              for (let i = 0; i < prefExts.length; i++) {
-                if (filename.endsWith(prefExts[i])) {
-                  prefRomEntry = entry;
+                scores[entry.filename] = {
+                  entry: entry,
+                  lower: filename,
+                  score: 0
                 }
+
+                // Check for preferred extensions, if it has a preferred extension,
+                // add 1000 points
+                if (prefExts !== undefined) {
+                  for (let i = 0; i < prefExts.length; i++) {
+                    if (filename.endsWith(prefExts[i])) {
+                      console.log('Known ext, +1000: ' + entry.filename);
+                      scores[entry.filename].score += 1000; // +1000 for known extension
+                    }
+                  }
+                }
+                break;
               }
             }
           }
+
+          if (scorer) scorer(scores);
+          console.log(scores);
+
+          let maxScore = -1;
+          for(const fname in scores) {
+            const score = scores[fname];
+            if (score.score > maxScore) {
+              console.log('New max: ' + score.entry.filename);
+              romEntry = score.entry;
+              maxScore = score.score;
+            }
+          }
         }
-        if (prefRomEntry) {
-          romEntry = prefRomEntry;
-        }
+
         if (romEntry) {
           that.name = romEntry.filename;
           let writer = new zip.BlobWriter();
@@ -65,5 +89,86 @@ export class Unzip {
         }
       );
     });
+  }
+}
+
+export const romNameScorer = (scores) => {
+  const codes = {
+    "[!]": {
+      points: 100,
+      isRegion: false
+    },
+    "(u)": {
+      points: 50,
+      isRegion: true
+    },
+    "(usa)": {
+      points: 50,
+      isRegion: true
+    },
+    "(ue)": {
+      points: 45,
+      isRegion: true
+    },
+    "(eu)": {
+      points: 45,
+      isRegion: true
+    },
+    "(uj)": {
+      points: 45,
+      isRegion: true
+    },
+    "(ju)": {
+      points: 45,
+      isRegion: true
+    },
+    "(e)": {
+      points: 40,
+      isRegion: true
+    },
+    "(j)": {
+      points: 30,
+      isRegion: true
+    }
+  }
+
+  const regions = {};
+
+  for(const fname in scores) {
+    const score = scores[fname];
+    for (const cname in codes) {
+      const code = codes[cname];
+      if (score.lower.indexOf(cname) != -1) {
+        console.log('Adding ' + code.points +" to " + score.entry.filename);
+        score.score += code.points;
+
+        if (code.isRegion) {
+          let fnameList = regions[cname];
+          if (!fnameList) {
+            fnameList = [];
+            regions[cname] = fnameList;
+          }
+          fnameList.push(score);
+        }
+      }
+    }
+  }
+
+  console.log(regions);
+  // Walk regions and add a point for shortest length file name
+  for (const rname in regions) {
+    const rscores = regions[rname];
+    let minLength = 99999;
+    let minScore = null;
+    for (let i = 0; i < rscores.length; i++) {
+      const score = rscores[i];
+      if (score.lower.length < minLength) {
+        minLength = score.lower.length;
+        minScore = score;
+      }
+    }
+    if (minScore) {
+      minScore.score += 1; // Add one to score as it has the shortest length
+    }
   }
 }

@@ -212,6 +212,24 @@ class AppRegistry {
     return extensions;
   }
 
+  getExtensions(name, dotted = true, nonUnique = false) {
+    const extensions = []
+    if (nonUnique) {
+      extensions.push((dotted ? "." : "") + "bin");
+    }
+    const APP_TYPES = this.APP_TYPES;
+    let type = APP_TYPES[name];
+    if (type.absoluteKey) {
+      type = APP_TYPES[type.absoluteKey];
+    }
+    if (type.extensions) {
+      for (let j = 0; j < type.extensions.length; j++) {
+        extensions.push((dotted ? "." : "") + type.extensions[j]);
+      }
+    }
+    return extensions;
+  }
+
   testMagic(bytes) {
     const APP_TYPES = this.APP_TYPES;
     for (const name in APP_TYPES) {
