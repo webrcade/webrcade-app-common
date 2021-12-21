@@ -4,6 +4,12 @@ import { zip } from './3rdparty/zip.js'
 export class Unzip {
   constructor() {
     this.name = null;
+    this.debug = false;
+  }
+
+  setDebug(debug) {
+    this.debug = debug;
+    return this;
   }
 
   getName() {
@@ -40,7 +46,9 @@ export class Unzip {
                 if (prefExts !== undefined) {
                   for (let i = 0; i < prefExts.length; i++) {
                     if (filename.endsWith(prefExts[i])) {
-                      console.log('Known ext, +1000: ' + entry.filename);
+                      if (this.debug) {
+                        LOG.info('Known ext, +1000: ' + entry.filename);
+                      }
                       scores[entry.filename].score += 1000; // +1000 for known extension
                     }
                   }
@@ -50,14 +58,18 @@ export class Unzip {
             }
           }
 
-          if (scorer) scorer(scores);
-          console.log(scores);
+          if (scorer) scorer(scores, this.debug);
+          if (this.debug) {
+            LOG.info(scores);
+          }
 
           let maxScore = -1;
           for(const fname in scores) {
             const score = scores[fname];
             if (score.score > maxScore) {
-              console.log('New max: ' + score.entry.filename);
+              if (this.debug) {
+                LOG.info('New max: ' + score.entry.filename);
+              }
               romEntry = score.entry;
               maxScore = score.score;
             }
@@ -92,7 +104,7 @@ export class Unzip {
   }
 }
 
-export const romNameScorer = (scores) => {
+export const romNameScorer = (scores, debug) => {
   const codes = {
     "[!]": {
       points: 100,
@@ -139,7 +151,9 @@ export const romNameScorer = (scores) => {
     for (const cname in codes) {
       const code = codes[cname];
       if (score.lower.indexOf(cname) != -1) {
-        console.log('Adding ' + code.points +" to " + score.entry.filename);
+        if (debug) {
+          LOG.info('Adding ' + code.points +" to " + score.entry.filename);
+        }
         score.score += code.points;
 
         if (code.isRegion) {
@@ -154,7 +168,9 @@ export const romNameScorer = (scores) => {
     }
   }
 
-  console.log(regions);
+  if (debug) {
+    LOG.info(regions);
+  }
   // Walk regions and add a point for shortest length file name
   for (const rname in regions) {
     const rscores = regions[rname];
