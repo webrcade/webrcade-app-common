@@ -96,7 +96,9 @@ export class Unzip {
         new zip.BlobReader(file),
         blobReader,
         (failure) => {
-          LOG.info(`${failure}, processing as a non-zip`);
+          if (this.debug) {
+            LOG.info(`${failure}, processing as a non-zip`);
+          }
           success(file);
         }
       );
