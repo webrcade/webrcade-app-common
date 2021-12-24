@@ -129,8 +129,8 @@ let types = [
     extensions: ['sms', 'sg'],
     defaults: {
       rom: "",
+      hwType: 0,
       pal: false,
-      sms2: false,
       ym2413: false
     }
   }, {
