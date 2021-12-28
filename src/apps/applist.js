@@ -26,6 +26,7 @@ const APP_TYPE_KEYS = Object.freeze({
   FCEUX: "fceux",
   GENPLUSGX_GG: "genplusgx-gg",
   GENPLUSGX_MD: "genplusgx-md",
+  GENPLUSGX_SG: "genplusgx-sg",
   GENPLUSGX_SMS: "genplusgx-sms",
   JAVATARI: "javatari",
   JS7800: "js7800",
@@ -40,6 +41,7 @@ const APP_TYPE_KEYS = Object.freeze({
   GENESIS: "genesis",
   GG: "gg",
   NES: "nes",
+  SG1000: 'sg1000',
   SMS: "sms",
   SNES: "snes"
 });
@@ -126,12 +128,25 @@ let types = [
     background: 'images/app/mastersystem-background.png',
     thumbnail: 'images/app/mastersystem-thumb.png',
     validate: checkRom,
-    extensions: ['sms', 'sg'],
+    extensions: ['sms'],
     defaults: {
       rom: "",
       hwType: 0,
       pal: false,
       ym2413: false
+    }
+  }, {
+    key: APP_TYPE_KEYS.GENPLUSGX_SG,
+    name: 'Sega SG-1000',
+    coreName: 'Genesis Plus GX',
+    location: locSms,
+    background: 'images/app/mastersystem-background.png',
+    thumbnail: 'images/app/mastersystem-thumb.png',
+    validate: checkRom,
+    extensions: ['sg'],
+    defaults: {
+      rom: "",
+      pal: false
     }
   }, {
     key: APP_TYPE_KEYS.GENPLUSGX_GG,
@@ -194,6 +209,7 @@ addAlias(types, APP_TYPE_KEYS.GBA, APP_TYPE_KEYS.VBA_M_GBA);
 addAlias(types, APP_TYPE_KEYS.GENESIS, APP_TYPE_KEYS.GENPLUSGX_MD);
 addAlias(types, APP_TYPE_KEYS.GG, APP_TYPE_KEYS.GENPLUSGX_GG);
 addAlias(types, APP_TYPE_KEYS.NES, APP_TYPE_KEYS.FCEUX);
+addAlias(types, APP_TYPE_KEYS.SG1000, APP_TYPE_KEYS.GENPLUSGX_SG);
 addAlias(types, APP_TYPE_KEYS.SMS, APP_TYPE_KEYS.GENPLUSGX_SMS);
 addAlias(types, APP_TYPE_KEYS.SNES, APP_TYPE_KEYS.SNES9X);
 
