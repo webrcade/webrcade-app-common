@@ -33,11 +33,15 @@ const APP_TYPE_KEYS = Object.freeze({
   PRBOOM: "prboom",
   SNES9X: "snes9x",
   VBA_M_GBA: "vba-m-gba",
+  VBA_M_GB: "vba-m-gb",
+  VBA_M_GBC: "vba-m-gbc",
   // Aliases
   A2600: "2600",
   A7800: "7800",
   DOOM: "doom",
   GBA: "gba",
+  GB: "gb",
+  GBC: "gbc",
   GENESIS: "genesis",
   GG: "gg",
   NES: "nes",
@@ -193,6 +197,34 @@ let types = [
       saveType: 0,
       flashSize: 65536
     }
+  }, {
+    key: APP_TYPE_KEYS.VBA_M_GB,
+    name: 'Nintendo Game Boy',
+    shortName: 'Nintendo Game Boy',
+    coreName: 'VBA-M',
+    location: locGba,
+    background: 'images/app/gb-background.png',
+    thumbnail: 'images/app/gb-thumb.png',
+    validate: checkRom,
+    extensions: ['gb'],
+    defaults: {
+      rom: "",
+      hwType: 0,
+      colors: 0
+    }
+  }, {
+    key: APP_TYPE_KEYS.VBA_M_GBC,
+    name: 'Nintendo Game Boy Color',
+    shortName: 'Nintendo Game Boy Color',
+    coreName: 'VBA-M',
+    location: locGba,
+    background: 'images/app/gbc-background.png',
+    thumbnail: 'images/app/gbc-thumb.png',
+    validate: checkRom,
+    extensions: ['gbc'],
+    defaults: {
+      rom: ""
+    }
   }
 ];
 
@@ -206,6 +238,8 @@ addAlias(types, APP_TYPE_KEYS.A2600, APP_TYPE_KEYS.JAVATARI);
 addAlias(types, APP_TYPE_KEYS.A7800, APP_TYPE_KEYS.JS7800);
 addAlias(types, APP_TYPE_KEYS.DOOM, APP_TYPE_KEYS.PRBOOM);
 addAlias(types, APP_TYPE_KEYS.GBA, APP_TYPE_KEYS.VBA_M_GBA);
+addAlias(types, APP_TYPE_KEYS.GB, APP_TYPE_KEYS.VBA_M_GB);
+addAlias(types, APP_TYPE_KEYS.GBC, APP_TYPE_KEYS.VBA_M_GBC);
 addAlias(types, APP_TYPE_KEYS.GENESIS, APP_TYPE_KEYS.GENPLUSGX_MD);
 addAlias(types, APP_TYPE_KEYS.GG, APP_TYPE_KEYS.GENPLUSGX_GG);
 addAlias(types, APP_TYPE_KEYS.NES, APP_TYPE_KEYS.FCEUX);

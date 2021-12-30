@@ -58,7 +58,7 @@ export class AppWrapper {
   }
 
   createAudioProcessor() {
-    return new ScriptAudioProcessor();
+    return new ScriptAudioProcessor().setDebug(this.debug);
   }
 
   addAudioProcessorCallback(processor) {

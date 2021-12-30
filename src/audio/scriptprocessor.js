@@ -1,3 +1,5 @@
+import * as LOG from '../log'
+
 const registerAudioResume = (obj, cb, interval) => {
   // Audio resume
   let audioCtx = obj;
@@ -78,12 +80,18 @@ class ScriptAudioProcessor {
     this.mixhead = 0;
     this.mixtail = 0;
     this.callback = null;
+    this.debug = false;
 
     this.tmpBuffers = new Array(channelCount);
     this.mixbuffer = new Array(channelCount);
     for (let i = 0; i < channelCount; i++) {
       this.mixbuffer[i] = new Array(bufferSize);
     }
+  }
+
+  setDebug(debug) {
+    this.debug = debug;
+    return this;
   }
 
   isPlaying() {
@@ -136,6 +144,13 @@ class ScriptAudioProcessor {
             this.mixtail = 0;
           }
         }
+
+        if (this.debug) {
+          if ((this.mixtail === this.mixhead) && (done < len)) {
+            LOG.info("Not enough samples available: " + (len-done));
+          }
+        }
+
         while (done < len) {
           for (let i = 0; i < this.channelCount; i++) {
             this.tmpBuffers[i] = 0;
@@ -174,6 +189,11 @@ class ScriptAudioProcessor {
       this.mixhead++;
       if (this.mixhead == this.bufferSize)
         this.mixhead = 0;
+      if (this.debug) {
+        if (this.mixtail === (this.mixhead + 1)) {
+          LOG.info('head hit tail!');
+        }
+      }
     }
   }
 }
