@@ -144,8 +144,8 @@ let types = [
     name: 'Sega SG-1000',
     coreName: 'Genesis Plus GX',
     location: locSms,
-    background: 'images/app/mastersystem-background.png',
-    thumbnail: 'images/app/mastersystem-thumb.png',
+    background: 'images/app/sg1000-background.png',
+    thumbnail: 'images/app/sg1000-thumb.png',
     validate: checkRom,
     extensions: ['sg'],
     defaults: {
