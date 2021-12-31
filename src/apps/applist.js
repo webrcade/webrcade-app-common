@@ -210,7 +210,8 @@ let types = [
     defaults: {
       rom: "",
       hwType: 0,
-      colors: 0
+      colors: 0,
+      border: 0
     }
   }, {
     key: APP_TYPE_KEYS.VBA_M_GBC,
