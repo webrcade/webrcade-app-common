@@ -211,6 +211,7 @@ let types = [
       rom: "",
       hwType: 0,
       colors: 0,
+      palette: 0,
       border: 0
     }
   }, {
