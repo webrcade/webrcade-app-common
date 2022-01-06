@@ -26,6 +26,24 @@ export class AppWrapper {
     }
   }
 
+  getProps() {
+    return this.app.appProps;
+  }
+
+  getTitle() {
+    return this.getProps().title;
+  }
+
+  async saveStateToStorage(path, buffer) {
+    const { storage } = this;
+
+    await storage.put(path, buffer);
+    await storage.put(`${path}/info`, {
+      title: this.getTitle(),
+      time: new Date().getTime()
+    });
+  }
+
   createControllers() {
     return new Controllers([
       new Controller(new DefaultKeyCodeToControlMapping()),
