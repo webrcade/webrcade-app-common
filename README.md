@@ -12,6 +12,15 @@ This repository contains common components that are available for use by the web
  <i>webЯcade on Chrome for macOS</i>
 </p>
 
+## BUILDING
+You can build the webЯcade Common Library through docker. Please ensure you have docker installed locally.
+
+```
+bash docker-run.sh
+```
+
+This will result in a .tgz file being created in a newly created out/ folder locally.
+
 ## LICENSE
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
