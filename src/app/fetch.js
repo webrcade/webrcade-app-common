@@ -9,7 +9,7 @@ export class FetchAppData {
     this.proxyDisabled = false;
   }
 
-  P = (isDev() ? (config.getLocalIp() + "/?y=") : "proxy.webrcade.workers.dev?");
+  P = (isDev() ? (config.getLocalIp() + "/?y=") : config.getCorsProxy());
 
   getHeaders(res) {
     const headers = res.headers;
@@ -33,6 +33,10 @@ export class FetchAppData {
   setProxyDisabled(disabled) {
     this.proxyDisabled = disabled;
     return this;
+  }
+
+  isProxyDisabled() {
+    return this.proxyDisabled || !this.P || this.P.length === 0;
   }
 
   async fetch(props) {
@@ -70,7 +74,7 @@ export class FetchAppData {
         return res;
       } catch (e) {
         LOG.error(e);
-        if (!proxyDisabled) {
+        if (!this.isProxyDisabled()) {
           try {
             res = await doFetch(`${h(s)}${P}${encodeURIComponent(encodeURI(url))}`);
             if (!res) throw new Error("result is undefined");

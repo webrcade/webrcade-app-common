@@ -3,6 +3,7 @@ import { FeedBase } from './feedbase.js'
 import { uuidv4 } from '../util/uuid';
 import { isEmptyString } from '../util/stringutil';
 import * as LOG from '../log'
+import { config } from '../conf';
 
 const FEEDS_PROP = "feeds";
 const LOCAL_FEEDS_PREFIX = "localFeeds.";
@@ -200,15 +201,17 @@ class Feeds extends FeedBase {
     expandedFeeds.sort(this.TITLE_SORT);
 
     // Default
-    expandedFeeds.unshift({
-      feedId: Feeds.DEFAULT_ID,
-      title: "Default",
-      longTitle: "Default Feed",
-      description: "The default feed contains a collection of high-quality publicly available games and demos across the various applications (emulators, engines, etc.) that are supported by webЯcade.",
-      url: Feeds.NONE_URL,
-      thumbnail: "default-feed/images/default-thumb.png",
-      background: "default-feed/images/default-background.png"
-    })
+    if (!config.isEmptyDefaultFeed()) {
+      expandedFeeds.unshift({
+        feedId: Feeds.DEFAULT_ID,
+        title: "Default",
+        longTitle: "Default Feed",
+        description: "The default feed contains a collection of high-quality publicly available games and demos across the various applications (emulators, engines, etc.) that are supported by webЯcade.",
+        url: Feeds.NONE_URL,
+        thumbnail: "default-feed/images/default-thumb.png",
+        background: "default-feed/images/default-background.png"
+      })
+    }
 
     // Add
     expandedFeeds.unshift({
