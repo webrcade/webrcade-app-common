@@ -1,10 +1,11 @@
 import { config } from '../conf'
 import { isDev, limitString } from '../util';
+import { remapUrl } from './remapurl.js';
 import * as LOG from '../log';
 
 export class FetchAppData {
   constructor(url) {
-    this.url = url;
+    this.url = remapUrl(url);
     this.retries = 1;
     this.proxyDisabled = false;
   }

@@ -1,3 +1,4 @@
+import { remapUrl } from '../app/';
 import { AppRegistry } from '../apps/';
 import { FeedBase } from './feedbase.js'
 import { cloneObject } from '../util';
@@ -21,6 +22,9 @@ class Feed extends FeedBase {
       throw new Error("Missing title");
     }
 
+    if (feed.background) feed.background = remapUrl(feed.background);
+    if (feed.thumbnail) feed.thumbnail = remapUrl(feed.thumbnail);
+
     // Ensure categories are available
     let categories = feed.categories;
 
@@ -41,6 +45,10 @@ class Feed extends FeedBase {
           return false;
         }
       }
+
+      if (c.background) c.background = remapUrl(c.background);
+      if (c.thumbnail) c.thumbnail = remapUrl(c.thumbnail);
+
       return true;
     });
 
@@ -50,8 +58,10 @@ class Feed extends FeedBase {
         category.items.filter(a => {
           try {
             reg.validate(a);
+            if (a.background) a.background = remapUrl(a.background);
+            if (a.thumbnail) a.thumbnail = remapUrl(a.thumbnail);
           } catch (e) {
-            this._logInvalidObject('App is invalid: ' + e, a);
+            this._logInvalidObject('Item is invalid: ' + e, a);
             return false;
           }
           return true;

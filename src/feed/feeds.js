@@ -4,6 +4,7 @@ import { uuidv4 } from '../util/uuid';
 import { isEmptyString } from '../util/stringutil';
 import * as LOG from '../log'
 import { config } from '../conf';
+import { remapUrl } from '../app';
 
 const FEEDS_PROP = "feeds";
 const LOCAL_FEEDS_PREFIX = "localFeeds.";
@@ -126,12 +127,21 @@ class Feeds extends FeedBase {
     return null;
   }
 
+  remapUrls(feeds) {
+    for (let i = 0; i < feeds.length; i++) {
+      const feed = feeds[i];
+      if (feed.background) feed.background = remapUrl(feed.background);
+      if (feed.thumbnail) feed.thumbnail = remapUrl(feed.thumbnail);
+    }
+    return feeds;
+  }
+
   getDistinctFeeds() {
-    return this.feeds;
+    return this.remapUrls(this.feeds);
   }
 
   getFeeds() {
-    return this.expandedFeeds;
+    return this.remapUrls(this.expandedFeeds);
   }
 
   _validate(f) {

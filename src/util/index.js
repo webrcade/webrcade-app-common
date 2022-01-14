@@ -1,4 +1,6 @@
-import { config } from '../conf'
+//import { AppProps } from '../app';
+import { UrlUtil } from './url';
+import { config } from '../conf';
 
 export * from './url.js'
 export * from './md5.js'
@@ -31,10 +33,19 @@ function resolvePath(path) {
     isApp() ? `../../${path}` : path;
 };
 
+const RP_DEBUG = "debug";
+let debug = UrlUtil.getBoolParam(window.location.search, RP_DEBUG);
+
+function isDebug() {
+  return debug;
+}
+
 export {
+  RP_DEBUG,
   cloneObject,
   resolvePath,
   isApp,
+  isDebug,
   isDev,
   preloadImages
 };

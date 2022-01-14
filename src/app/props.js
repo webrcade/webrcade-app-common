@@ -1,6 +1,8 @@
+import { RP_DEBUG } from '../util'
+
 export class AppProps {
   static RP_CONTEXT = "ctx";
-  static RP_DEBUG = "debug";
+  static RP_DEBUG = RP_DEBUG;
   static RP_PROPS = "props";
   static RP_ROM = "rom";
   static RP_TYPE = "type";
