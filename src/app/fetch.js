@@ -10,7 +10,10 @@ export class FetchAppData {
     this.proxyDisabled = false;
   }
 
-  P = (isDev() ? (config.getLocalIp() + "/?y=") : config.getCorsProxy());
+  //P = (isDev() ? (config.getLocalIp() + "/?y=") : config.getCorsProxy());
+  P = config.getCorsProxy() ?
+    ((config.isPublicServer() ? "" : window.location.host) + config.getCorsProxy()) :
+    null;
 
   getHeaders(res) {
     const headers = res.headers;
