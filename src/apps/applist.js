@@ -165,21 +165,6 @@ let types = [
       rom: ""
     }
   }, {
-    key: APP_TYPE_KEYS.PRBOOM,
-    name: 'Doom Classic',
-    coreName: 'PrBoom',
-    location: locDoom,
-    background: 'images/app/doom-background.png',
-    thumbnail: 'images/app/doom-thumb.png',
-    validate: app => {
-      if (app.props === undefined || isEmptyString(app.props.game)) {
-        throw new Error("Missing 'game' property");
-      }
-    },
-    defaults: {
-      game: ""
-    }
-  }, {
     key: APP_TYPE_KEYS.VBA_M_GBA,
     name: 'Nintendo Game Boy Advance',
     shortName: 'Nintendo GBA',
@@ -235,10 +220,31 @@ const addAlias = (types, alias, typeKey) => {
   types.push({ key: alias, absoluteKey: typeKey, ...props });
 }
 
+// Only add PRBoom on public server
+if (config.isPublicServer()) {
+  types.push({
+    key: APP_TYPE_KEYS.PRBOOM,
+    name: 'Doom Classic',
+    coreName: 'PrBoom',
+    location: locDoom,
+    background: 'images/app/doom-background.png',
+    thumbnail: 'images/app/doom-thumb.png',
+    validate: app => {
+      if (app.props === undefined || isEmptyString(app.props.game)) {
+        throw new Error("Missing 'game' property");
+      }
+    },
+    defaults: {
+      game: ""
+    }
+  });
+  addAlias(types, APP_TYPE_KEYS.DOOM, APP_TYPE_KEYS.PRBOOM);
+}
+
 // Aliases
 addAlias(types, APP_TYPE_KEYS.A2600, APP_TYPE_KEYS.JAVATARI);
 addAlias(types, APP_TYPE_KEYS.A7800, APP_TYPE_KEYS.JS7800);
-addAlias(types, APP_TYPE_KEYS.DOOM, APP_TYPE_KEYS.PRBOOM);
+
 addAlias(types, APP_TYPE_KEYS.GBA, APP_TYPE_KEYS.VBA_M_GBA);
 addAlias(types, APP_TYPE_KEYS.GB, APP_TYPE_KEYS.VBA_M_GB);
 addAlias(types, APP_TYPE_KEYS.GBC, APP_TYPE_KEYS.VBA_M_GBC);

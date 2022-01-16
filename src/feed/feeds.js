@@ -3,6 +3,8 @@ import { FeedBase } from './feedbase.js'
 import { uuidv4 } from '../util/uuid';
 import { isEmptyString } from '../util/stringutil';
 import * as LOG from '../log'
+import { config } from '../conf';
+import { remapUrl } from '../app';
 
 const FEEDS_PROP = "feeds";
 const LOCAL_FEEDS_PREFIX = "localFeeds.";
@@ -125,12 +127,21 @@ class Feeds extends FeedBase {
     return null;
   }
 
+  remapUrls(feeds) {
+    for (let i = 0; i < feeds.length; i++) {
+      const feed = feeds[i];
+      if (feed.background) feed.background = remapUrl(feed.background);
+      if (feed.thumbnail) feed.thumbnail = remapUrl(feed.thumbnail);
+    }
+    return feeds;
+  }
+
   getDistinctFeeds() {
-    return this.feeds;
+    return this.remapUrls(this.feeds);
   }
 
   getFeeds() {
-    return this.expandedFeeds;
+    return this.remapUrls(this.expandedFeeds);
   }
 
   _validate(f) {
@@ -200,15 +211,17 @@ class Feeds extends FeedBase {
     expandedFeeds.sort(this.TITLE_SORT);
 
     // Default
-    expandedFeeds.unshift({
-      feedId: Feeds.DEFAULT_ID,
-      title: "Default",
-      longTitle: "Default Feed",
-      description: "The default feed contains a collection of high-quality publicly available games and demos across the various applications (emulators, engines, etc.) that are supported by webЯcade.",
-      url: Feeds.NONE_URL,
-      thumbnail: "default-feed/images/default-thumb.png",
-      background: "default-feed/images/default-background.png"
-    })
+    if (!config.isEmptyDefaultFeed()) {
+      expandedFeeds.unshift({
+        feedId: Feeds.DEFAULT_ID,
+        title: "Default",
+        longTitle: "Default Feed",
+        description: "The default feed contains a collection of high-quality publicly available games and demos across the various applications (emulators, engines, etc.) that are supported by webЯcade.",
+        url: Feeds.NONE_URL,
+        thumbnail: "default-feed/images/default-thumb.png",
+        background: "default-feed/images/default-background.png"
+      })
+    }
 
     // Add
     expandedFeeds.unshift({
