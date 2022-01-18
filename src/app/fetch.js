@@ -44,10 +44,15 @@ export class FetchAppData {
   }
 
   async fetch(props) {
-    const { P, retries, proxyDisabled } = this;
+    let { P } = this;
+    const { retries, proxyDisabled } = this;
     const url = this.url;
     const s = url.toLowerCase().startsWith("https");
     const h = s => (s ? "https://" : "http://");
+
+    if (isDev() && config.getCorsProxyDev()) {
+      P = config.getCorsProxyDev();
+    }
 
     const getText = async r => {
       const text = await r.text();

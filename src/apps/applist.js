@@ -63,7 +63,8 @@ let types = [
     extensions: ['smc', 'sfc', 'swc'],
     defaults: {
       rom: "",
-      pal: false
+      pal: false,
+      port2: 0
     }
   },
   {

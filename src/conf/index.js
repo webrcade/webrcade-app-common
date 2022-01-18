@@ -7,6 +7,7 @@ class Config {
   getLocalPort() { return CONFIG.localPort; }
   getLocalUrl() { return `http://${this.getLocalIp()}:${this.getLocalPort()}`; }
   getCorsProxy() { return CONFIG.corsProxy ? CONFIG.corsProxy : null;  }
+  getCorsProxyDev() { return CONFIG.corsProxyDev ? CONFIG.corsProxyDev : null;  }
   isPublicServer() { return CONFIG.isPublicServer === true; }
   getDefaultFeedContentRoot() { return CONFIG.defaultFeedContentRoot ? CONFIG.defaultFeedContentRoot : null; }
   getDefaultFeedImagesRoot() { return CONFIG.defaultFeedImagesRoot ? CONFIG.defaultFeedImagesRoot : null; }
