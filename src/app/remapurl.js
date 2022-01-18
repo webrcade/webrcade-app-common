@@ -7,7 +7,7 @@ const GDRIVE_PREFIX ="https://drive.google.com/file/d/";
 const GDRIVE_REMAP_PREFIX = "https://drive.google.com/uc?export=download&id=";
 
 const IMG_PREFIX = "https://play.webrcade.com/default-feed/images/";
-const IMG_REMAP_PREFIX = "https://play.webrcade.com/default-feed/images/";
+const IMG_REMAP_PREFIX = "https://webrcade.github.io/webrcade-default-feed/images/";
 const CONTENT_PREFIX = "https://raw.githubusercontent.com/webrcade/webrcade/master/public/default-feed/content/";
 const CONTENT_REMAP_PREFIX = "https://raw.githubusercontent.com/webrcade/webrcade-default-feed/main/content/";
 
