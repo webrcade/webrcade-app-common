@@ -99,6 +99,7 @@ export class DisplayLoop {
     let start = Date.now();
     let fc = 0;
     let avgWait = 0;
+    let streak = 0;
 
     const f = () => {
       if (!this.paused) {
@@ -127,17 +128,29 @@ export class DisplayLoop {
 
         if (fc > checkFrequency) {
           let elapsed = Date.now() - start;
-          if (this.vsync || this.isNative) {
-            const fpsVal = (1000.0 / (elapsed / fc));
-            if (fpsVal < (frequency - 0.5)) {
+          const fpsVal = (1000.0 / (elapsed / fc));
+          if (fpsVal < (frequency - 0.5)) {
+            streak = 0;
+            if (this.vsync || this.isNative) {
               this.isNative = false;
               this.vsync = false;
               this.forceAdjustTimestamp = true;
               LOG.info('Disabling native and vsync, too slow: ' + fpsVal);
             }
+          } else {
+            streak++;
+            if (streak >= 4) {
+              if (!this.vsync) {
+                this.vsync = true;
+                this.forceAdjustTimestamp = true;
+                LOG.info('Enabling vsync, (' + streak + ' streak): ' + fpsVal);
+              }
+              streak = 0;
+            }
           }
+
           if (this.debug) {
-            const fps = (1000.0 / (elapsed / fc)).toFixed(2);
+            const fps = (fpsVal).toFixed(2);
             const w = ((avgWait / fc) * frequency).toFixed(2);
             this.fps = `FPS: ${fps}, Vsync: ${this.vsync}, Wait: ${w}, Native: ${this.isNative}, Wait count: ${this.waitCount}`;
             this.debugDiv.innerHTML = this.fps;
