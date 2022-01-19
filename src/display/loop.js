@@ -43,7 +43,7 @@ export class DisplayLoop {
         const nFaster = fps > this.frequency;
 
         LOG.info('Native FPS: ' + fps + ", round: " + round);
-        if ((round === this.frequency) && (diff < 0.5)) {
+        if ((round === this.frequency) && (diff < 0.5) && this.vsync) {
           LOG.info('Native matches frequency.');
           this.isNative = true;
           this.forceAdjustTimestamp = true;
@@ -52,7 +52,7 @@ export class DisplayLoop {
           this.vsync = false;
           this.forceAdjustTimestamp = true;
         } else {
-          LOG.info('Native not close enough to frequency: ' + fps);
+          LOG.info('Native not close enough to frequency: ' + fps + ', vsync: ' + this.vsync);
         }
       } else {
         requestAnimationFrame(f);
@@ -91,7 +91,7 @@ export class DisplayLoop {
 
     const frameTicks = (1000.0 / frequency);
     const adjustTolerance = (frameTicks * frequency * 2); // 2 secs
-    const debugFrequency = frequency * 5;
+    const checkFrequency = frequency * 5;
 
     LOG.info("Frame ticks: " + frameTicks);
     LOG.info("Frequency: " + frequency);
@@ -125,8 +125,17 @@ export class DisplayLoop {
           this.sync(f, false);
         }
 
-        if (fc > debugFrequency) {
+        if (fc > checkFrequency) {
           let elapsed = Date.now() - start;
+          if (this.vsync || this.isNative) {
+            const fpsVal = (1000.0 / (elapsed / fc));
+            if (fpsVal < (frequency - 0.5)) {
+              this.isNative = false;
+              this.vsync = false;
+              this.forceAdjustTimestamp = true;
+              LOG.info('Disabling native and vsync, too slow: ' + fpsVal);
+            }
+          }
           if (this.debug) {
             const fps = (1000.0 / (elapsed / fc)).toFixed(2);
             const w = ((avgWait / fc) * frequency).toFixed(2);
