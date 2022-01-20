@@ -107,6 +107,7 @@ export class DisplayLoop {
     let fc = 0;
     let avgWait = 0;
     let checkSync = 0;
+    let vsyncLow = 0;
 
     const f = () => {
       if (!this.paused) {
@@ -141,12 +142,22 @@ export class DisplayLoop {
             LOG.info("Checking VSYNC");
           }
 
-          if (this.vsync && (checkSync === 1) && (fpsVal < (frequency - 0.5))) {
-            this.isNative = false;
-            this.vsync = false;
-            this.forceAdjustTimestamp = true;
-            checkSync = 2;
-            LOG.info('Disabling native and vsync, too slow: ' + fpsVal);
+          if (this.vsync && (checkSync === 1)) {
+            if (fpsVal < (frequency - 0.5)) {
+              vsyncLow++;
+              if (this.debug) {
+                LOG.info("VSYNC low: " + vsyncLow);
+              }
+              if (vsyncLow === 2) {
+                this.isNative = false;
+                this.vsync = false;
+                this.forceAdjustTimestamp = true;
+                checkSync = 2;
+                LOG.info('Disabling native and vsync, too slow: ' + fpsVal);
+              }
+            } else {
+              vsyncLow = 0;
+            }
           }
 
           if (this.debug) {
