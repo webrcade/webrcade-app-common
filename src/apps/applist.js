@@ -13,6 +13,7 @@ const locNes = isDev() ? `http://${localIp}:3030` : 'app/nes';
 const locDoom = isDev() ? `http://${localIp}:3040` : 'app/doom';
 const loc2600 = isDev() ? `http://${localIp}:3050` : 'app/2600';
 const locSnes = isDev() ? `http://${localIp}:3060` : 'app/snes';
+const locN64 = isDev() ? `http://${localIp}:3065` : 'app/n64';
 const locGba = isDev() ? `http://${localIp}:3070` : 'app/gba';
 
 const checkRom = app => {
@@ -30,6 +31,7 @@ const APP_TYPE_KEYS = Object.freeze({
   GENPLUSGX_SMS: "genplusgx-sms",
   JAVATARI: "javatari",
   JS7800: "js7800",
+  PARALLEL_N64: "parallel-n64",
   PRBOOM: "prboom",
   SNES9X: "snes9x",
   VBA_M_GBA: "vba-m-gba",
@@ -44,6 +46,7 @@ const APP_TYPE_KEYS = Object.freeze({
   GBC: "gbc",
   GENESIS: "genesis",
   GG: "gg",
+  N64: "n64",
   NES: "nes",
   SG1000: 'sg1000',
   SMS: "sms",
@@ -166,6 +169,18 @@ let types = [
       rom: ""
     }
   }, {
+    key: APP_TYPE_KEYS.PARALLEL_N64,
+    name: 'Nintendo 64',
+    coreName: 'paraLLEl N64',
+    location: locN64,
+    background: 'images/app/n64-background.png',
+    thumbnail: 'images/app/n64-thumb.png',
+    validate: checkRom,
+    extensions: ['n64','v64','z64'],
+    defaults: {
+      rom: ""
+    }
+  }, {
     key: APP_TYPE_KEYS.VBA_M_GBA,
     name: 'Nintendo Game Boy Advance',
     shortName: 'Nintendo GBA',
@@ -245,12 +260,12 @@ if (config.isPublicServer()) {
 // Aliases
 addAlias(types, APP_TYPE_KEYS.A2600, APP_TYPE_KEYS.JAVATARI);
 addAlias(types, APP_TYPE_KEYS.A7800, APP_TYPE_KEYS.JS7800);
-
 addAlias(types, APP_TYPE_KEYS.GBA, APP_TYPE_KEYS.VBA_M_GBA);
 addAlias(types, APP_TYPE_KEYS.GB, APP_TYPE_KEYS.VBA_M_GB);
 addAlias(types, APP_TYPE_KEYS.GBC, APP_TYPE_KEYS.VBA_M_GBC);
 addAlias(types, APP_TYPE_KEYS.GENESIS, APP_TYPE_KEYS.GENPLUSGX_MD);
 addAlias(types, APP_TYPE_KEYS.GG, APP_TYPE_KEYS.GENPLUSGX_GG);
+addAlias(types, APP_TYPE_KEYS.N64, APP_TYPE_KEYS.PARALLEL_N64);
 addAlias(types, APP_TYPE_KEYS.NES, APP_TYPE_KEYS.FCEUX);
 addAlias(types, APP_TYPE_KEYS.SG1000, APP_TYPE_KEYS.GENPLUSGX_SG);
 addAlias(types, APP_TYPE_KEYS.SMS, APP_TYPE_KEYS.GENPLUSGX_SMS);
