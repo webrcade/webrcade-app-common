@@ -67,6 +67,14 @@ class AppRegistry {
     return APP_TYPES[app.type].name;
   }
 
+  isDelayedExit(app) {
+    const { APP_TYPES } = this;
+    const appType = APP_TYPES[app.type];
+    return appType.isDelayedExit !== undefined &&
+      appType.isDelayedExit === true;
+
+  }
+
   getLocation(app, context) {
     const { RP_CONTEXT, RP_DEBUG, RP_PROPS } = AppProps;
     const { props } = app;

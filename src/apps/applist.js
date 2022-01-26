@@ -177,6 +177,7 @@ let types = [
     thumbnail: 'images/app/n64-thumb.png',
     validate: checkRom,
     extensions: ['n64','v64','z64'],
+    isDelayedExit: true,
     defaults: {
       rom: ""
     }
@@ -245,6 +246,7 @@ if (config.isPublicServer()) {
     location: locDoom,
     background: 'images/app/doom-background.png',
     thumbnail: 'images/app/doom-thumb.png',
+    isDelayedExit: true,
     validate: app => {
       if (app.props === undefined || isEmptyString(app.props.game)) {
         throw new Error("Missing 'game' property");
