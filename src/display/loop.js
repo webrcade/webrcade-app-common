@@ -122,7 +122,9 @@ export class DisplayLoop {
         if (((nextTimestamp + adjustTolerance) < now) || this.forceAdjustTimestamp) {
           this.forceAdjustTimestamp = false;
           nextTimestamp = -1; fc = 0; start = now; avgWait = 0;
-          LOG.info("adjusted next timestamp.");
+          if (this.debug) {
+            LOG.info("adjusted next timestamp.");
+          }
         }
 
         let wait = nextTimestamp == -1 ? 0 : (nextTimestamp - now);
