@@ -1,4 +1,4 @@
-import { isDev, isEmptyString } from '../util';
+import { UrlUtil, isDev, isEmptyString } from '../util';
 import { config } from '../conf';
 import * as Genesis from './type/genesis';
 import * as Atari7800 from './type/7800';
@@ -178,6 +178,13 @@ let types = [
     validate: checkRom,
     extensions: ['n64','v64','z64'],
     isDelayedExit: true,
+    addParams: (url) => {
+      const N64_SKIP_RP = "n64.skip";
+      const n64skip = UrlUtil.getParam(
+        window.location.search, N64_SKIP_RP);
+      return n64skip ?
+        UrlUtil.addParam(url, N64_SKIP_RP, n64skip) : url;
+    },
     defaults: {
       rom: ""
     }

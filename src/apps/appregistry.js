@@ -102,6 +102,10 @@ class AppRegistry {
     if (context) {
       loc = UrlUtil.addParam(loc, RP_CONTEXT, context);
     }
+    if (appType.addParams) {
+      loc = appType.addParams(loc);
+    }
+
     return loc;
   }
 
