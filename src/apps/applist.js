@@ -15,6 +15,7 @@ const loc2600 = isDev() ? `http://${localIp}:3050` : 'app/2600';
 const locSnes = isDev() ? `http://${localIp}:3060` : 'app/snes';
 const locN64 = isDev() ? `http://${localIp}:3065` : 'app/n64';
 const locGba = isDev() ? `http://${localIp}:3070` : 'app/gba';
+const locMednafen = isDev() ? `http://${localIp}:3075` : 'app/mednanfen';
 
 const checkRom = app => {
   if (app.props === undefined || isEmptyString(app.props.rom)) {
@@ -31,6 +32,8 @@ const APP_TYPE_KEYS = Object.freeze({
   GENPLUSGX_SMS: "genplusgx-sms",
   JAVATARI: "javatari",
   JS7800: "js7800",
+  MEDNAFEN_PCE: "mednafen-pce",
+  MEDNAFEN_SGX: "mednafen-sgx",
   PARALLEL_N64: "parallel-n64",
   PRBOOM: "prboom",
   SNES9X: "snes9x",
@@ -48,7 +51,9 @@ const APP_TYPE_KEYS = Object.freeze({
   GG: "gg",
   N64: "n64",
   NES: "nes",
+  PCE: "pce",
   SG1000: 'sg1000',
+  SGX: 'sgx',
   SMS: "sms",
   SNES: "snes"
 });
@@ -236,6 +241,32 @@ let types = [
     defaults: {
       rom: ""
     }
+  }, {
+    key: APP_TYPE_KEYS.MEDNAFEN_PCE,
+    name: 'NEC PC Engine',
+    shortName: 'NEC PC Engine',
+    coreName: 'Mednafen',
+    location: locMednafen,
+    background: 'images/app/gbc-background.png',
+    thumbnail: 'images/app/gbc-thumb.png',
+    validate: checkRom,
+    extensions: ['pce'],
+    defaults: {
+      rom: ""
+    }
+  }, {
+    key: APP_TYPE_KEYS.MEDNAFEN_SGX,
+    name: 'NEC SuperGrafx',
+    shortName: 'NEC SuperGrafx',
+    coreName: 'Mednafen',
+    location: locMednafen,
+    background: 'images/app/gbc-background.png',
+    thumbnail: 'images/app/gbc-thumb.png',
+    validate: checkRom,
+    extensions: ['sgx'],
+    defaults: {
+      rom: ""
+    }
   }
 ];
 
@@ -276,7 +307,9 @@ addAlias(types, APP_TYPE_KEYS.GENESIS, APP_TYPE_KEYS.GENPLUSGX_MD);
 addAlias(types, APP_TYPE_KEYS.GG, APP_TYPE_KEYS.GENPLUSGX_GG);
 addAlias(types, APP_TYPE_KEYS.N64, APP_TYPE_KEYS.PARALLEL_N64);
 addAlias(types, APP_TYPE_KEYS.NES, APP_TYPE_KEYS.FCEUX);
+addAlias(types, APP_TYPE_KEYS.PCE, APP_TYPE_KEYS.MEDNAFEN_PCE);
 addAlias(types, APP_TYPE_KEYS.SG1000, APP_TYPE_KEYS.GENPLUSGX_SG);
+addAlias(types, APP_TYPE_KEYS.SGX, APP_TYPE_KEYS.MEDNAFEN_SGX);
 addAlias(types, APP_TYPE_KEYS.SMS, APP_TYPE_KEYS.GENPLUSGX_SMS);
 addAlias(types, APP_TYPE_KEYS.SNES, APP_TYPE_KEYS.SNES9X);
 
