@@ -252,7 +252,8 @@ let types = [
     validate: checkRom,
     extensions: ['pce'],
     defaults: {
-      rom: ""
+      rom: "",
+      pad6button: false
     }
   }, {
     key: APP_TYPE_KEYS.MEDNAFEN_SGX,
@@ -265,7 +266,8 @@ let types = [
     validate: checkRom,
     extensions: ['sgx'],
     defaults: {
-      rom: ""
+      rom: "",
+      pad6button: false
     }
   }
 ];
