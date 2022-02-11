@@ -251,8 +251,8 @@ let types = [
     shortName: 'NEC PC Engine',
     coreName: 'Mednafen',
     location: locMednafen,
-    background: 'images/app/gbc-background.png',
-    thumbnail: 'images/app/gbc-thumb.png',
+    background: 'images/app/pce-background.png',
+    thumbnail: 'images/app/pce-thumb.png',
     validate: checkRom,
     extensions: ['pce'],
     defaults: {
@@ -265,8 +265,8 @@ let types = [
     shortName: 'NEC SuperGrafx',
     coreName: 'Mednafen',
     location: locMednafen,
-    background: 'images/app/gbc-background.png',
-    thumbnail: 'images/app/gbc-thumb.png',
+    background: 'images/app/sgx-background.png',
+    thumbnail: 'images/app/sgx-thumb.png',
     validate: checkRom,
     extensions: ['sgx'],
     defaults: {
@@ -279,8 +279,8 @@ let types = [
     shortName: 'Nintendo Virtual Boy',
     coreName: 'Mednafen',
     location: locMednafen,
-    background: 'images/app/gbc-background.png',
-    thumbnail: 'images/app/gbc-thumb.png',
+    background: 'images/app/vb-background.png',
+    thumbnail: 'images/app/vb-thumb.png',
     validate: checkRom,
     extensions: ['vb'], // TODO: More?
     defaults: {
@@ -293,10 +293,10 @@ let types = [
     shortName: 'Neo Geo Pocket Color',
     coreName: 'Mednafen',
     location: locMednafen,
-    background: 'images/app/gbc-background.png',
-    thumbnail: 'images/app/gbc-thumb.png',
+    background: 'images/app/ngc-background.png',
+    thumbnail: 'images/app/ngc-thumb.png',
     validate: checkRom,
-    extensions: ['ngc', 'ngp'], 
+    extensions: ['ngc', 'ngp'],
     defaults: {
       rom: ""
     }
