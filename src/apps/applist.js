@@ -34,6 +34,7 @@ const APP_TYPE_KEYS = Object.freeze({
   JS7800: "js7800",
   MEDNAFEN_PCE: "mednafen-pce",
   MEDNAFEN_SGX: "mednafen-sgx",
+  MEDNAFEN_VB: "mednafen-vb",
   PARALLEL_N64: "parallel-n64",
   PRBOOM: "prboom",
   SNES9X: "snes9x",
@@ -55,7 +56,8 @@ const APP_TYPE_KEYS = Object.freeze({
   SG1000: 'sg1000',
   SGX: 'sgx',
   SMS: "sms",
-  SNES: "snes"
+  SNES: "snes",
+  VB: "vb"
 });
 
 let types = [
@@ -269,6 +271,20 @@ let types = [
       rom: "",
       pad6button: false
     }
+  }, {
+    key: APP_TYPE_KEYS.MEDNAFEN_VB,
+    name: 'Nintendo Virtual Boy',
+    shortName: 'Nintendo Virtual Boy',
+    coreName: 'Mednafen',
+    location: locMednafen,
+    background: 'images/app/gbc-background.png',
+    thumbnail: 'images/app/gbc-thumb.png',
+    validate: checkRom,
+    extensions: ['vb'], // TODO: More?
+    defaults: {
+      rom: "",
+      pad6button: false
+    }
   }
 ];
 
@@ -314,6 +330,7 @@ addAlias(types, APP_TYPE_KEYS.SG1000, APP_TYPE_KEYS.GENPLUSGX_SG);
 addAlias(types, APP_TYPE_KEYS.SGX, APP_TYPE_KEYS.MEDNAFEN_SGX);
 addAlias(types, APP_TYPE_KEYS.SMS, APP_TYPE_KEYS.GENPLUSGX_SMS);
 addAlias(types, APP_TYPE_KEYS.SNES, APP_TYPE_KEYS.SNES9X);
+addAlias(types, APP_TYPE_KEYS.VB, APP_TYPE_KEYS.MEDNAFEN_VB);
 
 const APP_TYPES = types;
 
