@@ -32,6 +32,7 @@ const APP_TYPE_KEYS = Object.freeze({
   GENPLUSGX_SMS: "genplusgx-sms",
   JAVATARI: "javatari",
   JS7800: "js7800",
+  MEDNAFEN_NGC: "mednafen-ngc",
   MEDNAFEN_PCE: "mednafen-pce",
   MEDNAFEN_SGX: "mednafen-sgx",
   MEDNAFEN_VB: "mednafen-vb",
@@ -52,6 +53,7 @@ const APP_TYPE_KEYS = Object.freeze({
   GG: "gg",
   N64: "n64",
   NES: "nes",
+  NGC: "ngc",
   PCE: "pce",
   SG1000: 'sg1000',
   SGX: 'sgx',
@@ -285,6 +287,19 @@ let types = [
       rom: "",
       pad6button: false
     }
+  }, {
+    key: APP_TYPE_KEYS.MEDNAFEN_NGC,
+    name: 'Neo Geo Pocket Color',
+    shortName: 'Neo Geo Pocket Color',
+    coreName: 'Mednafen',
+    location: locMednafen,
+    background: 'images/app/gbc-background.png',
+    thumbnail: 'images/app/gbc-thumb.png',
+    validate: checkRom,
+    extensions: ['ngc', 'ngp'], 
+    defaults: {
+      rom: ""
+    }
   }
 ];
 
@@ -325,6 +340,7 @@ addAlias(types, APP_TYPE_KEYS.GENESIS, APP_TYPE_KEYS.GENPLUSGX_MD);
 addAlias(types, APP_TYPE_KEYS.GG, APP_TYPE_KEYS.GENPLUSGX_GG);
 addAlias(types, APP_TYPE_KEYS.N64, APP_TYPE_KEYS.PARALLEL_N64);
 addAlias(types, APP_TYPE_KEYS.NES, APP_TYPE_KEYS.FCEUX);
+addAlias(types, APP_TYPE_KEYS.NGC, APP_TYPE_KEYS.MEDNAFEN_NGC);
 addAlias(types, APP_TYPE_KEYS.PCE, APP_TYPE_KEYS.MEDNAFEN_PCE);
 addAlias(types, APP_TYPE_KEYS.SG1000, APP_TYPE_KEYS.GENPLUSGX_SG);
 addAlias(types, APP_TYPE_KEYS.SGX, APP_TYPE_KEYS.MEDNAFEN_SGX);
