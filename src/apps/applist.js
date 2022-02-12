@@ -201,7 +201,7 @@ let types = [
     background: 'images/app/n64-background.png',
     thumbnail: 'images/app/n64-thumb.png',
     validate: checkRom,
-    extensions: ['n64','v64','z64'],
+    extensions: ['n64', 'v64', 'z64'],
     isDelayedExit: true,
     addParams: (url) => {
       const N64_SKIP_RP = "n64.skip";
@@ -311,18 +311,18 @@ let types = [
       rom: ""
     }
   }, {
-      key: APP_TYPE_KEYS.MEDNAFEN_NGP,
-      name: 'Neo Geo Pocket',
-      shortName: 'Neo Geo Pocket',
-      coreName: 'Mednafen',
-      location: locMednafen,
-      background: 'images/app/ngp-background.png',
-      thumbnail: 'images/app/ngp-thumb.png',
-      validate: checkRom,
-      extensions: ['ngp'],
-      defaults: {
-        rom: ""
-      }
+    key: APP_TYPE_KEYS.MEDNAFEN_NGP,
+    name: 'Neo Geo Pocket',
+    shortName: 'Neo Geo Pocket',
+    coreName: 'Mednafen',
+    location: locMednafen,
+    background: 'images/app/ngp-background.png',
+    thumbnail: 'images/app/ngp-thumb.png',
+    validate: checkRom,
+    extensions: ['ngp'],
+    defaults: {
+      rom: ""
+    }
   }, {
     key: APP_TYPE_KEYS.MEDNAFEN_WSC,
     name: 'WonderSwan Color',
