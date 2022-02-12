@@ -33,9 +33,12 @@ const APP_TYPE_KEYS = Object.freeze({
   JAVATARI: "javatari",
   JS7800: "js7800",
   MEDNAFEN_NGC: "mednafen-ngc",
+  MEDNAFEN_NGP: "mednafen-ngp",
   MEDNAFEN_PCE: "mednafen-pce",
   MEDNAFEN_SGX: "mednafen-sgx",
   MEDNAFEN_VB: "mednafen-vb",
+  MEDNAFEN_WSC: "mednafen-wsc",
+  MEDNAFEN_WS: "mednafen-ws",
   PARALLEL_N64: "parallel-n64",
   PRBOOM: "prboom",
   SNES9X: "snes9x",
@@ -54,13 +57,26 @@ const APP_TYPE_KEYS = Object.freeze({
   N64: "n64",
   NES: "nes",
   NGC: "ngc",
+  NGP: "ngp",
   PCE: "pce",
   SG1000: 'sg1000',
   SGX: 'sgx',
   SMS: "sms",
   SNES: "snes",
-  VB: "vb"
+  VB: "vb",
+  WSC: "wsc",
+  WS: "ws"
 });
+
+const PCE_DEFAULTS = {
+  rom: "",
+  pad6button: false
+};
+
+const WS_DEFAULTS = {
+  rom: "",
+  rotated: false,
+}
 
 let types = [
   {
@@ -255,10 +271,7 @@ let types = [
     thumbnail: 'images/app/pce-thumb.png',
     validate: checkRom,
     extensions: ['pce'],
-    defaults: {
-      rom: "",
-      pad6button: false
-    }
+    defaults: PCE_DEFAULTS
   }, {
     key: APP_TYPE_KEYS.MEDNAFEN_SGX,
     name: 'NEC SuperGrafx',
@@ -269,10 +282,7 @@ let types = [
     thumbnail: 'images/app/sgx-thumb.png',
     validate: checkRom,
     extensions: ['sgx'],
-    defaults: {
-      rom: "",
-      pad6button: false
-    }
+    defaults: PCE_DEFAULTS
   }, {
     key: APP_TYPE_KEYS.MEDNAFEN_VB,
     name: 'Nintendo Virtual Boy',
@@ -296,10 +306,45 @@ let types = [
     background: 'images/app/ngc-background.png',
     thumbnail: 'images/app/ngc-thumb.png',
     validate: checkRom,
-    extensions: ['ngc', 'ngp'],
+    extensions: ['ngc'],
     defaults: {
       rom: ""
     }
+  }, {
+      key: APP_TYPE_KEYS.MEDNAFEN_NGP,
+      name: 'Neo Geo Pocket',
+      shortName: 'Neo Geo Pocket',
+      coreName: 'Mednafen',
+      location: locMednafen,
+      background: 'images/app/ngp-background.png',
+      thumbnail: 'images/app/ngp-thumb.png',
+      validate: checkRom,
+      extensions: ['ngp'],
+      defaults: {
+        rom: ""
+      }
+  }, {
+    key: APP_TYPE_KEYS.MEDNAFEN_WSC,
+    name: 'WonderSwan Color',
+    shortName: 'WonderSwan Color',
+    coreName: 'Mednafen',
+    location: locMednafen,
+    background: 'images/app/wsc-background.png',
+    thumbnail: 'images/app/wsc-thumb.png',
+    validate: checkRom,
+    extensions: ['wsc'],
+    defaults: WS_DEFAULTS
+  }, {
+    key: APP_TYPE_KEYS.MEDNAFEN_WS,
+    name: 'WonderSwan',
+    shortName: 'WonderSwan',
+    coreName: 'Mednafen',
+    location: locMednafen,
+    background: 'images/app/ws-background.png',
+    thumbnail: 'images/app/ws-thumb.png',
+    validate: checkRom,
+    extensions: ['ws'],
+    defaults: WS_DEFAULTS
   }
 ];
 
@@ -341,12 +386,15 @@ addAlias(types, APP_TYPE_KEYS.GG, APP_TYPE_KEYS.GENPLUSGX_GG);
 addAlias(types, APP_TYPE_KEYS.N64, APP_TYPE_KEYS.PARALLEL_N64);
 addAlias(types, APP_TYPE_KEYS.NES, APP_TYPE_KEYS.FCEUX);
 addAlias(types, APP_TYPE_KEYS.NGC, APP_TYPE_KEYS.MEDNAFEN_NGC);
+addAlias(types, APP_TYPE_KEYS.NGP, APP_TYPE_KEYS.MEDNAFEN_NGP);
 addAlias(types, APP_TYPE_KEYS.PCE, APP_TYPE_KEYS.MEDNAFEN_PCE);
 addAlias(types, APP_TYPE_KEYS.SG1000, APP_TYPE_KEYS.GENPLUSGX_SG);
 addAlias(types, APP_TYPE_KEYS.SGX, APP_TYPE_KEYS.MEDNAFEN_SGX);
 addAlias(types, APP_TYPE_KEYS.SMS, APP_TYPE_KEYS.GENPLUSGX_SMS);
 addAlias(types, APP_TYPE_KEYS.SNES, APP_TYPE_KEYS.SNES9X);
 addAlias(types, APP_TYPE_KEYS.VB, APP_TYPE_KEYS.MEDNAFEN_VB);
+addAlias(types, APP_TYPE_KEYS.WSC, APP_TYPE_KEYS.MEDNAFEN_WSC);
+addAlias(types, APP_TYPE_KEYS.WS, APP_TYPE_KEYS.MEDNAFEN_WS);
 
 const APP_TYPES = types;
 
