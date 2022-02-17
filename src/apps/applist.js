@@ -15,7 +15,7 @@ const loc2600 = isDev() ? `http://${localIp}:3050` : 'app/2600';
 const locSnes = isDev() ? `http://${localIp}:3060` : 'app/snes';
 const locN64 = isDev() ? `http://${localIp}:3065` : 'app/n64';
 const locGba = isDev() ? `http://${localIp}:3070` : 'app/gba';
-const locMednafen = isDev() ? `http://${localIp}:3075` : 'app/mednanfen';
+const locMednafen = isDev() ? `http://${localIp}:3075` : 'app/mednafen';
 
 const checkRom = app => {
   if (app.props === undefined || isEmptyString(app.props.rom)) {
@@ -39,7 +39,7 @@ const APP_TYPE_KEYS = Object.freeze({
   MEDNAFEN_VB: "mednafen-vb",
   MEDNAFEN_WSC: "mednafen-wsc",
   MEDNAFEN_WS: "mednafen-ws",
-  PARALLEL_N64: "parallel-n64",
+  //PARALLEL_N64: "parallel-n64",
   PRBOOM: "prboom",
   SNES9X: "snes9x",
   VBA_M_GBA: "vba-m-gba",
@@ -54,7 +54,7 @@ const APP_TYPE_KEYS = Object.freeze({
   GBC: "gbc",
   GENESIS: "genesis",
   GG: "gg",
-  N64: "n64",
+  //N64: "n64",
   NES: "nes",
   NGC: "ngc",
   NGP: "ngp",
@@ -193,7 +193,7 @@ let types = [
     defaults: {
       rom: ""
     }
-  }, {
+  }, /*{
     key: APP_TYPE_KEYS.PARALLEL_N64,
     name: 'Nintendo 64',
     coreName: 'paraLLEl N64',
@@ -213,7 +213,7 @@ let types = [
     defaults: {
       rom: ""
     }
-  }, {
+  },*/ {
     key: APP_TYPE_KEYS.VBA_M_GBA,
     name: 'Nintendo Game Boy Advance',
     shortName: 'Nintendo GBA',
@@ -383,7 +383,7 @@ addAlias(types, APP_TYPE_KEYS.GB, APP_TYPE_KEYS.VBA_M_GB);
 addAlias(types, APP_TYPE_KEYS.GBC, APP_TYPE_KEYS.VBA_M_GBC);
 addAlias(types, APP_TYPE_KEYS.GENESIS, APP_TYPE_KEYS.GENPLUSGX_MD);
 addAlias(types, APP_TYPE_KEYS.GG, APP_TYPE_KEYS.GENPLUSGX_GG);
-addAlias(types, APP_TYPE_KEYS.N64, APP_TYPE_KEYS.PARALLEL_N64);
+//addAlias(types, APP_TYPE_KEYS.N64, APP_TYPE_KEYS.PARALLEL_N64);
 addAlias(types, APP_TYPE_KEYS.NES, APP_TYPE_KEYS.FCEUX);
 addAlias(types, APP_TYPE_KEYS.NGC, APP_TYPE_KEYS.MEDNAFEN_NGC);
 addAlias(types, APP_TYPE_KEYS.NGP, APP_TYPE_KEYS.MEDNAFEN_NGP);
