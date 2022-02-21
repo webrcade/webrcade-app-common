@@ -34,14 +34,18 @@ export class AppWrapper {
     return this.getProps().title;
   }
 
-  async saveStateToStorage(path, buffer) {
+  async saveStateToStorage(path, buffer, info = true) {
     const { storage } = this;
 
-    await storage.put(path, buffer);
-    await storage.put(`${path}/info`, {
-      title: this.getTitle(),
-      time: new Date().getTime()
-    });
+    if (buffer) {
+      await storage.put(path, buffer);
+    }
+    if (info) {
+      await storage.put(`${path}/info`, {
+        title: this.getTitle(),
+        time: new Date().getTime()
+      });
+    }
   }
 
   createControllers() {

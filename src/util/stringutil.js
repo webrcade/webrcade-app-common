@@ -14,6 +14,14 @@ const blobToStr = (blob) => {
   });
 }
 
+function u8ArrayToStr(u8Array) {
+	var i, len = u8Array.length, b_str = "";
+	for (i=0; i<len; i++) {
+		b_str += String.fromCharCode(u8Array[i]);
+	}
+	return b_str;
+}
+
 const isEmptyString = (str) => {
   return str === undefined || !str || str.length === 0;
 }
@@ -35,5 +43,6 @@ export {
   blobToStr,
   isEmptyString,
   isValidString,
-  limitString
+  limitString,
+  u8ArrayToStr
 }

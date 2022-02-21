@@ -12,6 +12,7 @@ export class DisplayLoop {
     this.isNativeCheckDone = false;
     this.fps = '';
     this.debugDiv = null;
+    this.debugCb = null;
 
     if (this.debug) {
       this.debugDiv = addDebugDiv();
@@ -121,7 +122,9 @@ export class DisplayLoop {
         if (((nextTimestamp + adjustTolerance) < now) || this.forceAdjustTimestamp) {
           this.forceAdjustTimestamp = false;
           nextTimestamp = -1; fc = 0; start = now; avgWait = 0;
-          LOG.info("adjusted next timestamp.");
+          if (this.debug) {
+            LOG.info("adjusted next timestamp.");
+          }
         }
 
         let wait = nextTimestamp == -1 ? 0 : (nextTimestamp - now);
@@ -164,7 +167,7 @@ export class DisplayLoop {
             const fps = (fpsVal).toFixed(2);
             const w = ((avgWait / fc) * frequency).toFixed(2);
             this.fps = `FPS: ${fps}, Vsync: ${this.vsync}, Wait: ${w}, Native: ${this.isNative}, Wait count: ${this.waitCount}`;
-            this.debugDiv.innerHTML = this.fps;
+            this.debugDiv.innerHTML = this.debugCb ? this.debugCb(this.fps) : this.fps;
             LOG.info(this.fps);
           }
 
@@ -192,6 +195,10 @@ export class DisplayLoop {
     let nextTimestamp = -1;
     this.pause(false);
     setTimeout(() => this.sync(f, true), 0);
+  }
+
+  setDebugCallback(cb) {
+    this.debugCb = cb;
   }
 
   getFps() {

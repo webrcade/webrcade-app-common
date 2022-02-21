@@ -7,6 +7,9 @@ import { isDev } from '../../../util';
 
 import styles from './style.scss'
 
+export const APP_DIV_ID = "webrcade-app";
+export const APP_FRAME_ID = "webrcade-app-iframe";
+
 export class AppScreen extends Component {
 
   constructor() {
@@ -33,47 +36,98 @@ export class AppScreen extends Component {
     }
   }
 
+  getAppDiv() {
+    return document.getElementById(APP_DIV_ID);
+  }
+
+  getAppIframe() {
+    return document.getElementById(APP_FRAME_ID);
+  }
+
   componentDidMount() {
-    const { frameRef } = this.props;
     const { MAX_LOAD_TIME } = this;
 
     window.addEventListener("message", this.messageListener);
 
     this.frameRetryId = setTimeout(() => {
-      if (frameRef.current && !isDev()) {
+      const iframe = this.getAppIframe();
+      if (iframe && !isDev()) {
         LOG.info("attempting to reload frame, exceeded wait timeout: " + MAX_LOAD_TIME);
-        frameRef.current.contentDocument.location.reload();
+        iframe.contentDocument.location.reload();
       }
     }, MAX_LOAD_TIME);
   }
 
   componentWillUnmount() {
+    const { app, exitCallback } = this.props;
+    const reg = AppRegistry.instance;
+    const appDiv = this.getAppDiv();
+
+    if (!reg.isDelayedExit(app)) {
+      if (appDiv) {
+        appDiv.parentNode.removeChild(appDiv);
+        if (exitCallback) {
+          exitCallback();
+        }
+      }
+    } else {
+      // This is a total hack to try to get browsers to free up
+      // the memory used by emscripten in the iframe
+      let count = 0;
+      const appDiv = this.getAppDiv();
+      if (appDiv) {
+        const iframe = appDiv.children[0];
+        iframe.style.height = '20px';
+        iframe.style.opacity = '0';
+        let intervalId = setInterval(() => {
+          if (count === 20) { // 20 worked
+            clearInterval(intervalId);
+            appDiv.parentNode.removeChild(appDiv);
+            if (exitCallback) {
+              exitCallback();
+            }
+          }
+          iframe.src = "about:blank";
+          count++;
+        }, 100);
+      }
+    }
+
     window.removeEventListener("message", this.messageListener);
 
     this.clearRefreshTimout();
   }
 
   render() {
-    const { app, context, frameRef } = this.props;
+    const { app, context } = this.props;
     const reg = AppRegistry.instance;
+
     let location = reg.getLocation(app, context);
     if (!isDev() && context && context === AppProps.RV_CONTEXT_EDITOR) {
       location = "../../" + location;
     }
 
-    return (
-      <div className="webrcade-app">
-        {
-          // eslint-disable-next-line
-        }<iframe
-          ref={frameRef}
-          style={!isDev() ? { display: "none" } : {}}
-          width="100%"
-          height="100%"
-          frameBorder="0"
-          allow="autoplay; gamepad"
-          src={location} />
-      </div>
-    )
+    let appDiv = this.getAppDiv();
+    if (!appDiv) {
+      appDiv = document.createElement("div");
+      appDiv.className = APP_DIV_ID;
+      appDiv.id = APP_DIV_ID;
+
+      const iframe = document.createElement("iframe");
+      if (!isDev()) {
+        iframe.style.display = 'none';
+      }
+      iframe.id = APP_FRAME_ID;
+      iframe.setAttribute("width", "100%");
+      iframe.setAttribute("height", "100%");
+      iframe.setAttribute("frameBorder", "0");
+      iframe.setAttribute("src", location);
+      iframe.setAttribute("allow", "autoplay; gamepad");
+
+      appDiv.appendChild(iframe);
+      document.body.appendChild(appDiv);
+    }
+
+    return (<div></div>);
   }
 };

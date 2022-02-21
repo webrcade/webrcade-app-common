@@ -7,6 +7,7 @@ import { ErrorScreen } from "../../screens/error";
 import { OverlayScreen } from "../../screens/overlay"
 import { PauseScreen } from "../../screens/pause";
 import { Resources, TEXT_IDS } from "../../../resources";
+import { YesNoScreen } from "../../screens/yesno";
 import { UrlUtil, addXboxFullscreenCallback, getXboxViewMessage, preloadImages } from '../../../util';
 import {
   VolumeOffBlackImage,
@@ -31,6 +32,7 @@ export class WebrcadeApp extends Component {
       mode: this.ModeEnum.LOADING,
       loadingPercent: null,
       errorMessage: null,
+      yesNoInfo: null,
       showOverlay: false,
       showXboxViewMessage: false
     };
@@ -45,6 +47,7 @@ export class WebrcadeApp extends Component {
     LOADING: "loading",
     LOADED: "loaded",
     ERROR: "error",
+    YESNO: "yesno",
     PAUSE: "pause"
   }
 
@@ -63,7 +66,7 @@ export class WebrcadeApp extends Component {
   componentDidMount() {
     window.addEventListener("message", this.messageListener);
 
-    // Inform that the application was laoded
+    // Inform that the application was loaded
     if (!isDev() && window.parent) {
       window.parent.postMessage("appLoaded", "*");
     }
@@ -134,6 +137,14 @@ export class WebrcadeApp extends Component {
     );
   }
 
+  renderYesNoScreen() {
+    const { yesNoInfo } = this.state;
+
+    return (
+      <YesNoScreen info={yesNoInfo} />
+    );
+  }
+
   renderPauseScreen() {
     const { appProps } = this;
 
@@ -174,11 +185,21 @@ export class WebrcadeApp extends Component {
       return this.renderXboxViewScreen();
     } else if (mode === ModeEnum.ERROR) {
       return this.renderErrorScreen();
+    } else if (mode === ModeEnum.YESNO) {
+      return this.renderYesNoScreen();
     } else if (showOverlay) {
       return this.renderOverlayScreen();
     }
 
     return null;
+  }
+
+  yesNoPrompt(info) {
+    const { ModeEnum } = this;
+    this.setState({
+      mode: ModeEnum.YESNO,
+      yesNoInfo: info
+    })
   }
 
   pause(resumeCallback) {

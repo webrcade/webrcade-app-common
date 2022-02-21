@@ -5,6 +5,16 @@ const isXbox = () => {
   return userAgent.includes("xbox");
 }
 
+const isIos = () => {
+  const userAgent = navigator.userAgent.toLowerCase();
+  return /ipad|iphone|ipod/.test(userAgent);
+}
+
+const isMacOs = () => {
+  const userAgent = navigator.userAgent.toLowerCase();
+  return /mac os/.test(userAgent);
+}
+
 const isMobileSafari = () => {
   const userAgent = navigator.userAgent.toLowerCase();
   return userAgent.includes('safari/') &&
@@ -77,7 +87,9 @@ const isTouchSupported = () => {
 }
 
 export {
+  isMacOs,
   isXbox,
+  isIos,
   isMobileSafari,
   applyIosNavBarHack,
   removeIosNavBarHack,

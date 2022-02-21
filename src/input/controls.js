@@ -205,7 +205,7 @@ export class Controller {
     this.keyCodeToControlMapping.handleKeyEvent(e, down);
   }
 
-  isPadButtonDown(cid) {
+  isPadButtonDown(cid, analogToDigital = true) {
     const { padMapping } = this;
     const { pad } = this;
     const bid = padMapping.getButtonNum(cid);
@@ -214,7 +214,7 @@ export class Controller {
       bdown = pad.buttons[bid].pressed;
     }
 
-    if (!bdown) {
+    if (!bdown && analogToDigital) {
       switch (cid) {
         case CIDS.LEFT:
           bdown = this.isAxisLeft(0);
@@ -236,7 +236,7 @@ export class Controller {
 
   getAxisValue(stick, isX) {
     const { padMapping } = this;
-    return padMapping.getAxisValue(stick, isX);
+    return padMapping.getAxisValue(this.pad, stick, isX);
   }
 
   isAxisLeft(stick) {
@@ -259,7 +259,7 @@ export class Controller {
     return padMapping.getAxisValue(this.pad, stick, false) > 0.5;
   }
 
-  isControlDown(cid) {
+  isControlDown(cid, analogToDigital = true) {
     const { isXbox } = this;
     if (this.keyCodeToControlMapping.isControlDown(cid)) {
       return true;
@@ -290,7 +290,7 @@ export class Controller {
       return false;
     }
 
-    return this.isPadButtonDown(cid);
+    return this.isPadButtonDown(cid, analogToDigital);
   }
 }
 
@@ -365,7 +365,27 @@ export class Controllers {
     }
   }
 
-  isControlDown(controllerIdx, cid) {
-    return this.controllers[controllerIdx].isControlDown(cid);
+  isControlDown(controllerIdx, cid, analogToDigital = true)  {
+    return this.controllers[controllerIdx].isControlDown(cid, analogToDigital);
+  }
+
+  isAxisDown(controllerIdx, stick) {
+    return this.controllers[controllerIdx].isAxisDown(stick);
+  }
+
+  isAxisUp(controllerIdx, stick) {
+    return this.controllers[controllerIdx].isAxisUp(stick);
+  }
+
+  isAxisLeft(controllerIdx, stick) {
+    return this.controllers[controllerIdx].isAxisLeft(stick);
+  }
+
+  isAxisRight(controllerIdx, stick) {
+    return this.controllers[controllerIdx].isAxisRight(stick);
+  }
+
+  getAxisValue(controllerIdx, stick, isX) {
+    return this.controllers[controllerIdx].getAxisValue(stick, isX);
   }
 }

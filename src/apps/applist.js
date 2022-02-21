@@ -1,4 +1,4 @@
-import { isDev, isEmptyString } from '../util';
+import { UrlUtil, isDev, isEmptyString } from '../util';
 import { config } from '../conf';
 import * as Genesis from './type/genesis';
 import * as Atari7800 from './type/7800';
@@ -13,7 +13,9 @@ const locNes = isDev() ? `http://${localIp}:3030` : 'app/nes';
 const locDoom = isDev() ? `http://${localIp}:3040` : 'app/doom';
 const loc2600 = isDev() ? `http://${localIp}:3050` : 'app/2600';
 const locSnes = isDev() ? `http://${localIp}:3060` : 'app/snes';
+const locN64 = isDev() ? `http://${localIp}:3065` : 'app/n64';
 const locGba = isDev() ? `http://${localIp}:3070` : 'app/gba';
+const locMednafen = isDev() ? `http://${localIp}:3075` : 'app/mednafen';
 
 const checkRom = app => {
   if (app.props === undefined || isEmptyString(app.props.rom)) {
@@ -30,6 +32,14 @@ const APP_TYPE_KEYS = Object.freeze({
   GENPLUSGX_SMS: "genplusgx-sms",
   JAVATARI: "javatari",
   JS7800: "js7800",
+  MEDNAFEN_NGC: "mednafen-ngc",
+  MEDNAFEN_NGP: "mednafen-ngp",
+  MEDNAFEN_PCE: "mednafen-pce",
+  MEDNAFEN_SGX: "mednafen-sgx",
+  MEDNAFEN_VB: "mednafen-vb",
+  MEDNAFEN_WSC: "mednafen-wsc",
+  MEDNAFEN_WS: "mednafen-ws",
+  //PARALLEL_N64: "parallel-n64",
   PRBOOM: "prboom",
   SNES9X: "snes9x",
   VBA_M_GBA: "vba-m-gba",
@@ -44,11 +54,35 @@ const APP_TYPE_KEYS = Object.freeze({
   GBC: "gbc",
   GENESIS: "genesis",
   GG: "gg",
+  //N64: "n64",
   NES: "nes",
+  NGC: "ngc",
+  NGP: "ngp",
+  PCE: "pce",
   SG1000: 'sg1000',
+  SGX: 'sgx',
   SMS: "sms",
-  SNES: "snes"
+  SNES: "snes",
+  VB: "vb",
+  WSC: "wsc",
+  WS: "ws"
 });
+
+const PCE_DEFAULTS = {
+  rom: "",
+  pad6button: false
+};
+
+const WS_DEFAULTS = {
+  rom: "",
+  rotated: false,
+  language: 0
+}
+
+const NGP_DEFAULTS = {
+  rom: "",
+  language: 0
+}
 
 let types = [
   {
@@ -165,7 +199,27 @@ let types = [
     defaults: {
       rom: ""
     }
-  }, {
+  }, /*{
+    key: APP_TYPE_KEYS.PARALLEL_N64,
+    name: 'Nintendo 64',
+    coreName: 'paraLLEl N64',
+    location: locN64,
+    background: 'images/app/n64-background.png',
+    thumbnail: 'images/app/n64-thumb.png',
+    validate: checkRom,
+    extensions: ['n64', 'v64', 'z64'],
+    isDelayedExit: true,
+    addParams: (url) => {
+      const N64_SKIP_RP = "n64.skip";
+      const n64skip = UrlUtil.getParam(
+        window.location.search, N64_SKIP_RP);
+      return n64skip ?
+        UrlUtil.addParam(url, N64_SKIP_RP, n64skip) : url;
+    },
+    defaults: {
+      rom: ""
+    }
+  },*/ {
     key: APP_TYPE_KEYS.VBA_M_GBA,
     name: 'Nintendo Game Boy Advance',
     shortName: 'Nintendo GBA',
@@ -213,6 +267,86 @@ let types = [
     defaults: {
       rom: ""
     }
+  }, {
+    key: APP_TYPE_KEYS.MEDNAFEN_PCE,
+    name: 'NEC PC Engine',
+    shortName: 'NEC PC Engine',
+    coreName: 'Mednafen',
+    location: locMednafen,
+    background: 'images/app/pce-background.png',
+    thumbnail: 'images/app/pce-thumb.png',
+    validate: checkRom,
+    extensions: ['pce'],
+    defaults: PCE_DEFAULTS
+  }, {
+    key: APP_TYPE_KEYS.MEDNAFEN_SGX,
+    name: 'NEC SuperGrafx',
+    shortName: 'NEC SuperGrafx',
+    coreName: 'Mednafen',
+    location: locMednafen,
+    background: 'images/app/sgx-background.png',
+    thumbnail: 'images/app/sgx-thumb.png',
+    validate: checkRom,
+    extensions: ['sgx'],
+    defaults: PCE_DEFAULTS
+  }, {
+    key: APP_TYPE_KEYS.MEDNAFEN_VB,
+    name: 'Nintendo Virtual Boy',
+    shortName: 'Nintendo Virtual Boy',
+    coreName: 'Mednafen',
+    location: locMednafen,
+    background: 'images/app/vb-background.png',
+    thumbnail: 'images/app/vb-thumb.png',
+    validate: checkRom,
+    extensions: ['vb'], // TODO: More?
+    defaults: {
+      rom: "",
+      pad6button: false
+    }
+  }, {
+    key: APP_TYPE_KEYS.MEDNAFEN_NGC,
+    name: 'Neo Geo Pocket Color',
+    shortName: 'Neo Geo Pocket Color',
+    coreName: 'Mednafen',
+    location: locMednafen,
+    background: 'images/app/ngc-background.png',
+    thumbnail: 'images/app/ngc-thumb.png',
+    validate: checkRom,
+    extensions: ['ngc'],
+    defaults: NGP_DEFAULTS
+  }, {
+    key: APP_TYPE_KEYS.MEDNAFEN_NGP,
+    name: 'Neo Geo Pocket',
+    shortName: 'Neo Geo Pocket',
+    coreName: 'Mednafen',
+    location: locMednafen,
+    background: 'images/app/ngp-background.png',
+    thumbnail: 'images/app/ngp-thumb.png',
+    validate: checkRom,
+    extensions: ['ngp'],
+    defaults: NGP_DEFAULTS
+  }, {
+    key: APP_TYPE_KEYS.MEDNAFEN_WSC,
+    name: 'WonderSwan Color',
+    shortName: 'WonderSwan Color',
+    coreName: 'Mednafen',
+    location: locMednafen,
+    background: 'images/app/wsc-background.png',
+    thumbnail: 'images/app/wsc-thumb.png',
+    validate: checkRom,
+    extensions: ['wsc'],
+    defaults: WS_DEFAULTS
+  }, {
+    key: APP_TYPE_KEYS.MEDNAFEN_WS,
+    name: 'WonderSwan',
+    shortName: 'WonderSwan',
+    coreName: 'Mednafen',
+    location: locMednafen,
+    background: 'images/app/ws-background.png',
+    thumbnail: 'images/app/ws-thumb.png',
+    validate: checkRom,
+    extensions: ['ws'],
+    defaults: WS_DEFAULTS
   }
 ];
 
@@ -230,6 +364,7 @@ if (config.isPublicServer()) {
     location: locDoom,
     background: 'images/app/doom-background.png',
     thumbnail: 'images/app/doom-thumb.png',
+    isDelayedExit: true,
     validate: app => {
       if (app.props === undefined || isEmptyString(app.props.game)) {
         throw new Error("Missing 'game' property");
@@ -245,16 +380,23 @@ if (config.isPublicServer()) {
 // Aliases
 addAlias(types, APP_TYPE_KEYS.A2600, APP_TYPE_KEYS.JAVATARI);
 addAlias(types, APP_TYPE_KEYS.A7800, APP_TYPE_KEYS.JS7800);
-
 addAlias(types, APP_TYPE_KEYS.GBA, APP_TYPE_KEYS.VBA_M_GBA);
 addAlias(types, APP_TYPE_KEYS.GB, APP_TYPE_KEYS.VBA_M_GB);
 addAlias(types, APP_TYPE_KEYS.GBC, APP_TYPE_KEYS.VBA_M_GBC);
 addAlias(types, APP_TYPE_KEYS.GENESIS, APP_TYPE_KEYS.GENPLUSGX_MD);
 addAlias(types, APP_TYPE_KEYS.GG, APP_TYPE_KEYS.GENPLUSGX_GG);
+//addAlias(types, APP_TYPE_KEYS.N64, APP_TYPE_KEYS.PARALLEL_N64);
 addAlias(types, APP_TYPE_KEYS.NES, APP_TYPE_KEYS.FCEUX);
+addAlias(types, APP_TYPE_KEYS.NGC, APP_TYPE_KEYS.MEDNAFEN_NGC);
+addAlias(types, APP_TYPE_KEYS.NGP, APP_TYPE_KEYS.MEDNAFEN_NGP);
+addAlias(types, APP_TYPE_KEYS.PCE, APP_TYPE_KEYS.MEDNAFEN_PCE);
 addAlias(types, APP_TYPE_KEYS.SG1000, APP_TYPE_KEYS.GENPLUSGX_SG);
+addAlias(types, APP_TYPE_KEYS.SGX, APP_TYPE_KEYS.MEDNAFEN_SGX);
 addAlias(types, APP_TYPE_KEYS.SMS, APP_TYPE_KEYS.GENPLUSGX_SMS);
 addAlias(types, APP_TYPE_KEYS.SNES, APP_TYPE_KEYS.SNES9X);
+addAlias(types, APP_TYPE_KEYS.VB, APP_TYPE_KEYS.MEDNAFEN_VB);
+addAlias(types, APP_TYPE_KEYS.WSC, APP_TYPE_KEYS.MEDNAFEN_WSC);
+addAlias(types, APP_TYPE_KEYS.WS, APP_TYPE_KEYS.MEDNAFEN_WS);
 
 const APP_TYPES = types;
 
