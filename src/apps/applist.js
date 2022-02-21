@@ -76,6 +76,12 @@ const PCE_DEFAULTS = {
 const WS_DEFAULTS = {
   rom: "",
   rotated: false,
+  language: 0
+}
+
+const NGP_DEFAULTS = {
+  rom: "",
+  language: 0
 }
 
 let types = [
@@ -307,9 +313,7 @@ let types = [
     thumbnail: 'images/app/ngc-thumb.png',
     validate: checkRom,
     extensions: ['ngc'],
-    defaults: {
-      rom: ""
-    }
+    defaults: NGP_DEFAULTS
   }, {
     key: APP_TYPE_KEYS.MEDNAFEN_NGP,
     name: 'Neo Geo Pocket',
@@ -320,9 +324,7 @@ let types = [
     thumbnail: 'images/app/ngp-thumb.png',
     validate: checkRom,
     extensions: ['ngp'],
-    defaults: {
-      rom: ""
-    }
+    defaults: NGP_DEFAULTS
   }, {
     key: APP_TYPE_KEYS.MEDNAFEN_WSC,
     name: 'WonderSwan Color',
