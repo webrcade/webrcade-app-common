@@ -99,10 +99,10 @@ export class AppScreen extends Component {
   }
 
   render() {
-    const { app, context } = this.props;
+    const { app, context, feedProps } = this.props;
     const reg = AppRegistry.instance;
 
-    let location = reg.getLocation(app, context);
+    let location = reg.getLocation(app, context, feedProps);
     if (!isDev() && context && context === AppProps.RV_CONTEXT_EDITOR) {
       location = "../../" + location;
     }

@@ -24,6 +24,7 @@ class Feed extends FeedBase {
 
     if (feed.background) feed.background = remapUrl(feed.background);
     if (feed.thumbnail) feed.thumbnail = remapUrl(feed.thumbnail);
+    if (!feed.props) feed.props = {}
 
     // Ensure categories are available
     let categories = feed.categories;
@@ -80,6 +81,10 @@ class Feed extends FeedBase {
     }
     this.categories = categories;
   }
+
+  getProps() {
+    return this.originalFeed.props ? this.originalFeed.props : {}
+  };
 
   getCategories() { return this.categories; }
 

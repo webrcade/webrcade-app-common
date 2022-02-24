@@ -2,6 +2,7 @@ import { UrlUtil, isDev, isEmptyString } from '../util';
 import { config } from '../conf';
 import * as Genesis from './type/genesis';
 import * as Atari7800 from './type/7800';
+import * as Lynx from './type/lynx';
 import * as Nes from './type/nes';
 
 const localIp = config.getLocalIp();
@@ -32,6 +33,7 @@ const APP_TYPE_KEYS = Object.freeze({
   GENPLUSGX_SMS: "genplusgx-sms",
   JAVATARI: "javatari",
   JS7800: "js7800",
+  MEDNAFEN_LNX: "mednafen-lnx",
   MEDNAFEN_NGC: "mednafen-ngc",
   MEDNAFEN_NGP: "mednafen-ngp",
   MEDNAFEN_PCE: "mednafen-pce",
@@ -55,6 +57,7 @@ const APP_TYPE_KEYS = Object.freeze({
   GENESIS: "genesis",
   GG: "gg",
   //N64: "n64",
+  LNX: "lnx",
   NES: "nes",
   NGC: "ngc",
   NGP: "ngp",
@@ -347,6 +350,28 @@ let types = [
     validate: checkRom,
     extensions: ['ws'],
     defaults: WS_DEFAULTS
+  }, {
+    key: APP_TYPE_KEYS.MEDNAFEN_LNX,
+    name: 'Atari Lynx',
+    shortName: 'Atari Lynx',
+    coreName: 'Mednafen',
+    location: locMednafen,
+    background: 'images/app/lynx-background.png',
+    thumbnail: 'images/app/lynx-thumb.png',
+    validate: checkRom,
+    extensions: ['lnx'],
+    testMagic: Lynx.testMagic,
+    getMd5: Lynx.getMd5,
+    addProps: (feedProps, outProps) => {
+      const boot = feedProps.lnx_boot;
+      if (boot) {
+        outProps.lnx_boot = boot;
+      }
+    },
+    defaults: {
+      rom: "",
+      rotation: 0
+    }
   }
 ];
 
@@ -385,6 +410,7 @@ addAlias(types, APP_TYPE_KEYS.GB, APP_TYPE_KEYS.VBA_M_GB);
 addAlias(types, APP_TYPE_KEYS.GBC, APP_TYPE_KEYS.VBA_M_GBC);
 addAlias(types, APP_TYPE_KEYS.GENESIS, APP_TYPE_KEYS.GENPLUSGX_MD);
 addAlias(types, APP_TYPE_KEYS.GG, APP_TYPE_KEYS.GENPLUSGX_GG);
+addAlias(types, APP_TYPE_KEYS.LNX, APP_TYPE_KEYS.MEDNAFEN_LNX);
 //addAlias(types, APP_TYPE_KEYS.N64, APP_TYPE_KEYS.PARALLEL_N64);
 addAlias(types, APP_TYPE_KEYS.NES, APP_TYPE_KEYS.FCEUX);
 addAlias(types, APP_TYPE_KEYS.NGC, APP_TYPE_KEYS.MEDNAFEN_NGC);
