@@ -19,6 +19,7 @@ export class AppScreen extends Component {
   }
 
   MAX_LOAD_TIME = 10 * 1000;
+  STATUS_DIV_ID = "webrcade-app-status-div";
 
   clearRefreshTimout() {
     const { frameRetryId } = this;
@@ -42,6 +43,10 @@ export class AppScreen extends Component {
 
   getAppIframe() {
     return document.getElementById(APP_FRAME_ID);
+  }
+
+  getStatusDiv() {
+    return document.getElementById(this.STATUS_DIV_ID);
   }
 
   componentDidMount() {
@@ -71,6 +76,14 @@ export class AppScreen extends Component {
         }
       }
     } else {
+      const statusDiv = this.getStatusDiv();
+      if (statusDiv) {
+        statusDiv.style.display = 'block';
+        setTimeout(() => {
+          statusDiv.style.opacity = '1.0';
+        }, 100);
+      }
+
       // This is a total hack to try to get browsers to free up
       // the memory used by emscripten in the iframe
       let count = 0;
@@ -99,10 +112,10 @@ export class AppScreen extends Component {
   }
 
   render() {
-    const { app, context } = this.props;
+    const { app, context, feedProps } = this.props;
     const reg = AppRegistry.instance;
 
-    let location = reg.getLocation(app, context);
+    let location = reg.getLocation(app, context, feedProps);
     if (!isDev() && context && context === AppProps.RV_CONTEXT_EDITOR) {
       location = "../../" + location;
     }
@@ -123,8 +136,25 @@ export class AppScreen extends Component {
       iframe.setAttribute("frameBorder", "0");
       iframe.setAttribute("src", location);
       iframe.setAttribute("allow", "autoplay; gamepad");
-
       appDiv.appendChild(iframe);
+
+      const statusDiv = document.createElement("div");
+      statusDiv.id = this.STATUS_DIV_ID;
+      statusDiv.innerHTML = "Exiting...";
+      statusDiv.style.position = "absolute";
+      statusDiv.style.left = "50%";
+      statusDiv.style.top = "50%";
+      statusDiv.style.marginRight = "-50%";
+      statusDiv.style.transform = "translate(-50%, -50%)";
+      statusDiv.style.fontSize = "2.5vw";
+      statusDiv.style.zIndex = "5";
+      statusDiv.style.fontFamily = "Quicksand";
+      statusDiv.style.transition = "opacity 1s";
+      statusDiv.style.display = 'none';
+      statusDiv.style.cursor = 'none';
+      statusDiv.style.opacity = '0';
+      appDiv.appendChild(statusDiv);
+
       document.body.appendChild(appDiv);
     }
 

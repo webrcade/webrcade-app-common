@@ -61,7 +61,7 @@ class AppRegistry {
     return isValidString(app.description) ?
       app.description : APP_TYPES[app.type].description;
   }
-
+          
   getName(app) {
     const APP_TYPES = this.APP_TYPES;
     return APP_TYPES[app.type].name;
@@ -70,12 +70,12 @@ class AppRegistry {
   isDelayedExit(app) {
     const { APP_TYPES } = this;
     const appType = APP_TYPES[app.type];
-    return appType.isDelayedExit !== undefined &&
-      appType.isDelayedExit === true;
-
+    return true; // Testing delayed exit on all apps
+    // return appType.isDelayedExit !== undefined &&
+    //   appType.isDelayedExit === true;
   }
 
-  getLocation(app, context) {
+  getLocation(app, context, feedProps) {
     const { RP_CONTEXT, RP_DEBUG, RP_PROPS } = AppProps;
     const { props } = app;
     const { APP_TYPES } = this;
@@ -89,6 +89,10 @@ class AppRegistry {
 
     if (props !== undefined) {
       Object.assign(outProps, props);
+    }
+
+    if (appType.addProps && feedProps) {
+      appType.addProps(feedProps, outProps);
     }
 
     let loc = UrlUtil.addParam(
@@ -254,8 +258,12 @@ class AppRegistry {
   }
 
   async getMd5(blob, type = null) {
+    const APP_TYPES = this.APP_TYPES;
     let result = null;
 
+    if (type && (typeof type === 'string')) {
+      type = APP_TYPES[type];
+    }
     if (type && type.getMd5) {
       result = await type.getMd5(blob);
     }

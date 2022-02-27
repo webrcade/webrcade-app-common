@@ -94,11 +94,10 @@ export class DisplayLoop {
   waitCount = 0;
 
   start(cb) {
-    const { frequency } = this;
-
-    const frameTicks = (1000.0 / frequency);
-    const adjustTolerance = (frameTicks * frequency * 2); // 2 secs
-    const checkFrequency = frequency * 5;
+    let { frequency } = this;
+    let frameTicks = (1000.0 / frequency);
+    let adjustTolerance = (frameTicks * frequency * 2); // 2 secs
+    let checkFrequency = frequency * 5;
 
     LOG.info("Frame ticks: " + frameTicks);
     LOG.info("Frequency: " + frequency);
@@ -115,7 +114,16 @@ export class DisplayLoop {
         nextTimestamp = (nextTimestamp === -1 ?
             Date.now() + frameTicks : nextTimestamp + frameTicks);
 
-        cb();
+        const freq = cb();
+        if (freq) {
+          if (this.debug) {
+            LOG.info("Frequency changed! : " + freq);
+          }
+          frequency = freq;
+          frameTicks = (1000.0 / freq);
+          adjustTolerance = (frameTicks * freq * 2); // 2 secs
+          checkFrequency = freq * 5;
+        }
         fc++;
         let now = Date.now();
 
