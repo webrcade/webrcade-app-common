@@ -61,7 +61,7 @@ class AppRegistry {
     return isValidString(app.description) ?
       app.description : APP_TYPES[app.type].description;
   }
-
+          
   getName(app) {
     const APP_TYPES = this.APP_TYPES;
     return APP_TYPES[app.type].name;
@@ -70,9 +70,9 @@ class AppRegistry {
   isDelayedExit(app) {
     const { APP_TYPES } = this;
     const appType = APP_TYPES[app.type];
-    return appType.isDelayedExit !== undefined &&
-      appType.isDelayedExit === true;
-
+    return true; // Testing delayed exit on all apps
+    // return appType.isDelayedExit !== undefined &&
+    //   appType.isDelayedExit === true;
   }
 
   getLocation(app, context, feedProps) {
