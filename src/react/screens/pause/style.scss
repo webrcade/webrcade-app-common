@@ -57,6 +57,8 @@
   }
 
   &-image-button {
+    // Fix issue on Android where iframe is blue on exit
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
     border: 0;
     padding: .7rem;
     margin: 1.3rem;
@@ -113,6 +115,3 @@
     }
   }
 }
-
-
-
