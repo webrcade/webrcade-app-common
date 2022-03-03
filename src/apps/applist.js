@@ -5,6 +5,13 @@ import * as Atari7800 from './type/7800';
 import * as Lynx from './type/lynx';
 import * as Nes from './type/nes';
 
+let n64Str = UrlUtil.getParam(
+  window.location.search, "n64");
+if (n64Str) {
+  n64Str = n64Str.toLowerCase();
+}
+const n64enabled = n64Str && (n64Str === "1" || n64Str === "true");
+
 const localIp = config.getLocalIp();
 const locGenesis = isDev() ? `http://${localIp}:3010` : 'app/genesis';
 const locSms = locGenesis;
@@ -24,7 +31,7 @@ const checkRom = app => {
   }
 }
 
-const APP_TYPE_KEYS = Object.freeze({
+let APP_TYPE_KEYS = Object.freeze({
   // Types
   FCEUX: "fceux",
   GENPLUSGX_GG: "genplusgx-gg",
@@ -41,7 +48,6 @@ const APP_TYPE_KEYS = Object.freeze({
   MEDNAFEN_VB: "mednafen-vb",
   MEDNAFEN_WSC: "mednafen-wsc",
   MEDNAFEN_WS: "mednafen-ws",
-  //PARALLEL_N64: "parallel-n64",
   PRBOOM: "prboom",
   SNES9X: "snes9x",
   VBA_M_GBA: "vba-m-gba",
@@ -56,7 +62,6 @@ const APP_TYPE_KEYS = Object.freeze({
   GBC: "gbc",
   GENESIS: "genesis",
   GG: "gg",
-  //N64: "n64",
   LNX: "lnx",
   NES: "nes",
   NGC: "ngc",
@@ -70,6 +75,16 @@ const APP_TYPE_KEYS = Object.freeze({
   WSC: "wsc",
   WS: "ws"
 });
+
+if (n64enabled) {
+  APP_TYPE_KEYS =  Object.freeze({
+    ...{
+      PARALLEL_N64: "parallel-n64",
+      N64: "n64",
+    },
+    ...APP_TYPE_KEYS
+  })
+}
 
 const PCE_DEFAULTS = {
   rom: "",
@@ -202,27 +217,7 @@ let types = [
     defaults: {
       rom: ""
     }
-  }, /*{
-    key: APP_TYPE_KEYS.PARALLEL_N64,
-    name: 'Nintendo 64',
-    coreName: 'paraLLEl N64',
-    location: locN64,
-    background: 'images/app/n64-background.png',
-    thumbnail: 'images/app/n64-thumb.png',
-    validate: checkRom,
-    extensions: ['n64', 'v64', 'z64'],
-    isDelayedExit: true,
-    addParams: (url) => {
-      const N64_SKIP_RP = "n64.skip";
-      const n64skip = UrlUtil.getParam(
-        window.location.search, N64_SKIP_RP);
-      return n64skip ?
-        UrlUtil.addParam(url, N64_SKIP_RP, n64skip) : url;
-    },
-    defaults: {
-      rom: ""
-    }
-  },*/ {
+  }, {
     key: APP_TYPE_KEYS.VBA_M_GBA,
     name: 'Nintendo Game Boy Advance',
     shortName: 'Nintendo GBA',
@@ -380,6 +375,41 @@ const addAlias = (types, alias, typeKey) => {
   types.push({ key: alias, absoluteKey: typeKey, ...props });
 }
 
+// N64
+if (n64enabled) {
+  types.push({
+    key: APP_TYPE_KEYS.PARALLEL_N64,
+    name: 'Nintendo 64',
+    coreName: 'paraLLEl N64',
+    location: locN64,
+    background: 'images/app/n64-background.png',
+    thumbnail: 'images/app/n64-thumb.png',
+    validate: checkRom,
+    extensions: ['n64', 'v64', 'z64'],
+    isDelayedExit: true,
+    addParams: (url) => {
+      url = UrlUtil.addParam(url, "n64", "1");
+      const N64_SKIP_RP = "n64.skip";
+      const n64skip = UrlUtil.getParam(
+        window.location.search, N64_SKIP_RP);
+      if (n64skip) {
+        url = UrlUtil.addParam(url, N64_SKIP_RP, n64skip) ;
+      }
+      const N64_VBO_RP = "n64.vbo";
+      const n64vbo = UrlUtil.getParam(
+        window.location.search, N64_VBO_RP);
+      if (n64vbo) {
+        url = UrlUtil.addParam(url, N64_VBO_RP, n64vbo);
+      }
+      return url;
+    },
+    defaults: {
+      rom: ""
+    }
+  });
+  addAlias(types, APP_TYPE_KEYS.N64, APP_TYPE_KEYS.PARALLEL_N64);
+}
+
 // Only add PRBoom on public server
 if (config.isPublicServer()) {
   types.push({
@@ -411,7 +441,6 @@ addAlias(types, APP_TYPE_KEYS.GBC, APP_TYPE_KEYS.VBA_M_GBC);
 addAlias(types, APP_TYPE_KEYS.GENESIS, APP_TYPE_KEYS.GENPLUSGX_MD);
 addAlias(types, APP_TYPE_KEYS.GG, APP_TYPE_KEYS.GENPLUSGX_GG);
 addAlias(types, APP_TYPE_KEYS.LNX, APP_TYPE_KEYS.MEDNAFEN_LNX);
-//addAlias(types, APP_TYPE_KEYS.N64, APP_TYPE_KEYS.PARALLEL_N64);
 addAlias(types, APP_TYPE_KEYS.NES, APP_TYPE_KEYS.FCEUX);
 addAlias(types, APP_TYPE_KEYS.NGC, APP_TYPE_KEYS.MEDNAFEN_NGC);
 addAlias(types, APP_TYPE_KEYS.NGP, APP_TYPE_KEYS.MEDNAFEN_NGP);
