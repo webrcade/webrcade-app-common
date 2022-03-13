@@ -23,6 +23,7 @@ const loc2600 = isDev() ? `http://${localIp}:3050` : 'app/2600';
 const locSnes = isDev() ? `http://${localIp}:3060` : 'app/snes';
 const locN64 = isDev() ? `http://${localIp}:3065` : 'app/n64';
 const locGba = isDev() ? `http://${localIp}:3070` : 'app/gba';
+const locNeo = isDev() ? `http://${localIp}:3077` : 'app/neo';
 const locMednafen = isDev() ? `http://${localIp}:3075` : 'app/mednafen';
 
 const checkRom = app => {
@@ -33,6 +34,7 @@ const checkRom = app => {
 
 let APP_TYPE_KEYS = Object.freeze({
   // Types
+  FBNEO_NEOGEO: "fbneo-neogeo",
   FCEUX: "fceux",
   GENPLUSGX_GG: "genplusgx-gg",
   GENPLUSGX_MD: "genplusgx-md",
@@ -63,6 +65,7 @@ let APP_TYPE_KEYS = Object.freeze({
   GENESIS: "genesis",
   GG: "gg",
   LNX: "lnx",
+  NEOGEO: "neogeo",
   NES: "nes",
   NGC: "ngc",
   NGP: "ngp",
@@ -303,8 +306,8 @@ let types = [
     }
   }, {
     key: APP_TYPE_KEYS.MEDNAFEN_NGC,
-    name: 'Neo Geo Pocket Color',
-    shortName: 'Neo Geo Pocket Color',
+    name: 'SNK Neo Geo Pocket Color',
+    shortName: 'SNK Neo Geo Pocket Color',
     coreName: 'Mednafen',
     location: locMednafen,
     background: 'images/app/ngc-background.png',
@@ -314,8 +317,8 @@ let types = [
     defaults: NGP_DEFAULTS
   }, {
     key: APP_TYPE_KEYS.MEDNAFEN_NGP,
-    name: 'Neo Geo Pocket',
-    shortName: 'Neo Geo Pocket',
+    name: 'SNK Neo Geo Pocket',
+    shortName: 'SNK Neo Geo Pocket',
     coreName: 'Mednafen',
     location: locMednafen,
     background: 'images/app/ngp-background.png',
@@ -325,8 +328,8 @@ let types = [
     defaults: NGP_DEFAULTS
   }, {
     key: APP_TYPE_KEYS.MEDNAFEN_WSC,
-    name: 'WonderSwan Color',
-    shortName: 'WonderSwan Color',
+    name: 'Bandai WonderSwan Color',
+    shortName: 'Bandai WonderSwan Color',
     coreName: 'Mednafen',
     location: locMednafen,
     background: 'images/app/wsc-background.png',
@@ -336,8 +339,8 @@ let types = [
     defaults: WS_DEFAULTS
   }, {
     key: APP_TYPE_KEYS.MEDNAFEN_WS,
-    name: 'WonderSwan',
-    shortName: 'WonderSwan',
+    name: 'Bandai WonderSwan',
+    shortName: 'Bandai WonderSwan',
     coreName: 'Mednafen',
     location: locMednafen,
     background: 'images/app/ws-background.png',
@@ -366,6 +369,25 @@ let types = [
     defaults: {
       rom: "",
       rotation: 0
+    }
+  }, {
+    key: APP_TYPE_KEYS.FBNEO_NEOGEO,
+    name: 'SNK Neo Geo',
+    shortName: 'SNK Neo Geo',
+    coreName: 'Final Burn Neo',
+    location: locNeo,
+    background: 'images/app/neogeo-background.png',
+    thumbnail: 'images/app/neogeo-thumb.png',
+    validate: checkRom,
+    extensions: [],
+    addProps: (feedProps, outProps) => {
+      const bios = feedProps.neogeo_bios;
+      if (bios) {
+        outProps.neogeo_bios = bios;
+      }
+    },
+    defaults: {
+      rom: ""
     }
   }
 ];
@@ -441,6 +463,7 @@ addAlias(types, APP_TYPE_KEYS.GBC, APP_TYPE_KEYS.VBA_M_GBC);
 addAlias(types, APP_TYPE_KEYS.GENESIS, APP_TYPE_KEYS.GENPLUSGX_MD);
 addAlias(types, APP_TYPE_KEYS.GG, APP_TYPE_KEYS.GENPLUSGX_GG);
 addAlias(types, APP_TYPE_KEYS.LNX, APP_TYPE_KEYS.MEDNAFEN_LNX);
+addAlias(types, APP_TYPE_KEYS.NEOGEO, APP_TYPE_KEYS.FBNEO_NEOGEO);
 addAlias(types, APP_TYPE_KEYS.NES, APP_TYPE_KEYS.FCEUX);
 addAlias(types, APP_TYPE_KEYS.NGC, APP_TYPE_KEYS.MEDNAFEN_NGC);
 addAlias(types, APP_TYPE_KEYS.NGP, APP_TYPE_KEYS.MEDNAFEN_NGP);

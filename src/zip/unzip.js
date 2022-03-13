@@ -5,10 +5,22 @@ export class Unzip {
   constructor() {
     this.name = null;
     this.debug = false;
+    this.entriesCb = null;
+    this.failIfNotFound = true;
   }
 
   setDebug(debug) {
     this.debug = debug;
+    return this;
+  }
+
+  setEntriesCallback(cb) {
+    this.entriesCb = cb;
+    return this;
+  }
+
+  setFailIfNotFound(v) {
+    this.failIfNotFound = v;
     return this;
   }
 
@@ -21,8 +33,11 @@ export class Unzip {
     const that = this;
     return new Promise((success, failure) => {
       const entryProcessor = (entries) => {
+        if (this.entriesCb) {
+          this.entriesCb(entries);
+        }
+
         let romEntry = null;
-        let prefRomEntry = null;
         if (entries.length == 1) {
           romEntry = entries[0];
         } else if (entries.length > 0) {
@@ -81,7 +96,11 @@ export class Unzip {
           let writer = new zip.BlobWriter();
           romEntry.getData(writer, success);
         } else {
-          failure("Unable to find valid ROM in zip file");
+          if (this.failIfNotFound) {
+            failure("Unable to find valid ROM in zip file");
+          } else {
+            success(null);
+          }
         }
       }
 
