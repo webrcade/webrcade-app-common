@@ -387,7 +387,8 @@ let types = [
       }
     },
     defaults: {
-      rom: ""
+      rom: "",
+      parentRom: ""
     }
   }
 ];

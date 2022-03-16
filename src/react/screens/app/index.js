@@ -146,7 +146,7 @@ export class AppScreen extends Component {
       statusDiv.style.top = "50%";
       statusDiv.style.marginRight = "-50%";
       statusDiv.style.transform = "translate(-50%, -50%)";
-      statusDiv.style.fontSize = "2.5vw";
+      statusDiv.style.fontSize = "3vw";
       statusDiv.style.zIndex = "5";
       statusDiv.style.fontFamily = "Quicksand";
       statusDiv.style.transition = "opacity 1s";

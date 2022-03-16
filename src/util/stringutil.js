@@ -39,10 +39,15 @@ const limitString = (str, limit) => {
   }
 }
 
+const strReplaceAll = (str, find, replace) => {
+  return str.split(find).join(replace);
+}
+
 export {
   blobToStr,
   isEmptyString,
   isValidString,
   limitString,
+  strReplaceAll,
   u8ArrayToStr
 }

@@ -16,6 +16,7 @@ class UrlUtil {
   }
 
   static getFileName(url) {
+    url = decodeURIComponent(url);
     const slash = url.lastIndexOf("/");
     if (slash >= 0 && (url.length > (slash + 1))) {
       url = url.substring(slash + 1);
