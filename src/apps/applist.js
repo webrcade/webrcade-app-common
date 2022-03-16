@@ -5,8 +5,7 @@ import * as Atari7800 from './type/7800';
 import * as Lynx from './type/lynx';
 import * as Nes from './type/nes';
 
-let n64Str = UrlUtil.getParam(
-  window.location.search, "n64");
+let n64Str = ((typeof window !== "undefined") ? UrlUtil.getParam(window.location.search, "n64") : null);
 if (n64Str) {
   n64Str = n64Str.toLowerCase();
 }
