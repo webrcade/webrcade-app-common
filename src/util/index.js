@@ -38,6 +38,7 @@ function normalizeFileName(name) {
   name = strReplaceAll(name, '?', '_');
   name = strReplaceAll(name, '*', '_');
   name = strReplaceAll(name, '/', '_');
+  name = strReplaceAll(name, ':', '_');
   return name;
 }
 

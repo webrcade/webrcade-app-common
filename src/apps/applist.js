@@ -33,6 +33,9 @@ const checkRom = app => {
 
 let APP_TYPE_KEYS = Object.freeze({
   // Types
+  FBNEO_ARCADE: "fbneo-arcade",
+  FBNEO_CAPCOM: "fbneo-capcom",
+  FBNEO_KONAMI: "fbneo-konami",
   FBNEO_NEOGEO: "fbneo-neogeo",
   FCEUX: "fceux",
   GENPLUSGX_GG: "genplusgx-gg",
@@ -57,6 +60,9 @@ let APP_TYPE_KEYS = Object.freeze({
   // Aliases
   A2600: "2600",
   A7800: "7800",
+  ARCADE: "arcade",
+  ARCADE_KONAMI: "arcade-konami",
+  ARCADE_CAPCOM: "arcade-capcom",
   DOOM: "doom",
   GBA: "gba",
   GB: "gb",
@@ -79,7 +85,7 @@ let APP_TYPE_KEYS = Object.freeze({
 });
 
 if (n64enabled) {
-  APP_TYPE_KEYS =  Object.freeze({
+  APP_TYPE_KEYS = Object.freeze({
     ...{
       PARALLEL_N64: "parallel-n64",
       N64: "n64",
@@ -104,8 +110,69 @@ const NGP_DEFAULTS = {
   language: 0
 }
 
+const ARCADE_DEFAULTS = {
+  rom: "",
+  additionalRoms: [],
+  volAdjust: 0,
+  samples: "",
+}
+
 let types = [
   {
+    key: APP_TYPE_KEYS.FBNEO_NEOGEO,
+    name: 'SNK Neo Geo',
+    shortName: 'SNK Neo Geo',
+    coreName: 'Final Burn Neo',
+    location: locNeo,
+    background: 'images/app/neogeo-background.png',
+    thumbnail: 'images/app/neogeo-thumb.png',
+    validate: checkRom,
+    extensions: [],
+    addProps: (feedProps, outProps) => {
+      const bios = feedProps.neogeo_bios;
+      if (bios) {
+        outProps.neogeo_bios = bios;
+      }
+    },
+    defaults: {
+      rom: "",
+      additionalRoms: [],
+      volAdjust: 0,
+    }
+  }, {
+    key: APP_TYPE_KEYS.FBNEO_ARCADE,
+    name: 'Arcade',
+    shortName: 'Arcade',
+    coreName: 'Final Burn Neo',
+    location: locNeo,
+    background: 'images/app/neogeo-background.png',
+    thumbnail: 'images/app/neogeo-thumb.png',
+    validate: checkRom,
+    extensions: [],
+    defaults: ARCADE_DEFAULTS
+  }, {
+    key: APP_TYPE_KEYS.FBNEO_KONAMI,
+    name: 'Arcade: Konami',
+    shortName: 'Arcade: Konami',
+    coreName: 'Final Burn Neo',
+    location: locNeo,
+    background: 'images/app/konami-background.png',
+    thumbnail: 'images/app/konami-thumb.png',
+    validate: checkRom,
+    extensions: [],
+    defaults: ARCADE_DEFAULTS
+  }, {
+    key: APP_TYPE_KEYS.FBNEO_CAPCOM,
+    name: 'Arcade: Capcom',
+    shortName: 'Arcade: Capcom',
+    coreName: 'Final Burn Neo',
+    location: locNeo,
+    background: 'images/app/capcom-background.png',
+    thumbnail: 'images/app/capcom-thumb.png',
+    validate: checkRom,
+    extensions: [],
+    defaults: ARCADE_DEFAULTS
+  }, {
     key: APP_TYPE_KEYS.SNES9X,
     name: 'Super Nintendo',
     shortName: 'Nintendo SNES',
@@ -369,26 +436,6 @@ let types = [
       rom: "",
       rotation: 0
     }
-  }, {
-    key: APP_TYPE_KEYS.FBNEO_NEOGEO,
-    name: 'SNK Neo Geo',
-    shortName: 'SNK Neo Geo',
-    coreName: 'Final Burn Neo',
-    location: locNeo,
-    background: 'images/app/neogeo-background.png',
-    thumbnail: 'images/app/neogeo-thumb.png',
-    validate: checkRom,
-    extensions: [],
-    addProps: (feedProps, outProps) => {
-      const bios = feedProps.neogeo_bios;
-      if (bios) {
-        outProps.neogeo_bios = bios;
-      }
-    },
-    defaults: {
-      rom: "",
-      parentRom: ""
-    }
   }
 ];
 
@@ -415,7 +462,7 @@ if (n64enabled) {
       const n64skip = UrlUtil.getParam(
         window.location.search, N64_SKIP_RP);
       if (n64skip) {
-        url = UrlUtil.addParam(url, N64_SKIP_RP, n64skip) ;
+        url = UrlUtil.addParam(url, N64_SKIP_RP, n64skip);
       }
       const N64_VBO_RP = "n64.vbo";
       const n64vbo = UrlUtil.getParam(
@@ -457,6 +504,9 @@ if (config.isPublicServer()) {
 // Aliases
 addAlias(types, APP_TYPE_KEYS.A2600, APP_TYPE_KEYS.JAVATARI);
 addAlias(types, APP_TYPE_KEYS.A7800, APP_TYPE_KEYS.JS7800);
+addAlias(types, APP_TYPE_KEYS.ARCADE, APP_TYPE_KEYS.FBNEO_ARCADE);
+addAlias(types, APP_TYPE_KEYS.ARCADE_CAPCOM, APP_TYPE_KEYS.FBNEO_CAPCOM);
+addAlias(types, APP_TYPE_KEYS.ARCADE_KONAMI, APP_TYPE_KEYS.FBNEO_KONAMI);
 addAlias(types, APP_TYPE_KEYS.GBA, APP_TYPE_KEYS.VBA_M_GBA);
 addAlias(types, APP_TYPE_KEYS.GB, APP_TYPE_KEYS.VBA_M_GB);
 addAlias(types, APP_TYPE_KEYS.GBC, APP_TYPE_KEYS.VBA_M_GBC);

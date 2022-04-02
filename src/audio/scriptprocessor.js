@@ -81,12 +81,31 @@ class ScriptAudioProcessor {
     this.mixtail = 0;
     this.callback = null;
     this.debug = false;
+    this.adjustVol = 0;
 
     this.tmpBuffers = new Array(channelCount);
     this.mixbuffer = new Array(channelCount);
     for (let i = 0; i < channelCount; i++) {
       this.mixbuffer[i] = new Array(bufferSize);
     }
+  }
+
+  adjustVolume(adjust) {
+    if (adjust === 0) {
+      return;
+    }
+    if (adjust > 99) {
+      adjust = 99;
+    }
+    if (adjust < -99) {
+      adjust = -99
+    }
+    if (adjust < 0) {
+      this.adjustVol = (100 + adjust) / 99;
+    } else {
+      this.adjustVol = 1 + (adjust / 5);
+    }
+    LOG.info("## adjustVolume: " + this.adjustVol);
   }
 
   setDebug(debug) {
@@ -171,6 +190,7 @@ class ScriptAudioProcessor {
   }
 
   storeSound(channels, length) {
+    // TODO: Add adjust volume?
     for (let i = 0; i < length; i++) {
       for (let j = 0; j < channels.length; j++) {
         this.mixbuffer[j][this.mixhead] = channels[j][i];
@@ -181,10 +201,18 @@ class ScriptAudioProcessor {
     }
   }
 
+  //max = 0;
+
   storeSoundCombinedInput(channels, channelCount, length, offset = 0, divisor = 1) {
+    const adjust = this.adjustVol == 0 ? 1 : this.adjustVol;
     for (let i = 0; i < length;) {
       for (let j = 0; j < channelCount; j++) {
-        this.mixbuffer[j][this.mixhead] = channels[offset + i++] / divisor;
+        const val = ((channels[offset + i++]) / divisor) * adjust;
+        // if (val > this.max) {
+        //   this.max = val;
+        //   console.log("## new max = " + this.max);
+        // }
+        this.mixbuffer[j][this.mixhead] = val;
       }
       this.mixhead++;
       if (this.mixhead == this.bufferSize)
