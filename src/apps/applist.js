@@ -147,8 +147,8 @@ let types = [
     shortName: 'Arcade',
     coreName: 'Final Burn Neo',
     location: locNeo,
-    background: 'images/app/neogeo-background.png',
-    thumbnail: 'images/app/neogeo-thumb.png',
+    background: 'images/app/arcade-background.png',
+    thumbnail: 'images/app/arcade-thumb.png',
     validate: checkRom,
     extensions: [],
     defaults: ARCADE_DEFAULTS
