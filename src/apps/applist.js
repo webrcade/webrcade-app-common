@@ -138,6 +138,8 @@ let types = [
       rom: "",
       additionalRoms: [],
       volAdjust: 0,
+      bios: 0,
+      forceAesMode: false,
     }
   }, {
     key: APP_TYPE_KEYS.FBNEO_ARCADE,
