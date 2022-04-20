@@ -32,6 +32,7 @@ const TEXT_IDS = {
   SPECIFY_LOCATION_OF_FEED: "Specify the location of the feed to add (URL)",
   TAP_TO_UNMUTE: "Tap Screen to Unmute",
   URL: "URL",
+  VIEW_CONTROLS: "View Controls",
   YES: "Yes"
 };
 

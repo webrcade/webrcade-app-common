@@ -11,12 +11,15 @@ export class PauseScreen extends Screen {
   constructor() {
     super();
 
+    this.pauseStyles = styles;
     this.exitButtonRef = React.createRef();
     this.resumeButtonRef = React.createRef();
 
-    this.focusGrid.setComponents([
-      [this.exitButtonRef, this.resumeButtonRef]
-    ]);
+    this.focusGrid.setComponents(this.getFocusGridComponents());
+  }
+
+  getFocusGridComponents() {
+    return [[this.exitButtonRef, this.resumeButtonRef]];
   }
 
   focus() {
@@ -27,6 +30,10 @@ export class PauseScreen extends Screen {
         resumeButtonRef.current.focus();
       }
     }
+  }
+
+  getAdditionalButtons() {
+    return null;
   }
 
   render() {
@@ -62,6 +69,7 @@ export class PauseScreen extends Screen {
                   onPad={e => focusGrid.moveFocus(e.type, resumeButtonRef)}
                   onClick={() => this.close()}
                 />
+                {this.getAdditionalButtons()}
               </div>
             </div>
           </div>
