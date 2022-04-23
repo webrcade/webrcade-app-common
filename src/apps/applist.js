@@ -115,6 +115,7 @@ const ARCADE_DEFAULTS = {
   additionalRoms: [],
   volAdjust: 0,
   samples: "",
+  playerOrder: "0:1:2:3"
 }
 
 let types = [
