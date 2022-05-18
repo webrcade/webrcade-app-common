@@ -12,18 +12,18 @@ if (n64Str) {
 const n64enabled = n64Str && (n64Str === "1" || n64Str === "true");
 
 const localIp = config.getLocalIp();
-const locGenesis = isDev() ? `http://${localIp}:3010` : 'app/genesis';
+const locGenesis = isDev() ? `http://${localIp}:3010` : 'app/genesis/';
 const locSms = locGenesis;
 
-const loc7800 = isDev() ? `http://${localIp}:3020` : 'app/7800';
-const locNes = isDev() ? `http://${localIp}:3030` : 'app/nes';
-const locDoom = isDev() ? `http://${localIp}:3040` : 'app/doom';
-const loc2600 = isDev() ? `http://${localIp}:3050` : 'app/2600';
-const locSnes = isDev() ? `http://${localIp}:3060` : 'app/snes';
-const locN64 = isDev() ? `http://${localIp}:3065` : 'app/n64';
-const locGba = isDev() ? `http://${localIp}:3070` : 'app/gba';
-const locNeo = isDev() ? `http://${localIp}:3077` : 'app/neo';
-const locMednafen = isDev() ? `http://${localIp}:3075` : 'app/mednafen';
+const loc7800 = isDev() ? `http://${localIp}:3020` : 'app/7800/';
+const locNes = isDev() ? `http://${localIp}:3030` : 'app/nes/';
+const locDoom = isDev() ? `http://${localIp}:3040` : 'app/doom/';
+const loc2600 = isDev() ? `http://${localIp}:3050` : 'app/2600/';
+const locSnes = isDev() ? `http://${localIp}:3060` : 'app/snes/';
+const locN64 = isDev() ? `http://${localIp}:3065` : 'app/n64/';
+const locGba = isDev() ? `http://${localIp}:3070` : 'app/gba/';
+const locNeo = isDev() ? `http://${localIp}:3077` : 'app/neo/';
+const locMednafen = isDev() ? `http://${localIp}:3075` : 'app/mednafen/';
 
 const checkRom = app => {
   if (app.props === undefined || isEmptyString(app.props.rom)) {
