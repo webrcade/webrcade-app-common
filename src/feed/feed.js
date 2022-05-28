@@ -82,6 +82,10 @@ class Feed extends FeedBase {
     this.categories = categories;
   }
 
+  getTitle() {
+    return this.originalFeed.title;
+  }
+
   getProps() {
     return this.originalFeed.props ? this.originalFeed.props : {}
   };
@@ -96,6 +100,17 @@ class Feed extends FeedBase {
       return category[0].items;
     }
     throw new Error(`Unable to find category with id: ${categoryId}`);
+  }
+
+  findCategoryByTitle(title) {
+    if (!title) return null;
+    for (let i = 0; i < this.categories.length; i++) {
+      const cat = this.categories[i];
+      if (cat.title === title) {
+        return cat;
+      }
+    }
+    return null;
   }
 
   getClonedFeed() {
