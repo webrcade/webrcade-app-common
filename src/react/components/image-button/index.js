@@ -15,10 +15,15 @@ export class ImageButton extends Component {
   }
 
   gamepadCallback = (e) => {
-    const { onPad } = this.props;
+    const { disabled, onPad } = this.props;
     const { focused } = this.state;
 
     if (!focused) return false;
+
+    if (disabled) {
+      this.setState({ focused: false });
+      return false;
+    }
 
     switch (e.type) {
       case GamepadEnum.A:
@@ -52,6 +57,15 @@ export class ImageButton extends Component {
     }
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    const { disabled } = this.props;
+    const { focused } = this.state;
+
+    if (disabled && focused) {
+      this.setState({ focused: false });
+    }
+  }
+
   onClick = e => {
     const { onClick } = this.props;
     if (onClick) onClick();
@@ -65,10 +79,18 @@ export class ImageButton extends Component {
     this.setState({ focused: false });
   }
 
+  isFocusable() {
+    const { disabled } = this.props;
+    return disabled ? false : true;
+  }
+
   focus() {
+    const { disabled } = this.props;
     const { focused } = this.state;
     const { button } = this;
-    if (!focused && button) {
+    const disabledBtn = disabled ? true : false;
+
+    if (!focused && !disabledBtn && button) {
       button.focus();
       return true;
     }
@@ -76,11 +98,14 @@ export class ImageButton extends Component {
   }
 
   render() {
-    const { className, hoverImgSrc, imgSrc, label } = this.props;
+    const { className, disabled, hoverImgSrc, imgSrc, label } = this.props;
     const { focused } = this.state;
+
+    const disabledBtn = disabled ? true : false;
 
     return (
       <button
+        disabled={disabledBtn}
         className={className === undefined ? styles['image-button'] : className}
         ref={(button) => { this.button = button; }}
         onClick={this.onClick}

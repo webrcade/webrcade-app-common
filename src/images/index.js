@@ -5,6 +5,8 @@ const resolvePath = (path) => {
 };
 
 const ArrowBackWhiteImage = resolvePath("images/common/arrow_back_white_24dp.svg");
+const ChevronLeftWhiteImage = resolvePath("images/common/chevron_left_white_24dp.svg");
+const ChevronRightWhiteImage = resolvePath("images/common/chevron_right_white_24dp.svg");
 const CloudBlackImage = resolvePath("images/common/cloud_black_24dp.svg");
 const CloudWhiteImage = resolvePath("images/common/cloud_white_24dp.svg");
 const CloudDownloadBlackImage = resolvePath("images/common/cloud_download_black_24dp.svg");
@@ -14,6 +16,7 @@ const DeleteForeverWhiteImage = resolvePath("images/common/delete_forever_white_
 const DescriptionBlackImage = resolvePath("images/common/description_black_24dp.svg");
 const DescriptionWhiteImage = resolvePath("images/common/description_white_24dp.svg");
 const GamepadWhiteImage = resolvePath("images/common/gamepad_white_24dp.svg");
+const KeyboardWhiteImage = resolvePath("images/common/keyboard_white_24dp.svg");
 const AddCircleBlackImage = resolvePath("images/common/add_circle_outline_black_24dp.svg");
 const AddCircleWhiteImage = resolvePath("images/common/add_circle_outline_white_24dp.svg");
 const PlayArrowBlackImage = resolvePath("images/common/play_arrow_black_24dp.svg");
@@ -38,6 +41,19 @@ const XboxOneRightBumper = resolvePath("images/common/controller/Xbox One/XboxOn
 const XboxOneLeftBumper = resolvePath("images/common/controller/Xbox One/XboxOne_LB.png");
 const XboxOneRightTrigger = resolvePath("images/common/controller/Xbox One/XboxOne_RT.png");
 const XboxOneLeftTrigger = resolvePath("images/common/controller/Xbox One/XboxOne_LT.png");
+const ArrowLeftKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/Arrow_Left_Key_Dark.png");
+const ArrowRightKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/Arrow_Right_Key_Dark.png");
+const ArrowUpKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/Arrow_Up_Key_Dark.png");
+const ArrowDownKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/Arrow_Down_Key_Dark.png");
+const EnterKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/Enter_Key_Dark.png");
+const ShiftKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/Shift_Key_Dark.png");
+const AKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/A_Key_Dark.png");
+const CKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/C_Key_Dark.png");
+const DKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/D_Key_Dark.png");
+const SKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/S_Key_Dark.png");
+const VKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/V_Key_Dark.png");
+const XKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/X_Key_Dark.png");
+const ZKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/Z_Key_Dark.png");
 
 export {
   AddCircleBlackImage,
@@ -45,6 +61,8 @@ export {
   ArrowBackWhiteImage,
   CategoryThumbImage,
   CategoryBackgroundImage,
+  ChevronLeftWhiteImage,
+  ChevronRightWhiteImage,
   CloudBlackImage,
   CloudWhiteImage,
   CloudDownloadBlackImage,
@@ -56,6 +74,7 @@ export {
   FeedThumbImage,
   FeedBackgroundImage,
   GamepadWhiteImage,
+  KeyboardWhiteImage,
   PlayArrowBlackImage,
   PlayArrowWhiteImage,
   WebrcadeLogoDarkImage,
@@ -74,5 +93,18 @@ export {
   XboxOneLeftBumper,
   XboxOneRightTrigger,
   XboxOneLeftTrigger,
+  ArrowUpKey,
+  ArrowDownKey,
+  ArrowLeftKey,
+  ArrowRightKey,
+  EnterKey,
+  ShiftKey,
+  AKey,
+  CKey,
+  DKey,
+  SKey,
+  VKey,
+  XKey,
+  ZKey,
   resolvePath as resolveImagePath
 }
