@@ -85,7 +85,8 @@
       text-overflow: ellipsis;
     }
 
-    &:focus:not(:hover) {
+    // &:focus:not(:hover) {
+    &:focus {
       outline: none;
       background-color: #292929;
       transition: 0.5s;

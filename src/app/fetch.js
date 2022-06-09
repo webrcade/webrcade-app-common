@@ -99,6 +99,8 @@ export class FetchAppData {
               error = e;
             }
           }
+        } else {
+          error = e;
         }
       }
     }

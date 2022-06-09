@@ -1,6 +1,7 @@
 //import { AppProps } from '../app';
 import { UrlUtil } from './url';
 import { config } from '../conf';
+import { strReplaceAll } from './stringutil.js';
 
 export * from './url.js'
 export * from './md5.js'
@@ -31,10 +32,18 @@ function isApp() {
 function resolvePath(path) {
   return isDev() ? `${config.getLocalUrl()}/${path}` :
     isApp() ? `../../${path}` : path;
-};
+}
+
+function normalizeFileName(name) {
+  name = strReplaceAll(name, '?', '_');
+  name = strReplaceAll(name, '*', '_');
+  name = strReplaceAll(name, '/', '_');
+  name = strReplaceAll(name, ':', '_');
+  return name;
+}
 
 const RP_DEBUG = "debug";
-let debug = UrlUtil.getBoolParam(window.location.search, RP_DEBUG);
+let debug = ((typeof window !== "undefined") ? UrlUtil.getBoolParam(window.location.search, RP_DEBUG) : null);
 
 function isDebug() {
   return debug;
@@ -43,6 +52,7 @@ function isDebug() {
 export {
   RP_DEBUG,
   cloneObject,
+  normalizeFileName,
   resolvePath,
   isApp,
   isDebug,

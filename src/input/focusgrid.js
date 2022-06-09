@@ -7,6 +7,10 @@ class FocusGrid {
     this.comps = comps;
   }
 
+  setDefaultComponent(comp) {
+    this.defaultComp = comp;
+  }
+
   getComponentLocation(comp) {
     const { comps } = this;
 
@@ -86,7 +90,11 @@ class FocusGrid {
   }
 
   focus() {
-    const { comps } = this;
+    const { comps, defaultComp } = this;
+
+    if (defaultComp && this.checkComp(defaultComp)) {
+      return defaultComp.current.focus();
+    }
 
     for (let y = 0; y < comps.length; y++) {
       let xarr = comps[y];

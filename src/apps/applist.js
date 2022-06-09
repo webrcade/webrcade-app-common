@@ -5,8 +5,7 @@ import * as Atari7800 from './type/7800';
 import * as Lynx from './type/lynx';
 import * as Nes from './type/nes';
 
-let n64Str = UrlUtil.getParam(
-  window.location.search, "n64");
+let n64Str = ((typeof window !== "undefined") ? UrlUtil.getParam(window.location.search, "n64") : null);
 if (n64Str) {
   n64Str = n64Str.toLowerCase();
 }
@@ -23,6 +22,7 @@ const loc2600 = isDev() ? `http://${localIp}:3050` : 'app/2600/';
 const locSnes = isDev() ? `http://${localIp}:3060` : 'app/snes/';
 const locN64 = isDev() ? `http://${localIp}:3065` : 'app/n64/';
 const locGba = isDev() ? `http://${localIp}:3070` : 'app/gba/';
+const locNeo = isDev() ? `http://${localIp}:3077` : 'app/neo/';
 const locMednafen = isDev() ? `http://${localIp}:3075` : 'app/mednafen/';
 
 const checkRom = app => {
@@ -33,6 +33,10 @@ const checkRom = app => {
 
 let APP_TYPE_KEYS = Object.freeze({
   // Types
+  FBNEO_ARCADE: "fbneo-arcade",
+  FBNEO_CAPCOM: "fbneo-capcom",
+  FBNEO_KONAMI: "fbneo-konami",
+  FBNEO_NEOGEO: "fbneo-neogeo",
   FCEUX: "fceux",
   GENPLUSGX_GG: "genplusgx-gg",
   GENPLUSGX_MD: "genplusgx-md",
@@ -56,6 +60,9 @@ let APP_TYPE_KEYS = Object.freeze({
   // Aliases
   A2600: "2600",
   A7800: "7800",
+  ARCADE: "arcade",
+  ARCADE_KONAMI: "arcade-konami",
+  ARCADE_CAPCOM: "arcade-capcom",
   DOOM: "doom",
   GBA: "gba",
   GB: "gb",
@@ -63,6 +70,7 @@ let APP_TYPE_KEYS = Object.freeze({
   GENESIS: "genesis",
   GG: "gg",
   LNX: "lnx",
+  NEOGEO: "neogeo",
   NES: "nes",
   NGC: "ngc",
   NGP: "ngp",
@@ -77,7 +85,7 @@ let APP_TYPE_KEYS = Object.freeze({
 });
 
 if (n64enabled) {
-  APP_TYPE_KEYS =  Object.freeze({
+  APP_TYPE_KEYS = Object.freeze({
     ...{
       PARALLEL_N64: "parallel-n64",
       N64: "n64",
@@ -102,8 +110,72 @@ const NGP_DEFAULTS = {
   language: 0
 }
 
+const ARCADE_DEFAULTS = {
+  rom: "",
+  additionalRoms: [],
+  volAdjust: 0,
+  samples: "",
+  playerOrder: "0:1:2:3"
+}
+
 let types = [
   {
+    key: APP_TYPE_KEYS.FBNEO_NEOGEO,
+    name: 'SNK Neo Geo',
+    shortName: 'SNK Neo Geo',
+    coreName: 'Final Burn Neo',
+    location: locNeo,
+    background: 'images/app/neogeo-background.png',
+    thumbnail: 'images/app/neogeo-thumb.png',
+    validate: checkRom,
+    extensions: [],
+    addProps: (feedProps, outProps) => {
+      const bios = feedProps.neogeo_bios;
+      if (bios) {
+        outProps.neogeo_bios = bios;
+      }
+    },
+    defaults: {
+      rom: "",
+      additionalRoms: [],
+      volAdjust: 0,
+      bios: 0,
+      forceAesMode: false,
+    }
+  }, {
+    key: APP_TYPE_KEYS.FBNEO_ARCADE,
+    name: 'Arcade',
+    shortName: 'Arcade',
+    coreName: 'Final Burn Neo',
+    location: locNeo,
+    background: 'images/app/arcade-background.png',
+    thumbnail: 'images/app/arcade-thumb.png',
+    validate: checkRom,
+    extensions: [],
+    defaults: ARCADE_DEFAULTS
+  }, {
+    key: APP_TYPE_KEYS.FBNEO_KONAMI,
+    name: 'Arcade: Konami',
+    shortName: 'Arcade: Konami',
+    coreName: 'Final Burn Neo',
+    location: locNeo,
+    background: 'images/app/konami-background.png',
+    thumbnail: 'images/app/konami-thumb.png',
+    validate: checkRom,
+    extensions: [],
+    defaults: ARCADE_DEFAULTS
+  }, {
+    key: APP_TYPE_KEYS.FBNEO_CAPCOM,
+    name: 'Arcade: Capcom',
+    shortName: 'Arcade: Capcom',
+    coreName: 'Final Burn Neo',
+    location: locNeo,
+    background: 'images/app/capcom-background.png',
+    thumbnail: 'images/app/capcom-thumb.png',
+    validate: checkRom,
+    extensions: [],
+    defaults: ARCADE_DEFAULTS
+  }, {
     key: APP_TYPE_KEYS.SNES9X,
     name: 'Super Nintendo',
     shortName: 'Nintendo SNES',
@@ -303,8 +375,8 @@ let types = [
     }
   }, {
     key: APP_TYPE_KEYS.MEDNAFEN_NGC,
-    name: 'Neo Geo Pocket Color',
-    shortName: 'Neo Geo Pocket Color',
+    name: 'SNK Neo Geo Pocket Color',
+    shortName: 'SNK Neo Geo Pocket Color',
     coreName: 'Mednafen',
     location: locMednafen,
     background: 'images/app/ngc-background.png',
@@ -314,8 +386,8 @@ let types = [
     defaults: NGP_DEFAULTS
   }, {
     key: APP_TYPE_KEYS.MEDNAFEN_NGP,
-    name: 'Neo Geo Pocket',
-    shortName: 'Neo Geo Pocket',
+    name: 'SNK Neo Geo Pocket',
+    shortName: 'SNK Neo Geo Pocket',
     coreName: 'Mednafen',
     location: locMednafen,
     background: 'images/app/ngp-background.png',
@@ -325,8 +397,8 @@ let types = [
     defaults: NGP_DEFAULTS
   }, {
     key: APP_TYPE_KEYS.MEDNAFEN_WSC,
-    name: 'WonderSwan Color',
-    shortName: 'WonderSwan Color',
+    name: 'Bandai WonderSwan Color',
+    shortName: 'Bandai WonderSwan Color',
     coreName: 'Mednafen',
     location: locMednafen,
     background: 'images/app/wsc-background.png',
@@ -336,8 +408,8 @@ let types = [
     defaults: WS_DEFAULTS
   }, {
     key: APP_TYPE_KEYS.MEDNAFEN_WS,
-    name: 'WonderSwan',
-    shortName: 'WonderSwan',
+    name: 'Bandai WonderSwan',
+    shortName: 'Bandai WonderSwan',
     coreName: 'Mednafen',
     location: locMednafen,
     background: 'images/app/ws-background.png',
@@ -393,7 +465,7 @@ if (n64enabled) {
       const n64skip = UrlUtil.getParam(
         window.location.search, N64_SKIP_RP);
       if (n64skip) {
-        url = UrlUtil.addParam(url, N64_SKIP_RP, n64skip) ;
+        url = UrlUtil.addParam(url, N64_SKIP_RP, n64skip);
       }
       const N64_VBO_RP = "n64.vbo";
       const n64vbo = UrlUtil.getParam(
@@ -435,12 +507,16 @@ if (config.isPublicServer()) {
 // Aliases
 addAlias(types, APP_TYPE_KEYS.A2600, APP_TYPE_KEYS.JAVATARI);
 addAlias(types, APP_TYPE_KEYS.A7800, APP_TYPE_KEYS.JS7800);
+addAlias(types, APP_TYPE_KEYS.ARCADE, APP_TYPE_KEYS.FBNEO_ARCADE);
+addAlias(types, APP_TYPE_KEYS.ARCADE_CAPCOM, APP_TYPE_KEYS.FBNEO_CAPCOM);
+addAlias(types, APP_TYPE_KEYS.ARCADE_KONAMI, APP_TYPE_KEYS.FBNEO_KONAMI);
 addAlias(types, APP_TYPE_KEYS.GBA, APP_TYPE_KEYS.VBA_M_GBA);
 addAlias(types, APP_TYPE_KEYS.GB, APP_TYPE_KEYS.VBA_M_GB);
 addAlias(types, APP_TYPE_KEYS.GBC, APP_TYPE_KEYS.VBA_M_GBC);
 addAlias(types, APP_TYPE_KEYS.GENESIS, APP_TYPE_KEYS.GENPLUSGX_MD);
 addAlias(types, APP_TYPE_KEYS.GG, APP_TYPE_KEYS.GENPLUSGX_GG);
 addAlias(types, APP_TYPE_KEYS.LNX, APP_TYPE_KEYS.MEDNAFEN_LNX);
+addAlias(types, APP_TYPE_KEYS.NEOGEO, APP_TYPE_KEYS.FBNEO_NEOGEO);
 addAlias(types, APP_TYPE_KEYS.NES, APP_TYPE_KEYS.FCEUX);
 addAlias(types, APP_TYPE_KEYS.NGC, APP_TYPE_KEYS.MEDNAFEN_NGC);
 addAlias(types, APP_TYPE_KEYS.NGP, APP_TYPE_KEYS.MEDNAFEN_NGP);
