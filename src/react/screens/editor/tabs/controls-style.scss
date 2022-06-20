@@ -1,0 +1,28 @@
+.controls-screen {
+
+  &-content {
+    &-container {
+      display: inline-block;
+
+      &-row {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+      }
+
+      &-column {
+        width: 20vw;
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        margin: .5rem;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+  }
+}
+
+.controls-gamepad-button {
+  height: 4rem;
+}

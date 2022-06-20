@@ -1,0 +1,162 @@
+.editor-screen {
+  font-size: 1.5rem;
+  text-align: center;
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  left: 0px;
+  bottom: 0px;
+  z-index: 51;
+
+  &-inner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100vw;
+    max-height: 80vh;
+    min-height: 80vh;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    opacity: 0.8;
+    background-color: #090909;
+    animation: editor-screen-fadeinpause .5s;
+  }
+
+  &-heading {
+    font-size: 2rem;
+    font-weight: 700;
+    padding: 1rem 0 1rem 0;
+    color: white;
+    opacity: 0;
+
+    &-group {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0 auto;
+
+      &-right-text {
+        margin-left: .7rem;
+      }
+
+      &-image {
+        height: 3rem;
+      }
+
+      &-button {
+        // Fix issue on Android where iframe is blue on exit
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        border: 0;
+        padding: .2rem;
+        margin: 1rem 3rem;
+        line-height: 1rem;
+        border-radius: .9rem;
+        background-color: transparent;
+        color: white;
+        cursor: pointer;
+        outline: none;
+        overflow: hidden;
+        opacity: .7;
+
+        &>img {
+          width: 3rem;
+          height: 3rem;
+        }
+
+        // &:focus:not(:hover) {
+        &:focus {
+          outline: none;
+          background-color: #292929;
+          transition: 0.5s;
+          opacity: .8;
+          transform: scale(1.3);
+        }
+
+        @media (hover) {
+          &:hover {
+            outline: none;
+            background-color: #292929;
+            transition: 0.5s;
+            opacity: .8;
+            transform: scale(1.3);
+          }
+
+          &:hover:focus {
+            opacity: .75;
+            transition: 0.5s;
+            background-color: #191919;
+            transform: scale(1.3);
+          }
+        }
+
+        &:active {
+          outline: none;
+        }
+      }
+    }
+  }
+
+  &-content {
+    line-height: 140%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    min-height: 2.5rem;
+    text-align: center;
+    flex-grow: 1;
+    opacity: 0;
+
+    &-container {
+      display: inline-block;
+    }
+  }
+
+  &-buttons {
+    padding: 1rem 0 1.5rem 0;
+    display: flex;
+    justify-content: center;
+
+    &>button:hover:not(:focus) {
+      transition: none;
+    }
+
+    &>button:focus {
+      transition: none;
+    }
+  }
+}
+
+.editor-screen-content-fade-in {
+  opacity: 1;
+  transition: opacity .6s ease-in;
+}
+
+.editor-screen-button-hide {
+  opacity: 0;
+  cursor: default;
+
+  &:focus {
+    opacity: 0;
+  }
+
+  @media (hover) {
+    &:hover {
+      opacity: 0;
+    }
+
+    &:hover:focus {
+      opacity: 0;
+    }
+  }
+}
+
+@keyframes editor-screen-fadeinpause {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: .8;
+  }
+}

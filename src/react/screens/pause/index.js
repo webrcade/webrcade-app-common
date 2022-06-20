@@ -7,6 +7,24 @@ import { WebrcadeContext } from "../../context/webrcadecontext.js"
 
 import styles from './style.scss'
 
+export class PauseScreenButton extends ImageButton {
+  render() {
+    const {buttonRef, onHandlePad, ...other} = this.props;
+    const { focusGrid } = this.context;
+
+    return (
+      <ImageButton
+        ref={buttonRef}
+        className={styles["pause-screen-image-button"]}
+        onPad={e => {
+          if (onHandlePad) onHandlePad(focusGrid, e);
+        }}
+        {...other}
+      />
+    );
+  }
+}
+
 export class PauseScreen extends Screen {
   constructor() {
     super();
@@ -52,21 +70,23 @@ export class PauseScreen extends Screen {
             </div>
             <div className={styles['pause-screen-inner-buttons']}>
               <div className={styles['pause-screen-inner-buttons-container']}>
-                <ImageButton
+              <PauseScreenButton
                   className={styles["pause-screen-image-button"]}
+
                   imgSrc={ArrowBackWhiteImage}
-                  ref={exitButtonRef}
+                  buttonRef={exitButtonRef}
                   label={Resources.getText( isEditor ?
                     TEXT_IDS.RETURN_TO_EDITOR : TEXT_IDS.RETURN_TO_BROWSE)}
-                  onPad={e => focusGrid.moveFocus(e.type, exitButtonRef)}
+                   onHandlePad={(focusGrid, e) => focusGrid.moveFocus(e.type, exitButtonRef)}
                   onClick={() => {if (exitCallback) exitCallback()}}
                 />
-                <ImageButton
+              <PauseScreenButton
                   className={styles["pause-screen-image-button"]}
+
                   imgSrc={PlayArrowWhiteImage}
-                  ref={this.resumeButtonRef}
+                  buttonRef={this.resumeButtonRef}
                   label={Resources.getText(TEXT_IDS.RESUME)}
-                  onPad={e => focusGrid.moveFocus(e.type, resumeButtonRef)}
+                  onHandlePad={(focusGrid, e) => focusGrid.moveFocus(e.type, resumeButtonRef)}
                   onClick={() => this.close()}
                 />
                 {this.getAdditionalButtons()}
@@ -79,3 +99,23 @@ export class PauseScreen extends Screen {
   }
 }
 
+export class CustomPauseScreen extends PauseScreen {
+
+  componentDidMount() {
+    const { additionalButtonRefs } = this.props;
+    const { focusGrid } = this;
+
+    if (additionalButtonRefs) {
+      const comps = this.getFocusGridComponents();
+      comps[0].push(...additionalButtonRefs);
+      focusGrid.setComponents(comps);
+    }
+
+    super.componentDidMount();
+  }
+
+  getAdditionalButtons() {
+    const { additionalButtons } = this.props;
+    return additionalButtons;
+  }
+}

@@ -13,6 +13,8 @@ const TEXT_IDS = {
   ERROR_UNKNOWN: "An unknown error has occurred.",
   FEEDS: "Feeds",
   FILE_UC: "FILE",
+  GAMEPAD_CONTROLS: "Gamepad Controls",
+  KEYBOARD_CONTROLS: "Keyboard Controls",
   LOAD_UC: "LOAD",
   LOADING: "Loading",
   LOADING_DOTS: "Loading...",

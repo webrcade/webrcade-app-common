@@ -15,7 +15,10 @@ export class Screen extends Component {
 
   focusGrid = new FocusGrid();
   gamepadNotifier = new GamepadNotifier();
-  screenContext = {gamepadNotifier: this.gamepadNotifier};
+  screenContext = {
+    gamepadNotifier: this.gamepadNotifier,
+    focusGrid: this.focusGrid
+  };
   screenStyles = styles;
 
   focus() {
