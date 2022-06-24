@@ -4,12 +4,13 @@ import { Component } from "react";
 import {
   ChevronLeftWhiteImage,
   ChevronRightWhiteImage,
-  ImageButton,
-  Resources,
-  Screen,
-  WebrcadeContext,
-  TEXT_IDS,
-} from '@webrcade/app-common'
+} from '../../../images'
+
+import { ImageButton } from "../../components/image-button";
+import { Resources } from "../../../resources";
+import { Screen } from "../../components/screen";
+import { WebrcadeContext } from "../../context/webrcadecontext";
+import { TEXT_IDS } from "../../../resources";
 
 import styles from './style.scss'
 
