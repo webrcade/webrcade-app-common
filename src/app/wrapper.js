@@ -30,8 +30,16 @@ export class AppWrapper {
     return this.app.appProps;
   }
 
+  getApp() {
+    return this.app;
+  }
+
   getTitle() {
     return this.getProps().title;
+  }
+
+  getStorage() {
+    return this.storage;
   }
 
   async saveStateToStorage(path, buffer, info = true) {

@@ -117,6 +117,11 @@
     display: flex;
     justify-content: center;
 
+    &>button {
+      margin-right:.5rem;
+      margin-left:.5rem;
+    }
+
     &>button:hover:not(:focus) {
       transition: none;
     }

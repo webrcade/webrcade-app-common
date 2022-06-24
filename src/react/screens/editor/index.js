@@ -19,15 +19,9 @@ export class EditorScreen extends Screen {
 
     this.analogCallback = null;
     this.okButtonRef = React.createRef();
+    this.cancelButtonRef = React.createRef();
     this.tabLeftRef = React.createRef();
     this.tabRightRef = React.createRef();
-    this.focusGrid.setComponents(
-      [
-        [this.tabLeftRef, this.tabRightRef],
-        [this.okButtonRef]
-      ]
-    );
-
     this.state = {
       tabIndex: 0
     };
@@ -45,6 +39,7 @@ export class EditorScreen extends Screen {
 
   componentDidMount() {
     const { gamepadNotifier } = this;
+    const { tabIndex } = this.state;
 
     super.componentDidMount();
 
@@ -66,6 +61,9 @@ export class EditorScreen extends Screen {
       };
       gamepadNotifier.addAnalogCallback(this.analogCallback);
     }
+
+    this.setFocusGridComponents(null);
+    this.onTabChange(undefined, tabIndex);
   }
 
   componentWillUnmount() {
@@ -76,6 +74,44 @@ export class EditorScreen extends Screen {
     if (this.analogCallback) {
       gamepadNotifier.removeAnalogCallback(this.analogCallback);
     }
+  }
+
+  onTabChange(prevTabIndex, newTabIndex) {
+    const { onTabChange } = this.props;
+    if (onTabChange) onTabChange(prevTabIndex, newTabIndex);
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const { tabIndex } = this.state;
+    const { focusGridComps } = this.props;
+    const prevTabIndex = prevState.tabIndex;
+    if (prevTabIndex !== tabIndex) {
+      this.onTabChange(prevTabIndex, tabIndex);
+    }
+    const prevFocusGridComps = prevProps.focusGridComps;
+    if (focusGridComps !== prevFocusGridComps) {
+      this.setFocusGridComponents(focusGridComps);
+    }
+  }
+
+  setFocusGridComponents(gridComps) {
+    const { focusGrid } = this;
+    const { showCancel } = this.props;
+
+    const comps = [];
+    comps.push([this.tabLeftRef, this.tabRightRef]);
+    if (gridComps) {
+      for (const i in gridComps) {
+        comps.push(gridComps[i]);
+      }
+    }
+    if (showCancel) {
+      comps.push([this.okButtonRef, this.cancelButtonRef]);
+    } else {
+      comps.push([this.okButtonRef]);
+    }
+
+    focusGrid.setComponents(comps);
   }
 
   renderTabButton(isPrev) {
@@ -98,7 +134,7 @@ export class EditorScreen extends Screen {
         className={styles['editor-screen-heading-group-button'] + (disabled ? (' ' + styles['editor-screen-button-hide']) : '')}
         disabled={disabled}
         ref={isPrev ? tabLeftRef : tabRightRef}
-        onPad={e => focusGrid.moveFocus(e.type, tabRightRef)}
+        onPad={e => focusGrid.moveFocus(e.type, isPrev ? tabLeftRef : tabRightRef)}
         imgSrc={isPrev ? ChevronLeftWhiteImage : ChevronRightWhiteImage}
         onClick={() => {
           if (!disabled) {
@@ -140,8 +176,8 @@ export class EditorScreen extends Screen {
   }
 
   render() {
-    const { okButtonRef, screenContext, screenStyles, focusGrid } = this;
-    const { tabs, onClose } = this.props;
+    const { okButtonRef, cancelButtonRef, screenContext, screenStyles, focusGrid } = this;
+    const { onOk, onClose, showCancel } = this.props;
     const { tabIndex } = this.state;
 
     setTimeout(() => {
@@ -172,8 +208,22 @@ export class EditorScreen extends Screen {
                 ref={okButtonRef}
                 onPad={e => focusGrid.moveFocus(e.type, okButtonRef)}
                 label={Resources.getText(TEXT_IDS.OK)}
-                onClick={() => onClose()}
+                onClick={() => {
+                  if (onOk) {
+                    onOk();
+                  } else {
+                    onClose();
+                  }
+                }}
               />
+              {showCancel ? (
+                <ImageButton
+                  ref={cancelButtonRef}
+                  onPad={e => focusGrid.moveFocus(e.type, cancelButtonRef)}
+                  label={Resources.getText(TEXT_IDS.CANCEL)}
+                  onClick={() => onClose()}
+                />
+              ) : null}
             </div>
           </div>
         </div>

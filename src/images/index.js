@@ -28,6 +28,7 @@ const CategoryThumbImage = resolvePath("images/folder.png");
 const CategoryBackgroundImage = resolvePath("images/folder-background.png");
 const FeedThumbImage = resolvePath("images/feed.png");
 const FeedBackgroundImage = resolvePath("images/feed-background.png");
+const SettingsWhiteImage = resolvePath("images/common/settings_white_24dp.svg")
 const XboxOneDpad = resolvePath("images/common/controller/Xbox One/XboxOne_Dpad.png");
 const XboxOneAButton = resolvePath("images/common/controller/Xbox One/XboxOne_A.png");
 const XboxOneBButton = resolvePath("images/common/controller/Xbox One/XboxOne_B.png");
@@ -77,6 +78,7 @@ export {
   KeyboardWhiteImage,
   PlayArrowBlackImage,
   PlayArrowWhiteImage,
+  SettingsWhiteImage,
   WebrcadeLogoDarkImage,
   WebrcadeLogoLargeImage,
   VolumeOffBlackImage,

@@ -101,11 +101,11 @@ export class ControlsTab extends EditorTab {
 
   renderKey(key, description) {
     return (
-      <div key={key} className={styles['controls-screen-content-container-row']}>
-        <div className={styles['controls-screen-content-container-column']}>
+      <div key={key} className={styles['controls-screen-row']}>
+        <div className={styles['controls-screen-column']}>
           <img className={styles['controls-gamepad-button']} src={this.getKeyImage(key)} alt=""></img>
         </div>
-        <div className={styles['controls-screen-content-container-column']}>
+        <div className={styles['controls-screen-column']}>
           {description}
         </div>
       </div>
@@ -114,11 +114,11 @@ export class ControlsTab extends EditorTab {
 
   renderControl(control, description) {
     return (
-      <div className={styles['controls-screen-content-container-row']}>
-        <div className={styles['controls-screen-content-container-column']}>
+      <div className={styles['controls-screen-row']}>
+        <div className={styles['controls-screen-column']}>
           <img className={styles['controls-gamepad-button']} src={this.getGamepadImage(control)} alt=""></img>
         </div>
-        <div className={styles['controls-screen-content-container-column']}>
+        <div className={styles['controls-screen-column']}>
           {description}
         </div>
       </div>

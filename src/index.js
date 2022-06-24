@@ -14,6 +14,7 @@ export * from './react/components/app';
 export * from './react/components/message';
 export * from './react/components/file-button';
 export * from './react/components/image-button';
+export * from './react/components/switch';
 export * from './react/components/text-field';
 export * from './react/screens/editor';
 export * from './react/screens/editor/tabs';

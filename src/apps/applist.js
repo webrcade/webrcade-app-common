@@ -9,7 +9,7 @@ let n64Str = ((typeof window !== "undefined") ? UrlUtil.getParam(window.location
 if (n64Str) {
   n64Str = n64Str.toLowerCase();
 }
-const n64enabled = n64Str && (n64Str === "1" || n64Str === "true");
+const n64enabled = true; // n64Str && (n64Str === "1" || n64Str === "true");
 
 const localIp = config.getLocalIp();
 const locGenesis = isDev() ? `http://${localIp}:3010` : 'app/genesis/';
