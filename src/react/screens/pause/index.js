@@ -70,26 +70,26 @@ export class PauseScreen extends Screen {
             </div>
             <div className={styles['pause-screen-inner-buttons']}>
               <div className={styles['pause-screen-inner-buttons-container']}>
-              <PauseScreenButton
-                  className={styles["pause-screen-image-button"]}
+                <PauseScreenButton
+                    className={styles["pause-screen-image-button"]}
 
-                  imgSrc={ArrowBackWhiteImage}
-                  buttonRef={exitButtonRef}
-                  label={Resources.getText( isEditor ?
-                    TEXT_IDS.RETURN_TO_EDITOR : TEXT_IDS.RETURN_TO_BROWSE)}
-                   onHandlePad={(focusGrid, e) => focusGrid.moveFocus(e.type, exitButtonRef)}
-                  onClick={() => {if (exitCallback) exitCallback()}}
-                />
-              <PauseScreenButton
-                  className={styles["pause-screen-image-button"]}
-
-                  imgSrc={PlayArrowWhiteImage}
-                  buttonRef={this.resumeButtonRef}
-                  label={Resources.getText(TEXT_IDS.RESUME)}
-                  onHandlePad={(focusGrid, e) => focusGrid.moveFocus(e.type, resumeButtonRef)}
-                  onClick={() => this.close()}
+                    imgSrc={ArrowBackWhiteImage}
+                    buttonRef={exitButtonRef}
+                    label={Resources.getText( isEditor ?
+                      TEXT_IDS.RETURN_TO_EDITOR : TEXT_IDS.RETURN_TO_BROWSE)}
+                    onHandlePad={(focusGrid, e) => focusGrid.moveFocus(e.type, exitButtonRef)}
+                    onClick={() => {if (exitCallback) exitCallback()}}
                 />
                 {this.getAdditionalButtons()}
+                <PauseScreenButton
+                    className={styles["pause-screen-image-button"]}
+
+                    imgSrc={PlayArrowWhiteImage}
+                    buttonRef={this.resumeButtonRef}
+                    label={Resources.getText(TEXT_IDS.RESUME)}
+                    onHandlePad={(focusGrid, e) => focusGrid.moveFocus(e.type, resumeButtonRef)}
+                    onClick={() => this.close()}
+                />
               </div>
             </div>
           </div>
@@ -107,8 +107,9 @@ export class CustomPauseScreen extends PauseScreen {
 
     if (additionalButtonRefs) {
       const comps = this.getFocusGridComponents();
-      comps[0].push(...additionalButtonRefs);
+      comps[0] = [comps[0][0], ...additionalButtonRefs, comps[0][1]];
       focusGrid.setComponents(comps);
+      console.log(comps);
     }
 
     super.componentDidMount();

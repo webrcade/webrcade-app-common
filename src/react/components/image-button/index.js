@@ -80,8 +80,13 @@ export class ImageButton extends Component {
   }
 
   isFocusable() {
+    const { button } = this;
     const { disabled } = this.props;
-    return disabled ? false : true;
+    if (disabled) {
+      return false;
+    }
+
+    return (button.offsetWidth > 0 && button.offsetHeight);
   }
 
   focus() {
