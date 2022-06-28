@@ -109,7 +109,6 @@ export class CustomPauseScreen extends PauseScreen {
       const comps = this.getFocusGridComponents();
       comps[0] = [comps[0][0], ...additionalButtonRefs, comps[0][1]];
       focusGrid.setComponents(comps);
-      console.log(comps);
     }
 
     super.componentDidMount();
