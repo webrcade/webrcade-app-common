@@ -1,11 +1,12 @@
 import * as LOG from '../log'
+import { settings } from '../settings';
 import { addDebugDiv } from './debug.js'
 
 export class DisplayLoop {
   constructor(freq = 60, vsync = true, debug = false) {
     this.frequency = freq;
     this.forceAdjustTimestamp = false;
-    this.vsync = vsync;
+    this.vsync = vsync && settings.isVsyncEnabled();
     this.debug = debug;
     this.paused = true;
     this.isNative = false;
