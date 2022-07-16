@@ -5,12 +5,6 @@ import * as Atari7800 from './type/7800';
 import * as Lynx from './type/lynx';
 import * as Nes from './type/nes';
 
-let n64Str = ((typeof window !== "undefined") ? UrlUtil.getParam(window.location.search, "n64") : null);
-if (n64Str) {
-  n64Str = n64Str.toLowerCase();
-}
-const n64enabled = true; // n64Str && (n64Str === "1" || n64Str === "true");
-
 const localIp = config.getLocalIp();
 const locGenesis = isDev() ? `http://${localIp}:3010` : 'app/genesis/';
 const locSms = locGenesis;
@@ -31,7 +25,7 @@ const checkRom = app => {
   }
 }
 
-let APP_TYPE_KEYS = Object.freeze({
+const APP_TYPE_KEYS = /*Object.freeze(*/{
   // Types
   FBNEO_ARCADE: "fbneo-arcade",
   FBNEO_CAPCOM: "fbneo-capcom",
@@ -82,17 +76,7 @@ let APP_TYPE_KEYS = Object.freeze({
   VB: "vb",
   WSC: "wsc",
   WS: "ws"
-});
-
-if (n64enabled) {
-  APP_TYPE_KEYS = Object.freeze({
-    ...{
-      PARALLEL_N64: "parallel-n64",
-      N64: "n64",
-    },
-    ...APP_TYPE_KEYS
-  })
-}
+}/*)*/;
 
 const PCE_DEFAULTS = {
   rom: "",
@@ -118,7 +102,7 @@ const ARCADE_DEFAULTS = {
   playerOrder: "0:1:2:3"
 }
 
-let types = [
+const types = [
   {
     key: APP_TYPE_KEYS.FBNEO_NEOGEO,
     name: 'SNK Neo Geo',
@@ -447,41 +431,6 @@ const addAlias = (types, alias, typeKey) => {
   types.push({ key: alias, absoluteKey: typeKey, ...props });
 }
 
-// N64
-if (n64enabled) {
-  types.push({
-    key: APP_TYPE_KEYS.PARALLEL_N64,
-    name: 'Nintendo 64',
-    coreName: 'paraLLEl N64',
-    location: locN64,
-    background: 'images/app/n64-background.png',
-    thumbnail: 'images/app/n64-thumb.png',
-    validate: checkRom,
-    extensions: ['n64', 'v64', 'z64'],
-    isDelayedExit: true,
-    addParams: (url) => {
-      url = UrlUtil.addParam(url, "n64", "1");
-      const N64_SKIP_RP = "n64.skip";
-      const n64skip = UrlUtil.getParam(
-        window.location.search, N64_SKIP_RP);
-      if (n64skip) {
-        url = UrlUtil.addParam(url, N64_SKIP_RP, n64skip);
-      }
-      const N64_VBO_RP = "n64.vbo";
-      const n64vbo = UrlUtil.getParam(
-        window.location.search, N64_VBO_RP);
-      if (n64vbo) {
-        url = UrlUtil.addParam(url, N64_VBO_RP, n64vbo);
-      }
-      return url;
-    },
-    defaults: {
-      rom: ""
-    }
-  });
-  addAlias(types, APP_TYPE_KEYS.N64, APP_TYPE_KEYS.PARALLEL_N64);
-}
-
 // Only add PRBoom on public server
 if (config.isPublicServer()) {
   types.push({
@@ -531,4 +480,61 @@ addAlias(types, APP_TYPE_KEYS.WS, APP_TYPE_KEYS.MEDNAFEN_WS);
 
 const APP_TYPES = types;
 
-export { APP_TYPE_KEYS, APP_TYPES };
+const enableExperimentalApps = (b) => {
+
+  //
+  // Remove N64
+  //
+
+  const clone = [...APP_TYPES];
+  APP_TYPES.length = 0;
+  for (let i = 0; i < clone.length; i++) {
+    const t = clone[i];
+    if ((!APP_TYPE_KEYS.PARALLEL_N64 || t.key !== APP_TYPE_KEYS.PARALLEL_N64) &&
+        (!APP_TYPE_KEYS.N64 || t.key !== APP_TYPE_KEYS.N64)) {
+      APP_TYPES.push(t);
+    }
+  }
+
+  delete APP_TYPE_KEYS.PARALLEL_N64;
+  delete APP_TYPE_KEYS.N64;
+
+  if (b) {
+    APP_TYPE_KEYS.PARALLEL_N64 = "parallel-n64";
+    APP_TYPE_KEYS.N64 = "n64";
+
+    APP_TYPES.push({
+      key: APP_TYPE_KEYS.PARALLEL_N64,
+      name: 'Nintendo 64',
+      coreName: 'paraLLEl N64',
+      location: locN64,
+      background: 'images/app/n64-background.png',
+      thumbnail: 'images/app/n64-thumb.png',
+      validate: checkRom,
+      extensions: ['n64', 'v64', 'z64'],
+      isDelayedExit: true,
+      addParams: (url) => {
+        url = UrlUtil.addParam(url, "n64", "1");
+        const N64_SKIP_RP = "n64.skip";
+        const n64skip = UrlUtil.getParam(
+          window.location.search, N64_SKIP_RP);
+        if (n64skip) {
+          url = UrlUtil.addParam(url, N64_SKIP_RP, n64skip);
+        }
+        const N64_VBO_RP = "n64.vbo";
+        const n64vbo = UrlUtil.getParam(
+          window.location.search, N64_VBO_RP);
+        if (n64vbo) {
+          url = UrlUtil.addParam(url, N64_VBO_RP, n64vbo);
+        }
+        return url;
+      },
+      defaults: {
+        rom: ""
+      }
+    });
+    addAlias(APP_TYPES, APP_TYPE_KEYS.N64, APP_TYPE_KEYS.PARALLEL_N64);
+  }
+}
+
+export { enableExperimentalApps, APP_TYPE_KEYS, APP_TYPES };

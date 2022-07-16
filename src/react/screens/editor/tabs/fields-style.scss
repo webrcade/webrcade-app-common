@@ -3,7 +3,6 @@
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-
   }
 
   &-label {
@@ -25,6 +24,7 @@
     flex: 1;
     margin: 1rem;
     align-items: left;
+    text-align: left;
     justify-content: center;
   }
 }

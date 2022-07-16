@@ -6,6 +6,7 @@ export * from './display';
 export * from './feed';
 export * from './images'
 export * from './input';
+export * from './settings';
 export * from './storage'
 export * from './resources'
 export * from './util';

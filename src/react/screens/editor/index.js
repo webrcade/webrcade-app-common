@@ -178,7 +178,7 @@ export class EditorScreen extends Screen {
 
   render() {
     const { okButtonRef, cancelButtonRef, screenContext, screenStyles, focusGrid } = this;
-    const { onOk, onClose, showCancel } = this.props;
+    const { hidden, onOk, onClose, showCancel } = this.props;
     const { tabIndex } = this.state;
 
     setTimeout(() => {
@@ -186,10 +186,15 @@ export class EditorScreen extends Screen {
       this.contentRef.classList.add(styles['editor-screen-content-fade-in']);
     }, 0);
 
+    const divStyles = {}
+    if (hidden) {
+      divStyles.display = 'none'
+    }
+
     return (
       <WebrcadeContext.Provider value={screenContext}>
-        <div className={screenStyles['screen-transparency']} style={{ 'animation': 'none' }} />
-        <div className={styles['editor-screen']}>
+        <div className={screenStyles['screen-transparency']} style={{ ...{'animation': 'none'}, ...divStyles }}/>
+        <div className={styles['editor-screen']} style={divStyles}>
           <div className={styles['editor-screen-inner']}>
             <div ref={(heading) => { this.headingRef = heading; }} className={styles['editor-screen-heading']}>
               <div className={styles['editor-screen-heading-group']}>

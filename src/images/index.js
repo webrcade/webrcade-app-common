@@ -21,6 +21,7 @@ const AddCircleBlackImage = resolvePath("images/common/add_circle_outline_black_
 const AddCircleWhiteImage = resolvePath("images/common/add_circle_outline_white_24dp.svg");
 const PlayArrowBlackImage = resolvePath("images/common/play_arrow_black_24dp.svg");
 const PlayArrowWhiteImage = resolvePath("images/common/play_arrow_white_24dp.svg");
+const TuneWhiteImage = resolvePath("images/common/tune_white_24dp.svg");
 const VolumeOffBlackImage = resolvePath("images/common/volume_off_black_24dp.svg");
 const WebrcadeLogoDarkImage = resolvePath("images/common/webrcade-logo-dark.svg");
 const WebrcadeLogoLargeImage = resolvePath("images/common/webrcade-logo-large.svg");
@@ -28,8 +29,9 @@ const CategoryThumbImage = resolvePath("images/folder.png");
 const CategoryBackgroundImage = resolvePath("images/folder-background.png");
 const FeedThumbImage = resolvePath("images/feed.png");
 const FeedBackgroundImage = resolvePath("images/feed-background.png");
-const SettingsRedImage = resolvePath("images/common/settings_red_24dp.svg")
-const SettingsWhiteImage = resolvePath("images/common/settings_white_24dp.svg")
+const SettingsRedImage = resolvePath("images/common/settings_red_24dp.svg");
+const SettingsWhiteImage = resolvePath("images/common/settings_white_24dp.svg");
+const TelevisionWhiteImage = resolvePath("images/common/tv_white_24dp.svg");
 const XboxOneDpad = resolvePath("images/common/controller/Xbox One/XboxOne_Dpad.png");
 const XboxOneAButton = resolvePath("images/common/controller/Xbox One/XboxOne_A.png");
 const XboxOneBButton = resolvePath("images/common/controller/Xbox One/XboxOne_B.png");
@@ -81,6 +83,8 @@ export {
   PlayArrowWhiteImage,
   SettingsRedImage,
   SettingsWhiteImage,
+  TelevisionWhiteImage,
+  TuneWhiteImage,
   WebrcadeLogoDarkImage,
   WebrcadeLogoLargeImage,
   VolumeOffBlackImage,

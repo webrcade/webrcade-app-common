@@ -3,6 +3,7 @@ import * as LOG from '../../../log'
 import { isDev } from '../../../util'
 import { AlertScreen } from "../../screens/alert";
 import { AppProps } from '../../../app';
+import { AppRegistry } from "../../../apps";
 import { ErrorScreen } from "../../screens/error";
 import { OverlayScreen } from "../../screens/overlay"
 import { PauseScreen } from "../../screens/pause";
@@ -104,6 +105,9 @@ export class WebrcadeApp extends Component {
 
     // Set debug flag
     this.debug = UrlUtil.getBoolParam(url, AppProps.RP_DEBUG);
+
+    // Enable experimental apps
+    AppRegistry.instance.enableExpApps(true);
   }
 
   componentWillUnmount() {
