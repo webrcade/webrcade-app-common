@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import * as LOG from '../../../log'
 import { isDev } from '../../../util'
+import { settings } from "../../../settings";
 import { AlertScreen } from "../../screens/alert";
 import { AppProps } from '../../../app';
 import { AppRegistry } from "../../../apps";
@@ -120,6 +121,14 @@ export class WebrcadeApp extends Component {
 
   getStoragePath(postfix) {
     return `/wrc/${this.getAppType()}/${postfix}`;
+  }
+
+  getCanvasStyles() {
+    const styles = {};
+    if (settings.isBilinearFilterEnabled()) {
+      styles.imageRendering = 'auto';
+    }
+    return styles;
   }
 
   renderLoading() {
