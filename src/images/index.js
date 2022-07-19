@@ -58,6 +58,8 @@ const SKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/S_Key_D
 const VKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/V_Key_Dark.png");
 const XKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/X_Key_Dark.png");
 const ZKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/Z_Key_Dark.png");
+const QKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/Q_Key_Dark.png");
+const WKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/W_Key_Dark.png");
 
 export {
   AddCircleBlackImage,
@@ -110,8 +112,10 @@ export {
   AKey,
   CKey,
   DKey,
+  QKey,
   SKey,
   VKey,
+  WKey,
   XKey,
   ZKey,
   resolvePath as resolveImagePath

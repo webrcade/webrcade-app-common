@@ -119,6 +119,10 @@ export class WebrcadeApp extends Component {
     return this.type;
   }
 
+  getAppProps() {
+    return this.appProps;
+  }
+
   getStoragePath(postfix) {
     return `/wrc/${this.getAppType()}/${postfix}`;
   }

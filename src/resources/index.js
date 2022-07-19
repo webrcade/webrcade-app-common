@@ -1,4 +1,6 @@
-const TEXT_IDS = {
+import { LOG } from "..";
+
+const TEXT_VALUES = {
   ADD: "Add",
   ADD_UC: "ADD",
   ADVANCED_SETTINGS: "Advanced Settings",
@@ -18,7 +20,9 @@ const TEXT_IDS = {
   FEEDS: "Feeds",
   FILE_UC: "FILE",
   GAMEPAD_CONTROLS: "Gamepad Controls",
+  GAMEPAD_CONTROLS_DETAIL: "Gamepad Controls (%s)",
   KEYBOARD_CONTROLS: "Keyboard Controls",
+  KEYBOARD_CONTROLS_DETAIL: "Keyboard Controls (%s)",
   LOAD_UC: "LOAD",
   LOADING: "Loading",
   LOADING_DOTS: "Loading...",
@@ -31,22 +35,92 @@ const TEXT_IDS = {
   RESUME: "Resume",
   RETURN_TO_BROWSE: "Return to Browse",
   RETURN_TO_EDITOR: "Return to Editor",
+  ROTATED: "Rotated",
   SEE_CONSOLE_LOG: "See console log for details.",
   SELECT_UC: "SELECT",
   SHOW_CATEGORIES: "Show Categories",
   SHOW_FEEDS: "Show Feeds",
+  SIX_BUTTON: "6-button",
   SOMETHING_WENT_WRONG: "Whoops, something went wrong...",
   SPECIFY_LOCATION_OF_FEED: "Specify the location of the feed to add (URL)",
   TAP_TO_UNMUTE: "Tap Screen to Unmute",
+  TWO_BUTTON: "2-button",
   URL: "URL",
   VERTICAL_SYNC: "Vertical sync",
   VIEW_CONTROLS: "View Controls",
   YES: "Yes"
+}
+
+const TEXT_IDS = {
+  ADD: "ADD",
+  ADD_UC: "ADD_UC",
+  ADVANCED_SETTINGS: "ADVANCED_SETTINGS",
+  BILINEAR_FILTER: "BILINEAR_FILTER",
+  CANCEL: "CANCEL",
+  CATEGORIES: "CATEGORIES",
+  CLICK_TO_UNMUTE: "CLICK_TO_UNMUTE",
+  CONFIRM_DELETE_FEED: "CONFIRM_DELETE_FEED",
+  DELETE_UC: "DELETE_UC",
+  DISPLAY_SETTINGS: "DISPLAY_SETTINGS",
+  ERROR_DELETING_FEED: "ERROR_DELETING_FEED",
+  ERROR_LOADING_GAME: "ERROR_LOADING_GAME",
+  ERROR_LOADING_FEED: "ERROR_LOADING_FEED",
+  ERROR_RETRIEVING_GAME: "ERROR_RETRIEVING_GAME",
+  ERROR_UNKNOWN: "ERROR_UNKNOWN",
+  EXPERIMENTAL_APPS: "EXPERIMENTAL_APPS",
+  FEEDS: "FEEDS",
+  FILE_UC: "FILE_UC",
+  GAMEPAD_CONTROLS: "GAMEPAD_CONTROLS",
+  GAMEPAD_CONTROLS_DETAIL: "GAMEPAD_CONTROLS_DETAIL",
+  KEYBOARD_CONTROLS: "KEYBOARD_CONTROLS",
+  KEYBOARD_CONTROLS_DETAIL: "KEYBOARD_CONTROLS_DETAIL",
+  LOAD_UC: "LOAD_UC",
+  LOADING: "LOADING",
+  LOADING_DOTS: "LOADING_DOTS",
+  LOADING_FEED: "LOADING_FEED",
+  LOCAL_PARENS: "LOCAL_PARENS",
+  NO: "NO",
+  OK: "OK",
+  PLAY_UC: "PLAY_UC",
+  RELOAD_EXP_APPS: "RELOAD_EXP_APPS",
+  RESUME: "RESUME",
+  RETURN_TO_BROWSE: "RETURN_TO_BROWSE",
+  RETURN_TO_EDITOR: "RETURN_TO_EDITOR",
+  ROTATED: "ROTATED",
+  SEE_CONSOLE_LOG: "SEE_CONSOLE_LOG",
+  SELECT_UC: "SELECT_UC",
+  SHOW_CATEGORIES: "SHOW_CATEGORIES",
+  SHOW_FEEDS: "SHOW_FEEDS",
+  SIX_BUTTON: "SIX_BUTTON",
+  SOMETHING_WENT_WRONG: "SOMETHING_WENT_WRONG",
+  SPECIFY_LOCATION_OF_FEED: "SPECIFY_LOCATION_OF_FEED",
+  TAP_TO_UNMUTE: "TAP_TO_UNMUTE",
+  TWO_BUTTON: "TWO_BUTTON",
+  URL: "URL",
+  VERTICAL_SYNC: "VERTICAL_SYNC",
+  VIEW_CONTROLS: "VIEW_CONTROLS",
+  YES: "YES",
 };
 
 class Resources {
-  static getText(id) {
-    return id; // For now the id is the message, in the future it may not be
+  static getText() {
+    const id = arguments[0];
+    let message = TEXT_VALUES[id];
+    if (message === undefined) {
+      LOG.error(`Unable to find resource for key: '${id}'`)
+    }
+    for (let i = 1; i < arguments.length; i++) {
+      message = message.replace(/%s/, arguments[i]);
+    }
+    return message;
+  }
+
+  static check() {
+    for (let key in TEXT_IDS) {
+      if (TEXT_VALUES[key] === undefined) {
+        LOG.error(`Unable to find resource for key: '${key}'`)
+      }
+    }
   }
 };
 

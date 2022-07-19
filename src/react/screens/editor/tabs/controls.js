@@ -29,6 +29,8 @@ import {
   VKey,
   XKey,
   ZKey,
+  QKey,
+  WKey,
 } from '../../../../images'
 
 import styles from './controls-style.scss'
@@ -94,6 +96,10 @@ export class ControlsTab extends EditorTab {
         return SKey;
       case 'KeyD':
         return DKey;
+      case 'KeyQ':
+        return QKey;
+      case 'KeyW':
+        return WKey;
       default:
         return "";
     }
