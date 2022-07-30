@@ -119,19 +119,19 @@ export class AppWrapper {
         if (controllers) {
           controllers.setEnabled(true);
         }
-        this.pause(false);
+        this.pause(false, true);
       }))
       .catch(e => LOG.error(e));
   }
 
-  pause(p) {
+  pause(p, isMenu) {
     const { audioProcessor, displayLoop } = this;
 
     if ((p && !this.paused) || (!p && this.paused)) {
       this.paused = p;
       if (displayLoop) displayLoop.pause(p);
       if (audioProcessor) audioProcessor.pause(p);
-      this.onPause(p);
+      this.onPause(p, isMenu === true);
       return true;
     }
     return false;

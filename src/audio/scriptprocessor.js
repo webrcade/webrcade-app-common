@@ -137,7 +137,7 @@ class ScriptAudioProcessor {
     this.paused = p;
   }
 
-  start() {
+  start(forceResume = false) {
     if (!this.audioCtx && (window.AudioContext || window.webkitAudioContext)) {
       this.audioCtx = window.AudioContext ?
         new window.AudioContext({ sampleRate: this.frequency }) :
@@ -182,7 +182,7 @@ class ScriptAudioProcessor {
 
      // Add audio resume
      setTimeout(() => {
-      if (!this.isPlaying()) {
+      if (!this.isPlaying() || forceResume) {
         registerAudioResume(this, this.callback);
         if (this.callback) this.callback(false);
       }}, 100);

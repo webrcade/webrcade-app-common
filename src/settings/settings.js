@@ -1,6 +1,6 @@
 import { BaseSettings } from "./base";
 import { storage } from "../storage"
-import { LOG } from "..";
+import * as LOG from "../log";
 import { AppRegistry } from "../apps"
 
 class Settings extends BaseSettings {

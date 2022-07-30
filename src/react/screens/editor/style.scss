@@ -19,9 +19,9 @@
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
-    opacity: 0.8;
+    // opacity: 0.8;
     background-color: #090909;
-    animation: editor-screen-fadeinpause .5s;
+    // animation: editor-screen-fadeinpause .5s;
   }
 
   &-heading {
@@ -134,7 +134,7 @@
 
 .editor-screen-content-fade-in {
   opacity: 1;
-  transition: opacity .6s ease-in;
+  transition: opacity .5s ease-in;
 }
 
 .editor-screen-button-hide {
