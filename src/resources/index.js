@@ -1,4 +1,4 @@
-import { LOG } from "..";
+import * as LOG from "../log";
 
 const TEXT_VALUES = {
   ADD: "Add",
