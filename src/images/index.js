@@ -1,37 +1,38 @@
 import * as Util from '../util'
+import * as Icons from './icons'
 
 const resolvePath = (path) => {
   return Util.resolvePath(path);
 };
 
-const ArrowBackWhiteImage = resolvePath("images/common/arrow_back_white_24dp.svg");
-const ChevronLeftWhiteImage = resolvePath("images/common/chevron_left_white_24dp.svg");
-const ChevronRightWhiteImage = resolvePath("images/common/chevron_right_white_24dp.svg");
-const CloudBlackImage = resolvePath("images/common/cloud_black_24dp.svg");
-const CloudWhiteImage = resolvePath("images/common/cloud_white_24dp.svg");
-const CloudDownloadBlackImage = resolvePath("images/common/cloud_download_black_24dp.svg");
-const CloudDownloadWhiteImage = resolvePath("images/common/cloud_download_white_24dp.svg");
-const DeleteForeverBlackImage = resolvePath("images/common/delete_forever_black_24dp.svg");
-const DeleteForeverWhiteImage = resolvePath("images/common/delete_forever_white_24dp.svg");
-const DescriptionBlackImage = resolvePath("images/common/description_black_24dp.svg");
-const DescriptionWhiteImage = resolvePath("images/common/description_white_24dp.svg");
-const GamepadWhiteImage = resolvePath("images/common/gamepad_white_24dp.svg");
-const KeyboardWhiteImage = resolvePath("images/common/keyboard_white_24dp.svg");
-const AddCircleBlackImage = resolvePath("images/common/add_circle_outline_black_24dp.svg");
-const AddCircleWhiteImage = resolvePath("images/common/add_circle_outline_white_24dp.svg");
-const PlayArrowBlackImage = resolvePath("images/common/play_arrow_black_24dp.svg");
-const PlayArrowWhiteImage = resolvePath("images/common/play_arrow_white_24dp.svg");
-const TuneWhiteImage = resolvePath("images/common/tune_white_24dp.svg");
-const VolumeOffBlackImage = resolvePath("images/common/volume_off_black_24dp.svg");
-const WebrcadeLogoDarkImage = resolvePath("images/common/webrcade-logo-dark.svg");
-const WebrcadeLogoLargeImage = resolvePath("images/common/webrcade-logo-large.svg");
+const ArrowBackWhiteImage = Icons.arrow_back_white_24dp; //resolvePath("images/common/arrow_back_white_24dp.svg");
+const ChevronLeftWhiteImage = Icons.chevron_left_white_24dp; //resolvePath("images/common/chevron_left_white_24dp.svg");
+const ChevronRightWhiteImage = Icons.chevron_right_white_24dp; //resolvePath("images/common/chevron_right_white_24dp.svg");
+const CloudBlackImage = Icons.cloud_black_24dp; //resolvePath("images/common/cloud_black_24dp.svg");
+const CloudWhiteImage = Icons.cloud_white_24dp; //resolvePath("images/common/cloud_white_24dp.svg");
+const CloudDownloadBlackImage = Icons.cloud_download_black_24dp; //resolvePath("images/common/cloud_download_black_24dp.svg");
+const CloudDownloadWhiteImage = Icons.cloud_download_white_24dp; //resolvePath("images/common/cloud_download_white_24dp.svg");
+const DeleteForeverBlackImage = Icons.delete_forever_black_24dp; //resolvePath("images/common/delete_forever_black_24dp.svg");
+const DeleteForeverWhiteImage = Icons.delete_forever_white_24dp; //resolvePath("images/common/delete_forever_white_24dp.svg");
+const DescriptionBlackImage = Icons.description_black_24dp; //resolvePath("images/common/description_black_24dp.svg");
+const DescriptionWhiteImage = Icons.description_white_24dp; //resolvePath("images/common/description_white_24dp.svg");
+const GamepadWhiteImage = Icons.gamepad_white_24dp; //resolvePath("images/common/gamepad_white_24dp.svg");
+const KeyboardWhiteImage = Icons.keyboard_white_24dp; //resolvePath("images/common/keyboard_white_24dp.svg");
+const AddCircleBlackImage = Icons.add_circle_outline_black_24dp; //resolvePath("images/common/add_circle_outline_black_24dp.svg");
+const AddCircleWhiteImage = Icons.add_circle_outline_white_24dp; //resolvePath("images/common/add_circle_outline_white_24dp.svg");
+const PlayArrowBlackImage = Icons.play_arrow_black_24dp; //resolvePath("images/common/play_arrow_black_24dp.svg");
+const PlayArrowWhiteImage = Icons.play_arrow_white_24dp; //resolvePath("images/common/play_arrow_white_24dp.svg");
+const TuneWhiteImage = Icons.tune_white_24dp; //resolvePath("images/common/tune_white_24dp.svg");
+const VolumeOffBlackImage = Icons.volume_off_black_24dp; //resolvePath("images/common/volume_off_black_24dp.svg");
+const WebrcadeLogoDarkImage = Icons.webrcade_logo_dark; //resolvePath("images/common/webrcade-logo-dark.svg");
+const WebrcadeLogoLargeImage = Icons.webrcade_logo_large; //resolvePath("images/common/webrcade-logo-large.svg");
+const SettingsRedImage = Icons.settings_red_24dp; //resolvePath("images/common/settings_red_24dp.svg");
+const SettingsWhiteImage = Icons.settings_white_24dp; //resolvePath("images/common/settings_white_24dp.svg");
+const TelevisionWhiteImage = Icons.tv_white_24dp; //resolvePath("images/common/tv_white_24dp.svg");
 const CategoryThumbImage = resolvePath("images/folder.png");
 const CategoryBackgroundImage = resolvePath("images/folder-background.png");
 const FeedThumbImage = resolvePath("images/feed.png");
 const FeedBackgroundImage = resolvePath("images/feed-background.png");
-const SettingsRedImage = resolvePath("images/common/settings_red_24dp.svg");
-const SettingsWhiteImage = resolvePath("images/common/settings_white_24dp.svg");
-const TelevisionWhiteImage = resolvePath("images/common/tv_white_24dp.svg");
 const XboxOneDpad = resolvePath("images/common/controller/Xbox One/XboxOne_Dpad.png");
 const XboxOneAButton = resolvePath("images/common/controller/Xbox One/XboxOne_A.png");
 const XboxOneBButton = resolvePath("images/common/controller/Xbox One/XboxOne_B.png");
