@@ -21,6 +21,10 @@ const KeyboardWhiteImage = Icons.keyboard_white_24dp; //resolvePath("images/comm
 const AddCircleBlackImage = Icons.add_circle_outline_black_24dp; //resolvePath("images/common/add_circle_outline_black_24dp.svg");
 const AddCircleWhiteImage = Icons.add_circle_outline_white_24dp; //resolvePath("images/common/add_circle_outline_white_24dp.svg");
 const PlayArrowBlackImage = Icons.play_arrow_black_24dp; //resolvePath("images/common/play_arrow_black_24dp.svg");
+const LinkBlackImage = Icons.link_black_24dp;
+const LinkWhiteImage = Icons.link_white_24dp;
+const LinkOffBlackImage = Icons.link_off_black_24dp;
+const LinkOffWhiteImage = Icons.link_off_white_24dp;
 const PlayArrowWhiteImage = Icons.play_arrow_white_24dp; //resolvePath("images/common/play_arrow_white_24dp.svg");
 const TuneWhiteImage = Icons.tune_white_24dp; //resolvePath("images/common/tune_white_24dp.svg");
 const VolumeOffBlackImage = Icons.volume_off_black_24dp; //resolvePath("images/common/volume_off_black_24dp.svg");
@@ -82,6 +86,10 @@ export {
   FeedBackgroundImage,
   GamepadWhiteImage,
   KeyboardWhiteImage,
+  LinkBlackImage,
+  LinkWhiteImage,
+  LinkOffBlackImage,
+  LinkOffWhiteImage,
   PlayArrowBlackImage,
   PlayArrowWhiteImage,
   SettingsRedImage,

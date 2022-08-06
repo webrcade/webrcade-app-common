@@ -1,5 +1,5 @@
 import { BaseSettings } from "./base";
-import { storage } from "../storage"
+import { storage } from "../storage/storage.js"
 import * as LOG from "../log";
 import { AppRegistry } from "../apps"
 
@@ -9,18 +9,24 @@ class Settings extends BaseSettings {
     this.expApps = false;
     this.vsync = true;
     this.bilinearFilter = false;
+    this.cloudStorage = false;
+    this.dbToken = null;
   }
 
   PREFIX = "wrcSettings.";
   EXP_APPS_PROP = this.PREFIX + "expApps";
   VSYNC_PROP = this.PREFIX + "vsync";
   BILINEAR_FILTER_PROP = this.PREFIX + "bilinearFilter";
+  CLOUD_STORAGE_PROP = this.PREFIX + "cloudStorage";
+  DB_TOKEN = this.PREFIX + "dbToken";
 
   async load() {
     LOG.info("Loading settings.");
     this.expApps = await this.loadBool(this.EXP_APPS_PROP, this.expApps);
     this.vsync = await this.loadBool(this.VSYNC_PROP, this.vsync);
+    this.cloudStorage = await this.loadBool(this.CLOUD_STORAGE_PROP, this.cloudStorage);
     this.bilinearFilter = await this.loadBool(this.BILINEAR_FILTER_PROP, this.bilinearFilter);
+    this.dbToken = await this.loadValue(this.DB_TOKEN, this.dbToken);
     AppRegistry.instance.enableExpApps(this.expApps);
   }
 
@@ -28,7 +34,9 @@ class Settings extends BaseSettings {
     LOG.info("Saving settings.");
     await this.saveBool(this.EXP_APPS_PROP, this.expApps);
     await this.saveBool(this.VSYNC_PROP, this.vsync);
+    await this.saveBool(this.CLOUD_STORAGE_PROP, this.cloudStorage);
     await this.saveBool(this.BILINEAR_FILTER_PROP, this.bilinearFilter);
+    await this.saveValue(this.DB_TOKEN, this.dbToken);
     AppRegistry.instance.enableExpApps(this.expApps);
   }
 
@@ -38,6 +46,22 @@ class Settings extends BaseSettings {
 
   setExpAppsEnabled(b) {
     this.expApps = b;
+  }
+
+  getDbToken() {
+    return this.dbToken;
+  }
+
+  setDbToken(t) {
+    this.dbToken = t;
+  }
+
+  isCloudStorageEnabled() {
+    return this.cloudStorage;
+  }
+
+  setCloudStorageEnabled(b) {
+    this.cloudStorage = b;
   }
 
   isVsyncEnabled() {

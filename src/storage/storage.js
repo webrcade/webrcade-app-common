@@ -172,4 +172,6 @@ class Storage {
   }
 }
 
-export { Storage }
+const storage = new Storage();
+
+export { Storage, storage }
