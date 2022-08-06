@@ -140,7 +140,7 @@ class WrcDropbox {
   }
 
   async testWrite() {
-    const path = "/_test_/" + uuidv4();
+    const path = `/_test_/${uuidv4()}`;
     const val = 123;
     try {
       let bytes = new Uint8Array(1);
