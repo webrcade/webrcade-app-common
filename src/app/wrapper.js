@@ -5,6 +5,8 @@ import { ScriptAudioProcessor } from '../audio/scriptprocessor.js'
 import { Storage } from '../storage/storage.js'
 import { TouchEndListener } from '../input/touch/touchendlistener.js'
 import { VisibilityChangeMonitor } from '../display/visibilitymonitor.js'
+import { SaveManager } from './saves'
+import { showMessage } from '../react/components/message'
 
 export class AppWrapper {
   constructor(app, debug = false) {
@@ -17,6 +19,9 @@ export class AppWrapper {
     this.touchListener = null;
     this.displayLoop = null;
 
+    this.showPauseDelay = 0;
+
+    this.saveManager = new SaveManager(this, (error) => {showMessage(error)});
     this.controllers = this.createControllers();
     this.storage = this.createStorage();
     this.visibilityMonitor = this.createVisibilityMonitor();
@@ -24,6 +29,15 @@ export class AppWrapper {
     if (this.audioProcessor) {
       this.addAudioProcessorCallback(this.audioProcessor);
     }
+
+    this.saveMessageCallback = (message) => {
+      this.setShowPauseDelay(300);
+      app.setStatusMessage(message);
+    };
+
+    this.loadMessageCallback = (message) => {
+      app.setStatusMessage(message);
+    };
   }
 
   getProps() {
@@ -40,6 +54,10 @@ export class AppWrapper {
 
   getStorage() {
     return this.storage;
+  }
+
+  getSaveManager() {
+    return this.saveManager;
   }
 
   async saveStateToStorage(path, buffer, info = true) {
@@ -103,6 +121,10 @@ export class AppWrapper {
 
   onPause(p) {}
 
+  setShowPauseDelay(delay) {
+    this.showPauseDelay = delay;
+  }
+
   async onShowPauseMenu() {}
 
   async onStart(canvas) {}
@@ -115,12 +137,17 @@ export class AppWrapper {
     }
 
     this.onShowPauseMenu()
-      .then(app.pause(() => {
-        if (controllers) {
-          controllers.setEnabled(true);
-        }
-        this.pause(false, true);
-      }))
+      .then(() => {
+        setTimeout(() => {
+          this.showPauseDelay = 0;
+          app.pause(() => {
+            if (controllers) {
+              controllers.setEnabled(true);
+            }
+            this.pause(false, true);
+          })
+        }, this.showPauseDelay);
+      })
       .catch(e => LOG.error(e));
   }
 

@@ -77,7 +77,7 @@ class WrcDropbox {
 
     try {
       const dbx = await this.getDropbox();
-      const result = await dbx.filesGetMetadata({path: path});
+      await dbx.filesGetMetadata({path: path});
       exists = true;
     } catch (e) {
       LOG.error(e);
@@ -110,7 +110,12 @@ class WrcDropbox {
     const file = new File([blob], path);
 
     if (file.size < UPLOAD_FILE_SIZE_LIMIT) { // File is smaller than 150 Mb - use filesUpload API
-      const response = await dbx.filesUpload({ path: file.name, contents: file })
+      await dbx.filesUpload({
+        path: file.name,
+        contents: file,
+        mode: 'overwrite'
+      })
+      return true;
     } else { // File is bigger than 150 Mb - use filesUploadSession* API
       const maxBlob = 8 * 1000 * 1000; // 8Mb - Dropbox JavaScript API suggested max file / chunk size
       var offset = 0;
@@ -126,11 +131,12 @@ class WrcDropbox {
           sessionId = response.result.session_id;
         } else if ((offset + chunkSize) === file.size) {
           const cursor = { session_id: sessionId, offset: file.size - blob.size };
-          const commit = { path: file.name, mode: 'add', autorename: true, mute: false };
-          const response = await dbx.filesUploadSessionFinish({ cursor: cursor, commit: commit, contents: blob });
+          const commit = { path: file.name, mode: 'overwrite', autorename: true, mute: false };
+          await dbx.filesUploadSessionFinish({ cursor: cursor, commit: commit, contents: blob });
+          return true;
         } else {
           const cursor = { session_id: sessionId, offset: idx * maxBlob };
-          const response = await dbx.filesUploadSessionAppendV2({ cursor: cursor, close: false, contents: blob })
+          await dbx.filesUploadSessionAppendV2({ cursor: cursor, close: false, contents: blob })
         }
         offset += chunkSize;
         idx++;

@@ -31,7 +31,7 @@ let timeoutId = -1;
 export function showMessage(message, addConsoleMessage = true) {
   const el = document.getElementById(styles['snackbar']);
   if (el) {
-    el.innerHTML = message + ( addConsoleMessage ? "<br/><br/>See console log for details." : "");
+    el.innerHTML = message.replaceAll("\n", "<br/>") + ( addConsoleMessage ? "<br/><br/>See console log for details." : "");
     el.classList.add(styles['show']);
     el.classList.remove(styles['hide']);
     if (timeoutId > 0) {

@@ -6,9 +6,11 @@ import { AlertScreen } from "../../screens/alert";
 import { AppProps } from '../../../app';
 import { AppRegistry } from "../../../apps";
 import { ErrorScreen } from "../../screens/error";
+import { Message } from "../message";
 import { OverlayScreen } from "../../screens/overlay"
 import { PauseScreen } from "../../screens/pause";
 import { Resources, TEXT_IDS } from "../../../resources";
+import { StatusScreen } from "../../screens/status";
 import { YesNoScreen } from "../../screens/yesno";
 import { UrlUtil, addXboxFullscreenCallback, getXboxViewMessage, preloadImages } from '../../../util';
 import {
@@ -36,9 +38,11 @@ export class WebrcadeApp extends Component {
       errorMessage: null,
       yesNoInfo: null,
       showOverlay: false,
-      showXboxViewMessage: false
+      showXboxViewMessage: false,
+      statusMessage: null
     };
 
+    this.pauseExit = false;
     this.exited = false;
 
     // Add to window to allow for access from menu
@@ -115,6 +119,15 @@ export class WebrcadeApp extends Component {
     window.removeEventListener("message", this.messageListener);
   }
 
+  isExitFromPause() {
+    return this.pauseExit;
+  }
+
+  exitFromPause() {
+    this.pauseExit = true;
+    this.exit();
+  }
+
   getAppType() {
     return this.type;
   }
@@ -169,7 +182,9 @@ export class WebrcadeApp extends Component {
       <PauseScreen
         appProps={appProps}
         closeCallback={() => this.resume()}
-        exitCallback={() => this.exit()}
+        exitCallback={() => {
+          this.exitFromPause()
+        }}
         isEditor={this.isEditor}
       />
     );
@@ -196,19 +211,31 @@ export class WebrcadeApp extends Component {
 
   render() {
     const { ModeEnum } = this;
-    const { mode, showOverlay, showXboxViewMessage } = this.state;
+    const { mode, showOverlay, showXboxViewMessage, statusMessage } = this.state;
 
+    let render = null;
     if (showXboxViewMessage) {
-      return this.renderXboxViewScreen();
+      render = this.renderXboxViewScreen();
     } else if (mode === ModeEnum.ERROR) {
-      return this.renderErrorScreen();
+      render = this.renderErrorScreen();
     } else if (mode === ModeEnum.YESNO) {
-      return this.renderYesNoScreen();
+      render = this.renderYesNoScreen();
     } else if (showOverlay) {
-      return this.renderOverlayScreen();
+      render = this.renderOverlayScreen();
     }
 
-    return null;
+    return ([
+      <Message/>,
+      render,
+      statusMessage && (
+        <StatusScreen message={statusMessage} />)
+    ])
+  }
+
+  setStatusMessage(message) {
+    this.setState({
+      statusMessage: message
+    })
   }
 
   yesNoPrompt(info) {

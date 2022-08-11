@@ -28,6 +28,46 @@ export class Unzip {
     return this.name;
   }
 
+  unzipFiles(blob) {
+    zip.useWebWorkers = false;
+    const that = this;
+
+    return new Promise((success, failure) => {
+      const files = [];
+      const entryProcessor = (entries) => {
+        const count = entries.length;
+        const doIt = (index) => {
+          if (index < count) {
+            const entry = entries[index];
+            entry.getData(new zip.BlobWriter(), (blob) => {
+              files.push({
+                name: entry.filename,
+                content: blob
+              })
+              doIt(index + 1);
+            });
+          } else {
+            success(files)
+          }
+        }
+        doIt(0);
+      }
+
+      const blobReader = (zipReader) => {
+        zipReader.getEntries(
+          entryProcessor,
+          failure
+        );
+      }
+
+      zip.createReader(
+        new zip.BlobReader(blob),
+        blobReader,
+        failure
+      );
+    });
+  }
+
   unzip(file, exts, prefExts, scorer) {
     zip.useWebWorkers = false;
     const that = this;
@@ -79,7 +119,7 @@ export class Unzip {
           }
 
           let maxScore = -1;
-          for(const fname in scores) {
+          for (const fname in scores) {
             const score = scores[fname];
             if (score.score > maxScore) {
               if (this.debug) {
@@ -167,13 +207,13 @@ export const romNameScorer = (scores, debug) => {
 
   const regions = {};
 
-  for(const fname in scores) {
+  for (const fname in scores) {
     const score = scores[fname];
     for (const cname in codes) {
       const code = codes[cname];
       if (score.lower.indexOf(cname) != -1) {
         if (debug) {
-          LOG.info('Adding ' + code.points +" to " + score.entry.filename);
+          LOG.info('Adding ' + code.points + " to " + score.entry.filename);
         }
         score.score += code.points;
 
