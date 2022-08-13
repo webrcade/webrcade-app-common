@@ -12,10 +12,11 @@ class SaveManager {
     this.errorCallback = errorCallback;
   }
 
-  async isCloudEnabled() {
+  async isCloudEnabled(callback) {
     if (this.cloudEnabled === null) {
       this.cloudEnabled = false;
       if (settings.isCloudStorageEnabled()) {
+        if (callback) callback(Resources.getText(TEXT_IDS.CLOUD_CHECKING));
         this.cloudEnabled = await dropbox.testWrite();
         if (!this.cloudEnabled && this.errorCallback) {
           this.errorCallback(
@@ -30,20 +31,24 @@ class SaveManager {
   async createZip(files) {
     const zip = new Zip();
     const zipFiles = [];
+    const INFO_NAME = "info.txt";
+
     for (let i = 0; i < files.length; i++) {
       const f = files[i];
       let b = f.content;
       if (!(b instanceof Blob)) {
         b = new Blob([b]);
       }
-      zipFiles.push({
-        name: f.name,
-        content: b
-      });
+      if (f.name !== INFO_NAME) {
+        zipFiles.push({
+          name: f.name,
+          content: b
+        });
+      }
     }
 
     zipFiles.push({
-      name: "info",
+      name: INFO_NAME,
       content:  new Blob([JSON.stringify({
         title: this.appWrapper.getTitle(),
         time: new Date().getTime()
@@ -72,47 +77,55 @@ class SaveManager {
   }
 
   async load(path, callback) {
-    if (await this.isCloudEnabled()) {
-      try {
-        if (callback) callback(Resources.getText(TEXT_IDS.CLOUD_LOAD));
-        return await this.loadCloud(path);
-      } catch (e) {
-        LOG.error(`Error loading save from cloud: ${e}`);
-      } finally {
-        if (callback) callback(null);
-      }
+    try {
+      if (await this.isCloudEnabled(callback)) {
+        try {
+          if (callback) callback(Resources.getText(TEXT_IDS.CLOUD_CHECKING /*TEXT_IDS.CLOUD_LOAD*/));
+          return await this.loadCloud(path);
+        } catch (e) {
+          LOG.error(`Error loading save from cloud: ${e}`);
+        }
 
-      // Unable to find in the cloud, look locally
-      LOG.info("Did not find save in the cloud, looking locally.");
-      const files = await this.loadLocal(path);
-      if (files) {
-        LOG.info("Found locally.");
-        return files;
+        // Unable to find in the cloud, look locally
+        LOG.info("Did not find save in the cloud, looking locally.");
+        const files = await this.loadLocal(path);
+        if (files) {
+          LOG.info("Found locally.");
+
+          // Found locally, move to cloud
+          await this.save(path, files, callback);
+
+          return files;
+        }
+        return null;
+      } else {
+        return await this.loadLocal(path);
       }
-      return null;
-    } else {
-      return await this.loadLocal(path);
+    } finally {
+      if (callback) callback(null);
     }
   }
 
   async save(path, files, callback) {
-    if (await this.isCloudEnabled()) {
-      try {
-        if (callback) callback(Resources.getText(TEXT_IDS.CLOUD_SAVE));
-        const success = await this.saveCloud(path, files);
-        if (success) {
-          if (storage.remove(this.getZipFileName(path))) {
-            LOG.info("Successfully saved to the cloud, deleting local files.");
+    try {
+      if (await this.isCloudEnabled(callback)) {
+        try {
+          if (callback) callback(Resources.getText(TEXT_IDS.CLOUD_SAVE));
+          const success = await this.saveCloud(path, files);
+          if (success) {
+            if (storage.remove(this.getZipFileName(path))) {
+              LOG.info("Successfully saved to the cloud, deleting local files.");
+            }
           }
+        } catch (e) {
+          LOG.error(`Error persisting save to cloud: ${e}`);
         }
-      } catch (e) {
-        LOG.error(`Error persisting save to cloud: ${e}`);
-      } finally {
-        if (callback) callback(null);
+        return false;
+      } else {
+        return await this.saveLocal(path, files);
       }
-      return false;
-    } else {
-      return await this.saveLocal(path, files);
+    } finally {
+      if (callback) callback(null);
     }
   }
 

@@ -59,6 +59,7 @@ export class WebrcadeApp extends Component {
 
   messageListener = (e) => {
     if (e.data === 'exit') {
+      this.setState({mode:null});
       this.exit(null, false)
         .catch((e) => LOG.error(e))
         .finally(() => {
