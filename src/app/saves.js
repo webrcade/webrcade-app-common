@@ -129,6 +129,26 @@ class SaveManager {
     }
   }
 
+  async delete(path, callback) {
+    try {
+      const zipPath = this.getZipFileName(path)
+      if (await this.isCloudEnabled(callback)) {
+        try {
+          if (callback) callback(Resources.getText(TEXT_IDS.CLOUD_SAVE));
+          alert('delete: ' + zipPath);
+          return await dropbox.deleteFile(zipPath);
+        } catch (e) {
+          LOG.error(`Error deleting save from cloud: ${e}`);
+        }
+        return false;
+      } else {
+        return await storage.remove(zipPath);
+      }
+    } finally {
+      if (callback) callback(null);
+    }
+  }
+
   async loadLocal(path) {
     LOG.info(`Loading save locally: ${path}`);
     const zipPath = this.getZipFileName(path);

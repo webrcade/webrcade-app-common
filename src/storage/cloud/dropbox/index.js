@@ -89,7 +89,7 @@ class WrcDropbox {
     let ret = false;
     try {
       const dbx = await this.getDropbox();
-      const result = await dbx.filesDeleteV2({path: path});
+      await dbx.filesDeleteV2({path: path});
       ret = true;
     } catch (e) {
       LOG.error(e);

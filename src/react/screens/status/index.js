@@ -22,7 +22,7 @@ export class StatusScreen extends Screen {
       <div className={styles['status-screen']}>
         <div className={styles['status-screen-content']}>
           <div>
-            <img className={styles['status-screen-content-image']} src={LoaderImage}/>
+            <object type="image/svg+xml" className={styles['status-screen-content-image']} data={LoaderImage}/>
           </div>
           <div className={styles['status-screen-content-text']}>{message}</div>
         </div>
