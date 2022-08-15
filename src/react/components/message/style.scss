@@ -13,7 +13,7 @@
   z-index: 60;
   left: 50%;
   font-size: 1.5rem;
-  opacity: .98;
+  opacity: 0;
   // box-shadow: 0 .5rem 1rem 0 rgba(0, 0, 0, 0.4), 0 .8rem 2.7rem 0 rgba(0, 0, 0, 0.39);
   box-shadow: 0 .5rem 1rem 0 rgba(0, 0, 0, 0.9), 0 .8rem 2.7rem 0 rgba(0, 0, 0, 0.9);
   word-wrap: break-word;
@@ -32,6 +32,7 @@
 #errormsg.show {
   visibility: visible;
   animation: message--fadein 0.5s;
+  animation-fill-mode: forwards;
 }
 
 #snackbar.hide,
@@ -39,6 +40,7 @@
   visibility: hidden;
   animation: message--fadeout 0.5s;
   transition: visibility 0.5s;
+  animation-fill-mode: forwards;
 }
 
 @keyframes message--fadein {

@@ -17,6 +17,27 @@ class WrcDropbox {
   static REDIRECT_URIS = [{
     uri: "http://localhost:3000",
     redirectUri: "http://localhost:3000/dropbox/"
+  }, {
+    uri: "http://localhost:3200",
+    redirectUri: "http://localhost:3200/dropbox/"
+  }, {
+    uri: "http://localhost:8000",
+    redirectUri: "http://localhost:8000/dropbox/"
+  }, {
+    uri: "http://localhost:8000/app/editor",
+    redirectUri: "http://localhost:8000/app/editor/dropbox/"
+  }, {
+    uri: "https://play.webrcade.com",
+    redirectUri: "https://play.webrcade.com/dropbox/"
+  }, {
+    uri: "https://play.webrcade.com/app/editor",
+    redirectUri: "https://play.webrcade.com/app/editor/dropbox/"
+  }, {
+    uri: "https://play-staging.webrcade.com",
+    redirectUri: "https://play-staging.webrcade.com/dropbox/"
+  }, {
+    uri: "https://play-staging.webrcade.com/app/editor",
+    redirectUri: "https://play-staging.webrcade.com/app/editor/dropbox/"
   }];
 
   constructor() {

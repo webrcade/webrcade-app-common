@@ -21,7 +21,9 @@ export class AppWrapper {
 
     this.showPauseDelay = 0;
 
-    this.saveManager = new SaveManager(this, (error) => {showMessage(error)});
+    this.showMessageEnabled = false;
+    this.message = null;
+    this.saveManager = new SaveManager(this, this.getShowMessageCallback());
     this.controllers = this.createControllers();
     this.storage = this.createStorage();
     this.visibilityMonitor = this.createVisibilityMonitor();
@@ -36,7 +38,28 @@ export class AppWrapper {
     };
 
     this.loadMessageCallback = (message) => {
-      app.setStatusMessage(message);
+        app.setStatusMessage(message);
+    };
+  }
+
+  setShowMessageEnabled(b) {
+    this.showMessageEnabled = b;
+    const message = this.message;
+    this.message = null;
+    if (message) {
+      setTimeout(() => {
+        showMessage(message);
+      }, 0);
+    }
+  }
+
+  getShowMessageCallback() {
+    return (error) => {
+      if (this.showMessageEnabled) {
+        showMessage(error);
+      } else {
+        this.message = error;
+      }
     };
   }
 
