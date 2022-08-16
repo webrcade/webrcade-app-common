@@ -3,13 +3,57 @@ import { settings } from '../settings/settings'
 import { storage } from '../storage/storage'
 import { Resources, TEXT_IDS } from '../resources'
 import { Unzip, Zip } from '../zip'
+import { blobToStr, md5 } from '../util'
 import * as LOG from '../log'
+
+const INFO_NAME = "info.txt"
 
 class SaveManager {
   constructor(wrapper, errorCallback) {
     this.appWrapper = wrapper;
     this.cloudEnabled = null;
     this.errorCallback = errorCallback;
+    this.lastHashes = {};
+  }
+
+  _compareHashes(a, b) {
+    if (Object.keys(a).length !== Object.keys(b).length) {
+      return false;
+    }
+    for (let key in a) {
+      const vala = a[key];
+      const valb = b[key];
+      if (vala !== valb) {
+        // console.log(key + ": " + vala + " != " + valb);
+        return false;
+      }
+    }
+    return true;
+  }
+
+  async checkFilesChanged(files) {
+    const hashes = {}
+    for (let i = 0; i < files.length; i++) {
+      const f = files[i];
+      const name = f.name;
+
+      if (name === INFO_NAME) {
+        continue;
+      }
+
+      let blob = f.content;
+      if (!(blob instanceof Blob)) {
+        blob = new Blob([blob]);
+      }
+      const hash = md5(await blobToStr(blob));
+      hashes[name] = hash;
+    }
+
+    if (!this._compareHashes(hashes, this.lastHashes)) {
+      this.lastHashes = hashes;
+      return true;
+    }
+    return false;
   }
 
   async isCloudEnabled(callback) {
@@ -31,7 +75,6 @@ class SaveManager {
   async createZip(files) {
     const zip = new Zip();
     const zipFiles = [];
-    const INFO_NAME = "info.txt";
 
     for (let i = 0; i < files.length; i++) {
       const f = files[i];
@@ -49,7 +92,7 @@ class SaveManager {
 
     zipFiles.push({
       name: INFO_NAME,
-      content:  new Blob([JSON.stringify({
+      content: new Blob([JSON.stringify({
         title: this.appWrapper.getTitle(),
         time: new Date().getTime()
       })])
