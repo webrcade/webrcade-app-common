@@ -10,6 +10,7 @@ class Settings extends BaseSettings {
     this.vsync = true;
     this.bilinearFilter = false;
     this.cloudStorage = false;
+    this.hideTitleBar = false;
     this.dbToken = null;
   }
 
@@ -18,6 +19,7 @@ class Settings extends BaseSettings {
   VSYNC_PROP = this.PREFIX + "vsync";
   BILINEAR_FILTER_PROP = this.PREFIX + "bilinearFilter";
   CLOUD_STORAGE_PROP = this.PREFIX + "cloudStorage";
+  HIDE_TITLE_BAR_PROP = this.PREFIX + "hideTitleBar";
   DB_TOKEN = this.PREFIX + "dbToken";
 
   async load() {
@@ -26,6 +28,7 @@ class Settings extends BaseSettings {
     this.vsync = await this.loadBool(this.VSYNC_PROP, this.vsync);
     this.cloudStorage = await this.loadBool(this.CLOUD_STORAGE_PROP, this.cloudStorage);
     this.bilinearFilter = await this.loadBool(this.BILINEAR_FILTER_PROP, this.bilinearFilter);
+    this.hideTitleBar = await this.loadBool(this.HIDE_TITLE_BAR_PROP, this.hideTitleBar);
     this.dbToken = await this.loadValue(this.DB_TOKEN, this.dbToken);
     AppRegistry.instance.enableExpApps(this.expApps);
   }
@@ -36,6 +39,7 @@ class Settings extends BaseSettings {
     await this.saveBool(this.VSYNC_PROP, this.vsync);
     await this.saveBool(this.CLOUD_STORAGE_PROP, this.cloudStorage);
     await this.saveBool(this.BILINEAR_FILTER_PROP, this.bilinearFilter);
+    await this.saveBool(this.HIDE_TITLE_BAR_PROP, this.hideTitleBar);
     await this.saveValue(this.DB_TOKEN, this.dbToken);
     AppRegistry.instance.enableExpApps(this.expApps);
   }
@@ -78,6 +82,14 @@ class Settings extends BaseSettings {
 
   setBilinearFilterEnabled(b) {
     this.bilinearFilter = b;
+  }
+
+  getHideTitleBar() {
+    return this.hideTitleBar;
+  }
+
+  setHideTitleBar(b) {
+    this.hideTitleBar = b;
   }
 }
 

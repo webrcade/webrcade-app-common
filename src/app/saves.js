@@ -178,7 +178,6 @@ class SaveManager {
       if (await this.isCloudEnabled(callback)) {
         try {
           if (callback) callback(Resources.getText(TEXT_IDS.CLOUD_SAVE));
-          alert('delete: ' + zipPath);
           return await dropbox.deleteFile(zipPath);
         } catch (e) {
           LOG.error(`Error deleting save from cloud: ${e}`);
