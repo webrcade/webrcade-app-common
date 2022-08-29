@@ -3,6 +3,7 @@ import { UrlUtil } from './url';
 import { config } from '../conf';
 import { strReplaceAll } from './stringutil.js';
 
+export * from './base64.js';
 export * from './url.js'
 export * from './md5.js'
 export * from './stringutil.js'

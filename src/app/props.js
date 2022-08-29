@@ -1,4 +1,4 @@
-import { RP_DEBUG } from '../util'
+import { RP_DEBUG, Base64 } from '../util'
 
 export class AppProps {
   static RP_CONTEXT = "ctx";
@@ -12,10 +12,10 @@ export class AppProps {
   static RV_EDITOR_TEST_ENABLED = "1";
 
   static encode(props) {
-    return btoa(encodeURIComponent(JSON.stringify(props)));
+    return Base64.encode(encodeURIComponent(JSON.stringify(props)));
   }
 
   static decode(encodedProps) {
-    return JSON.parse(decodeURIComponent(atob(encodedProps)));
+    return JSON.parse(decodeURIComponent(Base64.decode(encodedProps)));
   }
 };
