@@ -12,7 +12,7 @@ import { PauseScreen } from "../../screens/pause";
 import { Resources, TEXT_IDS } from "../../../resources";
 import { StatusScreen } from "../../screens/status";
 import { YesNoScreen } from "../../screens/yesno";
-import { UrlUtil, addXboxFullscreenCallback, getXboxViewMessage, preloadImages } from '../../../util';
+import { applyIosNavBarHack, removeIosNavBarHack, UrlUtil, addXboxFullscreenCallback, getXboxViewMessage, preloadImages } from '../../../util';
 import {
   VolumeOffBlackImage,
   ArrowBackWhiteImage,
@@ -108,6 +108,7 @@ export class WebrcadeApp extends Component {
     //  Is editor
     const context = UrlUtil.getParam(url, AppProps.RP_CONTEXT);
     this.isEditor = context && context === AppProps.RV_CONTEXT_EDITOR;
+    this.isStandalone = context && context === AppProps.RV_CONTEXT_STANDALONE;
 
     // Set debug flag
     this.debug = UrlUtil.getBoolParam(url, AppProps.RP_DEBUG);
@@ -187,6 +188,7 @@ export class WebrcadeApp extends Component {
           this.exitFromPause()
         }}
         isEditor={this.isEditor}
+        isStandalone={this.isStandalone}
       />
     );
   }

@@ -57,7 +57,7 @@ export class PauseScreen extends Screen {
   render() {
     const { exitButtonRef, focusGrid, resumeButtonRef, screenContext,
       screenStyles } = this;
-    const { appProps, exitCallback, isEditor } = this.props;
+    const { appProps, exitCallback, isEditor, isStandalone } = this.props;
 
     return (
       <WebrcadeContext.Provider value={screenContext}>
@@ -70,16 +70,18 @@ export class PauseScreen extends Screen {
             </div>
             <div className={styles['pause-screen-inner-buttons']}>
               <div className={styles['pause-screen-inner-buttons-container']}>
-                <PauseScreenButton
-                    className={styles["pause-screen-image-button"]}
+                {!isStandalone && (
+                  <PauseScreenButton
+                      className={styles["pause-screen-image-button"]}
 
-                    imgSrc={ArrowBackWhiteImage}
-                    buttonRef={exitButtonRef}
-                    label={Resources.getText( isEditor ?
-                      TEXT_IDS.RETURN_TO_EDITOR : TEXT_IDS.RETURN_TO_BROWSE)}
-                    onHandlePad={(focusGrid, e) => focusGrid.moveFocus(e.type, exitButtonRef)}
-                    onClick={() => {if (exitCallback) exitCallback()}}
-                />
+                      imgSrc={ArrowBackWhiteImage}
+                      buttonRef={exitButtonRef}
+                      label={Resources.getText( isEditor ?
+                        TEXT_IDS.RETURN_TO_EDITOR : TEXT_IDS.RETURN_TO_BROWSE)}
+                      onHandlePad={(focusGrid, e) => focusGrid.moveFocus(e.type, exitButtonRef)}
+                      onClick={() => {if (exitCallback) exitCallback()}}
+                  />
+                )}
                 {this.getAdditionalButtons()}
                 <PauseScreenButton
                     className={styles["pause-screen-image-button"]}

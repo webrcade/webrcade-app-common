@@ -9,7 +9,8 @@ export class AppProps {
   static RP_EDITOR_TEST = "editTest"
 
   static RV_CONTEXT_EDITOR = "editor";
-  static RV_EDITOR_TEST_ENABLED = "1";
+  static RV_CONTEXT_STANDALONE = "standalone";
+;  static RV_EDITOR_TEST_ENABLED = "1";
 
   static encode(props) {
     return Base64.encode(encodeURIComponent(JSON.stringify(props)));

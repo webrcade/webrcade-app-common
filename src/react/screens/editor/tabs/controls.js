@@ -20,6 +20,7 @@ import {
   ArrowDownKey,
   ArrowLeftKey,
   ArrowRightKey,
+  ControlKey,
   EnterKey,
   ShiftKey,
   AKey,
@@ -31,6 +32,11 @@ import {
   ZKey,
   QKey,
   WKey,
+  IKey,
+  JKey,
+  KKey,
+  LKey,
+  SpaceKey,
 } from '../../../../images'
 
 import styles from './controls-style.scss'
@@ -72,8 +78,14 @@ export class ControlsTab extends EditorTab {
     switch (key) {
       case 'Enter':
         return EnterKey;
+      case 'ControlLeft':
+        return ControlKey;
       case 'ShiftRight':
         return ShiftKey;
+      case 'ShiftLeft':
+        return ShiftKey;
+      case 'Space':
+        return SpaceKey;
       case 'ArrowRight':
         return ArrowRightKey;
       case 'ArrowLeft':
@@ -100,6 +112,14 @@ export class ControlsTab extends EditorTab {
         return QKey;
       case 'KeyW':
         return WKey;
+      case 'KeyI':
+        return IKey;
+      case 'KeyJ':
+        return JKey;
+      case 'KeyK':
+        return KKey;
+      case 'KeyL':
+        return LKey;
       default:
         return "";
     }

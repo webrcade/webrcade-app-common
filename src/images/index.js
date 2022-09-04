@@ -57,9 +57,15 @@ const ArrowUpKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/A
 const ArrowDownKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/Arrow_Down_Key_Dark.png");
 const EnterKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/Enter_Key_Dark.png");
 const ShiftKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/Shift_Key_Dark.png");
+const ControlKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/Ctrl_Key_Dark.png");
+const SpaceKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/Space_Key_Dark.png");
 const AKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/A_Key_Dark.png");
 const CKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/C_Key_Dark.png");
 const DKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/D_Key_Dark.png");
+const IKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/I_Key_Dark.png");
+const JKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/J_Key_Dark.png");
+const KKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/K_Key_Dark.png");
+const LKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/L_Key_Dark.png");
 const SKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/S_Key_Dark.png");
 const VKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/V_Key_Dark.png");
 const XKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/X_Key_Dark.png");
@@ -118,11 +124,17 @@ export {
   ArrowDownKey,
   ArrowLeftKey,
   ArrowRightKey,
+  ControlKey,
   EnterKey,
   ShiftKey,
+  SpaceKey,
   AKey,
   CKey,
   DKey,
+  IKey,
+  JKey,
+  KKey,
+  LKey,
   QKey,
   SKey,
   VKey,
