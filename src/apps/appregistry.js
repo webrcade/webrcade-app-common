@@ -85,17 +85,21 @@ class AppRegistry {
     //   appType.isDelayedExit === true;
   }
 
-  getLocation(app, context, feedProps) {
+  getLocation(app, context, feedProps, otherProps) {
     const { RP_CONTEXT, RP_DEBUG, RP_PROPS } = AppProps;
     const { props } = app;
     const { APP_TYPES } = this;
 
     const appType = APP_TYPES[app.type];
-    const outProps = {
+    let outProps = {
       type: appType.type,
       title: this.getLongTitle(app),
       app: this.getName(app)
     };
+
+    if (otherProps) {
+      outProps = {...outProps, ...otherProps};
+    }
 
     if (props !== undefined) {
       Object.assign(outProps, props);
