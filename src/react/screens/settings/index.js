@@ -61,6 +61,7 @@ export class SettingsEditor extends Component {
         hidden={ctx && ctx.isAlertScreenOpen()}
         showCancel={true}
         onOk={() => {
+          const oldCloudEnabled = settings.isCloudStorageEnabled();
           settings.setExpAppsEnabled(values.expApps);
           settings.setVsyncEnabled(values.vsync);
           settings.setBilinearFilterEnabled(values.bilinear);
@@ -77,6 +78,10 @@ export class SettingsEditor extends Component {
           } else {
             settings.save().finally(() => {
               onClose();
+              if (isStandalone && (oldCloudEnabled != values.cloudStorage)) {
+                // Reload the app for now (TODO: Find a better way)
+                window.top.location.reload();
+              }
             });
           }
         }}

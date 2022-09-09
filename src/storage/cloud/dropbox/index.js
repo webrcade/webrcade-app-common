@@ -37,11 +37,29 @@ class WrcDropbox {
     uri: "https://play.webrcade.com/app/editor",
     redirectUri: "https://play.webrcade.com/app/editor/dropbox/"
   }, {
+    uri: "https://play.webrcade.com/app/standalone",
+    redirectUri: "https://play.webrcade.com/app/standalone/dropbox/"
+  }, {
     uri: "https://play-staging.webrcade.com",
     redirectUri: "https://play-staging.webrcade.com/dropbox/"
   }, {
     uri: "https://play-staging.webrcade.com/app/editor",
     redirectUri: "https://play-staging.webrcade.com/app/editor/dropbox/"
+  }, {
+    uri: "https://play-staging.webrcade.com/app/standalone",
+    redirectUri: "https://play-staging.webrcade.com/app/standalone/dropbox/"
+  }, {
+    uri: "https://play.webrcade.com/app/standalone",
+    redirectUri: "https://play.webrcade.com/app/standalone/dropbox/"
+  }, {
+    uri: "https://webrcade.github.io/webrcade-mirror",
+    redirectUri: "https://webrcade.github.io/webrcade-mirror/dropbox/"
+  }, {
+    uri: "https://webrcade.github.io/webrcade-mirror/app/editor",
+    redirectUri: "https://webrcade.github.io/webrcade-mirror/app/editor/dropbox/"
+  }, {
+    uri: "https://webrcade.github.io/webrcade-mirror/app/standalone",
+    redirectUri: "https://webrcade.github.io/webrcade-mirror/app/standalone/dropbox/"
   }];
 
   constructor() {
