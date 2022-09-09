@@ -18,6 +18,7 @@ const locN64 = isDev() ? `http://${localIp}:3065` : 'app/n64/';
 const locGba = isDev() ? `http://${localIp}:3070` : 'app/gba/';
 const locNeo = isDev() ? `http://${localIp}:3077` : 'app/neo/';
 const locMednafen = isDev() ? `http://${localIp}:3075` : 'app/mednafen/';
+const locStandalone = isDev() ? `http://${localIp}:3080` : 'app/standalone/';
 
 const checkRom = app => {
   if (app.props === undefined || isEmptyString(app.props.rom)) {
@@ -530,11 +531,16 @@ const enableExperimentalApps = (b) => {
         return url;
       },
       defaults: {
-        rom: ""
+        rom: "",
+        zoomLevel: 0
       }
     });
     addAlias(APP_TYPES, APP_TYPE_KEYS.N64, APP_TYPE_KEYS.PARALLEL_N64);
   }
 }
 
-export { enableExperimentalApps, APP_TYPE_KEYS, APP_TYPES };
+const getStandaloneLocation = () => {
+  return locStandalone;
+}
+
+export { enableExperimentalApps, getStandaloneLocation, APP_TYPE_KEYS, APP_TYPES };

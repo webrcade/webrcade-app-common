@@ -20,6 +20,7 @@ export * from './react/components/text-field';
 export * from './react/screens/editor';
 export * from './react/screens/editor/tabs';
 export * from './react/screens/pause';
+export * from './react/screens/settings';
 export * from './react/screens/app';
 export * from './react/context/webrcadecontext.js';
 export * from './react/components/screen';

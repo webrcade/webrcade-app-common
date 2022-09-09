@@ -42,7 +42,7 @@ export function showMessage(message, addConsoleMessage = true) {
     if (parentEl) {
       const rect = parentEl.getBoundingClientRect();
       container.style.position = 'absolute';
-      container.style.top = (rect.top + window.scrollY) + "px";
+      container.style.top = ((rect.top < 0 ? 0 : rect.top) + window.scrollY) + "px";
       container.style.left = "50%";
     }
   }

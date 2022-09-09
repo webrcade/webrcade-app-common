@@ -14,6 +14,7 @@ class WrcDropbox {
   static CODE_VERIFIER_PROP = `${this.PREFIX}verifier`;
   static ERROR_DESC_PROP = `${this.PREFIX}errorDesc`;
   static CODE_PROP = `${this.PREFIX}code`;
+  static RETURN_URI = `${this.PREFIX}returnUri`;
   static REDIRECT_URIS = [{
     uri: "http://localhost:3000",
     redirectUri: "http://localhost:3000/dropbox/"
@@ -26,6 +27,9 @@ class WrcDropbox {
   }, {
     uri: "http://localhost:8000/app/editor",
     redirectUri: "http://localhost:8000/app/editor/dropbox/"
+  }, {
+    uri: "http://localhost:8000/app/standalone",
+    redirectUri: "http://localhost:8000/app/standalone/dropbox/"
   }, {
     uri: "https://play.webrcade.com",
     redirectUri: "https://play.webrcade.com/dropbox/"
@@ -211,7 +215,7 @@ class WrcDropbox {
     }
   }
 
-  async link() {
+  async link(returnUri) {
     this.clearSession();
 
     const dbxAuth = new DropboxAuth({
@@ -224,6 +228,9 @@ class WrcDropbox {
     }
     const authUrl = await dbxAuth.getAuthenticationUrl(redirectUri, undefined, 'code', 'offline', undefined, undefined, true);
     window.sessionStorage.setItem(WrcDropbox.CODE_VERIFIER_PROP, dbxAuth.codeVerifier);
+    if (returnUri) {
+      window.sessionStorage.setItem(WrcDropbox.RETURN_URI, returnUri);
+    }
     window.location.href = authUrl;
   }
 }

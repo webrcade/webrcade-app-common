@@ -33,6 +33,7 @@ const WebrcadeLogoDarkImage = Icons.webrcade_logo_dark; //resolvePath("images/co
 const WebrcadeLogoLargeImage = Icons.webrcade_logo_large; //resolvePath("images/common/webrcade-logo-large.svg");
 const SettingsRedImage = Icons.settings_red_24dp; //resolvePath("images/common/settings_red_24dp.svg");
 const SettingsWhiteImage = Icons.settings_white_24dp; //resolvePath("images/common/settings_white_24dp.svg");
+const SettingsAppWhiteImage = Icons.settings_applications_white_24dp;
 const TelevisionWhiteImage = Icons.tv_white_24dp; //resolvePath("images/common/tv_white_24dp.svg");
 const CategoryThumbImage = resolvePath("images/folder.png");
 const CategoryBackgroundImage = resolvePath("images/folder-background.png");
@@ -102,6 +103,7 @@ export {
   PlayArrowWhiteImage,
   SettingsRedImage,
   SettingsWhiteImage,
+  SettingsAppWhiteImage,
   TelevisionWhiteImage,
   TuneWhiteImage,
   WebrcadeLogoDarkImage,

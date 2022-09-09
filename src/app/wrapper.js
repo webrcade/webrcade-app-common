@@ -53,13 +53,17 @@ export class AppWrapper {
     }
   }
 
+  showErrorMessage(error) {
+    if (this.showMessageEnabled) {
+      showMessage(error);
+    } else {
+      this.message = error;
+    }
+  }
+
   getShowMessageCallback() {
     return (error) => {
-      if (this.showMessageEnabled) {
-        showMessage(error);
-      } else {
-        this.message = error;
-      }
+      this.showErrorMessage(error);
     };
   }
 
