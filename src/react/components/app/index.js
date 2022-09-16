@@ -297,7 +297,13 @@ export class WebrcadeApp extends Component {
       LOG.error(e);
     }
 
-    if (navigateBack) window.history.back();
+    if (navigateBack) {
+      if (!this.isStandalone) {
+        window.history.back();
+      } else {
+        window.document.body.innerHTML = '';
+      }
+    }
   }
 
   setShowOverlay(show) {

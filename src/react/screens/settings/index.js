@@ -80,7 +80,7 @@ export class SettingsEditor extends Component {
               onClose();
               if (isStandalone && (oldCloudEnabled != values.cloudStorage)) {
                 // Reload the app for now (TODO: Find a better way)
-                window.top.location.reload();
+                window.parent.location.reload();
               }
             });
           }
@@ -373,7 +373,7 @@ class CloudStorageTab extends FieldsTab {
                     settings.setCloudStorageEnabled(true);
                     settings.save().finally(() => {
                       if (isStandalone) {
-                        window.top._dropbox.link(window.top.location.href).catch((e) => showMessage(e));
+                        window.parent._dropbox.link(window.parent.location.href).catch((e) => showMessage(e));
                       } else {
                         dropbox.link().catch((e) => showMessage(e));
                       }

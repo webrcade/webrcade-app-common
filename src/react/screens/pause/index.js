@@ -7,6 +7,7 @@ import { SettingsEditor } from "../settings";
 import { WebrcadeContext } from "../../context/webrcadecontext.js"
 
 import styles from './style.scss'
+import { isParentSameOrigin } from "../../../util";
 
 export class PauseScreenButton extends ImageButton {
   render() {
@@ -79,7 +80,6 @@ export class PauseScreen extends Screen {
               {!isStandalone && (
                 <PauseScreenButton
                   className={styles["pause-screen-image-button"]}
-
                   imgSrc={ArrowBackWhiteImage}
                   buttonRef={exitOrSettingsButtonRef}
                   label={Resources.getText(isEditor ?
@@ -88,7 +88,7 @@ export class PauseScreen extends Screen {
                   onClick={() => { if (exitCallback) exitCallback() }}
                 />
               )}
-              {isStandalone && (
+              {(isStandalone && isParentSameOrigin() && !window.parent._inIframe) && (
                 <PauseScreenButton
                   imgSrc={SettingsWhiteImage}
                   buttonRef={exitOrSettingsButtonRef}
