@@ -28,6 +28,10 @@ export const KCODES = {
   A: 'KeyA',
   C: 'KeyC',
   D: 'KeyD',
+  I: 'KeyI',
+  J: 'KeyJ',
+  K: 'KeyK',
+  L: 'KeyL',
   Q: 'KeyQ',
   S: 'KeyS',
   V: 'KeyV',
@@ -35,6 +39,10 @@ export const KCODES = {
   X: 'KeyX',
   Z: 'KeyZ',
   SHIFT_RIGHT: 'ShiftRight',
+  SHIFT_LEFT: 'ShiftLeft',
+  SPACE_BAR: 'Space',
+  CONTROL_LEFT: 'ControlLeft',
+  CONTROL_RIGHT: 'ControlRight',
   ENTER: 'Enter',
   ESCAPE: 'Escape'
 }

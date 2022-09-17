@@ -1,0 +1,39 @@
+.status-screen {
+  position: absolute;
+  display: flex;
+  z-index: 48;
+  top: 0px;
+  right: 0px;
+  left: 0px;
+  bottom: 0px;
+  align-items: center;
+  pointer-events: none;
+  background-color: rgba(0, 0, 0, 0.9);
+  animation: statusfadein 1s;
+
+  &-content {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+
+    &-image {
+      width: 5rem;
+      display: block;
+      margin: auto;
+    }
+
+    &-text {
+      font-size: 1.6rem;
+      color: white;
+      margin-top: 1rem;
+      opacity: 0.7;
+    }
+  }
+}
+
+@keyframes statusfadein {
+  from { opacity: 0}
+  to   { opacity: 1}
+}

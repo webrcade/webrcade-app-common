@@ -1,0 +1,30 @@
+.fields-screen {
+  &-row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  &-label {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    margin: 1rem;
+    align-items: right;
+    text-align: right;
+    justify-content: center;
+    font-size: 1.6rem;
+    color: #bbb;
+  }
+
+  &-control {
+    width: 45vw;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    margin: 1rem;
+    align-items: left;
+    text-align: left;
+    justify-content: center;
+  }
+}

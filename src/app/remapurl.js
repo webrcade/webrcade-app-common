@@ -29,6 +29,7 @@ const remapGdrive = (urlLower, url) => {
   if (urlLower.substring(0, GDRIVE_PREFIX.length) === GDRIVE_PREFIX) {
     url = GDRIVE_REMAP_PREFIX + url.substring(GDRIVE_PREFIX.length);
     url = url.split('/view')[0];
+    url += "&confirm=t";
     if (isDebug()) {
       LOG.info("Remapped Gdrive url: '" + url + "'");
     }

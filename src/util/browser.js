@@ -86,7 +86,18 @@ const isTouchSupported = () => {
   return matchMedia('(hover: none)').matches;
 }
 
+const isParentSameOrigin = () =>  {
+  try {
+    const href = window.parent.location.href;
+    return href ;
+  } catch (e) {
+    return false;
+  }
+  return false;
+}
+
 export {
+  isParentSameOrigin,
   isMacOs,
   isXbox,
   isIos,

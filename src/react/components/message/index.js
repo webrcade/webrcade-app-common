@@ -15,7 +15,7 @@ export class Message extends Component {
 
   render() {
     return (
-      <div className={styles['message-container']}>
+      <div id={styles['message-container']} className={styles['message-container']}>
         <div
           id={styles['snackbar']}
           className={styles['message']}
@@ -27,11 +27,28 @@ export class Message extends Component {
 };
 
 let timeoutId = -1;
+let anchorId = null;
+
+export function setMessageAnchorId(id) {
+  anchorId = id;
+}
 
 export function showMessage(message, addConsoleMessage = true) {
+  const container = document.getElementById(styles['message-container']);
   const el = document.getElementById(styles['snackbar']);
+
+  if (anchorId) {
+    const parentEl = document.getElementById(anchorId);
+    if (parentEl) {
+      const rect = parentEl.getBoundingClientRect();
+      container.style.position = 'absolute';
+      container.style.top = ((rect.top < 0 ? 0 : rect.top) + window.scrollY) + "px";
+      container.style.left = "50%";
+    }
+  }
+
   if (el) {
-    el.innerHTML = message + ( addConsoleMessage ? "<br/><br/>See console log for details." : "");
+    el.innerHTML = (message ? (message + "").replaceAll("\n", "<br/>") : "Unknown error") + (addConsoleMessage ? "<br/><br/>See console log for details." : "");
     el.classList.add(styles['show']);
     el.classList.remove(styles['hide']);
     if (timeoutId > 0) {

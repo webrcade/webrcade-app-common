@@ -1,14 +1,18 @@
 import React, { Component } from "react";
 import * as LOG from '../../../log'
 import { isDev } from '../../../util'
+import { settings } from "../../../settings";
 import { AlertScreen } from "../../screens/alert";
 import { AppProps } from '../../../app';
+import { AppRegistry } from "../../../apps";
 import { ErrorScreen } from "../../screens/error";
+import { Message } from "../message";
 import { OverlayScreen } from "../../screens/overlay"
 import { PauseScreen } from "../../screens/pause";
 import { Resources, TEXT_IDS } from "../../../resources";
+import { StatusScreen } from "../../screens/status";
 import { YesNoScreen } from "../../screens/yesno";
-import { UrlUtil, addXboxFullscreenCallback, getXboxViewMessage, preloadImages } from '../../../util';
+import { applyIosNavBarHack, removeIosNavBarHack, UrlUtil, addXboxFullscreenCallback, getXboxViewMessage, preloadImages } from '../../../util';
 import {
   VolumeOffBlackImage,
   ArrowBackWhiteImage,
@@ -34,9 +38,11 @@ export class WebrcadeApp extends Component {
       errorMessage: null,
       yesNoInfo: null,
       showOverlay: false,
-      showXboxViewMessage: false
+      showXboxViewMessage: false,
+      statusMessage: null
     };
 
+    this.pauseExit = false;
     this.exited = false;
 
     // Add to window to allow for access from menu
@@ -53,6 +59,7 @@ export class WebrcadeApp extends Component {
 
   messageListener = (e) => {
     if (e.data === 'exit') {
+      this.setState({mode:null});
       this.exit(null, false)
         .catch((e) => LOG.error(e))
         .finally(() => {
@@ -101,21 +108,46 @@ export class WebrcadeApp extends Component {
     //  Is editor
     const context = UrlUtil.getParam(url, AppProps.RP_CONTEXT);
     this.isEditor = context && context === AppProps.RV_CONTEXT_EDITOR;
+    this.isStandalone = context && context === AppProps.RV_CONTEXT_STANDALONE;
 
     // Set debug flag
     this.debug = UrlUtil.getBoolParam(url, AppProps.RP_DEBUG);
+
+    // Enable experimental apps
+    AppRegistry.instance.enableExpApps(true);
   }
 
   componentWillUnmount() {
     window.removeEventListener("message", this.messageListener);
   }
 
+  isExitFromPause() {
+    return this.pauseExit;
+  }
+
+  exitFromPause() {
+    this.pauseExit = true;
+    this.exit();
+  }
+
   getAppType() {
     return this.type;
   }
 
+  getAppProps() {
+    return this.appProps;
+  }
+
   getStoragePath(postfix) {
     return `/wrc/${this.getAppType()}/${postfix}`;
+  }
+
+  getCanvasStyles() {
+    const styles = {};
+    if (settings.isBilinearFilterEnabled()) {
+      styles.imageRendering = 'auto';
+    }
+    return styles;
   }
 
   renderLoading() {
@@ -152,8 +184,11 @@ export class WebrcadeApp extends Component {
       <PauseScreen
         appProps={appProps}
         closeCallback={() => this.resume()}
-        exitCallback={() => this.exit()}
+        exitCallback={() => {
+          this.exitFromPause()
+        }}
         isEditor={this.isEditor}
+        isStandalone={this.isStandalone}
       />
     );
   }
@@ -179,19 +214,31 @@ export class WebrcadeApp extends Component {
 
   render() {
     const { ModeEnum } = this;
-    const { mode, showOverlay, showXboxViewMessage } = this.state;
+    const { mode, showOverlay, showXboxViewMessage, statusMessage } = this.state;
 
+    let render = null;
     if (showXboxViewMessage) {
-      return this.renderXboxViewScreen();
+      render = this.renderXboxViewScreen();
     } else if (mode === ModeEnum.ERROR) {
-      return this.renderErrorScreen();
+      render = this.renderErrorScreen();
     } else if (mode === ModeEnum.YESNO) {
-      return this.renderYesNoScreen();
+      render = this.renderYesNoScreen();
     } else if (showOverlay) {
-      return this.renderOverlayScreen();
+      render = this.renderOverlayScreen();
     }
 
-    return null;
+    return ([
+      <Message/>,
+      render,
+      statusMessage && (
+        <StatusScreen message={statusMessage} />)
+    ])
+  }
+
+  setStatusMessage(message) {
+    this.setState({
+      statusMessage: message
+    })
   }
 
   yesNoPrompt(info) {
@@ -250,7 +297,13 @@ export class WebrcadeApp extends Component {
       LOG.error(e);
     }
 
-    if (navigateBack) window.history.back();
+    if (navigateBack) {
+      if (!this.isStandalone) {
+        window.history.back();
+      } else {
+        window.document.body.innerHTML = '';
+      }
+    }
   }
 
   setShowOverlay(show) {

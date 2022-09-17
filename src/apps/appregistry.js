@@ -1,4 +1,4 @@
-import { APP_TYPES } from './applist.js';
+import { enableExperimentalApps, APP_TYPES } from './applist.js';
 import { AppProps } from '../app/props.js';
 import {
   blobToStr,
@@ -13,14 +13,24 @@ class AppRegistry {
   static instance = AppRegistry.instance || new AppRegistry();
 
   constructor() {
+    this.updateAppTypes();
+  }
+
+  APP_TYPES = {}
+
+  enableExpApps(b) {
+    enableExperimentalApps(b);
+    this.updateAppTypes();
+  }
+
+  updateAppTypes() {
+    this.APP_TYPES = {}
     APP_TYPES.forEach((appType) => {
       this.APP_TYPES[appType.key] = appType;
       appType.type = appType.absoluteKey === undefined ?
         appType.key : appType.absoluteKey;
     });
   }
-
-  APP_TYPES = {}
 
   validate(app) {
     const APP_TYPES = this.APP_TYPES;
@@ -75,17 +85,21 @@ class AppRegistry {
     //   appType.isDelayedExit === true;
   }
 
-  getLocation(app, context, feedProps) {
+  getLocation(app, context, feedProps, otherProps) {
     const { RP_CONTEXT, RP_DEBUG, RP_PROPS } = AppProps;
     const { props } = app;
     const { APP_TYPES } = this;
 
     const appType = APP_TYPES[app.type];
-    const outProps = {
+    let outProps = {
       type: appType.type,
       title: this.getLongTitle(app),
       app: this.getName(app)
     };
+
+    if (otherProps) {
+      outProps = {...outProps, ...otherProps};
+    }
 
     if (props !== undefined) {
       Object.assign(outProps, props);

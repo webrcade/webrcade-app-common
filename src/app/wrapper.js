@@ -5,6 +5,8 @@ import { ScriptAudioProcessor } from '../audio/scriptprocessor.js'
 import { Storage } from '../storage/storage.js'
 import { TouchEndListener } from '../input/touch/touchendlistener.js'
 import { VisibilityChangeMonitor } from '../display/visibilitymonitor.js'
+import { SaveManager } from './saves'
+import { showMessage } from '../react/components/message'
 
 export class AppWrapper {
   constructor(app, debug = false) {
@@ -17,6 +19,11 @@ export class AppWrapper {
     this.touchListener = null;
     this.displayLoop = null;
 
+    this.showPauseDelay = 0;
+
+    this.showMessageEnabled = false;
+    this.message = null;
+    this.saveManager = new SaveManager(this, this.getShowMessageCallback());
     this.controllers = this.createControllers();
     this.storage = this.createStorage();
     this.visibilityMonitor = this.createVisibilityMonitor();
@@ -24,14 +31,60 @@ export class AppWrapper {
     if (this.audioProcessor) {
       this.addAudioProcessorCallback(this.audioProcessor);
     }
+
+    this.saveMessageCallback = (message) => {
+      this.setShowPauseDelay(300);
+      app.setStatusMessage(message);
+    };
+
+    this.loadMessageCallback = (message) => {
+        app.setStatusMessage(message);
+    };
+  }
+
+  setShowMessageEnabled(b) {
+    this.showMessageEnabled = b;
+    const message = this.message;
+    this.message = null;
+    if (message) {
+      setTimeout(() => {
+        showMessage(message);
+      }, 0);
+    }
+  }
+
+  showErrorMessage(error) {
+    if (this.showMessageEnabled) {
+      showMessage(error);
+    } else {
+      this.message = error;
+    }
+  }
+
+  getShowMessageCallback() {
+    return (error) => {
+      this.showErrorMessage(error);
+    };
   }
 
   getProps() {
     return this.app.appProps;
   }
 
+  getApp() {
+    return this.app;
+  }
+
   getTitle() {
     return this.getProps().title;
+  }
+
+  getStorage() {
+    return this.storage;
+  }
+
+  getSaveManager() {
+    return this.saveManager;
   }
 
   async saveStateToStorage(path, buffer, info = true) {
@@ -95,6 +148,10 @@ export class AppWrapper {
 
   onPause(p) {}
 
+  setShowPauseDelay(delay) {
+    this.showPauseDelay = delay;
+  }
+
   async onShowPauseMenu() {}
 
   async onStart(canvas) {}
@@ -107,23 +164,28 @@ export class AppWrapper {
     }
 
     this.onShowPauseMenu()
-      .then(app.pause(() => {
-        if (controllers) {
-          controllers.setEnabled(true);
-        }
-        this.pause(false);
-      }))
+      .then(() => {
+        setTimeout(() => {
+          this.showPauseDelay = 0;
+          app.pause(() => {
+            if (controllers) {
+              controllers.setEnabled(true);
+            }
+            this.pause(false, true);
+          })
+        }, this.showPauseDelay);
+      })
       .catch(e => LOG.error(e));
   }
 
-  pause(p) {
+  pause(p, isMenu) {
     const { audioProcessor, displayLoop } = this;
 
     if ((p && !this.paused) || (!p && this.paused)) {
       this.paused = p;
       if (displayLoop) displayLoop.pause(p);
       if (audioProcessor) audioProcessor.pause(p);
-      this.onPause(p);
+      this.onPause(p, isMenu === true);
       return true;
     }
     return false;
