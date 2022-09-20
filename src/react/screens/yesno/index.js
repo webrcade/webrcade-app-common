@@ -40,8 +40,9 @@ export class YesNoScreen extends Screen {
             </div>
             <div className={styles['yesno-screen-message']}>
               {message.split('\n').map(function (item, key) {
+                const val = (item ? <span>{item}</span> : <span>&nbsp;</span>);
                 return key < 10 ? (
-                  <div className={styles['yesno-screen-message-line']} key={key}>{item}</div>
+                  <div className={styles['yesno-screen-message-line']} key={key}>{val}</div>
                 ) : null;
               })}
             </div>

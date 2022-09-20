@@ -1,4 +1,5 @@
 import React from "react";
+import UAParser from "ua-parser-js"
 
 const isXbox = () => {
   const userAgent = navigator.userAgent.toLowerCase();
@@ -106,5 +107,6 @@ export {
   removeIosNavBarHack,
   isTouchSupported,
   addXboxFullscreenCallback,
-  getXboxViewMessage
+  getXboxViewMessage,
+  UAParser
 }

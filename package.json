@@ -52,6 +52,7 @@
     "dist"
   ],
   "dependencies": {
-    "dropbox": "^10.32.0"
+    "dropbox": "^10.32.0",
+    "ua-parser-js": "^1.0.2"
   }
 }
