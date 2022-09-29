@@ -3,10 +3,10 @@ import { settings } from '../settings';
 import { addDebugDiv } from './debug.js'
 
 export class DisplayLoop {
-  constructor(freq = 60, vsync = true, debug = false) {
+  constructor(freq = 60, vsync = true, debug = false, forceNative = false) {
     this.frequency = freq;
     this.forceAdjustTimestamp = false;
-    this.vsync = vsync && settings.isVsyncEnabled();
+    this.vsync = forceNative ? true : (vsync && settings.isVsyncEnabled());
     this.debug = debug;
     this.paused = true;
     this.isNative = false;
@@ -18,7 +18,13 @@ export class DisplayLoop {
     if (this.debug) {
       this.debugDiv = addDebugDiv();
     }
-    this.checkNativeFps();
+
+    if (!forceNative) {
+      this.checkNativeFps();
+    } else {
+      this.isNative = true;
+      this.isNativeCheckDone = true;
+    }
   }
 
   checkNativeFps() {

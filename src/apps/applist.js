@@ -9,6 +9,7 @@ const localIp = config.getLocalIp();
 const locGenesis = isDev() ? `http://${localIp}:3010` : 'app/genesis/';
 const locSms = locGenesis;
 
+const locPsx = isDev() ? `http://${localIp}:3099` : 'app/psx/';
 const loc7800 = isDev() ? `http://${localIp}:3020` : 'app/7800/';
 const locNes = isDev() ? `http://${localIp}:3030` : 'app/nes/';
 const locDoom = isDev() ? `http://${localIp}:3040` : 'app/doom/';
@@ -103,8 +104,7 @@ const ARCADE_DEFAULTS = {
   playerOrder: "0:1:2:3"
 }
 
-const types = [
-  {
+const types = [{
     key: APP_TYPE_KEYS.FBNEO_NEOGEO,
     name: 'SNK Neo Geo',
     shortName: 'SNK Neo Geo',
@@ -487,7 +487,7 @@ const enableExperimentalApps = (b) => {
   // Remove N64
   //
 
-  const clone = [...APP_TYPES];
+  let clone = [...APP_TYPES];
   APP_TYPES.length = 0;
   for (let i = 0; i < clone.length; i++) {
     const t = clone[i];
@@ -499,6 +499,10 @@ const enableExperimentalApps = (b) => {
 
   delete APP_TYPE_KEYS.PARALLEL_N64;
   delete APP_TYPE_KEYS.N64;
+
+  //
+  // Add N64
+  //
 
   if (b) {
     APP_TYPE_KEYS.PARALLEL_N64 = "parallel-n64";
@@ -536,6 +540,53 @@ const enableExperimentalApps = (b) => {
       }
     });
     addAlias(APP_TYPES, APP_TYPE_KEYS.N64, APP_TYPE_KEYS.PARALLEL_N64);
+  }
+
+  //
+  // Remove PSX
+  //
+
+  clone = [...APP_TYPES];
+  APP_TYPES.length = 0;
+  for (let i = 0; i < clone.length; i++) {
+    const t = clone[i];
+    if ((!APP_TYPE_KEYS.BEETLE_PSX || t.key !== APP_TYPE_KEYS.BEETLE_PSX) &&
+        (!APP_TYPE_KEYS.PSX || t.key !== APP_TYPE_KEYS.PSX)) {
+      APP_TYPES.push(t);
+    }
+  }
+
+  delete APP_TYPE_KEYS.BEETLE_PSX;
+  delete APP_TYPE_KEYS.PSX;
+
+  //
+  // Add PSX
+  //
+
+  if (b) {
+    APP_TYPE_KEYS.BEETLE_PSX = "beetle-psx";
+    APP_TYPE_KEYS.PSX = "psx";
+
+    APP_TYPES.push({
+      key: APP_TYPE_KEYS.BEETLE_PSX,
+      name: 'Sony PlayStation',
+      shortName: 'Sony PlayStation',
+      coreName: 'Beetle PSX',
+      location: locPsx,
+      background: 'images/app/playstation-background.png',
+      thumbnail: 'images/app/playstation-thumb.png',
+      validate: checkRom,
+      extensions: [ 'chd' ],
+      slowExit: true,
+      addProps: (feedProps, outProps) => {
+        const bios = feedProps.psx_bios;
+        if (bios) {
+          outProps.psx_bios = bios;
+        }
+      },
+      defaults: { rom: "" }
+    });
+    addAlias(APP_TYPES, APP_TYPE_KEYS.PSX, APP_TYPE_KEYS.BEETLE_PSX);
   }
 }
 

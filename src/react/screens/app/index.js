@@ -68,6 +68,8 @@ export class AppScreen extends Component {
     const reg = AppRegistry.instance;
     const appDiv = this.getAppDiv();
 
+    const isSlowExit = reg.isSlowExit(app);
+
     if (!reg.isDelayedExit(app)) {
       if (appDiv) {
         appDiv.parentNode.removeChild(appDiv);
@@ -93,7 +95,7 @@ export class AppScreen extends Component {
         iframe.style.height = '20px';
         iframe.style.opacity = '0';
         let intervalId = setInterval(() => {
-          if (count === 20) { // 20 worked
+          if (count === (isSlowExit ? 100 : 20)) { // 20 worked
             clearInterval(intervalId);
             appDiv.parentNode.removeChild(appDiv);
             if (exitCallback) {

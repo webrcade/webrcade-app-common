@@ -85,6 +85,13 @@ class AppRegistry {
     //   appType.isDelayedExit === true;
   }
 
+  isSlowExit(app) {
+    const { APP_TYPES } = this;
+    const appType = APP_TYPES[app.type];
+    return appType.slowExit !== undefined &&
+      appType.slowExit === true;
+  }
+
   getLocation(app, context, feedProps, otherProps) {
     const { RP_CONTEXT, RP_DEBUG, RP_PROPS } = AppProps;
     const { props } = app;
