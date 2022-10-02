@@ -584,7 +584,12 @@ const enableExperimentalApps = (b) => {
           outProps.psx_bios = bios;
         }
       },
-      defaults: { rom: "" }
+      defaults: {
+        rom: "",
+        multitap: false,
+        analog: false,
+        uid: ""
+      }
     });
     addAlias(APP_TYPES, APP_TYPE_KEYS.PSX, APP_TYPE_KEYS.BEETLE_PSX);
   }
