@@ -27,6 +27,12 @@ const checkRom = app => {
   }
 }
 
+const checkDiscs = app => {
+  if (app.props === undefined || app.props.discs === undefined || app.props.discs.length === 0) {
+    throw new Error("Missing 'discs' property");
+  }
+}
+
 const APP_TYPE_KEYS = /*Object.freeze(*/{
   // Types
   FBNEO_ARCADE: "fbneo-arcade",
@@ -106,6 +112,7 @@ const ARCADE_DEFAULTS = {
 
 const types = [{
     key: APP_TYPE_KEYS.FBNEO_NEOGEO,
+    alias: APP_TYPE_KEYS.NEOGEO,
     name: 'SNK Neo Geo',
     shortName: 'SNK Neo Geo',
     coreName: 'Final Burn Neo',
@@ -129,6 +136,7 @@ const types = [{
     }
   }, {
     key: APP_TYPE_KEYS.FBNEO_ARCADE,
+    alias: APP_TYPE_KEYS.ARCADE,
     name: 'Arcade',
     shortName: 'Arcade',
     coreName: 'Final Burn Neo',
@@ -140,6 +148,7 @@ const types = [{
     defaults: ARCADE_DEFAULTS
   }, {
     key: APP_TYPE_KEYS.FBNEO_KONAMI,
+    alias: APP_TYPE_KEYS.ARCADE_KONAMI,
     name: 'Arcade: Konami',
     shortName: 'Arcade: Konami',
     coreName: 'Final Burn Neo',
@@ -151,6 +160,7 @@ const types = [{
     defaults: ARCADE_DEFAULTS
   }, {
     key: APP_TYPE_KEYS.FBNEO_CAPCOM,
+    alias: APP_TYPE_KEYS.ARCADE_CAPCOM,
     name: 'Arcade: Capcom',
     shortName: 'Arcade: Capcom',
     coreName: 'Final Burn Neo',
@@ -162,6 +172,7 @@ const types = [{
     defaults: ARCADE_DEFAULTS
   }, {
     key: APP_TYPE_KEYS.SNES9X,
+    alias: APP_TYPE_KEYS.SNES,
     name: 'Super Nintendo',
     shortName: 'Nintendo SNES',
     coreName: 'SNES9X',
@@ -178,6 +189,7 @@ const types = [{
   },
   {
     key: APP_TYPE_KEYS.JAVATARI,
+    alias: APP_TYPE_KEYS.A2600,
     name: 'Atari 2600',
     coreName: 'Javatari',
     location: loc2600,
@@ -191,6 +203,7 @@ const types = [{
     }
   }, {
     key: APP_TYPE_KEYS.JS7800,
+    alias: APP_TYPE_KEYS.A7800,
     name: 'Atari 7800',
     coreName: 'JS7800',
     location: loc7800,
@@ -205,6 +218,7 @@ const types = [{
     }
   }, {
     key: APP_TYPE_KEYS.GENPLUSGX_MD,
+    alias: APP_TYPE_KEYS.GENESIS,
     name: 'Sega Genesis',
     coreName: 'Genesis Plus GX',
     location: locGenesis,
@@ -220,6 +234,7 @@ const types = [{
     }
   }, {
     key: APP_TYPE_KEYS.FCEUX,
+    alias: APP_TYPE_KEYS.NES,
     name: 'Nintendo Entertainment System',
     shortName: 'Nintendo NES',
     coreName: 'FCEUX',
@@ -236,6 +251,7 @@ const types = [{
     }
   }, {
     key: APP_TYPE_KEYS.GENPLUSGX_SMS,
+    alias: APP_TYPE_KEYS.SMS,
     name: 'Sega Master System',
     coreName: 'Genesis Plus GX',
     location: locSms,
@@ -251,6 +267,7 @@ const types = [{
     }
   }, {
     key: APP_TYPE_KEYS.GENPLUSGX_SG,
+    alias: APP_TYPE_KEYS.SG1000,
     name: 'Sega SG-1000',
     coreName: 'Genesis Plus GX',
     location: locSms,
@@ -264,6 +281,7 @@ const types = [{
     }
   }, {
     key: APP_TYPE_KEYS.GENPLUSGX_GG,
+    alias: APP_TYPE_KEYS.GG,
     name: 'Sega Game Gear',
     coreName: 'Genesis Plus GX',
     location: locSms,
@@ -276,6 +294,7 @@ const types = [{
     }
   }, {
     key: APP_TYPE_KEYS.VBA_M_GBA,
+    alias: APP_TYPE_KEYS.GBA,
     name: 'Nintendo Game Boy Advance',
     shortName: 'Nintendo GBA',
     coreName: 'VBA-M',
@@ -294,6 +313,7 @@ const types = [{
     }
   }, {
     key: APP_TYPE_KEYS.VBA_M_GB,
+    alias: APP_TYPE_KEYS.GB,
     name: 'Nintendo Game Boy',
     shortName: 'Nintendo Game Boy',
     coreName: 'VBA-M',
@@ -311,6 +331,7 @@ const types = [{
     }
   }, {
     key: APP_TYPE_KEYS.VBA_M_GBC,
+    alias: APP_TYPE_KEYS.GBC,
     name: 'Nintendo Game Boy Color',
     shortName: 'Nintendo Game Boy Color',
     coreName: 'VBA-M',
@@ -324,6 +345,7 @@ const types = [{
     }
   }, {
     key: APP_TYPE_KEYS.MEDNAFEN_PCE,
+    alias: APP_TYPE_KEYS.PCE,
     name: 'NEC PC Engine',
     shortName: 'NEC PC Engine',
     coreName: 'Mednafen',
@@ -335,6 +357,7 @@ const types = [{
     defaults: PCE_DEFAULTS
   }, {
     key: APP_TYPE_KEYS.MEDNAFEN_SGX,
+    alias: APP_TYPE_KEYS.SGX,
     name: 'NEC SuperGrafx',
     shortName: 'NEC SuperGrafx',
     coreName: 'Mednafen',
@@ -346,6 +369,7 @@ const types = [{
     defaults: PCE_DEFAULTS
   }, {
     key: APP_TYPE_KEYS.MEDNAFEN_VB,
+    alias: APP_TYPE_KEYS.VB,
     name: 'Nintendo Virtual Boy',
     shortName: 'Nintendo Virtual Boy',
     coreName: 'Mednafen',
@@ -360,6 +384,7 @@ const types = [{
     }
   }, {
     key: APP_TYPE_KEYS.MEDNAFEN_NGC,
+    alias: APP_TYPE_KEYS.NGC,
     name: 'SNK Neo Geo Pocket Color',
     shortName: 'SNK Neo Geo Pocket Color',
     coreName: 'Mednafen',
@@ -371,6 +396,7 @@ const types = [{
     defaults: NGP_DEFAULTS
   }, {
     key: APP_TYPE_KEYS.MEDNAFEN_NGP,
+    alias: APP_TYPE_KEYS.NGP,
     name: 'SNK Neo Geo Pocket',
     shortName: 'SNK Neo Geo Pocket',
     coreName: 'Mednafen',
@@ -382,6 +408,7 @@ const types = [{
     defaults: NGP_DEFAULTS
   }, {
     key: APP_TYPE_KEYS.MEDNAFEN_WSC,
+    alias: APP_TYPE_KEYS.WSC,
     name: 'Bandai WonderSwan Color',
     shortName: 'Bandai WonderSwan Color',
     coreName: 'Mednafen',
@@ -393,6 +420,7 @@ const types = [{
     defaults: WS_DEFAULTS
   }, {
     key: APP_TYPE_KEYS.MEDNAFEN_WS,
+    alias: APP_TYPE_KEYS.WS,
     name: 'Bandai WonderSwan',
     shortName: 'Bandai WonderSwan',
     coreName: 'Mednafen',
@@ -404,6 +432,7 @@ const types = [{
     defaults: WS_DEFAULTS
   }, {
     key: APP_TYPE_KEYS.MEDNAFEN_LNX,
+    alias: APP_TYPE_KEYS.LNX,
     name: 'Atari Lynx',
     shortName: 'Atari Lynx',
     coreName: 'Mednafen',
@@ -436,6 +465,7 @@ const addAlias = (types, alias, typeKey) => {
 if (config.isPublicServer()) {
   types.push({
     key: APP_TYPE_KEYS.PRBOOM,
+    alias: APP_TYPE_KEYS.DOOM,
     name: 'Doom Classic',
     coreName: 'PrBoom',
     location: locDoom,
@@ -510,6 +540,7 @@ const enableExperimentalApps = (b) => {
 
     APP_TYPES.push({
       key: APP_TYPE_KEYS.PARALLEL_N64,
+      alias: APP_TYPE_KEYS.N64,
       name: 'Nintendo 64',
       coreName: 'paraLLEl N64',
       location: locN64,
@@ -569,14 +600,15 @@ const enableExperimentalApps = (b) => {
 
     APP_TYPES.push({
       key: APP_TYPE_KEYS.BEETLE_PSX,
+      alias: APP_TYPE_KEYS.PSX,
       name: 'Sony PlayStation',
       shortName: 'Sony PlayStation',
       coreName: 'Beetle PSX',
       location: locPsx,
       background: 'images/app/playstation-background.png',
       thumbnail: 'images/app/playstation-thumb.png',
-      validate: checkRom,
-      extensions: [ 'chd' ],
+      validate: checkDiscs,
+      extensions: [],
       slowExit: true,
       addProps: (feedProps, outProps) => {
         const bios = feedProps.psx_bios;
@@ -585,7 +617,7 @@ const enableExperimentalApps = (b) => {
         }
       },
       defaults: {
-        rom: "",
+        discs: [],
         multitap: false,
         analog: false,
         uid: ""
