@@ -43,6 +43,20 @@ export class FetchAppData {
     return this.proxyDisabled || !this.P || this.P.length === 0;
   }
 
+  getFilename(res) {
+    const headers = this.getHeaders(res);
+    console.log(headers);
+    // TODO: Move to common
+    const disposition = headers['content-disposition'];
+    if (disposition) {
+      const matches = /filename\*?=['"]?(?:UTF-\d['"]*)?([^;\r\n"']*)['"]?;?/gim.exec(disposition);
+      if (matches.length > 1) {
+        return matches[1];
+      }
+    }
+    return null;
+  }
+
   async fetch(props) {
     let { P } = this;
     const { retries, proxyDisabled } = this;
