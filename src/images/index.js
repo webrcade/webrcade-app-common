@@ -5,6 +5,7 @@ const resolvePath = (path) => {
   return Util.resolvePath(path);
 };
 
+const AlbumWhiteImage = Icons.album_white_24dp;
 const ArrowBackWhiteImage = Icons.arrow_back_white_24dp; //resolvePath("images/common/arrow_back_white_24dp.svg");
 const ChevronLeftWhiteImage = Icons.chevron_left_white_24dp; //resolvePath("images/common/chevron_left_white_24dp.svg");
 const ChevronRightWhiteImage = Icons.chevron_right_white_24dp; //resolvePath("images/common/chevron_right_white_24dp.svg");
@@ -77,6 +78,7 @@ const WKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/W_Key_D
 export {
   AddCircleBlackImage,
   AddCircleWhiteImage,
+  AlbumWhiteImage,
   ArrowBackWhiteImage,
   CategoryThumbImage,
   CategoryBackgroundImage,

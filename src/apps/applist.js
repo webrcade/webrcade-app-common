@@ -620,7 +620,9 @@ const enableExperimentalApps = (b) => {
         discs: [],
         multitap: false,
         analog: false,
-        uid: ""
+        uid: "",
+        zoomLevel: 0,
+        skipBios: false
       }
     });
     addAlias(APP_TYPES, APP_TYPE_KEYS.PSX, APP_TYPE_KEYS.BEETLE_PSX);
