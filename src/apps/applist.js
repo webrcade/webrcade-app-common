@@ -309,7 +309,8 @@ const types = [{
       rtc: false,
       mirroring: false,
       saveType: 0,
-      flashSize: 65536
+      flashSize: 65536,
+      disableLookup: false
     }
   }, {
     key: APP_TYPE_KEYS.VBA_M_GB,
