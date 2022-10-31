@@ -5,6 +5,7 @@ const resolvePath = (path) => {
   return Util.resolvePath(path);
 };
 
+const AlbumWhiteImage = Icons.album_white_24dp;
 const ArrowBackWhiteImage = Icons.arrow_back_white_24dp; //resolvePath("images/common/arrow_back_white_24dp.svg");
 const ChevronLeftWhiteImage = Icons.chevron_left_white_24dp; //resolvePath("images/common/chevron_left_white_24dp.svg");
 const ChevronRightWhiteImage = Icons.chevron_right_white_24dp; //resolvePath("images/common/chevron_right_white_24dp.svg");
@@ -73,10 +74,14 @@ const XKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/X_Key_D
 const ZKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/Z_Key_Dark.png");
 const QKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/Q_Key_Dark.png");
 const WKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/W_Key_Dark.png");
+const TKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/T_Key_Dark.png");
+const RKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/R_Key_Dark.png");
+const EKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/E_Key_Dark.png");
 
 export {
   AddCircleBlackImage,
   AddCircleWhiteImage,
+  AlbumWhiteImage,
   ArrowBackWhiteImage,
   CategoryThumbImage,
   CategoryBackgroundImage,
@@ -143,5 +148,8 @@ export {
   WKey,
   XKey,
   ZKey,
+  TKey,
+  RKey,
+  EKey,
   resolvePath as resolveImagePath
 }

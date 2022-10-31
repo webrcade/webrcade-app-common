@@ -36,6 +36,9 @@ import {
   JKey,
   KKey,
   LKey,
+  TKey,
+  RKey,
+  EKey,
   SpaceKey,
 } from '../../../../images'
 
@@ -120,6 +123,12 @@ export class ControlsTab extends EditorTab {
         return KKey;
       case 'KeyL':
         return LKey;
+      case 'KeyT':
+        return TKey;
+      case 'KeyR':
+        return RKey;
+      case 'KeyE':
+        return EKey;
       default:
         return "";
     }

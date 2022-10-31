@@ -34,6 +34,7 @@ export class WebrcadeApp extends Component {
 
     this.state = {
       mode: this.ModeEnum.LOADING,
+      loadingMessage: null,
       loadingPercent: null,
       errorMessage: null,
       yesNoInfo: null,
@@ -151,10 +152,10 @@ export class WebrcadeApp extends Component {
   }
 
   renderLoading() {
-    const { loadingPercent } = this.state;
+    const { loadingMessage, loadingPercent } = this.state;
     return (
       <div>
-        <div className={styles.loading}>{Resources.getText(TEXT_IDS.LOADING)}...</div>
+        <div className={styles.loading}>{loadingMessage ? loadingMessage : Resources.getText(TEXT_IDS.LOADING)}...</div>
         {loadingPercent !== null ?
           <div className={styles['loading-percent']}>{loadingPercent}%</div> : null}
       </div>

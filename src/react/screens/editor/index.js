@@ -178,7 +178,7 @@ export class EditorScreen extends Screen {
 
   render() {
     const { okButtonRef, cancelButtonRef, screenContext, screenStyles, focusGrid } = this;
-    const { hidden, onOk, onClose, showCancel } = this.props;
+    const { hidden, okLabel, onOk, onClose, showCancel } = this.props;
     const { tabIndex } = this.state;
 
     // TODO: Fix this, it is fragile and timing based (must render if 50ms)
@@ -214,7 +214,7 @@ export class EditorScreen extends Screen {
               <ImageButton
                 ref={okButtonRef}
                 onPad={e => focusGrid.moveFocus(e.type, okButtonRef)}
-                label={Resources.getText(TEXT_IDS.OK)}
+                label={okLabel ? okLabel : Resources.getText(TEXT_IDS.OK)}
                 onClick={() => {
                   if (onOk) {
                     onOk();

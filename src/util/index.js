@@ -43,6 +43,17 @@ function normalizeFileName(name) {
   return name;
 }
 
+function removeEmptyArrayItems(arr) {
+  const ret = [];
+  for (let i = 0; i < arr.length; i++) {
+    const item = arr[i].trim();
+    if (item.length > 0) {
+      ret.push(item);
+    }
+  }
+  return ret;
+}
+
 const RP_DEBUG = "debug";
 let debug = ((typeof window !== "undefined") ? UrlUtil.getBoolParam(window.location.search, RP_DEBUG) : null);
 
@@ -54,6 +65,7 @@ export {
   RP_DEBUG,
   cloneObject,
   normalizeFileName,
+  removeEmptyArrayItems,
   resolvePath,
   isApp,
   isDebug,
