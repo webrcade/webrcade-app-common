@@ -3,7 +3,7 @@ import { settings } from '../settings';
 import { addDebugDiv } from './debug.js'
 
 export class DisplayLoop {
-  constructor(freq = 60, vsync = true, debug = false, forceNative = false) {
+  constructor(freq = 60, vsync = true, debug = false, forceNative = false, noWait = false) {
     this.frequency = freq;
     this.forceAdjustTimestamp = false;
     this.vsync = forceNative ? true : (vsync && settings.isVsyncEnabled());
@@ -14,17 +14,25 @@ export class DisplayLoop {
     this.fps = '';
     this.debugDiv = null;
     this.debugCb = null;
+    this.isAdjustTimestampEnabled = true;
+    this.isNoWait = noWait;
 
     if (this.debug) {
       this.debugDiv = addDebugDiv();
     }
 
-    if (!forceNative) {
-      this.checkNativeFps();
-    } else {
+    if (forceNative) {
       this.isNative = true;
       this.isNativeCheckDone = true;
+    } else {
+      if (!this.isNoWait) {
+        this.checkNativeFps();
+      }
     }
+  }
+
+  setAdjustTimestampEnabled(val) {
+    this.isAdjustTimestampEnabled = val;
   }
 
   checkNativeFps() {
@@ -97,7 +105,6 @@ export class DisplayLoop {
     this.paused = p;
   }
 
-
   waitCount = 0;
 
   start(cb) {
@@ -113,7 +120,7 @@ export class DisplayLoop {
     let start = Date.now();
     let fc = 0;
     let avgWait = 0;
-    let checkSync = 0;
+    let checkSync = (this.isNoWait || this.isNative) ? 2 : 0;
     let vsyncLow = 0;
 
     const f = () => {
@@ -134,22 +141,28 @@ export class DisplayLoop {
         fc++;
         let now = Date.now();
 
-        if (((nextTimestamp + adjustTolerance) < now) || this.forceAdjustTimestamp) {
-          this.forceAdjustTimestamp = false;
-          nextTimestamp = -1; fc = 0; start = now; avgWait = 0;
-          if (this.debug) {
-            LOG.info("adjusted next timestamp.");
+        if (this.isAdjustTimestampEnabled) {
+          if (((nextTimestamp + adjustTolerance) < now) || this.forceAdjustTimestamp) {
+            this.forceAdjustTimestamp = false;
+            nextTimestamp = -1; fc = 0; start = now; avgWait = 0;
+            if (this.debug) {
+              LOG.info("adjusted next timestamp.");
+            }
           }
         }
 
-        let wait = nextTimestamp == -1 ? 0 : (nextTimestamp - now);
-        avgWait += wait;
-
-        if (!this.isNative && wait > 0) {
-          this.waitCount++;
-          setTimeout(() => this.sync(f, true), wait);
-        } else {
+        if (this.isNoWait) {
           this.sync(f, false);
+        } else {
+          let wait = nextTimestamp == -1 ? 0 : (nextTimestamp - now);
+          avgWait += wait;
+
+          if (!this.isNative && wait > 0) {
+            this.waitCount++;
+            setTimeout(() => this.sync(f, true), wait);
+          } else {
+            this.sync(f, false);
+          }
         }
 
         if (fc > checkFrequency) {
