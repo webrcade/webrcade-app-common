@@ -8,7 +8,7 @@ import * as Nes from './type/nes';
 const localIp = config.getLocalIp();
 const locGenesis = isDev() ? `http://${localIp}:3010` : 'app/genesis/';
 const locSms = locGenesis;
-
+const locRetroGenesis = isDev() ? `http://${localIp}:3101` : 'app/retro-genesis/';
 const locPsx = isDev() ? `http://${localIp}:3099` : 'app/psx/';
 const loc7800 = isDev() ? `http://${localIp}:3020` : 'app/7800/';
 const locNes = isDev() ? `http://${localIp}:3030` : 'app/nes/';
@@ -628,6 +628,59 @@ const enableExperimentalApps = (b) => {
     });
     addAlias(APP_TYPES, APP_TYPE_KEYS.PSX, APP_TYPE_KEYS.BEETLE_PSX);
   }
+
+  //
+  // Remove Sega CD
+  //
+
+  clone = [...APP_TYPES];
+  APP_TYPES.length = 0;
+  for (let i = 0; i < clone.length; i++) {
+    const t = clone[i];
+    if ((!APP_TYPE_KEYS.RETRO_GENPLUSGX_SEGACD || t.key !== APP_TYPE_KEYS.RETRO_GENPLUSGX_SEGACD) &&
+        (!APP_TYPE_KEYS.SEGACD || t.key !== APP_TYPE_KEYS.SEGACD)) {
+      APP_TYPES.push(t);
+    }
+  }
+
+
+  delete APP_TYPE_KEYS.RETRO_GENPLUSGX_SEGACD;
+  delete APP_TYPE_KEYS.SEGACD;
+
+  //
+  // Add Sega CD
+  //
+
+  if (b) {
+    APP_TYPE_KEYS.RETRO_GENPLUSGX_SEGACD = "retro-genplusgx-segacd";
+    APP_TYPE_KEYS.SEGACD = "segacd";
+
+    APP_TYPES.push({
+      key: APP_TYPE_KEYS.RETRO_GENPLUSGX_SEGACD,
+      alias: APP_TYPE_KEYS.SEGACD,
+      name: 'Sega CD',
+      shortName: 'Sega CD',
+      coreName: 'Libretro Genesis Plus GX',
+      location: locRetroGenesis,
+      background: 'images/app/segacd-background.png',
+      thumbnail: 'images/app/segacd-thumb.png',
+      validate: checkDiscs,
+      extensions: [],
+      slowExit: true,
+      addProps: (feedProps, outProps) => {
+        const bios = feedProps.segacd_bios;
+        if (bios) {
+          outProps.segacd_bios = bios;
+        }
+      },
+      defaults: {
+        discs: [],
+        uid: "",
+      }
+    });
+    addAlias(APP_TYPES, APP_TYPE_KEYS.SEGACD, APP_TYPE_KEYS.RETRO_GENPLUSGX_SEGACD);
+  }
+
 }
 
 const getStandaloneLocation = () => {
