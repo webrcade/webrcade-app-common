@@ -676,6 +676,7 @@ const enableExperimentalApps = (b) => {
       defaults: {
         discs: [],
         uid: "",
+        zoomLevel: 0
       }
     });
     addAlias(APP_TYPES, APP_TYPE_KEYS.SEGACD, APP_TYPE_KEYS.RETRO_GENPLUSGX_SEGACD);
