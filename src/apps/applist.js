@@ -8,7 +8,7 @@ import * as Nes from './type/nes';
 const localIp = config.getLocalIp();
 const locGenesis = isDev() ? `http://${localIp}:3010` : 'app/genesis/';
 const locSms = locGenesis;
-
+const locRetroGenesis = isDev() ? `http://${localIp}:3101` : 'app/retro-genesis/';
 const locPsx = isDev() ? `http://${localIp}:3099` : 'app/psx/';
 const loc7800 = isDev() ? `http://${localIp}:3020` : 'app/7800/';
 const locNes = isDev() ? `http://${localIp}:3030` : 'app/nes/';
@@ -35,6 +35,7 @@ const checkDiscs = app => {
 
 const APP_TYPE_KEYS = /*Object.freeze(*/{
   // Types
+  BEETLE_PSX: "beetle-psx",
   FBNEO_ARCADE: "fbneo-arcade",
   FBNEO_CAPCOM: "fbneo-capcom",
   FBNEO_KONAMI: "fbneo-konami",
@@ -55,6 +56,7 @@ const APP_TYPE_KEYS = /*Object.freeze(*/{
   MEDNAFEN_WSC: "mednafen-wsc",
   MEDNAFEN_WS: "mednafen-ws",
   PRBOOM: "prboom",
+  PSX: "psx",
   SNES9X: "snes9x",
   VBA_M_GBA: "vba-m-gba",
   VBA_M_GB: "vba-m-gb",
@@ -77,6 +79,8 @@ const APP_TYPE_KEYS = /*Object.freeze(*/{
   NGC: "ngc",
   NGP: "ngp",
   PCE: "pce",
+  RETRO_GENPLUSGX_SEGACD: "retro-genplusgx-segacd",
+  SEGACD: "segacd",
   SG1000: 'sg1000',
   SGX: 'sgx',
   SMS: "sms",
@@ -186,8 +190,7 @@ const types = [{
       pal: false,
       port2: 0
     }
-  },
-  {
+  }, {
     key: APP_TYPE_KEYS.JAVATARI,
     alias: APP_TYPE_KEYS.A2600,
     name: 'Atari 2600',
@@ -454,6 +457,55 @@ const types = [{
       rom: "",
       rotation: 0
     }
+  }, {
+    key: APP_TYPE_KEYS.BEETLE_PSX,
+    alias: APP_TYPE_KEYS.PSX,
+    name: 'Sony PlayStation',
+    shortName: 'Sony PlayStation',
+    coreName: 'Beetle PSX',
+    location: locPsx,
+    background: 'images/app/playstation-background.png',
+    thumbnail: 'images/app/playstation-thumb.png',
+    validate: checkDiscs,
+    extensions: [],
+    slowExit: true,
+    addProps: (feedProps, outProps) => {
+      const bios = feedProps.psx_bios;
+      if (bios) {
+        outProps.psx_bios = bios;
+      }
+    },
+    defaults: {
+      discs: [],
+      multitap: false,
+      analog: false,
+      uid: "",
+      zoomLevel: 0,
+      skipBios: false
+    }
+  }, {
+    key: APP_TYPE_KEYS.RETRO_GENPLUSGX_SEGACD,
+    alias: APP_TYPE_KEYS.SEGACD,
+    name: 'Sega CD',
+    shortName: 'Sega CD',
+    coreName: 'Libretro Genesis Plus GX',
+    location: locRetroGenesis,
+    background: 'images/app/segacd-background.png',
+    thumbnail: 'images/app/segacd-thumb.png',
+    validate: checkDiscs,
+    extensions: [],
+    slowExit: true,
+    addProps: (feedProps, outProps) => {
+      const bios = feedProps.segacd_bios;
+      if (bios) {
+        outProps.segacd_bios = bios;
+      }
+    },
+    defaults: {
+      discs: [],
+      uid: "",
+      zoomLevel: 0
+    }
   }
 ];
 
@@ -502,6 +554,8 @@ addAlias(types, APP_TYPE_KEYS.NES, APP_TYPE_KEYS.FCEUX);
 addAlias(types, APP_TYPE_KEYS.NGC, APP_TYPE_KEYS.MEDNAFEN_NGC);
 addAlias(types, APP_TYPE_KEYS.NGP, APP_TYPE_KEYS.MEDNAFEN_NGP);
 addAlias(types, APP_TYPE_KEYS.PCE, APP_TYPE_KEYS.MEDNAFEN_PCE);
+addAlias(types, APP_TYPE_KEYS.PSX, APP_TYPE_KEYS.BEETLE_PSX);
+addAlias(types, APP_TYPE_KEYS.SEGACD, APP_TYPE_KEYS.RETRO_GENPLUSGX_SEGACD);
 addAlias(types, APP_TYPE_KEYS.SG1000, APP_TYPE_KEYS.GENPLUSGX_SG);
 addAlias(types, APP_TYPE_KEYS.SGX, APP_TYPE_KEYS.MEDNAFEN_SGX);
 addAlias(types, APP_TYPE_KEYS.SMS, APP_TYPE_KEYS.GENPLUSGX_SMS);
@@ -572,61 +626,6 @@ const enableExperimentalApps = (b) => {
       }
     });
     addAlias(APP_TYPES, APP_TYPE_KEYS.N64, APP_TYPE_KEYS.PARALLEL_N64);
-  }
-
-  //
-  // Remove PSX
-  //
-
-  clone = [...APP_TYPES];
-  APP_TYPES.length = 0;
-  for (let i = 0; i < clone.length; i++) {
-    const t = clone[i];
-    if ((!APP_TYPE_KEYS.BEETLE_PSX || t.key !== APP_TYPE_KEYS.BEETLE_PSX) &&
-        (!APP_TYPE_KEYS.PSX || t.key !== APP_TYPE_KEYS.PSX)) {
-      APP_TYPES.push(t);
-    }
-  }
-
-  delete APP_TYPE_KEYS.BEETLE_PSX;
-  delete APP_TYPE_KEYS.PSX;
-
-  //
-  // Add PSX
-  //
-
-  if (b) {
-    APP_TYPE_KEYS.BEETLE_PSX = "beetle-psx";
-    APP_TYPE_KEYS.PSX = "psx";
-
-    APP_TYPES.push({
-      key: APP_TYPE_KEYS.BEETLE_PSX,
-      alias: APP_TYPE_KEYS.PSX,
-      name: 'Sony PlayStation',
-      shortName: 'Sony PlayStation',
-      coreName: 'Beetle PSX',
-      location: locPsx,
-      background: 'images/app/playstation-background.png',
-      thumbnail: 'images/app/playstation-thumb.png',
-      validate: checkDiscs,
-      extensions: [],
-      slowExit: true,
-      addProps: (feedProps, outProps) => {
-        const bios = feedProps.psx_bios;
-        if (bios) {
-          outProps.psx_bios = bios;
-        }
-      },
-      defaults: {
-        discs: [],
-        multitap: false,
-        analog: false,
-        uid: "",
-        zoomLevel: 0,
-        skipBios: false
-      }
-    });
-    addAlias(APP_TYPES, APP_TYPE_KEYS.PSX, APP_TYPE_KEYS.BEETLE_PSX);
   }
 }
 

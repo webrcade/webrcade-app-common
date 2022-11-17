@@ -68,7 +68,7 @@ class GamepadNotifier {
     }
 
     // This is a bit of a hack to avoid having a button press accepted
-    // when the page is initally displayed. There is a pause before
+    // when the page is initially displayed. There is a pause before
     // accepting any button presses
     let firstPoll = false;
     if (this.firstPollDelayEnd !== 0) {
