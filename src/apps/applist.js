@@ -9,6 +9,7 @@ const localIp = config.getLocalIp();
 const locGenesis = isDev() ? `http://${localIp}:3010` : 'app/genesis/';
 const locSms = locGenesis;
 const locRetroGenesis = isDev() ? `http://${localIp}:3101` : 'app/retro-genesis/';
+const locRetroPceFast = isDev() ? `http://${localIp}:3202` : 'app/retro-pce-fast/';
 const locPsx = isDev() ? `http://${localIp}:3099` : 'app/psx/';
 const loc7800 = isDev() ? `http://${localIp}:3020` : 'app/7800/';
 const locNes = isDev() ? `http://${localIp}:3030` : 'app/nes/';
@@ -79,7 +80,9 @@ const APP_TYPE_KEYS = /*Object.freeze(*/{
   NGC: "ngc",
   NGP: "ngp",
   PCE: "pce",
+  PCECD: "pcecd",
   RETRO_GENPLUSGX_SEGACD: "retro-genplusgx-segacd",
+  RETRO_PCE_FAST: "retro-pce-fast",
   SEGACD: "segacd",
   SG1000: 'sg1000',
   SGX: 'sgx',
@@ -506,6 +509,30 @@ const types = [{
       uid: "",
       zoomLevel: 0
     }
+  }, {
+    key: APP_TYPE_KEYS.RETRO_PCE_FAST,
+    alias: APP_TYPE_KEYS.PCECD,
+    name: 'NEC PC Engine CD',
+    shortName: 'NEC PC Engine CD',
+    coreName: 'Libretro PCE Fast',
+    location: locRetroPceFast,
+    background: 'images/app/pcecd-background.png',
+    thumbnail: 'images/app/pcecd-thumb.png',
+    validate: checkDiscs,
+    extensions: [],
+    slowExit: true,
+    addProps: (feedProps, outProps) => {
+      const bios = feedProps.pcecd_bios;
+      if (bios) {
+        outProps.pcecd_bios = bios;
+      }
+    },
+    defaults: {
+      discs: [],
+      uid: "",
+      zoomLevel: 0,
+      pad6button: false
+    }
   }
 ];
 
@@ -554,6 +581,7 @@ addAlias(types, APP_TYPE_KEYS.NES, APP_TYPE_KEYS.FCEUX);
 addAlias(types, APP_TYPE_KEYS.NGC, APP_TYPE_KEYS.MEDNAFEN_NGC);
 addAlias(types, APP_TYPE_KEYS.NGP, APP_TYPE_KEYS.MEDNAFEN_NGP);
 addAlias(types, APP_TYPE_KEYS.PCE, APP_TYPE_KEYS.MEDNAFEN_PCE);
+addAlias(types, APP_TYPE_KEYS.PCECD, APP_TYPE_KEYS.RETRO_PCE_FAST);
 addAlias(types, APP_TYPE_KEYS.PSX, APP_TYPE_KEYS.BEETLE_PSX);
 addAlias(types, APP_TYPE_KEYS.SEGACD, APP_TYPE_KEYS.RETRO_GENPLUSGX_SEGACD);
 addAlias(types, APP_TYPE_KEYS.SG1000, APP_TYPE_KEYS.GENPLUSGX_SG);
