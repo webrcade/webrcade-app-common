@@ -531,7 +531,8 @@ const types = [{
       discs: [],
       uid: "",
       zoomLevel: 0,
-      pad6button: false
+      pad6button: false,
+      mapRunSelect: false
     }
   }
 ];
