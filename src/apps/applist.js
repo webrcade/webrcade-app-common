@@ -361,7 +361,7 @@ const types = [{
     thumbnail: 'images/app/pce-thumb.png',
     validate: checkRom,
     extensions: ['pce'],
-    defaults: PCE_DEFAULTS
+    defaults: {...PCE_DEFAULTS, mapRunSelect: false}
   }, {
     key: APP_TYPE_KEYS.MEDNAFEN_SGX,
     alias: APP_TYPE_KEYS.SGX,
