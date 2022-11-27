@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Fragment } from "react";
 
 import { blobToStr } from '../../../../util';
 import { md5 } from '../../../../util';
@@ -291,7 +291,7 @@ export class WebrcadeRetroApp extends WebrcadeApp {
     const { ModeEnum, MODE_DISC_SELECT } = this;
 
     return (
-      <div>
+      <Fragment>
         {super.render()}
         {mode === MODE_DISC_SELECT && this.discs ? (
           <DiscSelectionEditor app={this} />
@@ -301,7 +301,7 @@ export class WebrcadeRetroApp extends WebrcadeApp {
           : null}
         {mode === ModeEnum.PAUSE ? this.renderPauseScreen() : null}
         {this.renderCanvas()}
-      </div>
+      </Fragment>
     );
   }
 }

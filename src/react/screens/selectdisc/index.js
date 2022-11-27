@@ -1,5 +1,5 @@
 import React from 'react';
-import { Component } from 'react';
+import { Component, Fragment } from 'react';
 
 import { AlbumWhiteImage } from '../../../images';
 import { EditorScreen } from '../editor';
@@ -128,7 +128,7 @@ class DiscSelectionTab extends FieldsTab {
       }
     }
 
-    return <div>{fields}</div>;
+    return <Fragment>{fields}</Fragment>;
   }
 }
 DiscSelectionTab.contextType = WebrcadeContext;
