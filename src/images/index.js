@@ -13,6 +13,8 @@ const CloudBlackImage = Icons.cloud_black_24dp; //resolvePath("images/common/clo
 const CloudWhiteImage = Icons.cloud_white_24dp; //resolvePath("images/common/cloud_white_24dp.svg");
 const CloudDownloadBlackImage = Icons.cloud_download_black_24dp; //resolvePath("images/common/cloud_download_black_24dp.svg");
 const CloudDownloadWhiteImage = Icons.cloud_download_white_24dp; //resolvePath("images/common/cloud_download_white_24dp.svg");
+const CloudUploadBlackImage = Icons.cloud_upload_black_24dp;
+const CloudUploadWhiteImage = Icons.cloud_upload_white_24dp;
 const DeleteForeverBlackImage = Icons.delete_forever_black_24dp; //resolvePath("images/common/delete_forever_black_24dp.svg");
 const DeleteForeverWhiteImage = Icons.delete_forever_white_24dp; //resolvePath("images/common/delete_forever_white_24dp.svg");
 const DescriptionBlackImage = Icons.description_black_24dp; //resolvePath("images/common/description_black_24dp.svg");
@@ -32,6 +34,7 @@ const TuneWhiteImage = Icons.tune_white_24dp; //resolvePath("images/common/tune_
 const VolumeOffBlackImage = Icons.volume_off_black_24dp; //resolvePath("images/common/volume_off_black_24dp.svg");
 const WebrcadeLogoDarkImage = Icons.webrcade_logo_dark; //resolvePath("images/common/webrcade-logo-dark.svg");
 const WebrcadeLogoLargeImage = Icons.webrcade_logo_large; //resolvePath("images/common/webrcade-logo-large.svg");
+const SaveWhiteImage = Icons.save_white_24dp;
 const SettingsRedImage = Icons.settings_red_24dp; //resolvePath("images/common/settings_red_24dp.svg");
 const SettingsWhiteImage = Icons.settings_white_24dp; //resolvePath("images/common/settings_white_24dp.svg");
 const SettingsAppWhiteImage = Icons.settings_applications_white_24dp;
@@ -78,6 +81,8 @@ const TKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/T_Key_D
 const RKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/R_Key_Dark.png");
 const EKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/E_Key_Dark.png");
 
+const NesBackground = resolvePath("images/app/nes-background.png");
+
 export {
   AddCircleBlackImage,
   AddCircleWhiteImage,
@@ -91,6 +96,8 @@ export {
   CloudWhiteImage,
   CloudDownloadBlackImage,
   CloudDownloadWhiteImage,
+  CloudUploadBlackImage,
+  CloudUploadWhiteImage,
   DeleteForeverBlackImage,
   DeleteForeverWhiteImage,
   DescriptionBlackImage,
@@ -106,6 +113,7 @@ export {
   LinkOffWhiteImage,
   PlayArrowBlackImage,
   PlayArrowWhiteImage,
+  SaveWhiteImage,
   SettingsRedImage,
   SettingsWhiteImage,
   SettingsAppWhiteImage,
@@ -151,5 +159,6 @@ export {
   TKey,
   RKey,
   EKey,
+  NesBackground,
   resolvePath as resolveImagePath
 }

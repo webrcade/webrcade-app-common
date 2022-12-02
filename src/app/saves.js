@@ -6,7 +6,9 @@ import { Unzip, Zip } from '../zip'
 import { blobToStr, md5 } from '../util'
 import * as LOG from '../log'
 
-const INFO_NAME = "info.txt"
+const INFO_NAME = "info.txt";
+const STATE_NAME = "state";
+const STATE_SLOTS = 8;
 
 class SaveManager {
   constructor(wrapper, errorCallback) {
@@ -14,6 +16,7 @@ class SaveManager {
     this.cloudEnabled = null;
     this.errorCallback = errorCallback;
     this.lastHashes = {};
+    this.gameSavesDisabled = false;
   }
 
   _compareHashes(a, b) {
@@ -120,6 +123,11 @@ class SaveManager {
   }
 
   async load(path, callback) {
+    if (this.gameSavesDisabled) {
+      LOG.info("Game-based saves are disabled (state was loaded).");
+      return null;
+    }
+
     try {
       if (await this.isCloudEnabled(callback)) {
         try {
@@ -150,6 +158,11 @@ class SaveManager {
   }
 
   async save(path, files, callback) {
+    if (this.gameSavesDisabled) {
+      LOG.info("Game-based saves are disabled (state was loaded).");
+      return;
+    }
+
     try {
       if (await this.isCloudEnabled(callback)) {
         try {
@@ -191,6 +204,114 @@ class SaveManager {
     }
   }
 
+  async getStateSlots(pathPrefix, callback) {
+    const slots = new Array(STATE_SLOTS);
+    try {
+      if (await this.isCloudEnabled(callback)) {
+        if (callback) callback(Resources.getText(TEXT_IDS.CLOUD_CHECKING));
+
+        for (let i = 0; i < STATE_SLOTS; i++) {
+          const path = `${pathPrefix}state.${i}.json`;
+          try {
+            const json = await this.loadCloudSingleFile(path);
+            slots[i] = JSON.parse(await json.text())
+          } catch (e) {
+            LOG.error(`Error getting save slot info, ${path}: ${e}`);
+          }
+        }
+        return slots;
+      }
+    } finally {
+      if (callback) callback(null);
+    }
+  }
+
+  async saveState(pathPrefix, slot, state, canvas, callback) {
+    try {
+      const path = `${pathPrefix}state.${slot}`;
+      const pathMeta = `${path}.json`;
+      const files = [
+        {
+          name: STATE_NAME,
+          content: state,
+        },
+      ];
+
+      if (await this.isCloudEnabled(callback)) {
+        try {
+          if (callback) callback(Resources.getText(TEXT_IDS.CLOUD_SAVE));
+
+          this.deleteState(pathPrefix, slot, null);
+
+          await this.saveCloud(path, files);
+          await this.saveCloudSingleFile(pathMeta, JSON.stringify({
+            time: new Date().getTime(),
+            shot: canvas.toDataURL()
+          }));
+        } catch (e) {
+          LOG.error(`Error persisting state to cloud: ${e}`);
+          if (this.errorCallback) {
+            this.errorCallback(Resources.getText(TEXT_IDS.CLOUD_SAVE_STATE_ERROR))
+          }
+        }
+      }
+    } finally {
+      if (callback) callback(null);
+    }
+  }
+
+  async loadState(pathPrefix, slot, callback) {
+    try {
+      const path = `${pathPrefix}state.${slot}`;
+
+      if (await this.isCloudEnabled(callback)) {
+        try {
+          if (callback) callback(Resources.getText(TEXT_IDS.CLOUD_LOAD));
+          const files = await this.loadCloud(path);
+          for (var i = 0; i < files.length; i++) {
+            const f = files[i];
+            if (f.name == STATE_NAME) {
+              if (!this.gameSavesDisabled) {
+                this.gameSavesDisabled = true;
+                LOG.info("Save state was loaded, game-based saves are disabled.");
+              }
+              return f.content;
+            }
+          }
+        } catch (e) {
+          LOG.error(`Error loading save state from cloud: ${e}`);
+          if (this.errorCallback) {
+            this.errorCallback(Resources.getText(TEXT_IDS.CLOUD_LOAD_STATE_ERROR))
+          }
+        }
+        return null;
+      }
+    } finally {
+      if (callback) callback(null);
+    }
+  }
+
+  async deleteState(pathPrefix, slot, callback) {
+    try {
+      const path = `${pathPrefix}state.${slot}`;
+      const pathMeta = `${path}.json`;
+
+      if (await this.isCloudEnabled(callback)) {
+        if (callback) callback(Resources.getText(TEXT_IDS.CLOUD_DELETING));
+
+        try {
+          await this.delete(path, null);
+        } catch (e) {}
+
+        try {
+          await this.deleteCloudSingleFile(pathMeta);
+        } catch (e) {}
+      }
+    } finally {
+      if (callback) callback(null);
+    }
+  }
+
   async loadLocal(path) {
     LOG.info(`Loading save locally: ${path}`);
     const zipPath = this.getZipFileName(path);
@@ -225,6 +346,35 @@ class SaveManager {
       throw e;
     }
   }
+
+  async saveCloudSingleFile(path, content) {
+    LOG.info(`Saving to cloud: ${path}`);
+    try {
+      return await dropbox.uploadFile(content, path);
+    } catch(e) {
+      if (this.errorCallback) {
+        this.errorCallback(Resources.getText(TEXT_IDS.CLOUD_SAVE_ERROR))
+      }
+      throw e;
+    }
+  }
+
+  async loadCloudSingleFile(path) {
+    LOG.info(`Loading from cloud: ${path}`);
+    return await dropbox.downloadFile(path);
+  }
+
+  async deleteCloudSingleFile(path) {
+    LOG.info(`Deleting from cloud: ${path}`);
+    try {
+      await dropbox.deleteFile(path);
+    } catch(e) {
+      if (this.errorCallback) {
+        this.errorCallback(Resources.getText(TEXT_IDS.CLOUD_SAVE_ERROR))
+      }
+      throw e;
+    }
+  }
 }
 
-export { SaveManager }
+export { SaveManager, STATE_SLOTS }

@@ -183,8 +183,12 @@ export class EditorScreen extends Screen {
 
     // TODO: Fix this, it is fragile and timing based (must render if 50ms)
     setTimeout(() => {
-      this.headingRef.classList.add(styles['editor-screen-content-fade-in']);
-      this.contentRef.classList.add(styles['editor-screen-content-fade-in']);
+      if (this.headingRef) {
+        this.headingRef.classList.add(styles['editor-screen-content-fade-in']);
+      }
+      if (this.contentRef) {
+        this.contentRef.classList.add(styles['editor-screen-content-fade-in']);
+      }
     }, 50);
 
     const divStyles = {}
