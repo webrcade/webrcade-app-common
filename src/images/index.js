@@ -82,6 +82,10 @@ const RKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/R_Key_D
 const EKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/E_Key_Dark.png");
 
 const NesBackground = resolvePath("images/app/nes-background.png");
+const SnesBackground = resolvePath("images/app/snes-background.png");
+const GbaBackground = resolvePath("images/app/gba-background.png");
+const GbBackground = resolvePath("images/app/gb-background.png");
+const GbcBackground = resolvePath("images/app/gbc-background.png");
 
 export {
   AddCircleBlackImage,
@@ -160,5 +164,9 @@ export {
   RKey,
   EKey,
   NesBackground,
+  SnesBackground,
+  GbBackground,
+  GbaBackground,
+  GbcBackground,
   resolvePath as resolveImagePath
 }
