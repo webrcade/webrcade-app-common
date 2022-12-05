@@ -86,6 +86,11 @@ const SnesBackground = resolvePath("images/app/snes-background.png");
 const GbaBackground = resolvePath("images/app/gba-background.png");
 const GbBackground = resolvePath("images/app/gb-background.png");
 const GbcBackground = resolvePath("images/app/gbc-background.png");
+const GenesisBackground = resolvePath("images/app/genesis-background.png");
+const GameGearBackground = resolvePath("images/app/gamegear-background.png");
+const MasterSystemBackground = resolvePath("images/app/mastersystem-background.png");
+const Sg1000Background = resolvePath("images/app/sg1000-background.png");
+
 
 export {
   AddCircleBlackImage,
@@ -168,5 +173,10 @@ export {
   GbBackground,
   GbaBackground,
   GbcBackground,
+  GenesisBackground,
+  GameGearBackground,
+  MasterSystemBackground,
+  Sg1000Background,
+
   resolvePath as resolveImagePath
 }
