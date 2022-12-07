@@ -205,12 +205,12 @@ class SaveManager {
   }
 
   async getStateSlots(pathPrefix, callback) {
-    const slots = new Array(STATE_SLOTS);
+    const slots = new Array(STATE_SLOTS + 1);
     try {
       if (await this.isCloudEnabled(callback)) {
         if (callback) callback(Resources.getText(TEXT_IDS.CLOUD_CHECKING));
 
-        for (let i = 0; i < STATE_SLOTS; i++) {
+        for (let i = 1; i <= STATE_SLOTS; i++) {
           const path = `${pathPrefix}state.${i}.json`;
           try {
             const json = await this.loadCloudSingleFile(path);
