@@ -90,7 +90,17 @@ const GenesisBackground = resolvePath("images/app/genesis-background.png");
 const GameGearBackground = resolvePath("images/app/gamegear-background.png");
 const MasterSystemBackground = resolvePath("images/app/mastersystem-background.png");
 const Sg1000Background = resolvePath("images/app/sg1000-background.png");
-
+const PceBackground = resolvePath("images/app/pce-background.png");
+const SgxBackground = resolvePath("images/app/sgx-background.png");
+const NgpBackground = resolvePath("images/app/ngp-background.png");
+const NgcBackground = resolvePath("images/app/ngc-background.png");
+const LynxBackground = resolvePath("images/app/lynx-background.png");
+const WscBackground = resolvePath("images/app/wsc-background.png");
+const WsBackground = resolvePath("images/app/ws-background.png");
+const VbBackground = resolvePath("images/app/vb-background.png");
+const PceCdBackground = resolvePath("images/app/pcecd-background.png");
+const SegaCdBackground = resolvePath("images/app/segacd-background.png");
+const PsxBackground = resolvePath("images/app/playstation-background.png");
 
 export {
   AddCircleBlackImage,
@@ -177,6 +187,16 @@ export {
   GameGearBackground,
   MasterSystemBackground,
   Sg1000Background,
-
+  PceBackground,
+  SgxBackground,
+  NgpBackground,
+  NgcBackground,
+  LynxBackground,
+  WscBackground,
+  WsBackground,
+  VbBackground,
+  PceCdBackground,
+  SegaCdBackground,
+  PsxBackground,
   resolvePath as resolveImagePath
 }

@@ -27,6 +27,9 @@ export class SaveStatesEditor extends Component {
 
   constructor() {
     super();
+
+    this.busy = false;
+
     this.state = {
       tabIndex: null,
       focusGridComps: null,
@@ -72,6 +75,7 @@ export class SaveStatesEditor extends Component {
           label: `Save Slot ${slot}`,
           content: (
             <SlotTab
+              editor={this}
               emptyImageSrc={emptyImageSrc}
               updateStates={async (showStatus) => { await this.updateStates(showStatus) }}
               onClose={onClose}
@@ -122,7 +126,7 @@ class SlotTab extends EditorTab {
   render() {
     const { loadRef, saveRef, deleteRef } = this;
     const { focusGrid } = this.context;
-    const { emptyImageSrc, emulator, onClose, slot, slots, updateStates, showStatusCallback } = this.props;
+    const { editor, emptyImageSrc, emulator, onClose, slot, slots, updateStates, showStatusCallback } = this.props;
 
     const currentSlot = slots[slot];
 
@@ -150,8 +154,14 @@ class SlotTab extends EditorTab {
                   imgSrc={CloudDownloadBlackImage}
                   hoverImgSrc={CloudDownloadWhiteImage}
                   onClick={async () => {
-                    await emulator.loadStateForSlot(slot);
-                    onClose();
+                    if (editor.busy) return;
+                    try {
+                      editor.busy = true;
+                      await emulator.loadStateForSlot(slot);
+                      onClose();
+                    } finally {
+                      editor.busy = false;
+                    }
                   }}
                 />
               }
@@ -162,8 +172,14 @@ class SlotTab extends EditorTab {
                 imgSrc={CloudUploadBlackImage}
                 hoverImgSrc={CloudUploadWhiteImage}
                 onClick={async () => {
-                  await emulator.saveStateForSlot(slot);
-                  onClose();
+                  if (editor.busy) return;
+                  try {
+                    editor.busy = true;
+                    await emulator.saveStateForSlot(slot);
+                    onClose();
+                  } finally {
+                    editor.busy = false;
+                  }
                 }}
               />
               {currentSlot &&
@@ -174,13 +190,16 @@ class SlotTab extends EditorTab {
                   imgSrc={DeleteForeverBlackImage}
                   hoverImgSrc={DeleteForeverWhiteImage}
                   onClick={async () => {
+                    if (editor.busy) return;
                     try {
+                      editor.busy = true;
                       showStatusCallback(Resources.getText(TEXT_IDS.CLOUD_DELETING));
                       await emulator.deleteStateForSlot(slot, false);
                       await updateStates(false);
                     } finally {
                       this.saveRef.current.focus();
                       showStatusCallback(null)
+                      editor.busy = false;
                     }
                   }}
                 />

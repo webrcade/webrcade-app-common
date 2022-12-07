@@ -226,7 +226,7 @@ class SaveManager {
     }
   }
 
-  async saveState(pathPrefix, slot, state, canvas, callback) {
+  async saveState(pathPrefix, slot, state, canvas, callback, shot) {
     try {
       const path = `${pathPrefix}state.${slot}`;
       const pathMeta = `${path}.json`;
@@ -246,7 +246,8 @@ class SaveManager {
           await this.saveCloud(path, files);
           await this.saveCloudSingleFile(pathMeta, JSON.stringify({
             time: new Date().getTime(),
-            shot: canvas.toDataURL()
+            shot: shot ? shot :
+              canvas ? canvas.toDataURL() : null
           }));
         } catch (e) {
           LOG.error(`Error persisting state to cloud: ${e}`);

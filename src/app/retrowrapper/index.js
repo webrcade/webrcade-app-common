@@ -11,6 +11,8 @@ import { CIDS } from '../../input';
 import { TEXT_IDS } from '../../resources';
 import * as LOG from '../../log'
 
+const STATE_FILE_PATH = "/home/web_user/retroarch/userdata/states/game.state";
+
 export class RetroAppWrapper extends AppWrapper {
   INP_LEFT = 1;
   INP_RIGHT = 1 << 1;
@@ -46,6 +48,7 @@ export class RetroAppWrapper extends AppWrapper {
     this.biosBuffers = null;
     this.escapeCount = -1;
     this.audioPlaying = false;
+    this.saveStatePrefix = null;
     this.saveStatePath = null;
     this.prefs = this.createPrefs();
   }
@@ -232,6 +235,7 @@ export class RetroAppWrapper extends AppWrapper {
           FS.mkdir('/home/web_user/retroarch/userdata');
           FS.mkdir('/home/web_user/retroarch/userdata/system');
           FS.mkdir('/home/web_user/retroarch/userdata/saves');
+          FS.mkdir('/home/web_user/retroarch/userdata/states');
         },
       };
 
@@ -239,6 +243,106 @@ export class RetroAppWrapper extends AppWrapper {
       document.body.appendChild(script);
       script.src = scriptUrl;
     });
+  }
+
+  async getStateSlots(showStatus = true) {
+    return await this.getSaveManager().getStateSlots(
+      this.saveStatePrefix, showStatus ? this.saveMessageCallback : null
+    );
+  }
+
+  getScreenShot() {
+    // Need to do this for 3d canvas... hack :-(
+    const canvas = this.canvas;
+    return new Promise((resolve, reject) => {
+
+      Module._cmd_audio_stop();
+      Module._emscripten_mainloop();
+      Module._cmd_audio_start();
+
+      resolve(this.canvas.toDataURL());
+      var offscreenCanvas = document.createElement("canvas");
+      offscreenCanvas.width = canvas.width;
+      offscreenCanvas.height = canvas.height;
+      var ctx = offscreenCanvas.getContext("2d");
+      ctx.drawImage(canvas,0,0);
+      var imageData = ctx.getImageData(0,0, offscreenCanvas.width, offscreenCanvas.height);
+      // console.log(imageData.data);
+      offscreenCanvas.remove();
+    });
+  }
+
+  getScreenShot1() {
+    const canvas = this.canvas;
+    return new Promise((resolve, reject) => {
+      window.requestAnimationFrame(() => {
+        resolve(this.canvas.toDataURL());
+        var offscreenCanvas = document.createElement("canvas");
+        offscreenCanvas.width = canvas.width;
+        offscreenCanvas.height = canvas.height;
+        var ctx = offscreenCanvas.getContext("2d");
+        ctx.drawImage(canvas,0,0);
+        var imageData = ctx.getImageData(0,0, offscreenCanvas.width, offscreenCanvas.height);
+        // console.log(imageData.data);
+        offscreenCanvas.remove();
+      });
+    });
+  }
+
+  async saveStateForSlot(slot) {
+    const { Module } = window;
+
+    const fake = await this.getScreenShot1();
+    const shot = await this.getScreenShot();
+    Module._cmd_save_state();
+
+    let s = null;
+    try {
+      const FS = window.FS;
+      try {
+        s = FS.readFile(STATE_FILE_PATH);
+      } catch (e) {}
+
+      if (s) {
+        await this.getSaveManager().saveState(
+          this.saveStatePrefix, slot, s,
+          null,
+          this.saveMessageCallback,
+          shot);
+      }
+    } catch (e) {
+      LOG.error('Error saving state: ' + e);
+    }
+
+    return true;
+  }
+
+  async loadStateForSlot(slot) {
+    const { Module } = window;
+
+    try {
+      const state = await this.getSaveManager().loadState(
+        this.saveStatePrefix, slot, this.saveMessageCallback);
+
+      if (state) {
+        const FS = window.FS;
+        FS.writeFile(STATE_FILE_PATH, state);
+        Module._cmd_load_state();
+      }
+    } catch (e) {
+      LOG.error('Error loading state: ' + e);
+    }
+    return true;
+  }
+
+  async deleteStateForSlot(slot, showStatus = true) {
+    try {
+      await this.getSaveManager().deleteState(
+        this.saveStatePrefix, slot, showStatus ? this.saveMessageCallback : null);
+    } catch (e) {
+      LOG.error('Error deleting state: ' + e);
+    }
+    return true;
   }
 
   onPause(p) {
@@ -316,7 +420,8 @@ export class RetroAppWrapper extends AppWrapper {
       await this.wait(2000);
 
       // Load the save state
-      this.saveStatePath = app.getStoragePath(`${this.uid}/${this.SAVE_NAME}`);
+      this.saveStatePrefix = app.getStoragePath(`${this.uid}/`);
+      this.saveStatePath = `${this.saveStatePrefix}${this.SAVE_NAME}`;
       await this.loadState();
 
       await this.wait(10000);
