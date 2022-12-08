@@ -101,6 +101,10 @@ const VbBackground = resolvePath("images/app/vb-background.png");
 const PceCdBackground = resolvePath("images/app/pcecd-background.png");
 const SegaCdBackground = resolvePath("images/app/segacd-background.png");
 const PsxBackground = resolvePath("images/app/playstation-background.png");
+const CapcomBackground = resolvePath("images/app/capcom-background.png");
+const KonamiBackground = resolvePath("images/app/konami-background.png");
+const NeoGeoBackground = resolvePath("images/app/neogeo-background.png");
+const ArcadeBackground = resolvePath("images/app/arcade-background.png");
 
 export {
   AddCircleBlackImage,
@@ -198,5 +202,10 @@ export {
   PceCdBackground,
   SegaCdBackground,
   PsxBackground,
+  CapcomBackground,
+  KonamiBackground,
+  NeoGeoBackground,
+  ArcadeBackground,
+
   resolvePath as resolveImagePath
 }
