@@ -16,6 +16,7 @@ const TEXT_VALUES = {
   CLOUD_LOAD_STATE_ERROR: "An error occurred attempting to load the save state from the cloud.",
   CLOUD_SAVE: "Saving to cloud...",
   CLOUD_SAVE_ERROR: "An error occurred attempting to save to the cloud.",
+  CLOUD_SAVE_STATE_ERROR: "An error occurred attempting to save state to the cloud.",
   CLOUD_SAVES_DISABLED: "An error occurred connecting to the cloud.\nCloud saves have been disabled.",
   CLOUD_STORAGE: "Cloud Storage",
   CONFIRM_DELETE_FEED: "Are you sure you want to delete the selected feed?",

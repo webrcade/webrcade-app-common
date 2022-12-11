@@ -105,6 +105,7 @@ const CapcomBackground = resolvePath("images/app/capcom-background.png");
 const KonamiBackground = resolvePath("images/app/konami-background.png");
 const NeoGeoBackground = resolvePath("images/app/neogeo-background.png");
 const ArcadeBackground = resolvePath("images/app/arcade-background.png");
+const N64Background = resolvePath("images/app/n64-background.png");
 
 export {
   AddCircleBlackImage,
@@ -206,6 +207,7 @@ export {
   KonamiBackground,
   NeoGeoBackground,
   ArcadeBackground,
+  N64Background,
 
   resolvePath as resolveImagePath
 }

@@ -130,11 +130,13 @@ class SlotTab extends EditorTab {
 
     const currentSlot = slots[slot];
 
+    const imageStyle = currentSlot && currentSlot.imageProps ? currentSlot.imageProps : {};
+
     return (
       <div className={styles['slottab']}>
         <div className={styles['slottab-content']}>
           <div className={styles['slottab-content-left']}>
-            <img alt="screenshot" src={currentSlot ? currentSlot.shot : emptyImageSrc} />
+            <img style={imageStyle} alt="screenshot" src={currentSlot ? currentSlot.shot : emptyImageSrc} />
           </div>
           <div className={styles['slottab-content-right']}>
             <div className={styles['slottab-content-right-title']}>

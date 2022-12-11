@@ -8,6 +8,7 @@ import { DisplayLoop } from '../../display/loop'
 import { Resources } from '../../resources';
 import { RetroPrefs } from './prefs';
 import { CIDS } from '../../input';
+import { getScreenShot } from '../../display';
 import { TEXT_IDS } from '../../resources';
 import * as LOG from '../../log'
 
@@ -251,49 +252,19 @@ export class RetroAppWrapper extends AppWrapper {
     );
   }
 
-  getScreenShot() {
-    // Need to do this for 3d canvas... hack :-(
-    const canvas = this.canvas;
-    return new Promise((resolve, reject) => {
-
-      Module._cmd_audio_stop();
-      Module._emscripten_mainloop();
-      Module._cmd_audio_start();
-
-      resolve(this.canvas.toDataURL());
-      var offscreenCanvas = document.createElement("canvas");
-      offscreenCanvas.width = canvas.width;
-      offscreenCanvas.height = canvas.height;
-      var ctx = offscreenCanvas.getContext("2d");
-      ctx.drawImage(canvas,0,0);
-      var imageData = ctx.getImageData(0,0, offscreenCanvas.width, offscreenCanvas.height);
-      // console.log(imageData.data);
-      offscreenCanvas.remove();
-    });
-  }
-
-  getScreenShot1() {
-    const canvas = this.canvas;
-    return new Promise((resolve, reject) => {
-      window.requestAnimationFrame(() => {
-        resolve(this.canvas.toDataURL());
-        var offscreenCanvas = document.createElement("canvas");
-        offscreenCanvas.width = canvas.width;
-        offscreenCanvas.height = canvas.height;
-        var ctx = offscreenCanvas.getContext("2d");
-        ctx.drawImage(canvas,0,0);
-        var imageData = ctx.getImageData(0,0, offscreenCanvas.width, offscreenCanvas.height);
-        // console.log(imageData.data);
-        offscreenCanvas.remove();
-      });
-    });
-  }
+  getShotAspectRatio() { return null; }
+  getShotRotation() { return null; }
 
   async saveStateForSlot(slot) {
     const { Module } = window;
 
-    const fake = await this.getScreenShot1();
-    const shot = await this.getScreenShot();
+    const shot = await getScreenShot(this.canvas,
+      () => {
+        Module._cmd_audio_stop();
+        Module._emscripten_mainloop();
+        Module._cmd_audio_start();
+      }, 10)
+
     Module._cmd_save_state();
 
     let s = null;
@@ -304,11 +275,24 @@ export class RetroAppWrapper extends AppWrapper {
       } catch (e) {}
 
       if (s) {
+
+        const props = {}
+
+        const ar = this.getShotAspectRatio();
+        if (ar) {
+          props.aspectRatio = `${ar}`;
+        }
+        const rot = this.getShotRotation();
+        if (rot) {
+          props.transform = `rotate(${rot}deg)`;
+        }
+
         await this.getSaveManager().saveState(
           this.saveStatePrefix, slot, s,
-          null,
+          shot ? null : this.canvas,
           this.saveMessageCallback,
-          shot);
+          shot,
+          props);
       }
     } catch (e) {
       LOG.error('Error saving state: ' + e);
