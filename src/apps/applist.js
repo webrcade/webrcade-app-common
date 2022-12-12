@@ -484,7 +484,8 @@ const types = [{
       analog: false,
       uid: "",
       zoomLevel: 0,
-      skipBios: false
+      skipBios: false,
+      disableMemCard1: false
     }
   }, {
     key: APP_TYPE_KEYS.RETRO_GENPLUSGX_SEGACD,

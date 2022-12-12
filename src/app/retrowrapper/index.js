@@ -38,6 +38,9 @@ export class RetroAppWrapper extends AppWrapper {
   OPT3 = 1 << 2;
   OPT4 = 1 << 3;
   OPT5 = 1 << 4;
+  OPT6 = 1 << 5;
+  OPT7 = 1 << 6;
+  OPT8 = 1 << 7;
 
   constructor(app, debug = false) {
     super(app, debug);
