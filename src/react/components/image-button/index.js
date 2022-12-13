@@ -33,6 +33,8 @@ export class ImageButton extends Component {
       case GamepadEnum.UP:
       case GamepadEnum.LEFT:
       case GamepadEnum.RIGHT:
+      case GamepadEnum.LBUMP:
+      case GamepadEnum.RBUMP:
         if (onPad) onPad(e);
         break;
       default:

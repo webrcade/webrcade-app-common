@@ -2,6 +2,11 @@ import { GamepadEnum } from './gamepadenum.js'
 
 class FocusGrid {
   comps = [];
+  unhandledCb = null;
+
+  setUnhandledGamepadInputCallback(cb) {
+    this.unhandledCb = cb;
+  }
 
   setComponents(comps) {
     this.comps = comps;
@@ -82,6 +87,9 @@ class FocusGrid {
           }
           break;
         default:
+          if (this.unhandledCb) {
+            this.unhandledCb(dir);
+          }
           break;
       }
       if (comp) return comp.current.focus();
