@@ -11,6 +11,13 @@ export class Screen extends Component {
       this.focus();
       return true;
     }
+
+    this.focusGrid.setUnhandledGamepadInputCallback((input) => {
+      this.onUnhandledGamepadInput(input);
+    });
+  }
+
+  onUnhandledGamepadInput(input) {
   }
 
   focusGrid = new FocusGrid();

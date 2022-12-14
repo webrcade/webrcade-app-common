@@ -11,6 +11,7 @@ import { Resources } from "../../../resources";
 import { Screen } from "../../components/screen";
 import { WebrcadeContext } from "../../context/webrcadecontext";
 import { TEXT_IDS } from "../../../resources";
+import { GamepadEnum } from "../../../input/gamepadenum"
 
 import styles from './style.scss'
 
@@ -115,20 +116,22 @@ export class EditorScreen extends Screen {
     focusGrid.setComponents(comps);
   }
 
+  onUnhandledGamepadInput(input) {
+    if (input === GamepadEnum.LBUMP) {
+      this.switchTab(true, false);
+    } else if (input === GamepadEnum.RBUMP) {
+      this.switchTab(false, false);
+    }
+
+  }
+
   renderTabButton(isPrev) {
     const { tabLeftRef, tabRightRef, focusGrid } = this;
     const { tabs } = this.props;
     const { tabIndex } = this.state;
     const MIN_TAB = 0;
     const MAX_TAB = tabs.length - 1;
-
     const disabled = (isPrev && tabIndex === MIN_TAB) || (!isPrev && tabIndex === MAX_TAB);
-
-    const fadeOut = () => {
-      this.headingRef.classList.remove(styles['editor-screen-content-fade-in']);
-      this.contentRef.classList.remove(styles['editor-screen-content-fade-in']);
-      this.contentRef.scrollTop = 0;
-    }
 
     return (
       <ImageButton
@@ -137,24 +140,41 @@ export class EditorScreen extends Screen {
         ref={isPrev ? tabLeftRef : tabRightRef}
         onPad={e => focusGrid.moveFocus(e.type, isPrev ? tabLeftRef : tabRightRef)}
         imgSrc={isPrev ? ChevronLeftWhiteImage : ChevronRightWhiteImage}
-        onClick={() => {
-          if (!disabled) {
-            fadeOut();
-            const newIndex = (isPrev ? tabIndex - 1 : tabIndex + 1);
-            if ((isPrev && newIndex === MIN_TAB) || (!isPrev && newIndex === MAX_TAB)) {
-              setTimeout(() => {
-                if (isPrev) {
-                  tabRightRef.current.focus()
-                } else {
-                  tabLeftRef.current.focus();
-                }
-              }, 50);
-            }
-            this.setState({ tabIndex: newIndex });
-          }
-        }}
+        onClick={() => {this.switchTab(isPrev)}}
       />
     )
+  }
+
+  switchTab(isPrev, focus = true) {
+    const { tabLeftRef, tabRightRef } = this;
+    const { tabs } = this.props;
+    const { tabIndex } = this.state;
+    const MIN_TAB = 0;
+    const MAX_TAB = tabs.length - 1;
+    const disabled = (isPrev && tabIndex === MIN_TAB) || (!isPrev && tabIndex === MAX_TAB);
+
+    const fadeOut = () => {
+      this.headingRef.classList.remove(styles['editor-screen-content-fade-in']);
+      this.contentRef.classList.remove(styles['editor-screen-content-fade-in']);
+      this.contentRef.scrollTop = 0;
+    }
+
+    if (!disabled) {
+      fadeOut();
+      const newIndex = (isPrev ? tabIndex - 1 : tabIndex + 1);
+      if (focus) {
+        if ((isPrev && newIndex === MIN_TAB) || (!isPrev && newIndex === MAX_TAB)) {
+          setTimeout(() => {
+            if (isPrev) {
+              tabRightRef.current.focus()
+            } else {
+              tabLeftRef.current.focus();
+            }
+          }, 50);
+        }
+      }
+      this.setState({ tabIndex: newIndex });
+    }
   }
 
   renderTabImage(tabIndex) {
@@ -183,8 +203,12 @@ export class EditorScreen extends Screen {
 
     // TODO: Fix this, it is fragile and timing based (must render if 50ms)
     setTimeout(() => {
-      this.headingRef.classList.add(styles['editor-screen-content-fade-in']);
-      this.contentRef.classList.add(styles['editor-screen-content-fade-in']);
+      if (this.headingRef) {
+        this.headingRef.classList.add(styles['editor-screen-content-fade-in']);
+      }
+      if (this.contentRef) {
+        this.contentRef.classList.add(styles['editor-screen-content-fade-in']);
+      }
     }, 50);
 
     const divStyles = {}
@@ -206,7 +230,7 @@ export class EditorScreen extends Screen {
               </div>
             </div>
             <div className={styles['editor-screen-content']} ref={(content) => { this.contentRef = content; }}>
-              <div className={styles['editor-screen-content-container']}>
+              <div className={styles['editor-screen-content-container']} key={"tab" + tabIndex}>
                 {this.renderContent(tabIndex)}
               </div>
             </div>

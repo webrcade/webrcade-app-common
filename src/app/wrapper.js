@@ -38,7 +38,7 @@ export class AppWrapper {
     };
 
     this.loadMessageCallback = (message) => {
-        app.setStatusMessage(message);
+      app.setStatusMessage(message);
     };
   }
 

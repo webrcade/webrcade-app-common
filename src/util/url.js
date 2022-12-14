@@ -16,7 +16,12 @@ class UrlUtil {
   }
 
   static getFileName(url) {
-    url = decodeURIComponent(url);
+    try {
+      url = decodeURIComponent(url);
+    } catch {
+      /* Ignore for now*/
+      console.error("Unable to decode URI (1): " + url);
+    }
     const slash = url.lastIndexOf("/");
     if (slash >= 0 && (url.length > (slash + 1))) {
       url = url.substring(slash + 1);
@@ -25,7 +30,13 @@ class UrlUtil {
     if (ques >= 0) {
       url = url.substring(0, ques);
     }
-    return decodeURIComponent(url);
+    try {
+      url = decodeURIComponent(url);
+    } catch {
+      /* Ignore for now*/
+      console.error("Unable to decode URI (2): " + url);
+    }
+    return url;
   }
 }
 
