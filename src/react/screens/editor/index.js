@@ -230,7 +230,7 @@ export class EditorScreen extends Screen {
               </div>
             </div>
             <div className={styles['editor-screen-content']} ref={(content) => { this.contentRef = content; }}>
-              <div className={styles['editor-screen-content-container']}>
+              <div className={styles['editor-screen-content-container']} key={"tab" + tabIndex}>
                 {this.renderContent(tabIndex)}
               </div>
             </div>

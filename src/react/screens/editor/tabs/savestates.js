@@ -136,7 +136,7 @@ class SlotTab extends EditorTab {
       <div className={styles['slottab']}>
         <div className={styles['slottab-content']}>
           <div className={styles['slottab-content-left']}>
-            <img style={imageStyle} alt="screenshot" src={currentSlot ? currentSlot.shot : emptyImageSrc} />
+            <img key={"image" + slot} style={imageStyle} alt="screenshot" src={currentSlot ? currentSlot.shot : emptyImageSrc} />
           </div>
           <div className={styles['slottab-content-right']}>
             <div className={styles['slottab-content-right-title']}>
