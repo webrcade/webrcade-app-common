@@ -242,7 +242,7 @@ class SaveManager {
         try {
           if (callback) callback(Resources.getText(TEXT_IDS.CLOUD_SAVE));
 
-          this.deleteState(pathPrefix, slot, null);
+          await this.deleteState(pathPrefix, slot, null);
 
           await this.saveCloud(path, files);
           await this.saveCloudSingleFile(pathMeta, JSON.stringify({
