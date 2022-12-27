@@ -264,11 +264,11 @@ export class WebrcadeApp extends Component {
     return false;
   }
 
-  resume() {
+  resume(targetMode) {
     const { mode, resumeCallback } = this.state;
     const { ModeEnum } = this;
 
-    if (mode === ModeEnum.PAUSE) {
+    if (mode === ModeEnum.PAUSE || (targetMode && (mode === targetMode))) {
       this.setState({
         mode: ModeEnum.LOADED,
         resumeCallback: null

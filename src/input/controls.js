@@ -316,6 +316,13 @@ export class Controllers {
     this.setEnabled(true);
   }
 
+  addFakeKeyEvent(code, down) {
+    this.handleKeyEvent({
+      code: code,
+      preventDefault: () => {}
+    }, down);
+  }
+
   keyDownListener = e => {
     this.handleKeyEvent(e, true);
   }

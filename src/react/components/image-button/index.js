@@ -27,7 +27,7 @@ export class ImageButton extends Component {
 
     switch (e.type) {
       case GamepadEnum.A:
-        this.onClick();
+        this.onClick(e);
         break;
       case GamepadEnum.DOWN:
       case GamepadEnum.UP:
@@ -70,11 +70,13 @@ export class ImageButton extends Component {
 
   onClick = e => {
     const { onClick } = this.props;
-    if (onClick) onClick();
+    if (onClick) onClick(e);
   }
 
   onFocus = () => {
     this.setState({ focused: true });
+    const { onFocus } = this.props;
+    if (onFocus) onFocus();
   }
 
   onBlur = () => {

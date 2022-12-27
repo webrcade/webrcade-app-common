@@ -106,6 +106,8 @@ const KonamiBackground = resolvePath("images/app/konami-background.png");
 const NeoGeoBackground = resolvePath("images/app/neogeo-background.png");
 const ArcadeBackground = resolvePath("images/app/arcade-background.png");
 const N64Background = resolvePath("images/app/n64-background.png");
+const ColecoVisionBackground = resolvePath("images/app/colecovision-background.png");
+const ColecoController = resolvePath("images/app/coleco/controller.png");
 
 export {
   AddCircleBlackImage,
@@ -208,6 +210,8 @@ export {
   NeoGeoBackground,
   ArcadeBackground,
   N64Background,
+  ColecoVisionBackground,
+  ColecoController,
 
   resolvePath as resolveImagePath
 }

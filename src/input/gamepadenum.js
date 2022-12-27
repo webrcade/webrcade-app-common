@@ -5,6 +5,7 @@ const GamepadEnum = {
   RIGHT: 'right',
   LBUMP: 'lbump',
   RBUMP: 'rbump',
+  START: 'start',
   A: 'a',
   ESC: 'esc',
   R_UP: 'r_up',

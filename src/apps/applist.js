@@ -20,6 +20,7 @@ const locN64 = isDev() ? `http://${localIp}:3065` : 'app/n64/';
 const locGba = isDev() ? `http://${localIp}:3070` : 'app/gba/';
 const locNeo = isDev() ? `http://${localIp}:3077` : 'app/neo/';
 const locMednafen = isDev() ? `http://${localIp}:3075` : 'app/mednafen/';
+const locColeco = isDev() ? `http://${localIp}:3303` : 'app/colem/';
 const locStandalone = isDev() ? `http://${localIp}:3080` : 'app/standalone/';
 
 const checkRom = app => {
@@ -37,6 +38,7 @@ const checkDiscs = app => {
 const APP_TYPE_KEYS = /*Object.freeze(*/{
   // Types
   BEETLE_PSX: "beetle-psx",
+  COLEM: "colem",
   FBNEO_ARCADE: "fbneo-arcade",
   FBNEO_CAPCOM: "fbneo-capcom",
   FBNEO_KONAMI: "fbneo-konami",
@@ -68,6 +70,7 @@ const APP_TYPE_KEYS = /*Object.freeze(*/{
   ARCADE: "arcade",
   ARCADE_KONAMI: "arcade-konami",
   ARCADE_CAPCOM: "arcade-capcom",
+  COLECO: "coleco",
   DOOM: "doom",
   GBA: "gba",
   GB: "gb",
@@ -254,6 +257,27 @@ const types = [{
     defaults: {
       rom: "",
       pal: false
+    }
+  }, {
+    key: APP_TYPE_KEYS.COLEM,
+    alias: APP_TYPE_KEYS.COLECO,
+    name: 'ColecoVision',
+    shortName: 'ColecoVision',
+    coreName: 'Colem',
+    location: locColeco,
+    background: 'images/app/colecovision-background.png',
+    thumbnail: 'images/app/colecovision-thumb.png',
+    validate: checkRom,
+    extensions: ['col'],
+    addProps: (feedProps, outProps) => {
+      const rom = feedProps.coleco_rom;
+      if (rom) {
+        outProps.coleco_rom = rom;
+      }
+    },
+    defaults: {
+      rom: "",
+      // pal: false
     }
   }, {
     key: APP_TYPE_KEYS.GENPLUSGX_SMS,
@@ -572,6 +596,7 @@ addAlias(types, APP_TYPE_KEYS.A7800, APP_TYPE_KEYS.JS7800);
 addAlias(types, APP_TYPE_KEYS.ARCADE, APP_TYPE_KEYS.FBNEO_ARCADE);
 addAlias(types, APP_TYPE_KEYS.ARCADE_CAPCOM, APP_TYPE_KEYS.FBNEO_CAPCOM);
 addAlias(types, APP_TYPE_KEYS.ARCADE_KONAMI, APP_TYPE_KEYS.FBNEO_KONAMI);
+addAlias(types, APP_TYPE_KEYS.COLECO, APP_TYPE_KEYS.COLEM);
 addAlias(types, APP_TYPE_KEYS.GBA, APP_TYPE_KEYS.VBA_M_GBA);
 addAlias(types, APP_TYPE_KEYS.GB, APP_TYPE_KEYS.VBA_M_GB);
 addAlias(types, APP_TYPE_KEYS.GBC, APP_TYPE_KEYS.VBA_M_GBC);
