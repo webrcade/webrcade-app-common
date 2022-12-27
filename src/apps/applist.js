@@ -277,6 +277,7 @@ const types = [{
     },
     defaults: {
       rom: "",
+      keyDescriptions: [],
       // pal: false
     }
   }, {
