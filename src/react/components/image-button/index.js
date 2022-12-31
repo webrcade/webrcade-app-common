@@ -79,6 +79,16 @@ export class ImageButton extends Component {
     if (onFocus) onFocus();
   }
 
+  onMouseEnter = () => {
+    const { onMouseEnter } = this.props;
+    if (onMouseEnter) onMouseEnter();
+  }
+
+  onMouseLeave = () => {
+    const { onMouseLeave } = this.props;
+    if (onMouseLeave) onMouseLeave();
+  }
+
   onBlur = () => {
     this.setState({ focused: false });
   }
@@ -119,6 +129,8 @@ export class ImageButton extends Component {
         ref={(button) => { this.button = button; }}
         onClick={this.onClick}
         onFocus={this.onFocus}
+        onMouseEnter={this.onMouseEnter}
+        onMouseLeave={this.onMouseLeave}
         onBlur={this.onBlur}> {imgSrc ?
           <img alt={label} src={focused && hoverImgSrc ? hoverImgSrc : imgSrc}></img> : null}
         <div>{label}</div>
