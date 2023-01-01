@@ -4,6 +4,7 @@ import * as Genesis from './type/genesis';
 import * as Atari7800 from './type/7800';
 import * as Lynx from './type/lynx';
 import * as Nes from './type/nes';
+import * as Coleco from './type/coleco';
 
 const localIp = config.getLocalIp();
 const locGenesis = isDev() ? `http://${localIp}:3010` : 'app/genesis/';
@@ -269,6 +270,8 @@ const types = [{
     thumbnail: 'images/app/colecovision-thumb.png',
     validate: checkRom,
     extensions: ['col'],
+    testMagic: Coleco.testMagic,
+    testMagicLast: true,
     addProps: (feedProps, outProps) => {
       const rom = feedProps.coleco_rom;
       if (rom) {

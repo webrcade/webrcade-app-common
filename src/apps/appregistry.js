@@ -5,9 +5,9 @@ import {
   md5,
   UrlUtil,
   isEmptyString,
-  isValidString
+  isValidString,
 } from '../util';
-import { resolveImagePath } from '../images'
+import { resolveImagePath } from '../images';
 
 class AppRegistry {
   static instance = AppRegistry.instance || new AppRegistry();
@@ -275,12 +275,30 @@ class AppRegistry {
 
   testMagic(bytes) {
     const APP_TYPES = this.APP_TYPES;
+
+    const testLast = [];
     for (const name in APP_TYPES) {
       const type = APP_TYPES[name];
-      if (type.absoluteKey && type.testMagic && type.testMagic(bytes)) {
+      if (type.absoluteKey && type.testMagic) {
+        if (type.testMagicLast !== undefined && type.testMagicLast == true) {
+          testLast.push(type);
+        } else {
+          //console.log('Testing magic: ' + type.absoluteKey);
+          if (type.testMagic(bytes)) {
+            return type;
+          }
+        }
+      }
+    }
+
+    for (let i = 0; i < testLast.length; i++) {
+      const type = testLast[i];
+      //console.log('Testing magic (last): ' + type.absoluteKey);
+      if (type.testMagic(bytes)) {
         return type;
       }
     }
+
     return null;
   }
 
