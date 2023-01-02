@@ -280,8 +280,8 @@ const types = [{
     },
     defaults: {
       rom: "",
-      keyDescriptions: [],
-      // pal: false
+      descriptions: {},
+      mappings: {},
     }
   }, {
     key: APP_TYPE_KEYS.GENPLUSGX_SMS,
