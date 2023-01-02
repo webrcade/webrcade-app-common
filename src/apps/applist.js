@@ -282,6 +282,7 @@ const types = [{
       rom: "",
       descriptions: {},
       mappings: {},
+      controlsMode: 0
     }
   }, {
     key: APP_TYPE_KEYS.GENPLUSGX_SMS,
