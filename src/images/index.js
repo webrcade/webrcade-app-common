@@ -81,6 +81,19 @@ const TKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/T_Key_D
 const RKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/R_Key_Dark.png");
 const EKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/E_Key_Dark.png");
 
+const ZeroKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/0_Key_Dark.png");
+const OneKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/1_Key_Dark.png");
+const TwoKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/2_Key_Dark.png");
+const ThreeKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/3_Key_Dark.png");
+const FourKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/4_Key_Dark.png");
+const FiveKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/5_Key_Dark.png");
+const SixKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/6_Key_Dark.png");
+const SevenKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/7_Key_Dark.png");
+const EightKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/8_Key_Dark.png");
+const NineKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/9_Key_Dark.png");
+const MinusKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/Minus_Key_Dark.png");
+const EqualsKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/Equals_Key_Dark.png");
+
 const NesBackground = resolvePath("images/app/nes-background.png");
 const SnesBackground = resolvePath("images/app/snes-background.png");
 const GbaBackground = resolvePath("images/app/gba-background.png");
@@ -185,6 +198,18 @@ export {
   TKey,
   RKey,
   EKey,
+  ZeroKey,
+  OneKey,
+  TwoKey,
+  ThreeKey,
+  FourKey,
+  FiveKey,
+  SixKey,
+  SevenKey,
+  EightKey,
+  NineKey,
+  MinusKey,
+  EqualsKey,
   NesBackground,
   SnesBackground,
   GbBackground,
