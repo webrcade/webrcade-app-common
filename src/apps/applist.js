@@ -6,6 +6,9 @@ import * as Lynx from './type/lynx';
 import * as Nes from './type/nes';
 import * as Coleco from './type/coleco';
 
+// Whether to enable Atari 5200
+const enable5200 = false;
+
 const localIp = config.getLocalIp();
 const locGenesis = isDev() ? `http://${localIp}:3010` : 'app/genesis/';
 const locSms = locGenesis;
@@ -22,6 +25,7 @@ const locGba = isDev() ? `http://${localIp}:3070` : 'app/gba/';
 const locNeo = isDev() ? `http://${localIp}:3077` : 'app/neo/';
 const locMednafen = isDev() ? `http://${localIp}:3075` : 'app/mednafen/';
 const locColeco = isDev() ? `http://${localIp}:3303` : 'app/colem/';
+const loc5200 = isDev() ? `http://${localIp}:3304` : 'app/5200/';
 const locStandalone = isDev() ? `http://${localIp}:3080` : 'app/standalone/';
 
 const checkRom = app => {
@@ -38,6 +42,7 @@ const checkDiscs = app => {
 
 const APP_TYPE_KEYS = /*Object.freeze(*/{
   // Types
+  AT5200: "a5200",
   BEETLE_PSX: "beetle-psx",
   COLEM: "colem",
   FBNEO_ARCADE: "fbneo-arcade",
@@ -67,6 +72,7 @@ const APP_TYPE_KEYS = /*Object.freeze(*/{
   VBA_M_GBC: "vba-m-gbc",
   // Aliases
   A2600: "2600",
+  A5200: "5200",
   A7800: "7800",
   ARCADE: "arcade",
   ARCADE_KONAMI: "arcade-konami",
@@ -593,6 +599,33 @@ if (config.isPublicServer()) {
     }
   });
   addAlias(types, APP_TYPE_KEYS.DOOM, APP_TYPE_KEYS.PRBOOM);
+}
+
+if (enable5200) {
+  types.push({
+    key: APP_TYPE_KEYS.AT5200,
+    alias: APP_TYPE_KEYS.A5200,
+    name: 'Atari 5200',
+    coreName: 'A5200',
+    location: loc5200,
+    background: 'images/app/colecovision-background.png',
+    thumbnail: 'images/app/colecovision-thumb.png',
+    validate: checkRom,
+    extensions: ['a52'],
+    addProps: (feedProps, outProps) => {
+      const rom = feedProps.atari_rom;
+      if (rom) {
+        outProps.atari_rom = rom;
+      }
+    },
+    defaults: {
+      rom: "",
+      // descriptions: {},
+      // mappings: {},
+      // controlsMode: 0
+    }
+  });
+  addAlias(types, APP_TYPE_KEYS.A5200, APP_TYPE_KEYS.AT5200);
 }
 
 // Aliases

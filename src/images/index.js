@@ -121,6 +121,7 @@ const ArcadeBackground = resolvePath("images/app/arcade-background.png");
 const N64Background = resolvePath("images/app/n64-background.png");
 const ColecoVisionBackground = resolvePath("images/app/colecovision-background.png");
 const ColecoController = resolvePath("images/app/coleco/controller.png");
+const A5200Controller = resolvePath("images/app/a5200/controller.png");
 
 export {
   AddCircleBlackImage,
@@ -237,6 +238,7 @@ export {
   N64Background,
   ColecoVisionBackground,
   ColecoController,
+  A5200Controller,
 
   resolvePath as resolveImagePath
 }
