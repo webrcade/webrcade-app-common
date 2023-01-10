@@ -26,6 +26,7 @@ const locNeo = isDev() ? `http://${localIp}:3077` : 'app/neo/';
 const locMednafen = isDev() ? `http://${localIp}:3075` : 'app/mednafen/';
 const locColeco = isDev() ? `http://${localIp}:3303` : 'app/colem/';
 const loc5200 = isDev() ? `http://${localIp}:3304` : 'app/5200/';
+const locPcfx = isDev() ? `http://${localIp}:3305` : 'app/pcfx/';
 const locStandalone = isDev() ? `http://${localIp}:3080` : 'app/standalone/';
 
 const checkRom = app => {
@@ -44,6 +45,7 @@ const APP_TYPE_KEYS = /*Object.freeze(*/{
   // Types
   AT5200: "a5200",
   BEETLE_PSX: "beetle-psx",
+  BEETLE_PCFX: "beetle-pcfx",
   COLEM: "colem",
   FBNEO_ARCADE: "fbneo-arcade",
   FBNEO_CAPCOM: "fbneo-capcom",
@@ -64,6 +66,7 @@ const APP_TYPE_KEYS = /*Object.freeze(*/{
   MEDNAFEN_VB: "mednafen-vb",
   MEDNAFEN_WSC: "mednafen-wsc",
   MEDNAFEN_WS: "mednafen-ws",
+  PCFX: "pcfx",
   PRBOOM: "prboom",
   PSX: "psx",
   SNES9X: "snes9x",
@@ -570,6 +573,29 @@ const types = [{
       pad6button: false,
       mapRunSelect: false
     }
+  }, {
+    key: APP_TYPE_KEYS.BEETLE_PCFX,
+    alias: APP_TYPE_KEYS.PCFX,
+    name: 'NEC PC-FX',
+    shortName: 'NEC PC-FX',
+    coreName: 'Beetle PC-FX',
+    location: locPcfx,
+    background: 'images/app/pcecd-background.png',
+    thumbnail: 'images/app/pcecd-thumb.png',
+    validate: checkDiscs,
+    extensions: [],
+    slowExit: true,
+    addProps: (feedProps, outProps) => {
+      const bios = feedProps.pcfx_bios;
+      if (bios) {
+        outProps.pcfx_bios = bios;
+      }
+    },
+    defaults: {
+      discs: [],
+      uid: "",
+      zoomLevel: 0
+    }
   }
 ];
 
@@ -647,6 +673,7 @@ addAlias(types, APP_TYPE_KEYS.NGC, APP_TYPE_KEYS.MEDNAFEN_NGC);
 addAlias(types, APP_TYPE_KEYS.NGP, APP_TYPE_KEYS.MEDNAFEN_NGP);
 addAlias(types, APP_TYPE_KEYS.PCE, APP_TYPE_KEYS.MEDNAFEN_PCE);
 addAlias(types, APP_TYPE_KEYS.PCECD, APP_TYPE_KEYS.RETRO_PCE_FAST);
+addAlias(types, APP_TYPE_KEYS.PCFX, APP_TYPE_KEYS.BEETLE_PCFX);
 addAlias(types, APP_TYPE_KEYS.PSX, APP_TYPE_KEYS.BEETLE_PSX);
 addAlias(types, APP_TYPE_KEYS.SEGACD, APP_TYPE_KEYS.RETRO_GENPLUSGX_SEGACD);
 addAlias(types, APP_TYPE_KEYS.SG1000, APP_TYPE_KEYS.GENPLUSGX_SG);
