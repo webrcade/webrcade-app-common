@@ -581,7 +581,7 @@ const types = [{
     coreName: 'Beetle PC-FX',
     location: locPcfx,
     background: 'images/app/pcecd-background.png',
-    thumbnail: 'images/app/pcecd-thumb.png',
+    thumbnail: 'images/app/cd-thumb.png',
     validate: checkDiscs,
     extensions: [],
     slowExit: true,
