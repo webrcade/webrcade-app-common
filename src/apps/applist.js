@@ -27,6 +27,7 @@ const locMednafen = isDev() ? `http://${localIp}:3075` : 'app/mednafen/';
 const locColeco = isDev() ? `http://${localIp}:3303` : 'app/colem/';
 const loc5200 = isDev() ? `http://${localIp}:3304` : 'app/5200/';
 const locPcfx = isDev() ? `http://${localIp}:3305` : 'app/pcfx/';
+const locRetro5200 = isDev() ? `http://${localIp}:3306` : 'app/retro-a5200/';
 const locStandalone = isDev() ? `http://${localIp}:3080` : 'app/standalone/';
 
 const checkRom = app => {
@@ -69,6 +70,9 @@ const APP_TYPE_KEYS = /*Object.freeze(*/{
   PCFX: "pcfx",
   PRBOOM: "prboom",
   PSX: "psx",
+  RETRO_A5200: "retro-a5200",
+  RETRO_GENPLUSGX_SEGACD: "retro-genplusgx-segacd",
+  RETRO_PCE_FAST: "retro-pce-fast",
   SNES9X: "snes9x",
   VBA_M_GBA: "vba-m-gba",
   VBA_M_GB: "vba-m-gb",
@@ -94,8 +98,6 @@ const APP_TYPE_KEYS = /*Object.freeze(*/{
   NGP: "ngp",
   PCE: "pce",
   PCECD: "pcecd",
-  RETRO_GENPLUSGX_SEGACD: "retro-genplusgx-segacd",
-  RETRO_PCE_FAST: "retro-pce-fast",
   SEGACD: "segacd",
   SG1000: 'sg1000',
   SGX: 'sgx',
@@ -596,6 +598,28 @@ const types = [{
       uid: "",
       zoomLevel: 0
     }
+  }, {
+    key: APP_TYPE_KEYS.RETRO_A5200,
+    alias: APP_TYPE_KEYS.A5200,
+    name: 'Atari 5200',
+    coreName: 'Libretro A5200',
+    location: locRetro5200,
+    background: 'images/app/colecovision-background.png',
+    thumbnail: 'images/app/colecovision-thumb.png',
+    validate: checkRom,
+    extensions: ['a52'],
+    addProps: (feedProps, outProps) => {
+      const rom = feedProps.atari5200_rom;
+      if (rom) {
+        outProps.atari5200_rom = rom;
+      }
+    },
+    defaults: {
+      rom: "",
+      // descriptions: {},
+      // mappings: {},
+      // controlsMode: 0
+    }
   }
 ];
 
@@ -656,6 +680,7 @@ if (enable5200) {
 
 // Aliases
 addAlias(types, APP_TYPE_KEYS.A2600, APP_TYPE_KEYS.JAVATARI);
+addAlias(types, APP_TYPE_KEYS.A5200, APP_TYPE_KEYS.RETRO_A5200);
 addAlias(types, APP_TYPE_KEYS.A7800, APP_TYPE_KEYS.JS7800);
 addAlias(types, APP_TYPE_KEYS.ARCADE, APP_TYPE_KEYS.FBNEO_ARCADE);
 addAlias(types, APP_TYPE_KEYS.ARCADE_CAPCOM, APP_TYPE_KEYS.FBNEO_CAPCOM);
