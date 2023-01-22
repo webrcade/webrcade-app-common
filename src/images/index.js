@@ -119,6 +119,7 @@ const KonamiBackground = resolvePath("images/app/konami-background.png");
 const NeoGeoBackground = resolvePath("images/app/neogeo-background.png");
 const ArcadeBackground = resolvePath("images/app/arcade-background.png");
 const N64Background = resolvePath("images/app/n64-background.png");
+const A5200Background = resolvePath("images/app/5200-background.png");
 const ColecoVisionBackground = resolvePath("images/app/colecovision-background.png");
 const ColecoController = resolvePath("images/app/coleco/controller.png");
 const A5200Controller = resolvePath("images/app/a5200/controller.png");
@@ -239,6 +240,7 @@ export {
   ColecoVisionBackground,
   ColecoController,
   A5200Controller,
+  A5200Background,
 
   resolvePath as resolveImagePath
 }

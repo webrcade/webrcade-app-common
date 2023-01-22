@@ -70,7 +70,6 @@ const APP_TYPE_KEYS = /*Object.freeze(*/{
   PCFX: "pcfx",
   PRBOOM: "prboom",
   PSX: "psx",
-  RETRO_A5200: "retro-a5200",
   RETRO_GENPLUSGX_SEGACD: "retro-genplusgx-segacd",
   RETRO_PCE_FAST: "retro-pce-fast",
   SNES9X: "snes9x",
@@ -79,7 +78,6 @@ const APP_TYPE_KEYS = /*Object.freeze(*/{
   VBA_M_GBC: "vba-m-gbc",
   // Aliases
   A2600: "2600",
-  A5200: "5200",
   A7800: "7800",
   ARCADE: "arcade",
   ARCADE_KONAMI: "arcade-konami",
@@ -291,6 +289,7 @@ const types = [{
     },
     defaults: {
       rom: "",
+      zoomLevel: 0,
       descriptions: {},
       mappings: {},
       controlsMode: 0
@@ -582,8 +581,8 @@ const types = [{
     shortName: 'NEC PC-FX',
     coreName: 'Beetle PC-FX',
     location: locPcfx,
-    background: 'images/app/pcecd-background.png',
-    thumbnail: 'images/app/cd-thumb.png',
+    background: 'images/app/pcfx-background.png',
+    thumbnail: 'images/app/pcfx-thumb.png',
     validate: checkDiscs,
     extensions: [],
     slowExit: true,
@@ -597,28 +596,6 @@ const types = [{
       discs: [],
       uid: "",
       zoomLevel: 0
-    }
-  }, {
-    key: APP_TYPE_KEYS.RETRO_A5200,
-    alias: APP_TYPE_KEYS.A5200,
-    name: 'Atari 5200',
-    coreName: 'Libretro A5200',
-    location: locRetro5200,
-    background: 'images/app/colecovision-background.png',
-    thumbnail: 'images/app/colecovision-thumb.png',
-    validate: checkRom,
-    extensions: ['a52'],
-    addProps: (feedProps, outProps) => {
-      const rom = feedProps.atari5200_rom;
-      if (rom) {
-        outProps.atari5200_rom = rom;
-      }
-    },
-    defaults: {
-      rom: "",
-      // descriptions: {},
-      // mappings: {},
-      // controlsMode: 0
     }
   }
 ];
@@ -658,8 +635,8 @@ if (enable5200) {
     name: 'Atari 5200',
     coreName: 'A5200',
     location: loc5200,
-    background: 'images/app/colecovision-background.png',
-    thumbnail: 'images/app/colecovision-thumb.png',
+    background: 'images/app/5200-background.png',
+    thumbnail: 'images/app/5200-thumb.png',
     validate: checkRom,
     extensions: ['a52'],
     addProps: (feedProps, outProps) => {
@@ -669,6 +646,7 @@ if (enable5200) {
       }
     },
     defaults: {
+      zoomLevel: 0,
       rom: "",
       // descriptions: {},
       // mappings: {},
@@ -680,7 +658,6 @@ if (enable5200) {
 
 // Aliases
 addAlias(types, APP_TYPE_KEYS.A2600, APP_TYPE_KEYS.JAVATARI);
-addAlias(types, APP_TYPE_KEYS.A5200, APP_TYPE_KEYS.RETRO_A5200);
 addAlias(types, APP_TYPE_KEYS.A7800, APP_TYPE_KEYS.JS7800);
 addAlias(types, APP_TYPE_KEYS.ARCADE, APP_TYPE_KEYS.FBNEO_ARCADE);
 addAlias(types, APP_TYPE_KEYS.ARCADE_CAPCOM, APP_TYPE_KEYS.FBNEO_CAPCOM);
@@ -771,6 +748,59 @@ const enableExperimentalApps = (b) => {
       }
     });
     addAlias(APP_TYPES, APP_TYPE_KEYS.N64, APP_TYPE_KEYS.PARALLEL_N64);
+  }
+
+  //
+  // Remove 5200
+  //
+
+  for (let i = 0; i < clone.length; i++) {
+    const t = clone[i];
+    if ((!APP_TYPE_KEYS.RETRO_A5200 || t.key !== APP_TYPE_KEYS.RETRO_A5200) &&
+        (!APP_TYPE_KEYS.A5200 || t.key !== APP_TYPE_KEYS.A5200)) {
+      APP_TYPES.push(t);
+    }
+  }
+
+  delete APP_TYPE_KEYS.RETRO_A5200;
+  delete APP_TYPE_KEYS.A5200;
+
+  //
+  // Add 5200
+  //
+
+  if (b) {
+    APP_TYPE_KEYS.RETRO_A5200 = "retro-a5200";
+    APP_TYPE_KEYS.A5200 = "a5200";
+
+    APP_TYPES.push({
+      key: APP_TYPE_KEYS.RETRO_A5200,
+      alias: APP_TYPE_KEYS.A5200,
+      name: 'Atari 5200',
+      coreName: 'Libretro A5200',
+      location: locRetro5200,
+      background: 'images/app/5200-background.png',
+      thumbnail: 'images/app/5200-thumb.png',
+      validate: checkRom,
+      extensions: ['a52'],
+      addProps: (feedProps, outProps) => {
+        const rom = feedProps.atari5200_rom;
+        if (rom) {
+          outProps.atari5200_rom = rom;
+        }
+      },
+      defaults: {
+        rom: "",
+        zoomLevel: 0,
+        swap: false,
+        analog: false,
+        twinStick: false,
+        descriptions: {},
+        mappings: {},
+      }
+    });
+    addAlias(types, APP_TYPE_KEYS.A5200, APP_TYPE_KEYS.RETRO_A5200);
+
   }
 }
 
