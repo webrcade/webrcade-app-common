@@ -770,8 +770,8 @@ const enableExperimentalApps = (b) => {
   //
 
   if (b) {
-    APP_TYPE_KEYS.RETRO_A5200 = "retro-a5200";
-    APP_TYPE_KEYS.A5200 = "a5200";
+    APP_TYPE_KEYS.RETRO_A5200 = "retro-5200";
+    APP_TYPE_KEYS.A5200 = "5200";
 
     APP_TYPES.push({
       key: APP_TYPE_KEYS.RETRO_A5200,
