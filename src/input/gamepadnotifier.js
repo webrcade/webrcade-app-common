@@ -14,20 +14,29 @@ class GamepadNotifier {
     this.firstPollDelayEnd = -1;
     this.defaultCallback = null;
     this.escapePressed = null;
+    this.escapePressedIndex = 0;
     this.aPressed = null;
+    this.aPressedIndex = 0;
+    this.startPressed = null;
+    this.startPressedIndex = 0;
     this.mapping = new StandardPadMapping();
     this.buttons = new Array(16);
     this.padCount = 0;
     this.nextAnalog = 0;
     this.analogStep = 1000 / 60.0;
+    this.immediateA = false;
   }
 
   FIRST_POLL_DELAY = 100;
   NULL_BUTTON = { pressed: false };
 
-  fireEvent(type) {
+  setImmediateA(val) {
+    this.immediateA = val;
+  }
+
+  fireEvent(type, index) {
     const { callbacks, globalCallbacks, defaultCallback } = this;
-    const e = { "type": type }
+    const e = { "type": type, "index": index }
     for (let i = 0; i < globalCallbacks.length; i++) {
       globalCallbacks[i](e);
     }
@@ -84,6 +93,7 @@ class GamepadNotifier {
 
     let hit = false;
     for (let i = 0; i < gamepads.length && !hit; i++) {
+      const gamepadIndex = i;
       if (gamepads[i]) {
 
         let padDown = this.padDown;
@@ -110,6 +120,7 @@ class GamepadNotifier {
               buttons[mapping.getButtonNum(CIDS.X)].pressed)) {
             if (!padDown && !firstPoll && this.escapePressed === false) {
               this.escapePressed = true;
+              this.escapePressedIndex = gamepadIndex;
             }
           } else if ((this.escapePressed == true) && (
             buttons[mapping.getButtonNum(CIDS.LTRIG)].pressed ||
@@ -120,36 +131,60 @@ class GamepadNotifier {
             buttons[mapping.getButtonNum(CIDS.START)].pressed)) {
             // Nothing... just make sure buttons are released prior to escape handling
           } else if (buttons[mapping.getButtonNum(CIDS.UP)].pressed) {
-            if (!padDown && !firstPoll) this.fireEvent(GamepadEnum.UP);
+            if (!padDown && !firstPoll) this.fireEvent(GamepadEnum.UP, gamepadIndex);
           } else if (buttons[mapping.getButtonNum(CIDS.DOWN)].pressed) {
-            if (!padDown && !firstPoll) this.fireEvent(GamepadEnum.DOWN);
+            if (!padDown && !firstPoll) this.fireEvent(GamepadEnum.DOWN, gamepadIndex);
           } else if (buttons[mapping.getButtonNum(CIDS.LEFT)].pressed) {
-            if (!padDown && !firstPoll) this.fireEvent(GamepadEnum.LEFT);
+            if (!padDown && !firstPoll) this.fireEvent(GamepadEnum.LEFT, gamepadIndex);
           } else if (buttons[mapping.getButtonNum(CIDS.RIGHT)].pressed) {
-            if (!padDown && !firstPoll) this.fireEvent(GamepadEnum.RIGHT);
+            if (!padDown && !firstPoll) this.fireEvent(GamepadEnum.RIGHT, gamepadIndex);
           } else if (buttons[mapping.getButtonNum(CIDS.LBUMP)].pressed) {
-            if (!padDown && !firstPoll) this.fireEvent(GamepadEnum.LBUMP);
+            if (!padDown && !firstPoll) this.fireEvent(GamepadEnum.LBUMP, gamepadIndex);
           } else if (buttons[mapping.getButtonNum(CIDS.RBUMP)].pressed) {
-            if (!padDown && !firstPoll) this.fireEvent(GamepadEnum.RBUMP);
+            if (!padDown && !firstPoll) this.fireEvent(GamepadEnum.RBUMP, gamepadIndex);
           } else if (buttons[mapping.getButtonNum(CIDS.A)].pressed) {
-            if (!padDown && !firstPoll && this.aPressed === false) {
-              this.aPressed = true;
+
+            if (this.immediateA) {
+              if (!padDown && !firstPoll) this.fireEvent(GamepadEnum.A, gamepadIndex);
+            } else {
+              if (!padDown && !firstPoll && this.aPressed === false) {
+                this.aPressed = true;
+                this.aPressedIndex = gamepadIndex;
+              }
+            }
+          } else if (buttons[mapping.getButtonNum(CIDS.START)].pressed) {
+            if (!padDown && !firstPoll && this.startPressed === false) {
+              this.startPressed = true;
+              this.startPressedIndex = gamepadIndex;
             }
           } else {
             hit = false;
 
             if (this.escapePressed !== false) {
-              if (this.escapePressed === true) {
-                this.fireEvent(GamepadEnum.ESC);
+              if (this.escapePressedIndex === gamepadIndex) {
+                if (this.escapePressed === true) {
+                  this.fireEvent(GamepadEnum.ESC, this.escapePressedIndex);
+                }
+                this.escapePressed = false;
               }
-              this.escapePressed = false;
             }
 
             if (this.aPressed !== false) {
-              if (this.aPressed === true) {
-                this.fireEvent(GamepadEnum.A);
+              if (this.aPressedIndex === gamepadIndex) {
+                if (this.aPressed === true) {
+                  this.fireEvent(GamepadEnum.A, this.aPressedIndex);
+                }
+                this.aPressed = false;
               }
-              this.aPressed = false;
+            }
+
+            if (this.startPressed !== false) {
+              if (this.startPressedIndex === gamepadIndex) {
+                if (this.startPressed === true) {
+                  this.fireEvent(GamepadEnum.START, this.startPressedIndex);
+                }
+                this.startPressed = false;
+              }
             }
           }
         }
@@ -188,13 +223,13 @@ class GamepadNotifier {
             if (!hit) {
               hit = true;
               if (valy < -0.5) {
-                if (!padDown && !firstPoll) this.fireEvent(GamepadEnum.UP);
+                if (!padDown && !firstPoll) this.fireEvent(GamepadEnum.UP, gamepadIndex);
               } else if (valy > 0.5) {
-                if (!padDown && !firstPoll) this.fireEvent(GamepadEnum.DOWN);
+                if (!padDown && !firstPoll) this.fireEvent(GamepadEnum.DOWN, gamepadIndex);
               } else if (valx < -0.5) {
-                if (!padDown && !firstPoll) this.fireEvent(GamepadEnum.LEFT);
+                if (!padDown && !firstPoll) this.fireEvent(GamepadEnum.LEFT, gamepadIndex);
               } else if (valx > 0.5) {
-                if (!padDown && !firstPoll) this.fireEvent(GamepadEnum.RIGHT);
+                if (!padDown && !firstPoll) this.fireEvent(GamepadEnum.RIGHT, gamepadIndex);
               } else {
                 hit = false;
               }
@@ -212,13 +247,13 @@ class GamepadNotifier {
             if (!hit) {
               hit = true;
               if (valy < -0.5) {
-                if (!padDown && !firstPoll) this.fireEvent(GamepadEnum.R_UP);
+                if (!padDown && !firstPoll) this.fireEvent(GamepadEnum.R_UP, gamepadIndex);
               } else if (valy > 0.5) {
-                if (!padDown && !firstPoll) this.fireEvent(GamepadEnum.R_DOWN);
+                if (!padDown && !firstPoll) this.fireEvent(GamepadEnum.R_DOWN, gamepadIndex);
               } else if (valx < -0.5) {
-                if (!padDown && !firstPoll) this.fireEvent(GamepadEnum.R_LEFT);
+                if (!padDown && !firstPoll) this.fireEvent(GamepadEnum.R_LEFT, gamepadIndex);
               } else if (valx > 0.5) {
-                if (!padDown && !firstPoll) this.fireEvent(GamepadEnum.R_RIGHT);
+                if (!padDown && !firstPoll) this.fireEvent(GamepadEnum.R_RIGHT, gamepadIndex);
               } else {
                 hit = false;
               }

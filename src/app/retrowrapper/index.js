@@ -64,14 +64,23 @@ export class RetroAppWrapper extends AppWrapper {
     throw "getScriptUrl() has not been implemented";
   }
 
+  isDiscBased() {
+    return this.app.isDiscBased();
+  }
+
+  getCustomStartHandler() {
+    return null;
+  }
+
   setRoms(uid, frontendArray, biosBuffers, romBytes, ext) {
     this.uid = uid;
     this.frontendArray = frontendArray;
     this.biosBuffers = biosBuffers;
     this.romBytes = romBytes;
     this.ext = ext;
-    this.disc =
-      this.RA_DIR + 'game.' + (ext != null && ext === 'pbp' ? 'pbp' : 'chd');
+    this.game = this.isDiscBased() ?
+      (this.RA_DIR + 'game.' + (ext != null && ext === 'pbp' ? 'pbp' : 'chd')) :
+      (this.RA_DIR + "game.bin");
   }
 
   createControllers() {
@@ -275,7 +284,7 @@ export class RetroAppWrapper extends AppWrapper {
       const FS = window.FS;
       try {
         s = FS.readFile(STATE_FILE_PATH);
-      } catch (e) {}
+      } catch (e) { }
 
       if (s) {
 
@@ -368,18 +377,22 @@ export class RetroAppWrapper extends AppWrapper {
   }
 
   async onStart(canvas) {
-    const { app, debug, disc } = this;
+    const { app, debug, game } = this;
     const { FS, Module } = window;
 
     try {
       this.canvas = canvas;
 
-      setTimeout(() => {
-        app.setState({ loadingMessage: null, loadingPercent: null });
+      if (this.isDiscBased()) {
         setTimeout(() => {
-          app.setState({ loadingMessage: 'Starting' });
+          app.setState({ loadingMessage: null, loadingPercent: null });
+          setTimeout(() => {
+            app.setState({ loadingMessage: 'Starting' });
+          }, 2000);
         }, 2000);
-      }, 2000);
+      } else {
+        app.setState({ loadingMessage: null, loadingPercent: null });
+      }
 
       if (this.romBytes.byteLength === 0) {
         throw new Error('The size is invalid (0 bytes).');
@@ -399,84 +412,95 @@ export class RetroAppWrapper extends AppWrapper {
       }
 
       // Write rom file
-      let stream = FS.open(disc, 'a');
+      let stream = FS.open(game, 'a');
       FS.write(stream, this.romBytes, 0, this.romBytes.length, 0, true);
       FS.close(stream);
       this.romBytes = null;
 
-      await this.wait(2000);
+      if (this.isDiscBased()) {
+        await this.wait(2000);
+      }
 
       // Load the save state
       this.saveStatePrefix = app.getStoragePath(`${this.uid}/`);
       this.saveStatePath = `${this.saveStatePrefix}${this.SAVE_NAME}`;
       await this.loadState();
 
-      await this.wait(10000);
-
-      window.readyAudioContext = new window.AudioContext();
-      window.readyAudioContext.resume();
-      console.log(window.readyAudioContext);
-
-      try {
-        Module.callMain(['-v', disc]);
-      } catch (e) {
-        LOG.error(e);
+      if (this.isDiscBased()) {
+        await this.wait(10000);
       }
 
-      // Bilinear filter
-      if (this.isBilinearFilterEnabled()) {
-        // TODO: Figure out a way to do this without re-init of video
-        await this.wait(1000);
-        Module._wrc_enable_bilinear_filter(1);
-      }
+      const customStart = this.getCustomStartHandler();
+      if (customStart) {
+        await customStart(this);
+      } else {
+        window.readyAudioContext = new window.AudioContext();
+        window.readyAudioContext.resume();
+        console.log(window.readyAudioContext);
 
-      setTimeout(() => {
-        app.setState({ loadingMessage: null });
-      }, 50);
-
-      this.displayLoop = new DisplayLoop(
-        60, // frame rate (ignored due to no wait)
-        true, // vsync
-        debug, // debug
-        true, // force native
-        false, // no wait
-      );
-      this.displayLoop.setAdjustTimestampEnabled(false);
-
-      setTimeout(() => {
-        this.resizeScreen(canvas);
-        Module.setCanvasSize(canvas.offsetWidth, canvas.offsetHeight);
-        setTimeout(() => {
-          this.resizeScreen(canvas);
-        }, 1);
-      }, 50);
-
-      window.onresize = () => {
-        Module.setCanvasSize(canvas.offsetWidth, canvas.offsetHeight);
-        setTimeout(() => {
-          this.resizeScreen(canvas);
-        }, 1);
-      };
-
-      let exit = false;
-
-      // Start the display loop
-      this.displayLoop.start(() => {
         try {
-          if (!exit) {
-            this.pollControls();
-            Module._emscripten_mainloop();
-          }
+          Module.callMain(['-v', game]);
         } catch (e) {
-          if (e.status === 1971) {
-            // Menu was displayed, should never happen (bad rom?)
-            app.exit(Resources.getText(TEXT_IDS.ERROR_UNKNOWN));
-            exit = true;
-          } else {
-            LOG.error(e);
-          }
+          LOG.error(e);
         }
-      });
+
+        // Bilinear filter
+        if (this.isBilinearFilterEnabled()) {
+          // TODO: Figure out a way to do this without re-init of video
+          await this.wait(1000);
+          Module._wrc_enable_bilinear_filter(1);
+        }
+
+        if (this.isDiscBased()) {
+          setTimeout(() => {
+            app.setState({ loadingMessage: null });
+          }, 50);
+        }
+
+        this.displayLoop = new DisplayLoop(
+          60, // frame rate (ignored due to no wait)
+          true, // vsync
+          debug, // debug
+          true, // force native
+          false, // no wait
+        );
+        this.displayLoop.setAdjustTimestampEnabled(false);
+
+        setTimeout(() => {
+          this.resizeScreen(canvas);
+          Module.setCanvasSize(canvas.offsetWidth, canvas.offsetHeight);
+          setTimeout(() => {
+            this.resizeScreen(canvas);
+          }, 1);
+        }, 50);
+
+        window.onresize = () => {
+          Module.setCanvasSize(canvas.offsetWidth, canvas.offsetHeight);
+          setTimeout(() => {
+            this.resizeScreen(canvas);
+          }, 1);
+        };
+
+        let exit = false;
+
+        // Start the display loop
+        this.displayLoop.start(() => {
+          try {
+            if (!exit) {
+              this.pollControls();
+              Module._emscripten_mainloop();
+            }
+          } catch (e) {
+            if (e.status === 1971) {
+              // Menu was displayed, should never happen (bad rom?)
+              app.exit(Resources.getText(TEXT_IDS.ERROR_UNKNOWN));
+              exit = true;
+            } else {
+              LOG.error(e);
+            }
+          }
+        });
+      }
     } catch (e) {
       LOG.error(e);
       app.exit(e);

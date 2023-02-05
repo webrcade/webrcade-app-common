@@ -40,6 +40,18 @@ import {
   RKey,
   EKey,
   SpaceKey,
+  ZeroKey,
+  OneKey,
+  TwoKey,
+  ThreeKey,
+  FourKey,
+  FiveKey,
+  SixKey,
+  SevenKey,
+  EightKey,
+  NineKey,
+  MinusKey,
+  EqualsKey,
 } from '../../../../images'
 
 import styles from './controls-style.scss'
@@ -129,6 +141,30 @@ export class ControlsTab extends EditorTab {
         return RKey;
       case 'KeyE':
         return EKey;
+      case 'Digit0':
+        return ZeroKey;
+      case 'Digit1':
+        return OneKey;
+      case 'Digit2':
+        return TwoKey;
+      case 'Digit3':
+        return ThreeKey;
+      case 'Digit4':
+        return FourKey;
+      case 'Digit5':
+        return FiveKey;
+      case 'Digit6':
+        return SixKey;
+      case 'Digit7':
+        return SevenKey;
+      case 'Digit8':
+        return EightKey;
+      case 'Digit9':
+        return NineKey;
+      case 'Minus':
+        return MinusKey;
+      case 'Equal':
+        return EqualsKey;
       default:
         return "";
     }

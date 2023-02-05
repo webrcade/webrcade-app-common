@@ -41,6 +41,18 @@ export const KCODES = {
   W: 'KeyW',
   X: 'KeyX',
   Z: 'KeyZ',
+  DIGIT_0: 'Digit0',
+  DIGIT_1: 'Digit1',
+  DIGIT_2: 'Digit2',
+  DIGIT_3: 'Digit3',
+  DIGIT_4: 'Digit4',
+  DIGIT_5: 'Digit5',
+  DIGIT_6: 'Digit6',
+  DIGIT_7: 'Digit7',
+  DIGIT_8: 'Digit8',
+  DIGIT_9: 'Digit9',
+  EQUAL: 'Equal',
+  MINUS: 'Minus',
   SHIFT_RIGHT: 'ShiftRight',
   SHIFT_LEFT: 'ShiftLeft',
   SPACE_BAR: 'Space',
@@ -314,6 +326,13 @@ export class Controllers {
 
     this.enabled = false;
     this.setEnabled(true);
+  }
+
+  addFakeKeyEvent(code, down) {
+    this.handleKeyEvent({
+      code: code,
+      preventDefault: () => {}
+    }, down);
   }
 
   keyDownListener = e => {

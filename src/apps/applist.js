@@ -4,6 +4,10 @@ import * as Genesis from './type/genesis';
 import * as Atari7800 from './type/7800';
 import * as Lynx from './type/lynx';
 import * as Nes from './type/nes';
+import * as Coleco from './type/coleco';
+
+// Whether to enable Atari 5200
+const enable5200 = false;
 
 const localIp = config.getLocalIp();
 const locGenesis = isDev() ? `http://${localIp}:3010` : 'app/genesis/';
@@ -20,6 +24,10 @@ const locN64 = isDev() ? `http://${localIp}:3065` : 'app/n64/';
 const locGba = isDev() ? `http://${localIp}:3070` : 'app/gba/';
 const locNeo = isDev() ? `http://${localIp}:3077` : 'app/neo/';
 const locMednafen = isDev() ? `http://${localIp}:3075` : 'app/mednafen/';
+const locColeco = isDev() ? `http://${localIp}:3303` : 'app/colem/';
+const loc5200 = isDev() ? `http://${localIp}:3304` : 'app/5200/';
+const locPcfx = isDev() ? `http://${localIp}:3305` : 'app/pcfx/';
+const locRetro5200 = isDev() ? `http://${localIp}:3306` : 'app/retro-a5200/';
 const locStandalone = isDev() ? `http://${localIp}:3080` : 'app/standalone/';
 
 const checkRom = app => {
@@ -36,7 +44,10 @@ const checkDiscs = app => {
 
 const APP_TYPE_KEYS = /*Object.freeze(*/{
   // Types
+  AT5200: "a5200",
   BEETLE_PSX: "beetle-psx",
+  BEETLE_PCFX: "beetle-pcfx",
+  COLEM: "colem",
   FBNEO_ARCADE: "fbneo-arcade",
   FBNEO_CAPCOM: "fbneo-capcom",
   FBNEO_KONAMI: "fbneo-konami",
@@ -56,8 +67,11 @@ const APP_TYPE_KEYS = /*Object.freeze(*/{
   MEDNAFEN_VB: "mednafen-vb",
   MEDNAFEN_WSC: "mednafen-wsc",
   MEDNAFEN_WS: "mednafen-ws",
+  PCFX: "pcfx",
   PRBOOM: "prboom",
   PSX: "psx",
+  RETRO_GENPLUSGX_SEGACD: "retro-genplusgx-segacd",
+  RETRO_PCE_FAST: "retro-pce-fast",
   SNES9X: "snes9x",
   VBA_M_GBA: "vba-m-gba",
   VBA_M_GB: "vba-m-gb",
@@ -68,6 +82,7 @@ const APP_TYPE_KEYS = /*Object.freeze(*/{
   ARCADE: "arcade",
   ARCADE_KONAMI: "arcade-konami",
   ARCADE_CAPCOM: "arcade-capcom",
+  COLECO: "coleco",
   DOOM: "doom",
   GBA: "gba",
   GB: "gb",
@@ -81,8 +96,6 @@ const APP_TYPE_KEYS = /*Object.freeze(*/{
   NGP: "ngp",
   PCE: "pce",
   PCECD: "pcecd",
-  RETRO_GENPLUSGX_SEGACD: "retro-genplusgx-segacd",
-  RETRO_PCE_FAST: "retro-pce-fast",
   SEGACD: "segacd",
   SG1000: 'sg1000',
   SGX: 'sgx',
@@ -254,6 +267,32 @@ const types = [{
     defaults: {
       rom: "",
       pal: false
+    }
+  }, {
+    key: APP_TYPE_KEYS.COLEM,
+    alias: APP_TYPE_KEYS.COLECO,
+    name: 'ColecoVision',
+    shortName: 'ColecoVision',
+    coreName: 'Colem',
+    location: locColeco,
+    background: 'images/app/colecovision-background.png',
+    thumbnail: 'images/app/colecovision-thumb.png',
+    validate: checkRom,
+    extensions: ['col'],
+    testMagic: Coleco.testMagic,
+    testMagicLast: true,
+    addProps: (feedProps, outProps) => {
+      const rom = feedProps.coleco_rom;
+      if (rom) {
+        outProps.coleco_rom = rom;
+      }
+    },
+    defaults: {
+      rom: "",
+      zoomLevel: 0,
+      descriptions: {},
+      mappings: {},
+      controlsMode: 0
     }
   }, {
     key: APP_TYPE_KEYS.GENPLUSGX_SMS,
@@ -535,6 +574,29 @@ const types = [{
       pad6button: false,
       mapRunSelect: false
     }
+  }, {
+    key: APP_TYPE_KEYS.BEETLE_PCFX,
+    alias: APP_TYPE_KEYS.PCFX,
+    name: 'NEC PC-FX',
+    shortName: 'NEC PC-FX',
+    coreName: 'Beetle PC-FX',
+    location: locPcfx,
+    background: 'images/app/pcfx-background.png',
+    thumbnail: 'images/app/pcfx-thumb.png',
+    validate: checkDiscs,
+    extensions: [],
+    slowExit: true,
+    addProps: (feedProps, outProps) => {
+      const bios = feedProps.pcfx_bios;
+      if (bios) {
+        outProps.pcfx_bios = bios;
+      }
+    },
+    defaults: {
+      discs: [],
+      uid: "",
+      zoomLevel: 0
+    }
   }
 ];
 
@@ -566,12 +628,41 @@ if (config.isPublicServer()) {
   addAlias(types, APP_TYPE_KEYS.DOOM, APP_TYPE_KEYS.PRBOOM);
 }
 
+if (enable5200) {
+  types.push({
+    key: APP_TYPE_KEYS.AT5200,
+    alias: APP_TYPE_KEYS.A5200,
+    name: 'Atari 5200',
+    coreName: 'A5200',
+    location: loc5200,
+    background: 'images/app/5200-background.png',
+    thumbnail: 'images/app/5200-thumb.png',
+    validate: checkRom,
+    extensions: ['a52'],
+    addProps: (feedProps, outProps) => {
+      const rom = feedProps.atari_rom;
+      if (rom) {
+        outProps.atari_rom = rom;
+      }
+    },
+    defaults: {
+      zoomLevel: 0,
+      rom: "",
+      // descriptions: {},
+      // mappings: {},
+      // controlsMode: 0
+    }
+  });
+  addAlias(types, APP_TYPE_KEYS.A5200, APP_TYPE_KEYS.AT5200);
+}
+
 // Aliases
 addAlias(types, APP_TYPE_KEYS.A2600, APP_TYPE_KEYS.JAVATARI);
 addAlias(types, APP_TYPE_KEYS.A7800, APP_TYPE_KEYS.JS7800);
 addAlias(types, APP_TYPE_KEYS.ARCADE, APP_TYPE_KEYS.FBNEO_ARCADE);
 addAlias(types, APP_TYPE_KEYS.ARCADE_CAPCOM, APP_TYPE_KEYS.FBNEO_CAPCOM);
 addAlias(types, APP_TYPE_KEYS.ARCADE_KONAMI, APP_TYPE_KEYS.FBNEO_KONAMI);
+addAlias(types, APP_TYPE_KEYS.COLECO, APP_TYPE_KEYS.COLEM);
 addAlias(types, APP_TYPE_KEYS.GBA, APP_TYPE_KEYS.VBA_M_GBA);
 addAlias(types, APP_TYPE_KEYS.GB, APP_TYPE_KEYS.VBA_M_GB);
 addAlias(types, APP_TYPE_KEYS.GBC, APP_TYPE_KEYS.VBA_M_GBC);
@@ -584,6 +675,7 @@ addAlias(types, APP_TYPE_KEYS.NGC, APP_TYPE_KEYS.MEDNAFEN_NGC);
 addAlias(types, APP_TYPE_KEYS.NGP, APP_TYPE_KEYS.MEDNAFEN_NGP);
 addAlias(types, APP_TYPE_KEYS.PCE, APP_TYPE_KEYS.MEDNAFEN_PCE);
 addAlias(types, APP_TYPE_KEYS.PCECD, APP_TYPE_KEYS.RETRO_PCE_FAST);
+addAlias(types, APP_TYPE_KEYS.PCFX, APP_TYPE_KEYS.BEETLE_PCFX);
 addAlias(types, APP_TYPE_KEYS.PSX, APP_TYPE_KEYS.BEETLE_PSX);
 addAlias(types, APP_TYPE_KEYS.SEGACD, APP_TYPE_KEYS.RETRO_GENPLUSGX_SEGACD);
 addAlias(types, APP_TYPE_KEYS.SG1000, APP_TYPE_KEYS.GENPLUSGX_SG);
@@ -656,6 +748,59 @@ const enableExperimentalApps = (b) => {
       }
     });
     addAlias(APP_TYPES, APP_TYPE_KEYS.N64, APP_TYPE_KEYS.PARALLEL_N64);
+  }
+
+  //
+  // Remove 5200
+  //
+
+  for (let i = 0; i < clone.length; i++) {
+    const t = clone[i];
+    if ((!APP_TYPE_KEYS.RETRO_A5200 || t.key !== APP_TYPE_KEYS.RETRO_A5200) &&
+        (!APP_TYPE_KEYS.A5200 || t.key !== APP_TYPE_KEYS.A5200)) {
+      APP_TYPES.push(t);
+    }
+  }
+
+  delete APP_TYPE_KEYS.RETRO_A5200;
+  delete APP_TYPE_KEYS.A5200;
+
+  //
+  // Add 5200
+  //
+
+  if (b) {
+    APP_TYPE_KEYS.RETRO_A5200 = "retro-5200";
+    APP_TYPE_KEYS.A5200 = "5200";
+
+    APP_TYPES.push({
+      key: APP_TYPE_KEYS.RETRO_A5200,
+      alias: APP_TYPE_KEYS.A5200,
+      name: 'Atari 5200',
+      coreName: 'Libretro A5200',
+      location: locRetro5200,
+      background: 'images/app/5200-background.png',
+      thumbnail: 'images/app/5200-thumb.png',
+      validate: checkRom,
+      extensions: ['a52'],
+      addProps: (feedProps, outProps) => {
+        const rom = feedProps.atari5200_rom;
+        if (rom) {
+          outProps.atari5200_rom = rom;
+        }
+      },
+      defaults: {
+        rom: "",
+        zoomLevel: 0,
+        swap: false,
+        analog: false,
+        twinStick: false,
+        descriptions: {},
+        mappings: {},
+      }
+    });
+    addAlias(types, APP_TYPE_KEYS.A5200, APP_TYPE_KEYS.RETRO_A5200);
+
   }
 }
 

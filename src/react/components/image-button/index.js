@@ -27,7 +27,7 @@ export class ImageButton extends Component {
 
     switch (e.type) {
       case GamepadEnum.A:
-        this.onClick();
+        this.onClick(e);
         break;
       case GamepadEnum.DOWN:
       case GamepadEnum.UP:
@@ -70,11 +70,23 @@ export class ImageButton extends Component {
 
   onClick = e => {
     const { onClick } = this.props;
-    if (onClick) onClick();
+    if (onClick) onClick(e);
   }
 
   onFocus = () => {
     this.setState({ focused: true });
+    const { onFocus } = this.props;
+    if (onFocus) onFocus();
+  }
+
+  onMouseEnter = () => {
+    const { onMouseEnter } = this.props;
+    if (onMouseEnter) onMouseEnter();
+  }
+
+  onMouseLeave = () => {
+    const { onMouseLeave } = this.props;
+    if (onMouseLeave) onMouseLeave();
   }
 
   onBlur = () => {
@@ -117,6 +129,8 @@ export class ImageButton extends Component {
         ref={(button) => { this.button = button; }}
         onClick={this.onClick}
         onFocus={this.onFocus}
+        onMouseEnter={this.onMouseEnter}
+        onMouseLeave={this.onMouseLeave}
         onBlur={this.onBlur}> {imgSrc ?
           <img alt={label} src={focused && hoverImgSrc ? hoverImgSrc : imgSrc}></img> : null}
         <div>{label}</div>

@@ -10,6 +10,9 @@ import { FetchAppData } from '../../../../app';
 import { Resources } from '../../../../resources';
 import { UrlUtil } from '../../../../util';
 import { WebrcadeApp } from '..';
+import { AppRegistry } from "../../../../apps";
+import { romNameScorer } from "../../../../zip";
+import { Unzip } from "../../../../zip";
 import * as LOG  from '../../../../log';
 import { TEXT_IDS } from '../../../../resources';
 
@@ -26,6 +29,14 @@ export class WebrcadeRetroApp extends WebrcadeApp {
 
   createEmulator(app, isDebug) {
     throw "createEmulator is not implemented.";
+  }
+
+  isDiscBased() {
+    return true;
+  }
+
+  isBiosRequired() {
+    return true;
   }
 
   getBiosMap() {
@@ -156,7 +167,7 @@ export class WebrcadeRetroApp extends WebrcadeApp {
   start(discIndex) {
     setMessageAnchorId('canvas');
 
-    const { bios, discs, emulator, uid, ModeEnum } = this;
+    const { appProps, bios, discs, emulator, ModeEnum } = this;
 
     this.setState({ mode: ModeEnum.LOADING });
 
@@ -165,27 +176,60 @@ export class WebrcadeRetroApp extends WebrcadeApp {
       let frontend = null;
       let extension = null;
 
-      const discUrl = discs[discIndex];
-      const fad = new FetchAppData(discUrl);
+      let fad = null;
+      let discUrl = null;
+
+      let exts = null;
+      let extsNotUnique = null;
+
+      const type = appProps.type;
+
+      if (this.isDiscBased()) {
+        discUrl = discs[discIndex];
+        fad = new FetchAppData(discUrl);
+      } else {
+        exts = AppRegistry.instance.getExtensions(
+          type, true, false
+        );
+        extsNotUnique = AppRegistry.instance.getExtensions(
+          type, true, true
+        );
+        fad = new FetchAppData(this.rom);
+      }
 
       // Load Emscripten and ROM binaries
       settings
         .load()
         .then(() => emulator.loadEmscriptenModule(this.canvas))
-        .then(() => this.fetchBios(bios))
-        .then((b) => {
-          biosBuffers = b;
-        })
-        // .then(() => settings.setBilinearFilterEnabled(true))
-        // .then(() => settings.setVsyncEnabled(false))
+        .then(() => { return this.isBiosRequired() ? this.fetchBios(bios) : null; })
+        .then((b) => { biosBuffers = b; })
         .then(() => fad.fetch())
         .then((response) => {
-          extension = this.getExtension(discUrl, fad, response);
+          if (this.isDiscBased()) {
+            extension = this.getExtension(discUrl, fad, response);
+          }
           return response;
         })
-        .then((response) => this.fetchResponseBuffer(response))
+        .then((response) => {
+          if (this.isDiscBased()) {
+            return this.fetchResponseBuffer(response)
+          } else {
+            let romBlob = null;
+            const uz = new Unzip().setDebug(this.isDebug());
+            return response.blob()
+              .then((blob) => uz.unzip(blob, extsNotUnique, exts, romNameScorer))
+              .then((blob) => {
+                romBlob = blob;
+                return blob;
+              })
+              .then((blob) => AppRegistry.instance.getMd5(blob, type))
+              .then((md5) => { this.uid = md5; })
+              .then(() => new Response(romBlob).arrayBuffer())
+              .then((buffer) =>  new Uint8Array(buffer))
+          }
+        })
         .then((bytes) => {
-          emulator.setRoms(uid, frontend, biosBuffers, bytes, extension);
+          emulator.setRoms(this.uid, frontend, biosBuffers, bytes, extension);
           return bytes;
         })
         .then(() =>
@@ -215,16 +259,23 @@ export class WebrcadeRetroApp extends WebrcadeApp {
       try {
         this.emulator = this.createEmulator(this, this.isDebug());
 
-        // Get the uid
-        this.uid = appProps.uid;
-        if (!this.uid)
-          throw new Error('A unique identifier was not found for the game.');
+        if (this.isDiscBased()) {
+          // Get the uid
+          this.uid = appProps.uid;
+          if (!this.uid)
+            throw new Error('A unique identifier was not found for the game.');
 
-        // Get the discs location that was specified
-        this.discs = appProps.discs;
-        if (this.discs) this.discs = removeEmptyArrayItems(this.discs);
-        if (!this.discs || this.discs.length === 0)
-          throw new Error('A disc was not specified.');
+          // Get the discs location that was specified
+          this.discs = appProps.discs;
+          if (this.discs) this.discs = removeEmptyArrayItems(this.discs);
+          if (!this.discs || this.discs.length === 0)
+            throw new Error('A disc was not specified.');
+        } else {
+          // Get the ROM location that was specified
+          const rom = appProps.rom;
+          if (!rom) throw new Error('A ROM file was not specified.');
+          this.rom = rom;
+        }
 
         this.bios = this.getBiosUrls(appProps);
         if (this.bios && !Array.isArray(this.bios)) {
@@ -232,10 +283,10 @@ export class WebrcadeRetroApp extends WebrcadeApp {
         }
 
         if (this.bios) this.bios = removeEmptyArrayItems(this.bios);
-        if (!this.bios || this.bios.length === 0)
+        if (this.isBiosRequired() && (!this.bios || this.bios.length === 0))
           throw new Error('BIOS file(s) were not specified.');
 
-        if (this.discs.length > 1) {
+        if (this.isDiscBased() && this.discs.length > 1) {
           this.setState({ mode: this.MODE_DISC_SELECT });
         } else {
           this.start(0);
