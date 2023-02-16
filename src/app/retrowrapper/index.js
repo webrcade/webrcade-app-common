@@ -247,6 +247,7 @@ export class RetroAppWrapper extends AppWrapper {
           FS.mkdir('/home/web_user/retroarch/system');
           FS.mkdir('/home/web_user/retroarch/userdata');
           FS.mkdir('/home/web_user/retroarch/userdata/system');
+          FS.mkdir('/home/web_user/retroarch/userdata/system/neocd');
           FS.mkdir('/home/web_user/retroarch/userdata/saves');
           FS.mkdir('/home/web_user/retroarch/userdata/states');
         },
