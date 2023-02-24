@@ -29,11 +29,18 @@ const loc5200 = isDev() ? `http://${localIp}:3304` : 'app/5200/';
 const locPcfx = isDev() ? `http://${localIp}:3305` : 'app/pcfx/';
 const locRetro5200 = isDev() ? `http://${localIp}:3306` : 'app/retro-a5200/';
 const locRetroNeocd = isDev() ? `http://${localIp}:3307` : 'app/retro-neocd/';
+const locQuake = isDev() ? `http://${localIp}:3308` : 'app/quake/';
 const locStandalone = isDev() ? `http://${localIp}:3080` : 'app/standalone/';
 
 const checkRom = app => {
   if (app.props === undefined || isEmptyString(app.props.rom)) {
     throw new Error("Missing 'rom' property");
+  }
+}
+
+const checkArchive = app => {
+  if (app.props === undefined || isEmptyString(app.props.archive)) {
+    throw new Error("Missing 'archive' property");
   }
 }
 
@@ -75,6 +82,7 @@ const APP_TYPE_KEYS = /*Object.freeze(*/{
   RETRO_PCE_FAST: "retro-pce-fast",
   RETRO_NEOCD: "retro-neocd",
   SNES9X: "snes9x",
+  TYRQUAKE: "tyrquake",
   VBA_M_GBA: "vba-m-gba",
   VBA_M_GB: "vba-m-gb",
   VBA_M_GBC: "vba-m-gbc",
@@ -99,6 +107,7 @@ const APP_TYPE_KEYS = /*Object.freeze(*/{
   NGP: "ngp",
   PCE: "pce",
   PCECD: "pcecd",
+  QUAKE: "quake",
   SEGACD: "segacd",
   SG1000: 'sg1000',
   SGX: 'sgx',
@@ -626,6 +635,23 @@ const types = [{
       uid: "",
       zoomLevel: 0
     }
+  }, {
+    key: APP_TYPE_KEYS.TYRQUAKE,
+    alias: APP_TYPE_KEYS.QUAKE,
+    name: 'Quake',
+    coreName: 'TyrQuake',
+    location: locQuake,
+    background: 'images/app/quake-background.png',
+    thumbnail: 'images/app/quake-thumb.png',
+    validate: checkArchive,
+    extensions: [],
+    defaults: {
+      archive: "",
+      wadType: 0,
+      wadPath: "",
+      uid: "",
+      zoomLevel: 0
+    }
   }
 ];
 
@@ -707,6 +733,7 @@ addAlias(types, APP_TYPE_KEYS.PCE, APP_TYPE_KEYS.MEDNAFEN_PCE);
 addAlias(types, APP_TYPE_KEYS.PCECD, APP_TYPE_KEYS.RETRO_PCE_FAST);
 addAlias(types, APP_TYPE_KEYS.PCFX, APP_TYPE_KEYS.BEETLE_PCFX);
 addAlias(types, APP_TYPE_KEYS.PSX, APP_TYPE_KEYS.BEETLE_PSX);
+addAlias(types, APP_TYPE_KEYS.QUAKE, APP_TYPE_KEYS.TYRQUAKE);
 addAlias(types, APP_TYPE_KEYS.SEGACD, APP_TYPE_KEYS.RETRO_GENPLUSGX_SEGACD);
 addAlias(types, APP_TYPE_KEYS.SG1000, APP_TYPE_KEYS.GENPLUSGX_SG);
 addAlias(types, APP_TYPE_KEYS.SGX, APP_TYPE_KEYS.MEDNAFEN_SGX);

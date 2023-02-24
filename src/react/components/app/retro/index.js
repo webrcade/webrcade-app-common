@@ -35,6 +35,10 @@ export class WebrcadeRetroApp extends WebrcadeApp {
     return true;
   }
 
+  isArchiveBased() {
+    return false;
+  }
+
   isBiosRequired() {
     return true;
   }
@@ -187,7 +191,9 @@ export class WebrcadeRetroApp extends WebrcadeApp {
       if (this.isDiscBased()) {
         discUrl = discs[discIndex];
         fad = new FetchAppData(discUrl);
-      } else {
+      } else if (this.isArchiveBased()) {
+        fad = new FetchAppData(this.archive);
+      }else {
         exts = AppRegistry.instance.getExtensions(
           type, true, false
         );
@@ -211,7 +217,7 @@ export class WebrcadeRetroApp extends WebrcadeApp {
           return response;
         })
         .then((response) => {
-          if (this.isDiscBased()) {
+          if (this.isDiscBased() || this.isArchiveBased()) {
             return this.fetchResponseBuffer(response)
           } else {
             let romBlob = null;
@@ -225,7 +231,7 @@ export class WebrcadeRetroApp extends WebrcadeApp {
               .then((blob) => AppRegistry.instance.getMd5(blob, type))
               .then((md5) => { this.uid = md5; })
               .then(() => new Response(romBlob).arrayBuffer())
-              .then((buffer) =>  new Uint8Array(buffer))
+              .then((buffer) => new Uint8Array(buffer))
           }
         })
         .then((bytes) => {
@@ -259,17 +265,23 @@ export class WebrcadeRetroApp extends WebrcadeApp {
       try {
         this.emulator = this.createEmulator(this, this.isDebug());
 
-        if (this.isDiscBased()) {
+        if (this.isDiscBased() || this.isArchiveBased()) {
           // Get the uid
           this.uid = appProps.uid;
           if (!this.uid)
             throw new Error('A unique identifier was not found for the game.');
 
-          // Get the discs location that was specified
-          this.discs = appProps.discs;
-          if (this.discs) this.discs = removeEmptyArrayItems(this.discs);
-          if (!this.discs || this.discs.length === 0)
-            throw new Error('A disc was not specified.');
+          if (this.isDiscBased()) {
+            // Get the discs location that was specified
+            this.discs = appProps.discs;
+            if (this.discs) this.discs = removeEmptyArrayItems(this.discs);
+            if (!this.discs || this.discs.length === 0)
+              throw new Error('A disc was not specified.');
+          } else {
+            this.archive = appProps.archive;
+            if (!this.archive)
+              throw new Error('An archive file was not specified.');
+          }
         } else {
           // Get the ROM location that was specified
           const rom = appProps.rom;
@@ -338,7 +350,7 @@ export class WebrcadeRetroApp extends WebrcadeApp {
   }
 
   render() {
-    const { errorMessage, loadingMessage, mode } = this.state;
+    const { errorMessage, loadingMessage, statusMessage, mode } = this.state;
     const { ModeEnum, MODE_DISC_SELECT } = this;
 
     return (
@@ -347,7 +359,7 @@ export class WebrcadeRetroApp extends WebrcadeApp {
         {mode === MODE_DISC_SELECT && this.discs ? (
           <DiscSelectionEditor app={this} />
         ) : null}
-        {mode === ModeEnum.LOADING || (loadingMessage && !errorMessage)
+        {!statusMessage && (mode === ModeEnum.LOADING || (loadingMessage && !errorMessage))
           ? this.renderLoading()
           : null}
         {mode === ModeEnum.PAUSE ? this.renderPauseScreen() : null}
