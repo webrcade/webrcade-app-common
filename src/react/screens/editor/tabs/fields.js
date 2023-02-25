@@ -38,5 +38,16 @@ export class FieldControl extends Component {
   }
 }
 
+export class FieldSpan extends Component {
+  render() {
+    const { children } = this.props;
+    return (
+      <div className={styles['fields-screen-span']}>
+        {children}
+      </div>
+    )
+  }
+}
+
 export class FieldsTab extends EditorTab {
 }

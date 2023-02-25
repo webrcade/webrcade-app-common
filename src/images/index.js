@@ -60,6 +60,7 @@ const ArrowLeftKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark
 const ArrowRightKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/Arrow_Right_Key_Dark.png");
 const ArrowUpKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/Arrow_Up_Key_Dark.png");
 const ArrowDownKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/Arrow_Down_Key_Dark.png");
+const EscapeKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/Esc_Key_Dark.png");
 const EnterKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/Enter_Key_Dark.png");
 const ShiftKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/Shift_Key_Dark.png");
 const ControlKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/Ctrl_Key_Dark.png");
@@ -182,6 +183,7 @@ export {
   ArrowRightKey,
   ControlKey,
   EnterKey,
+  EscapeKey,
   ShiftKey,
   SpaceKey,
   AKey,
