@@ -42,6 +42,14 @@ export class RetroAppWrapper extends AppWrapper {
   OPT7 = 1 << 6;
   OPT8 = 1 << 7;
 
+  MOUSE_LEFT = 1;
+  MOUSE_MIDDLE = 1 << 1;
+  MOUSE_RIGHT = 1 << 2;
+  MOUSE_WHEEL_UP = 1 << 3;
+  MOUSE_WHEEL_DOWN = 1 << 4;
+  MOUSE_HORIZ_WHEEL_UP = 1 << 5;
+  MOUSE_HORIZ_WHEEL_DOWN = 1 << 6;
+
   constructor(app, debug = false) {
     super(app, debug);
 
@@ -55,10 +63,15 @@ export class RetroAppWrapper extends AppWrapper {
     this.saveStatePrefix = null;
     this.saveStatePath = null;
     this.prefs = this.createPrefs();
+    this.exiting = false;
   }
 
   RA_DIR = '/home/web_user/retroarch/';
   RA_SYSTEM_DIR = this.RA_DIR + 'system/';
+
+  setExiting(exiting) {
+    this.exiting = true;
+  }
 
   getScriptUrl() {
     throw "getScriptUrl() has not been implemented";
@@ -68,8 +81,16 @@ export class RetroAppWrapper extends AppWrapper {
     return this.app.isDiscBased();
   }
 
+  isArchiveBased() {
+    return this.app.isArchiveBased();
+  }
+
   getCustomStartHandler() {
     return null;
+  }
+
+  getExitOnLoopError() {
+    return false;
   }
 
   setRoms(uid, frontendArray, biosBuffers, romBytes, ext) {
@@ -112,6 +133,14 @@ export class RetroAppWrapper extends AppWrapper {
     return index;
   }
 
+  onArchiveFile(isDir, name, stats) {}
+
+  onArchiveFilesFinished() {}
+
+  getArchiveBinaryFileName() {
+    return "";
+  }
+
   pollControls() {
     const { analogMode, CONTROLLER_COUNT, controllers } = this;
 
@@ -119,13 +148,25 @@ export class RetroAppWrapper extends AppWrapper {
 
     const isAnalog = analogMode;
 
+    if (
+      controllers.isControlDown(0, CIDS.RTRIG) ||
+      controllers.isControlDown(0, CIDS.LTRIG) ||
+      controllers.isControlDown(0, CIDS.LANALOG) ||
+      controllers.isControlDown(0, CIDS.RANALOG)
+    ) {
+      this.escapeCount = this.escapeCount === -1 ? 0 : this.escapeCount + 1;
+    } else {
+      this.escapeCount = -1;
+    }
+
     for (let i = 0; i < CONTROLLER_COUNT; i++) {
       let input = 0;
 
+      const escapeOk = (this.escapeCount === -1 || this.escapeCount < 60);
+
       // Hack to reduce likelihood of accidentally bringing up menu
       if (
-        controllers.isControlDown(0 /*i*/, CIDS.ESCAPE) &&
-        (this.escapeCount === -1 || this.escapeCount < 60)
+        controllers.isControlDown(0 /*i*/, CIDS.ESCAPE) && escapeOk
       ) {
         if (this.pause(true)) {
           controllers
@@ -145,10 +186,10 @@ export class RetroAppWrapper extends AppWrapper {
       } else if (controllers.isControlDown(i, CIDS.LEFT, !isAnalog)) {
         input |= this.INP_LEFT;
       }
-      if (controllers.isControlDown(i, CIDS.START)) {
+      if (controllers.isControlDown(i, CIDS.START) && escapeOk) {
         input |= this.INP_START;
       }
-      if (controllers.isControlDown(i, CIDS.SELECT)) {
+      if (controllers.isControlDown(i, CIDS.SELECT) && escapeOk) {
         input |= this.INP_SELECT;
       }
       if (controllers.isControlDown(i, CIDS.A)) {
@@ -247,6 +288,7 @@ export class RetroAppWrapper extends AppWrapper {
           FS.mkdir('/home/web_user/retroarch/system');
           FS.mkdir('/home/web_user/retroarch/userdata');
           FS.mkdir('/home/web_user/retroarch/userdata/system');
+          FS.mkdir('/home/web_user/retroarch/userdata/system/neocd');
           FS.mkdir('/home/web_user/retroarch/userdata/saves');
           FS.mkdir('/home/web_user/retroarch/userdata/states');
         },
@@ -376,6 +418,61 @@ export class RetroAppWrapper extends AppWrapper {
     throw "resizeScreen() has not been implemented."
   }
 
+  onFrame() {}
+
+  async extractArchive() {
+    const CONTENT_DIR = "/content";
+    const FS = window.FS;
+    const BrowserFS = window.BrowserFS;
+    const myZipFs = new BrowserFS.FileSystem.ZipFS(new Buffer(this.romBytes));
+
+    FS.mkdir(CONTENT_DIR);
+
+    // Determine extracted size of files
+    let size = 0;
+    const recurse = (path, files, cb) => {
+      for (let i = 0; i < files.length; i++) {
+        const f = path + files[i];
+        const stats = myZipFs.statSync(f, true);
+        const isDir = stats.isDirectory();
+        if (isDir) {
+          cb(true, f, stats);
+          recurse(f + "/", myZipFs.readdirSync(f), cb);
+        } else {
+          cb(false, f, stats)
+        }
+      }
+    }
+    recurse("/", myZipFs.readdirSync("/"), (isDir, f, stats) => {
+      this.onArchiveFile(isDir, CONTENT_DIR + f);
+      if (!isDir) {
+        size += stats.size;
+      }
+    });
+    this.onArchiveFilesFinished();
+
+    // If less than threshold, extract and write files.
+    // Otherwise use the ZipFS directly (much slower, but uses less memory)
+    if (size < (256 * 1024 * 1024)) { // 256MB
+      recurse("/", myZipFs.readdirSync("/"), (isDir, f, stats) => {
+        const path = CONTENT_DIR + f;
+        if (isDir) {
+          FS.mkdir(path);
+        } else {
+          let data = myZipFs.readFileSync(f, null, FileFlag.getFileFlag("r"));
+          FS.writeFile(path, data);
+          data = null;
+        }
+      });
+    } else {
+      const MFS = new BrowserFS.FileSystem.MountableFileSystem();
+      MFS.mount(CONTENT_DIR, myZipFs);
+      BrowserFS.initialize(MFS);
+      const BFS = new BrowserFS.EmscriptenFS();
+      FS.mount(BFS, {root: `${CONTENT_DIR}/`}, `${CONTENT_DIR}/`);
+    }
+  }
+
   async onStart(canvas) {
     const { app, debug, game } = this;
     const { FS, Module } = window;
@@ -411,10 +508,19 @@ export class RetroAppWrapper extends AppWrapper {
         FS.writeFile(path, bytes);
       }
 
-      // Write rom file
-      let stream = FS.open(game, 'a');
-      FS.write(stream, this.romBytes, 0, this.romBytes.length, 0, true);
-      FS.close(stream);
+      // Prepare game content
+      if (this.isArchiveBased()) {
+        setTimeout(() => {
+          app.setState({ loadingMessage: 'Preparing files' });
+        }, 0);
+        // Extract the archive
+        await this.extractArchive();
+      } else {
+        // Write rom file
+        let stream = FS.open(game, 'a');
+        FS.write(stream, this.romBytes, 0, this.romBytes.length, 0, true);
+        FS.close(stream);
+      }
       this.romBytes = null;
 
       if (this.isDiscBased()) {
@@ -439,7 +545,8 @@ export class RetroAppWrapper extends AppWrapper {
         console.log(window.readyAudioContext);
 
         try {
-          Module.callMain(['-v', game]);
+          const name = this.isArchiveBased() ? this.getArchiveBinaryFileName() : game;
+          Module.callMain(['-v', name]);
         } catch (e) {
           LOG.error(e);
         }
@@ -482,6 +589,7 @@ export class RetroAppWrapper extends AppWrapper {
         };
 
         let exit = false;
+        let s = false;
 
         // Start the display loop
         this.displayLoop.start(() => {
@@ -489,19 +597,35 @@ export class RetroAppWrapper extends AppWrapper {
             if (!exit) {
               this.pollControls();
               Module._emscripten_mainloop();
+              this.onFrame();
             }
           } catch (e) {
             if (e.status === 1971) {
-              // Menu was displayed, should never happen (bad rom?)
-              app.exit(Resources.getText(TEXT_IDS.ERROR_UNKNOWN));
+              // Menu was displayed, should never happen (bad rom?
+              if (!this.exiting) {
+                app.exit(Resources.getText(TEXT_IDS.ERROR_UNKNOWN));
+              } else {
+                app.exit();
+              }
               exit = true;
             } else {
+              if (this.getExitOnLoopError()) {
+                app.exit(Resources.getText(TEXT_IDS.ERROR_UNKNOWN));
+                exit = true;
+              }
               LOG.error(e);
             }
+          }
+
+          if (!s) {
+            s = true;
+            app.setState({loadingMessage: null, loadingPercent: null});
           }
         });
       }
     } catch (e) {
+      window.readyAudioContext = null;
+      app.setState({loadingMessage: null, loadingPercent: null});
       LOG.error(e);
       app.exit(e);
     }

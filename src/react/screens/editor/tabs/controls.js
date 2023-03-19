@@ -21,6 +21,7 @@ import {
   ArrowLeftKey,
   ArrowRightKey,
   ControlKey,
+  EscapeKey,
   EnterKey,
   ShiftKey,
   AKey,
@@ -91,6 +92,8 @@ export class ControlsTab extends EditorTab {
 
   getKeyImage(key) {
     switch (key) {
+      case 'Escape':
+        return EscapeKey;
       case 'Enter':
         return EnterKey;
       case 'ControlLeft':

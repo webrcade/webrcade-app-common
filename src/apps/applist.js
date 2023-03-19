@@ -28,11 +28,19 @@ const locColeco = isDev() ? `http://${localIp}:3303` : 'app/colem/';
 const loc5200 = isDev() ? `http://${localIp}:3304` : 'app/5200/';
 const locPcfx = isDev() ? `http://${localIp}:3305` : 'app/pcfx/';
 const locRetro5200 = isDev() ? `http://${localIp}:3306` : 'app/retro-a5200/';
+const locRetroNeocd = isDev() ? `http://${localIp}:3307` : 'app/retro-neocd/';
+const locQuake = isDev() ? `http://${localIp}:3308` : 'app/quake/';
 const locStandalone = isDev() ? `http://${localIp}:3080` : 'app/standalone/';
 
 const checkRom = app => {
   if (app.props === undefined || isEmptyString(app.props.rom)) {
     throw new Error("Missing 'rom' property");
+  }
+}
+
+const checkArchive = app => {
+  if (app.props === undefined || isEmptyString(app.props.archive)) {
+    throw new Error("Missing 'archive' property");
   }
 }
 
@@ -72,7 +80,9 @@ const APP_TYPE_KEYS = /*Object.freeze(*/{
   PSX: "psx",
   RETRO_GENPLUSGX_SEGACD: "retro-genplusgx-segacd",
   RETRO_PCE_FAST: "retro-pce-fast",
+  RETRO_NEOCD: "retro-neocd",
   SNES9X: "snes9x",
+  TYRQUAKE: "tyrquake",
   VBA_M_GBA: "vba-m-gba",
   VBA_M_GB: "vba-m-gb",
   VBA_M_GBC: "vba-m-gbc",
@@ -91,11 +101,13 @@ const APP_TYPE_KEYS = /*Object.freeze(*/{
   GG: "gg",
   LNX: "lnx",
   NEOGEO: "neogeo",
+  NEOGEOCD: "neogeocd",
   NES: "nes",
   NGC: "ngc",
   NGP: "ngp",
   PCE: "pce",
   PCECD: "pcecd",
+  QUAKE: "quake",
   SEGACD: "segacd",
   SG1000: 'sg1000',
   SGX: 'sgx',
@@ -575,6 +587,32 @@ const types = [{
       mapRunSelect: false
     }
   }, {
+    key: APP_TYPE_KEYS.RETRO_NEOCD,
+    alias: APP_TYPE_KEYS.NEOGEOCD,
+    name: 'SNK Neo Geo CD',
+    shortName: 'SNK Neo Geo CD',
+    coreName: 'Libretro NeoCD',
+    location: locRetroNeocd,
+    background: 'images/app/neogeocd-background.png',
+    thumbnail: 'images/app/neogeocd-thumb.png',
+    validate: checkDiscs,
+    extensions: [],
+    slowExit: true,
+    addProps: (feedProps, outProps) => {
+      const bios = feedProps.neogeocd_bios;
+      if (bios) {
+        outProps.neogeocd_bios = bios;
+      }
+    },
+    defaults: {
+      discs: [],
+      uid: "",
+      zoomLevel: 0,
+      region: 0,
+      cdSpeedHack: true,
+      skipCdLoading: true
+    }
+  }, {
     key: APP_TYPE_KEYS.BEETLE_PCFX,
     alias: APP_TYPE_KEYS.PCFX,
     name: 'NEC PC-FX',
@@ -594,6 +632,23 @@ const types = [{
     },
     defaults: {
       discs: [],
+      uid: "",
+      zoomLevel: 0
+    }
+  }, {
+    key: APP_TYPE_KEYS.TYRQUAKE,
+    alias: APP_TYPE_KEYS.QUAKE,
+    name: 'Quake',
+    coreName: 'TyrQuake',
+    location: locQuake,
+    background: 'images/app/quake-background.png',
+    thumbnail: 'images/app/quake-thumb.png',
+    validate: checkArchive,
+    extensions: [],
+    defaults: {
+      archive: "",
+      wadType: 0,
+      wadPath: "",
       uid: "",
       zoomLevel: 0
     }
@@ -670,6 +725,7 @@ addAlias(types, APP_TYPE_KEYS.GENESIS, APP_TYPE_KEYS.GENPLUSGX_MD);
 addAlias(types, APP_TYPE_KEYS.GG, APP_TYPE_KEYS.GENPLUSGX_GG);
 addAlias(types, APP_TYPE_KEYS.LNX, APP_TYPE_KEYS.MEDNAFEN_LNX);
 addAlias(types, APP_TYPE_KEYS.NEOGEO, APP_TYPE_KEYS.FBNEO_NEOGEO);
+addAlias(types, APP_TYPE_KEYS.NEOGEOCD, APP_TYPE_KEYS.RETRO_NEOCD);
 addAlias(types, APP_TYPE_KEYS.NES, APP_TYPE_KEYS.FCEUX);
 addAlias(types, APP_TYPE_KEYS.NGC, APP_TYPE_KEYS.MEDNAFEN_NGC);
 addAlias(types, APP_TYPE_KEYS.NGP, APP_TYPE_KEYS.MEDNAFEN_NGP);
@@ -677,6 +733,7 @@ addAlias(types, APP_TYPE_KEYS.PCE, APP_TYPE_KEYS.MEDNAFEN_PCE);
 addAlias(types, APP_TYPE_KEYS.PCECD, APP_TYPE_KEYS.RETRO_PCE_FAST);
 addAlias(types, APP_TYPE_KEYS.PCFX, APP_TYPE_KEYS.BEETLE_PCFX);
 addAlias(types, APP_TYPE_KEYS.PSX, APP_TYPE_KEYS.BEETLE_PSX);
+addAlias(types, APP_TYPE_KEYS.QUAKE, APP_TYPE_KEYS.TYRQUAKE);
 addAlias(types, APP_TYPE_KEYS.SEGACD, APP_TYPE_KEYS.RETRO_GENPLUSGX_SEGACD);
 addAlias(types, APP_TYPE_KEYS.SG1000, APP_TYPE_KEYS.GENPLUSGX_SG);
 addAlias(types, APP_TYPE_KEYS.SGX, APP_TYPE_KEYS.MEDNAFEN_SGX);
