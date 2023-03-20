@@ -118,6 +118,7 @@ const PsxBackground = resolvePath("images/app/playstation-background.png");
 const CapcomBackground = resolvePath("images/app/capcom-background.png");
 const KonamiBackground = resolvePath("images/app/konami-background.png");
 const NeoGeoBackground = resolvePath("images/app/neogeo-background.png");
+const NeoGeoCdBackground = resolvePath("images/app/neogeocd-background.png");
 const ArcadeBackground = resolvePath("images/app/arcade-background.png");
 const N64Background = resolvePath("images/app/n64-background.png");
 const A5200Background = resolvePath("images/app/5200-background.png");
@@ -237,6 +238,7 @@ export {
   CapcomBackground,
   KonamiBackground,
   NeoGeoBackground,
+  NeoGeoCdBackground,
   ArcadeBackground,
   N64Background,
   ColecoVisionBackground,
