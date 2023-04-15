@@ -1,12 +1,10 @@
 import { registerAudioResume } from '../../audio/scriptprocessor';
-import { settings } from '../../settings';
 import { AppWrapper } from '../wrapper';
 import { Controller } from '../../input';
 import { Controllers } from '../../input';
 import { DefaultKeyCodeToControlMapping } from '../../input';
 import { DisplayLoop } from '../../display/loop'
 import { Resources } from '../../resources';
-import { RetroPrefs } from './prefs';
 import { CIDS } from '../../input';
 import { getScreenShot } from '../../display';
 import { TEXT_IDS } from '../../resources';
@@ -62,7 +60,6 @@ export class RetroAppWrapper extends AppWrapper {
     this.audioPlaying = false;
     this.saveStatePrefix = null;
     this.saveStatePath = null;
-    this.prefs = this.createPrefs();
     this.exiting = false;
   }
 
@@ -119,14 +116,6 @@ export class RetroAppWrapper extends AppWrapper {
 
   async onShowPauseMenu() {
     await this.saveState();
-  }
-
-  createPrefs() {
-    return new RetroPrefs(this);
-  }
-
-  getPrefs() {
-    return this.prefs;
   }
 
   getControllerIndex(index) {
@@ -405,10 +394,6 @@ export class RetroAppWrapper extends AppWrapper {
   applyGameSettings() {
   }
 
-  isBilinearFilterEnabled() {
-    return settings.isBilinearFilterEnabled() || this.prefs.isBilinearEnabled();
-  }
-
   updateBilinearFilter() {
     const enabled = this.isBilinearFilterEnabled();
     window.Module._wrc_enable_bilinear_filter(enabled ? 1 : 0);
@@ -495,8 +480,8 @@ export class RetroAppWrapper extends AppWrapper {
         throw new Error('The size is invalid (0 bytes).');
       }
 
-      // Load preferences
-      await this.prefs.load();
+      // // Load preferences
+      // await this.prefs.load();
 
       // Apply the game settings
       this.applyGameSettings();
