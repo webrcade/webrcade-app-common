@@ -77,7 +77,7 @@ export class AppSettingsEditor extends Component {
   }
 }
 
-class AppDisplaySettingsTab extends FieldsTab {
+export class AppDisplaySettingsTab extends FieldsTab {
   constructor() {
     super();
     this.bilinearRef = React.createRef();

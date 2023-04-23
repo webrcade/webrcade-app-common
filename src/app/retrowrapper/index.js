@@ -61,6 +61,7 @@ export class RetroAppWrapper extends AppWrapper {
     this.saveStatePrefix = null;
     this.saveStatePath = null;
     this.exiting = false;
+    this.mainStarted = false;
   }
 
   RA_DIR = '/home/web_user/retroarch/';
@@ -395,8 +396,27 @@ export class RetroAppWrapper extends AppWrapper {
   }
 
   updateBilinearFilter() {
+    if (!this.mainStarted) return;
     const enabled = this.isBilinearFilterEnabled();
     window.Module._wrc_enable_bilinear_filter(enabled ? 1 : 0);
+  }
+
+
+  isForceAspectRatio() {
+    return this.getScreenSize() === this.SS_NATIVE;
+  }
+
+  updateScreenSize() {
+    if (!this.mainStarted) return;
+
+    try {
+      const enabled = this.isForceAspectRatio();
+      window.Module._wrc_force_aspect_ratio(enabled ? 1 : 0);
+    } catch (e) {
+      LOG.info("Unable to invoke _wrc_force_aspect_ratio.");
+    }
+
+    super.updateScreenSize();
   }
 
   resizeScreen(canvas) {
@@ -535,6 +555,9 @@ export class RetroAppWrapper extends AppWrapper {
         } catch (e) {
           LOG.error(e);
         }
+
+        // Mark that main has been started
+        this.mainStarted = true;
 
         // Bilinear filter
         if (this.isBilinearFilterEnabled()) {
