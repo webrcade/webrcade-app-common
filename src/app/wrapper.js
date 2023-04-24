@@ -59,7 +59,7 @@ export class AppWrapper {
   }
 
   getScreenSize() {
-    return this.SS_NATIVE;
+    return settings.getScreenSize();
   }
 
   isScreenRotated() {
