@@ -9,6 +9,7 @@ import { VisibilityChangeMonitor } from '../display/visibilitymonitor.js'
 import { SaveManager } from './saves'
 import { showMessage } from '../react/components/message'
 import { AppPrefs } from './prefs'
+import { SCREEN_SIZES } from '../settings'
 
 export class AppWrapper {
   constructor(app, debug = false) {
@@ -45,10 +46,6 @@ export class AppWrapper {
     };
   }
 
-  SS_NATIVE = "native";
-  SS_16_9 = "16:9";
-  SS_FILL = "fill";
-
   isBilinearFilterEnabled() {
     return settings.isBilinearFilterEnabled() || this.prefs.isBilinearEnabled();
   }
@@ -59,7 +56,8 @@ export class AppWrapper {
   }
 
   getScreenSize() {
-    return settings.getScreenSize();
+    const size = this.prefs.getScreenSize();
+    return size === SCREEN_SIZES.SS_DEFAULT ? settings.getScreenSize() : size;
   }
 
   isScreenRotated() {
@@ -70,10 +68,10 @@ export class AppWrapper {
     let fill = false;
     let ar = this.getDefaultAspectRatio();
     const ss = this.getScreenSize();
-    if (ss === this.SS_16_9) {
+    if (ss === SCREEN_SIZES.SS_16_9) {
       ar = 16/9;
     }
-    if (ss === this.SS_FILL) {
+    if (ss === SCREEN_SIZES.SS_FILL) {
       ar = 1;
       fill = true;
     }

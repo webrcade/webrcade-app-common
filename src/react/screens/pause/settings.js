@@ -7,6 +7,7 @@ import { FieldRow } from '../editor/tabs';
 import { FieldLabel } from '../editor/tabs';
 import { FieldControl } from '../editor/tabs';
 import { TelevisionWhiteImage } from '../../../images';
+import { ScreenSizeSelect } from '../../components/select/screensizeselect';
 import { Switch } from '../../components/switch';
 import { WebrcadeContext } from '../../context/webrcadecontext';
 
@@ -27,6 +28,8 @@ export class AppSettingsEditor extends Component {
       values: {
         origBilinearMode: emulator.getPrefs().isBilinearEnabled(),
         bilinearMode: emulator.getPrefs().isBilinearEnabled(),
+        origScreenSize: emulator.getPrefs().getScreenSize(),
+        screenSize: emulator.getPrefs().getScreenSize()
       },
     });
   }
@@ -47,9 +50,18 @@ export class AppSettingsEditor extends Component {
       <EditorScreen
         showCancel={true}
         onOk={() => {
+          let change = false;
           if (values.origBilinearMode !== values.bilinearMode) {
             emulator.getPrefs().setBilinearEnabled(values.bilinearMode);
             emulator.updateBilinearFilter();
+            change = true;
+          }
+          if (values.origScreenSize !== values.screenSize) {
+            emulator.getPrefs().setScreenSize(values.screenSize);
+            emulator.updateScreenSize();
+            change = true;
+          }
+          if (change) {
             emulator.getPrefs().save();
           }
           onClose();
@@ -81,7 +93,11 @@ export class AppDisplaySettingsTab extends FieldsTab {
   constructor() {
     super();
     this.bilinearRef = React.createRef();
-    this.gridComps = [[this.bilinearRef]];
+    this.screenSizeRef = React.createRef();
+    this.gridComps = [
+      [this.screenSizeRef],
+      [this.bilinearRef]
+    ];
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -95,26 +111,42 @@ export class AppDisplaySettingsTab extends FieldsTab {
   }
 
   render() {
-    const { bilinearRef } = this;
+    const { bilinearRef, screenSizeRef } = this;
     const { focusGrid } = this.context;
-    const { setValues, values } = this.props;
+    const { setValues, values, hideBilinear } = this.props;
 
     return (
       <Fragment>
         <FieldRow>
-          <FieldLabel>Force bilinear filter</FieldLabel>
+          <FieldLabel>Screen size</FieldLabel>
           <FieldControl>
-            <Switch
-              ref={bilinearRef}
-              onPad={(e) => focusGrid.moveFocus(e.type, bilinearRef)}
-              onChange={(e) => {
-                setValues({ ...values, ...{ bilinearMode: e.target.checked } });
+            <ScreenSizeSelect
+              selectRef={screenSizeRef}
+              addDefault={true}
+              onChange={(value) => {
+                setValues({ ...values, ...{ screenSize: value }});
               }}
-              checked={values.bilinearMode}
+              value={values.screenSize}
+              onPad={e => focusGrid.moveFocus(e.type, screenSizeRef)}
             />
           </FieldControl>
         </FieldRow>
-      </Fragment>
+        {!hideBilinear && (
+          <FieldRow>
+            <FieldLabel>Force bilinear filter</FieldLabel>
+            <FieldControl>
+              <Switch
+                ref={bilinearRef}
+                onPad={(e) => focusGrid.moveFocus(e.type, bilinearRef)}
+                onChange={(e) => {
+                  setValues({ ...values, ...{ bilinearMode: e.target.checked } });
+                }}
+                checked={values.bilinearMode}
+              />
+            </FieldControl>
+          </FieldRow>
+        )}
+        </Fragment>
     );
   }
 }

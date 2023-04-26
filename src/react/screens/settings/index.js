@@ -16,6 +16,7 @@ import { LinkWhiteImage } from "../../../images";
 import { LinkOffBlackImage } from "../../../images";
 import { LinkOffWhiteImage } from "../../../images";
 import { Resources } from "../../../resources";
+import { ScreenSizeSelect } from "../../components/select/screensizeselect";
 import { Switch } from "../../components/switch";
 import { TelevisionWhiteImage } from "../../../images";
 import { TuneWhiteImage } from "../../../images";
@@ -31,6 +32,7 @@ export class SettingsEditor extends Component {
       bilinear: settings.isBilinearFilterEnabled(),
       cloudStorage: settings.isCloudStorageEnabled(),
       hideTitleBar: settings.getHideTitleBar(),
+      screenSize: settings.getScreenSize(),
       dbLinked: settings.getDbToken() !== null
     };
     this.state = {
@@ -67,6 +69,7 @@ export class SettingsEditor extends Component {
           settings.setBilinearFilterEnabled(values.bilinear);
           settings.setCloudStorageEnabled(values.cloudStorage);
           settings.setHideTitleBar(values.hideTitleBar);
+          settings.setScreenSize(values.screenSize);
           if (originalValues.expApps !== values.expApps) {
             ctx.showAlertScreen(true,
               Resources.getText(TEXT_IDS.RELOAD_EXP_APPS),
@@ -267,9 +270,11 @@ AdvancedSettingsTab.contextType = WebrcadeContext;
 class DisplaySettingsTab extends FieldsTab {
   constructor() {
     super();
+    this.screenSizeRef = React.createRef();
     this.verticalSyncRef = React.createRef();
     this.bilinearFilterRef = React.createRef();
     this.gridComps = [
+      [this.screenSizeRef],
       [this.verticalSyncRef],
       [this.bilinearFilterRef]
     ]
@@ -286,11 +291,26 @@ class DisplaySettingsTab extends FieldsTab {
   }
 
   render() {
-    const { bilinearFilterRef, verticalSyncRef } = this;
+    const { bilinearFilterRef, screenSizeRef, verticalSyncRef } = this;
     const { focusGrid } = this.context;
     const { setValues, values } = this.props;
 
     return ([
+      <FieldRow>
+        <FieldLabel>
+          {Resources.getText(TEXT_IDS.SCREEN_SIZE)}
+        </FieldLabel>
+        <FieldControl>
+          <ScreenSizeSelect
+            selectRef={screenSizeRef}
+            onChange={(value) => {
+              setValues({ ...values, ...{ screenSize: value }});
+            }}
+            value={values.screenSize}
+            onPad={e => focusGrid.moveFocus(e.type, screenSizeRef)}
+          />
+        </FieldControl>
+      </FieldRow>,
       <FieldRow>
         <FieldLabel>
           {Resources.getText(TEXT_IDS.VERTICAL_SYNC)}

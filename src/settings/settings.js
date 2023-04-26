@@ -3,7 +3,14 @@ import { storage } from "../storage/storage.js"
 import * as LOG from "../log";
 import { AppRegistry } from "../apps"
 
-class Settings extends BaseSettings {
+export const SCREEN_SIZES = {
+  SS_DEFAULT: "default",
+  SS_NATIVE: "native",
+  SS_16_9: "16:9",
+  SS_FILL: "fill"
+}
+
+export class Settings extends BaseSettings {
   constructor(storage) {
     super(storage);
     this.expApps = false;
@@ -12,7 +19,7 @@ class Settings extends BaseSettings {
     this.cloudStorage = false;
     this.hideTitleBar = false;
     this.dbToken = null;
-    this.screenSize = "native";
+    this.screenSize = SCREEN_SIZES.SS_NATIVE;
   }
 
   PREFIX = "wrcSettings.";

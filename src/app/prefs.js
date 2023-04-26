@@ -1,4 +1,5 @@
 import { BaseSettings } from "../settings";
+import { SCREEN_SIZES } from "../settings";
 
 export class AppPrefs extends BaseSettings {
   PREFS_PREFIX = 'prefs';
@@ -10,7 +11,9 @@ export class AppPrefs extends BaseSettings {
     const app = emu.getApp();
 
     this.bilinearPath = app.getStoragePath(`${this.PREFS_PREFIX}.forceBilinear`);
+    this.screenSizePath = app.getStoragePath(`${this.PREFS_PREFIX}.screenSize`);
     this.bilinearEnabled = false;
+    this.screenSize = SCREEN_SIZES.SS_DEFAULT;
   }
 
   async load() {
@@ -18,10 +21,16 @@ export class AppPrefs extends BaseSettings {
       this.bilinearPath,
       this.bilinearEnabled,
     );
+
+    this.screenSize = await super.loadValue(
+      this.screenSizePath,
+      this.screenSize,
+    );
   }
 
   async save() {
     await super.saveBool(this.bilinearPath, this.bilinearEnabled);
+    await super.saveValue(this.screenSizePath, this.screenSize);
   }
 
   isBilinearEnabled() {
@@ -30,5 +39,13 @@ export class AppPrefs extends BaseSettings {
 
   setBilinearEnabled(enabled) {
     this.bilinearEnabled = enabled;
+  }
+
+  getScreenSize() {
+    return this.screenSize;
+  }
+
+  setScreenSize(size) {
+    this.screenSize = size;
   }
 }
