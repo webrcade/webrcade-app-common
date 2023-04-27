@@ -68,16 +68,20 @@ export class AppWrapper {
     let fill = false;
     let ar = this.getDefaultAspectRatio();
     const ss = this.getScreenSize();
+    const canvas = this.canvas;
+    let rotated = this.isScreenRotated();
+
     if (ss === SCREEN_SIZES.SS_16_9) {
-      ar = 16/9;
+      ar = 16 / 9;
+      if (rotated) {
+        ar = 1 / ar;
+      }
     }
     if (ss === SCREEN_SIZES.SS_FILL) {
       ar = 1;
       fill = true;
     }
 
-    const canvas = this.canvas;
-    const rotated = this.isScreenRotated();
 
     if (ar !== 0) {
       // Determine the zoom level
