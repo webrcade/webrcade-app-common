@@ -17,7 +17,7 @@ class Arrow extends Component {
       <div
         className={styles['select-group-button'] + (focused ? (" " + styles['select-group-button__focused']) : "")}
         onClick={() => { onClick(); }}>
-        <img src={imgSrc}></img>
+        <img className={styles['select-group-button-img']} src={imgSrc}></img>
       </div>
     );
   }
@@ -47,11 +47,11 @@ export class Select extends Component {
       case GamepadEnum.RIGHT:
         this.onNext(value, options, onChange);
         break;
-      case GamepadEnum.A:
-        if (!this.onNext(value, options, onChange)) {
-          onChange(options[0].value);
-        }
-        break;
+      // case GamepadEnum.A:
+      //   if (!this.onNext(value, options, onChange)) {
+      //     onChange(options[0].value);
+      //   }
+      //   break;
       case GamepadEnum.DOWN:
       case GamepadEnum.UP:
       case GamepadEnum.LBUMP:
@@ -98,11 +98,11 @@ export class Select extends Component {
       case 'ArrowLeft':
         this.onPrevious(value, options, onChange);
         break;
-      case 'Enter':
-        if (!this.onNext(value, options, onChange)) {
-          onChange(options[0].value);
-        }
-        break;
+      // case 'Enter':
+      //   if (!this.onNext(value, options, onChange)) {
+      //     onChange(options[0].value);
+      //   }
+      //   break;
       default:
         break;
     }
@@ -166,6 +166,25 @@ export class Select extends Component {
     const { value, options, onChange } = this.props;
     const idx = this.getIndex(value, options)
 
+    // TODO: make a property that can be set
+    const width = "7.5rem";
+
+    const opts = [];
+    for (let i = 0; i < options.length; i++) {
+      opts.push(
+        <div
+          className={styles['select-group-text-inner-option']}
+          style={{
+            width: width,
+            maxWidth: width,
+            minWidth: width
+          }}
+        >
+          {options[i].label}
+        </div>
+      )
+    }
+
     return (
       <div
         className={styles['select']}
@@ -184,13 +203,22 @@ export class Select extends Component {
           </div>
           <div
             className={styles['select-group-text'] + (focused ? (" " + styles['select-group-text__focused'])  : "")}
-            onClick={() => {
-              if (!this.onNext(value, options, onChange)) {
-                onChange(options[0].value);
-              }
+            style={{
+              width: width,
+              maxWidth: width,
+              minWidth: width
             }}
+            // onClick={() => {
+            //   if (!this.onNext(value, options, onChange)) {
+            //     onChange(options[0].value);
+            //   }
+            // }}
           >
-            {idx !== -1 ? options[idx].label : ""}
+            <div
+              className={styles['select-group-text-inner']}
+              style={{transform: 'translateX(-' + (idx * 100) + '%)'}}>
+              {opts}
+            </div>
           </div>
           <div>
             <Arrow

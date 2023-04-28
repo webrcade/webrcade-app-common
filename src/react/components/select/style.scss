@@ -11,7 +11,9 @@
       margin: 0 .5rem 0 .5rem;
       white-space: nowrap;
       text-overflow: ellipsis;
-      width: 7.5rem;
+      // width: 7.5rem;
+      // max-width: 7.5rem;
+      // min-width: 7.5rem;
       overflow: hidden;
       text-align: center;
       cursor: pointer;
@@ -19,6 +21,23 @@
       &__focused {
         // background-color: blue;
         // font-weight: bold;
+      }
+
+      &-inner {
+        display: flex;
+        align-items: center;
+        margin: 0 auto;
+        transform: translateX(0%);
+        transition: transform .2s ease-in-out;
+
+        &-option {
+          // width: 7.5rem;
+          // min-width: 7.5rem;
+          // max-width: 7.5rem;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          overflow: hidden;
+        }
       }
     }
 
@@ -28,7 +47,7 @@
       border: 0;
       padding: .2rem;
       line-height: 1rem;
-      border-radius: .9rem;
+      border-radius: .5rem;
       color: white;
       cursor: pointer;
       outline: none;
@@ -36,9 +55,18 @@
       opacity: .7;
       background-color: #292929;
       // background-color: transparent;
+      // border: .2rem solid transparent;
+
+      &-img {
+        width: 2.2rem;
+        height: 2.2rem;
+      }
 
       &__focused {
         background-color: red;
+        // box-shadow: 0 0 .6rem #aaa;
+        // outline: none !important;
+        // border: .2rem solid red;
       }
 
       &:focus {
