@@ -12,12 +12,19 @@ import styles from './style.scss'
 
 class Arrow extends Component {
   render() {
-    const { imgSrc, onClick, focused } = this.props;
+    const { imgSrc, onClick, focused, disabled } = this.props;
     return (
       <div
-        className={styles['select-group-button'] + (focused ? (" " + styles['select-group-button__focused']) : "")}
+        className={
+            styles['select-group-button'] +
+            (focused ? (" " + styles['select-group-button__focused']) : "") +
+            (disabled ? (" " + styles['select-group-button__disabled']) : "")
+          }
         onClick={() => { onClick(); }}>
-        <img className={styles['select-group-button-img']} src={imgSrc}></img>
+        <img
+          className={styles['select-group-button-img'] + " " + (disabled ? styles['select-group-button-img__disabled'] : "")}
+          src={imgSrc}>
+        </img>
       </div>
     );
   }
@@ -47,11 +54,11 @@ export class Select extends Component {
       case GamepadEnum.RIGHT:
         this.onNext(value, options, onChange);
         break;
-      // case GamepadEnum.A:
-      //   if (!this.onNext(value, options, onChange)) {
-      //     onChange(options[0].value);
-      //   }
-      //   break;
+      case GamepadEnum.A:
+        if (!this.onNext(value, options, onChange)) {
+          onChange(options[0].value);
+        }
+        break;
       case GamepadEnum.DOWN:
       case GamepadEnum.UP:
       case GamepadEnum.LBUMP:
@@ -98,11 +105,11 @@ export class Select extends Component {
       case 'ArrowLeft':
         this.onPrevious(value, options, onChange);
         break;
-      // case 'Enter':
-      //   if (!this.onNext(value, options, onChange)) {
-      //     onChange(options[0].value);
-      //   }
-      //   break;
+      case 'Enter':
+        if (!this.onNext(value, options, onChange)) {
+          onChange(options[0].value);
+        }
+        break;
       default:
         break;
     }
@@ -199,6 +206,7 @@ export class Select extends Component {
               focused={focused}
               imgSrc={ChevronLeftWhiteImage}
               onClick={() => {this.onPrevious(value, options, onChange)}}
+              disabled={idx === 0}
             />
           </div>
           <div
@@ -208,11 +216,11 @@ export class Select extends Component {
               maxWidth: width,
               minWidth: width
             }}
-            // onClick={() => {
-            //   if (!this.onNext(value, options, onChange)) {
-            //     onChange(options[0].value);
-            //   }
-            // }}
+            onClick={() => {
+              if (!this.onNext(value, options, onChange)) {
+                onChange(options[0].value);
+              }
+            }}
           >
             <div
               className={styles['select-group-text-inner']}
@@ -225,6 +233,7 @@ export class Select extends Component {
               focused={focused}
               imgSrc={ChevronRightWhiteImage}
               onClick={() => {this.onNext(value, options, onChange)}}
+              disabled={idx === (options.length - 1)}
             />
           </div>
         </div>

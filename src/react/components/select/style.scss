@@ -60,6 +60,10 @@
       &-img {
         width: 2.2rem;
         height: 2.2rem;
+
+        &__disabled {
+          opacity: .4;
+        }
       }
 
       &__focused {
@@ -89,6 +93,24 @@
         &:hover:focus {
           opacity: 1;
           // background-color: #191919;
+        }
+      }
+
+      &__disabled {
+        @media (hover) {
+          &:hover {
+            // outline: none;
+            // background-color: #292929;
+            cursor: default;
+            opacity: .7;
+            transition: 0;
+            transform: scale(1);
+          }
+
+          &:hover:focus {
+            opacity: .7;
+            // background-color: #191919;
+          }
         }
       }
 
