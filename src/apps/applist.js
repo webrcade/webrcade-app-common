@@ -30,6 +30,7 @@ const locPcfx = isDev() ? `http://${localIp}:3305` : 'app/pcfx/';
 const locRetro5200 = isDev() ? `http://${localIp}:3306` : 'app/retro-a5200/';
 const locRetroNeocd = isDev() ? `http://${localIp}:3307` : 'app/retro-neocd/';
 const locQuake = isDev() ? `http://${localIp}:3308` : 'app/quake/';
+// const locRetroParallelN64 = isDev() ? `http://${localIp}:3309` : 'app/retro-n64/';
 const locStandalone = isDev() ? `http://${localIp}:3080` : 'app/standalone/';
 
 const checkRom = app => {
@@ -81,6 +82,7 @@ const APP_TYPE_KEYS = /*Object.freeze(*/{
   RETRO_GENPLUSGX_SEGACD: "retro-genplusgx-segacd",
   RETRO_PCE_FAST: "retro-pce-fast",
   RETRO_NEOCD: "retro-neocd",
+  RETRO_PARALLEL_N64: "retro-parallel-n64",
   SNES9X: "snes9x",
   TYRQUAKE: "tyrquake",
   VBA_M_GBA: "vba-m-gba",
@@ -120,18 +122,21 @@ const APP_TYPE_KEYS = /*Object.freeze(*/{
 
 const PCE_DEFAULTS = {
   rom: "",
-  pad6button: false
+  pad6button: false,
+  zoomLevel: 0,
 };
 
 const WS_DEFAULTS = {
   rom: "",
   rotated: false,
-  language: 0
+  language: 0,
+  zoomLevel: 0,
 }
 
 const NGP_DEFAULTS = {
   rom: "",
-  language: 0
+  language: 0,
+  zoomLevel: 0,
 }
 
 const ARCADE_DEFAULTS = {
@@ -139,7 +144,8 @@ const ARCADE_DEFAULTS = {
   additionalRoms: [],
   volAdjust: 0,
   samples: "",
-  playerOrder: "0:1:2:3"
+  playerOrder: "0:1:2:3",
+  zoomLevel: 0
 }
 
 const types = [{
@@ -165,6 +171,7 @@ const types = [{
       volAdjust: 0,
       bios: 0,
       forceAesMode: false,
+      zoomLevel: 0
     }
   }, {
     key: APP_TYPE_KEYS.FBNEO_ARCADE,
@@ -215,6 +222,7 @@ const types = [{
     extensions: ['smc', 'sfc', 'swc'],
     defaults: {
       rom: "",
+      zoomLevel: 0,
       pal: false,
       port2: 0
     }
@@ -230,7 +238,8 @@ const types = [{
     extensions: ['a26'],
     defaults: {
       rom: "",
-      swap: false
+      swap: false,
+      zoomLevel: 0,
     }
   }, {
     key: APP_TYPE_KEYS.JS7800,
@@ -245,7 +254,8 @@ const types = [{
     testMagic: Atari7800.testMagic,
     getMd5: Atari7800.getMd5,
     defaults: {
-      rom: ""
+      rom: "",
+      zoomLevel: 0,
     }
   }, {
     key: APP_TYPE_KEYS.GENPLUSGX_MD,
@@ -261,7 +271,8 @@ const types = [{
     defaults: {
       rom: "",
       pal: false,
-      pad3button: false
+      pad3button: false,
+      zoomLevel: 0
     }
   }, {
     key: APP_TYPE_KEYS.FCEUX,
@@ -278,7 +289,8 @@ const types = [{
     getMd5: Nes.getMd5,
     defaults: {
       rom: "",
-      pal: false
+      pal: false,
+      zoomLevel: 0
     }
   }, {
     key: APP_TYPE_KEYS.COLEM,
@@ -320,7 +332,8 @@ const types = [{
       rom: "",
       hwType: 0,
       pal: false,
-      ym2413: false
+      ym2413: false,
+      zoomLevel: 0
     }
   }, {
     key: APP_TYPE_KEYS.GENPLUSGX_SG,
@@ -334,7 +347,8 @@ const types = [{
     extensions: ['sg'],
     defaults: {
       rom: "",
-      pal: false
+      pal: false,
+      zoomLevel: 0
     }
   }, {
     key: APP_TYPE_KEYS.GENPLUSGX_GG,
@@ -347,7 +361,8 @@ const types = [{
     validate: checkRom,
     extensions: ['gg'],
     defaults: {
-      rom: ""
+      rom: "",
+      zoomLevel: 0
     }
   }, {
     key: APP_TYPE_KEYS.VBA_M_GBA,
@@ -367,7 +382,8 @@ const types = [{
       mirroring: false,
       saveType: 0,
       flashSize: 65536,
-      disableLookup: false
+      disableLookup: false,
+      zoomLevel: 0
     }
   }, {
     key: APP_TYPE_KEYS.VBA_M_GB,
@@ -385,7 +401,8 @@ const types = [{
       hwType: 0,
       colors: 0,
       palette: 0,
-      border: 0
+      border: 0,
+      zoomLevel: 0
     }
   }, {
     key: APP_TYPE_KEYS.VBA_M_GBC,
@@ -399,7 +416,8 @@ const types = [{
     validate: checkRom,
     extensions: ['gbc'],
     defaults: {
-      rom: ""
+      rom: "",
+      zoomLevel: 0
     }
   }, {
     key: APP_TYPE_KEYS.MEDNAFEN_PCE,
@@ -438,7 +456,8 @@ const types = [{
     extensions: ['vb'], // TODO: More?
     defaults: {
       rom: "",
-      pad6button: false
+      pad6button: false,
+      zoomLevel: 0,
     }
   }, {
     key: APP_TYPE_KEYS.MEDNAFEN_NGC,
@@ -509,7 +528,8 @@ const types = [{
     },
     defaults: {
       rom: "",
-      rotation: 0
+      rotation: 0,
+      zoomLevel: 0,
     }
   }, {
     key: APP_TYPE_KEYS.BEETLE_PSX,
@@ -652,7 +672,22 @@ const types = [{
       uid: "",
       zoomLevel: 0
     }
-  }
+  },
+  // {
+  //   key: APP_TYPE_KEYS.RETRO_PARALLEL_N64,
+  //   name: 'Nintendo 64',
+  //   coreName: 'Libretro paraLLEl N64',
+  //   location: locRetroParallelN64,
+  //   background: 'images/app/n64-background.png',
+  //   thumbnail: 'images/app/n64-thumb.png',
+  //   validate: checkRom,
+  //   extensions: ['n64', 'v64', 'z64'],
+  //   isDelayedExit: true,
+  //   defaults: {
+  //     rom: "",
+  //     zoomLevel: 0
+  //   }
+  // }
 ];
 
 const addAlias = (types, alias, typeKey) => {

@@ -1,4 +1,5 @@
 import * as LOG from '../log'
+import { settings } from '../settings'
 import { hideInactiveMouse } from '../input/hidemouse.js'
 import { Controller, Controllers, DefaultKeyCodeToControlMapping } from '../input/controls.js'
 import { ScriptAudioProcessor } from '../audio/scriptprocessor.js'
@@ -7,6 +8,8 @@ import { TouchEndListener } from '../input/touch/touchendlistener.js'
 import { VisibilityChangeMonitor } from '../display/visibilitymonitor.js'
 import { SaveManager } from './saves'
 import { showMessage } from '../react/components/message'
+import { AppPrefs } from './prefs'
+import { SCREEN_SIZES } from '../settings'
 
 export class AppWrapper {
   constructor(app, debug = false) {
@@ -26,6 +29,7 @@ export class AppWrapper {
     this.saveManager = new SaveManager(this, this.getShowMessageCallback());
     this.controllers = this.createControllers();
     this.storage = this.createStorage();
+    this.prefs = this.createPrefs();
     this.visibilityMonitor = this.createVisibilityMonitor();
     this.audioProcessor = this.createAudioProcessor();
     if (this.audioProcessor) {
@@ -40,6 +44,93 @@ export class AppWrapper {
     this.loadMessageCallback = (message) => {
       app.setStatusMessage(message);
     };
+  }
+
+  isBilinearFilterEnabled() {
+    return settings.isBilinearFilterEnabled() || this.prefs.isBilinearEnabled();
+  }
+
+  updateBilinearFilter() {
+    const enabled = this.isBilinearFilterEnabled();
+    this.canvas.style.setProperty("image-rendering", (enabled ? 'auto' :  'pixelated'), "important");
+  }
+
+  getScreenSize() {
+    const size = this.prefs.getScreenSize();
+    return size === SCREEN_SIZES.SS_DEFAULT ? settings.getScreenSize() : size;
+  }
+
+  isScreenRotated() {
+    return false;
+  }
+
+  updateScreenSize() {
+    let fill = false;
+    let ar = this.getDefaultAspectRatio();
+    const ss = this.getScreenSize();
+    const canvas = this.canvas;
+    let rotated = this.isScreenRotated();
+
+    if (ss === SCREEN_SIZES.SS_16_9) {
+      ar = 16 / 9;
+      if (rotated) {
+        ar = 1 / ar;
+      }
+    }
+    if (ss === SCREEN_SIZES.SS_FILL) {
+      ar = 1;
+      fill = true;
+    }
+
+
+    if (ar !== 0) {
+      // Determine the zoom level
+      let zoomLevel = 0;
+      if (this.getProps().zoomLevel) {
+        zoomLevel = this.getProps().zoomLevel;
+      }
+
+      const size = 96 + zoomLevel;
+
+      if (rotated) {
+        canvas.style.setProperty('width', `${size}vh`, 'important');
+        canvas.style.setProperty('height', `${size}vw`, 'important');
+      } else {
+        canvas.style.setProperty('width', `${size}vw`, 'important');
+        canvas.style.setProperty('height', `${size}vh`, 'important');
+      }
+
+      // Fill
+      if (fill) {
+        if (rotated) {
+          canvas.style.setProperty('max-width', `${size}vh`, 'important');
+          canvas.style.setProperty('max-height', `${size}vw`, 'important');
+        } else {
+          canvas.style.setProperty('max-width', `${size}vw`, 'important');
+          canvas.style.setProperty('max-height', `${size}vh`, 'important');
+        }
+      } else {
+        if (rotated) {
+          canvas.style.setProperty('max-width', `calc(${size}vw*${ar})`, 'important');
+          canvas.style.setProperty('max-height', `calc(${size}vh*${1/ar})`, 'important');
+        } else {
+          canvas.style.setProperty('max-width', `calc(${size}vh*${ar})`, 'important');
+          canvas.style.setProperty('max-height', `calc(${size}vw*${1/ar})`, 'important');
+        }
+      }
+    }
+  }
+
+  createPrefs() {
+    return new AppPrefs(this);
+  }
+
+  getPrefs() {
+    return this.prefs;
+  }
+
+  getDefaultAspectRatio() {
+    return 0;
   }
 
   setShowMessageEnabled(b) {
@@ -200,6 +291,15 @@ export class AppWrapper {
     if (canvas) {
       hideInactiveMouse(canvas);
     }
+
+    // Load preferences
+    await this.prefs.load();
+
+    // Force the bilinear filter
+    this.updateBilinearFilter();
+
+    // Update the screen size
+    this.updateScreenSize();
 
     await this.onStart(canvas);
 

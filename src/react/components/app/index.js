@@ -145,9 +145,9 @@ export class WebrcadeApp extends Component {
 
   getCanvasStyles() {
     const styles = {};
-    if (settings.isBilinearFilterEnabled()) {
-      styles.imageRendering = 'auto';
-    }
+    // if (settings.isBilinearFilterEnabled()) {
+    //   styles.imageRendering = 'auto';
+    // }
     return styles;
   }
 

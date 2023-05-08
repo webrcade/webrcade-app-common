@@ -1,12 +1,10 @@
 import { registerAudioResume } from '../../audio/scriptprocessor';
-import { settings } from '../../settings';
 import { AppWrapper } from '../wrapper';
 import { Controller } from '../../input';
 import { Controllers } from '../../input';
 import { DefaultKeyCodeToControlMapping } from '../../input';
 import { DisplayLoop } from '../../display/loop'
 import { Resources } from '../../resources';
-import { RetroPrefs } from './prefs';
 import { CIDS } from '../../input';
 import { getScreenShot } from '../../display';
 import { TEXT_IDS } from '../../resources';
@@ -62,8 +60,8 @@ export class RetroAppWrapper extends AppWrapper {
     this.audioPlaying = false;
     this.saveStatePrefix = null;
     this.saveStatePath = null;
-    this.prefs = this.createPrefs();
     this.exiting = false;
+    this.mainStarted = false;
   }
 
   RA_DIR = '/home/web_user/retroarch/';
@@ -119,14 +117,6 @@ export class RetroAppWrapper extends AppWrapper {
 
   async onShowPauseMenu() {
     await this.saveState();
-  }
-
-  createPrefs() {
-    return new RetroPrefs(this);
-  }
-
-  getPrefs() {
-    return this.prefs;
   }
 
   getControllerIndex(index) {
@@ -405,13 +395,28 @@ export class RetroAppWrapper extends AppWrapper {
   applyGameSettings() {
   }
 
-  isBilinearFilterEnabled() {
-    return settings.isBilinearFilterEnabled() || this.prefs.isBilinearEnabled();
-  }
-
   updateBilinearFilter() {
+    if (!this.mainStarted) return;
     const enabled = this.isBilinearFilterEnabled();
     window.Module._wrc_enable_bilinear_filter(enabled ? 1 : 0);
+  }
+
+
+  isForceAspectRatio() {
+    return this.getScreenSize() === this.SS_NATIVE;
+  }
+
+  updateScreenSize() {
+    if (!this.mainStarted) return;
+
+    try {
+      const enabled = this.isForceAspectRatio();
+      window.Module._wrc_force_aspect_ratio(enabled ? 1 : 0);
+    } catch (e) {
+      LOG.info("Unable to invoke _wrc_force_aspect_ratio.");
+    }
+
+    super.updateScreenSize();
   }
 
   resizeScreen(canvas) {
@@ -495,8 +500,8 @@ export class RetroAppWrapper extends AppWrapper {
         throw new Error('The size is invalid (0 bytes).');
       }
 
-      // Load preferences
-      await this.prefs.load();
+      // // Load preferences
+      // await this.prefs.load();
 
       // Apply the game settings
       this.applyGameSettings();
@@ -550,6 +555,9 @@ export class RetroAppWrapper extends AppWrapper {
         } catch (e) {
           LOG.error(e);
         }
+
+        // Mark that main has been started
+        this.mainStarted = true;
 
         // Bilinear filter
         if (this.isBilinearFilterEnabled()) {
