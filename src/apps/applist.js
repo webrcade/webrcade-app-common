@@ -652,8 +652,12 @@ const types = [{
     slowExit: true,
     addProps: (feedProps, outProps) => {
       const bios = feedProps.threedo_bios;
+      const fonts = feedProps.threedo_fonts;
       if (bios) {
         outProps.threedo_bios = bios;
+      }
+      if (fonts) {
+        outProps.threedo_fonts = fonts;
       }
     },
     defaults: {

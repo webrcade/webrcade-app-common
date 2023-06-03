@@ -39,6 +39,14 @@ export class RetroAppWrapper extends AppWrapper {
   OPT6 = 1 << 5;
   OPT7 = 1 << 6;
   OPT8 = 1 << 7;
+  OPT9 = 1 << 8;
+  OPT10 = 1 << 9;
+  OPT11 = 1 << 10;
+  OPT12 = 1 << 11;
+  OPT13 = 1 << 12;
+  OPT14 = 1 << 13;
+  OPT15 = 1 << 14;
+  OPT16 = 1 << 15;
 
   MOUSE_LEFT = 1;
   MOUSE_MIDDLE = 1 << 1;
