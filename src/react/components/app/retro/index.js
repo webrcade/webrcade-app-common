@@ -55,11 +55,11 @@ export class WebrcadeRetroApp extends WebrcadeApp {
     return null;
   }
 
-  async fetchBios(bios) {
+  async fetchBios(bios, biosMap = null, alternateBiosMap = null) {
     let biosBuffers = {};
 
-    const BIOS_MAP = this.getBiosMap();
-    const ALT_BIOS_MAP = this.getAlternateBiosMap();
+    const BIOS_MAP = biosMap ? biosMap : this.getBiosMap();
+    const ALT_BIOS_MAP = alternateBiosMap ? alternateBiosMap : this.getAlternateBiosMap();
 
     for (let i = 0; i < bios.length; i++) {
       const biosUrl = bios[i];

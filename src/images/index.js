@@ -95,6 +95,7 @@ const NineKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/9_Ke
 const MinusKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/Minus_Key_Dark.png");
 const EqualsKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/Equals_Key_Dark.png");
 
+const ThreedoBackground = resolvePath("images/app/3do-background.png");
 const NesBackground = resolvePath("images/app/nes-background.png");
 const SnesBackground = resolvePath("images/app/snes-background.png");
 const GbaBackground = resolvePath("images/app/gba-background.png");
@@ -245,6 +246,7 @@ export {
   ColecoController,
   A5200Controller,
   A5200Background,
+  ThreedoBackground,
 
   resolvePath as resolveImagePath
 }

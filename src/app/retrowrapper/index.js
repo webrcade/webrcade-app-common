@@ -39,6 +39,14 @@ export class RetroAppWrapper extends AppWrapper {
   OPT6 = 1 << 5;
   OPT7 = 1 << 6;
   OPT8 = 1 << 7;
+  OPT9 = 1 << 8;
+  OPT10 = 1 << 9;
+  OPT11 = 1 << 10;
+  OPT12 = 1 << 11;
+  OPT13 = 1 << 12;
+  OPT14 = 1 << 13;
+  OPT15 = 1 << 14;
+  OPT16 = 1 << 15;
 
   MOUSE_LEFT = 1;
   MOUSE_MIDDLE = 1 << 1;
@@ -280,6 +288,8 @@ export class RetroAppWrapper extends AppWrapper {
           FS.mkdir('/home/web_user/retroarch/userdata/system');
           FS.mkdir('/home/web_user/retroarch/userdata/system/neocd');
           FS.mkdir('/home/web_user/retroarch/userdata/saves');
+          FS.mkdir('/home/web_user/retroarch/userdata/saves/opera');
+          FS.mkdir('/home/web_user/retroarch/userdata/saves/opera/per_game');
           FS.mkdir('/home/web_user/retroarch/userdata/states');
         },
       };

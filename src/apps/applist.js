@@ -30,6 +30,8 @@ const locPcfx = isDev() ? `http://${localIp}:3305` : 'app/pcfx/';
 const locRetro5200 = isDev() ? `http://${localIp}:3306` : 'app/retro-a5200/';
 const locRetroNeocd = isDev() ? `http://${localIp}:3307` : 'app/retro-neocd/';
 const locQuake = isDev() ? `http://${localIp}:3308` : 'app/quake/';
+const locRetro3dO = isDev() ? `http://${localIp}:3311` : 'app/3do/';
+// const locRetroSaturn = isDev() ? `http://${localIp}:3312` : 'app/saturn/';
 // const locRetroParallelN64 = isDev() ? `http://${localIp}:3309` : 'app/retro-n64/';
 const locStandalone = isDev() ? `http://${localIp}:3080` : 'app/standalone/';
 
@@ -82,7 +84,9 @@ const APP_TYPE_KEYS = /*Object.freeze(*/{
   RETRO_GENPLUSGX_SEGACD: "retro-genplusgx-segacd",
   RETRO_PCE_FAST: "retro-pce-fast",
   RETRO_NEOCD: "retro-neocd",
+  RETRO_OPERA: "retro-opera",
   RETRO_PARALLEL_N64: "retro-parallel-n64",
+  // RETRO_YABAUSE: "retro-yabause",
   SNES9X: "snes9x",
   TYRQUAKE: "tyrquake",
   VBA_M_GBA: "vba-m-gba",
@@ -110,11 +114,13 @@ const APP_TYPE_KEYS = /*Object.freeze(*/{
   PCE: "pce",
   PCECD: "pcecd",
   QUAKE: "quake",
+  // SATURN: "saturn",
   SEGACD: "segacd",
   SG1000: 'sg1000',
   SGX: 'sgx',
   SMS: "sms",
   SNES: "snes",
+  THREEDO: "3do",
   VB: "vb",
   WSC: "wsc",
   WS: "ws"
@@ -633,6 +639,58 @@ const types = [{
       skipCdLoading: true
     }
   }, {
+    key: APP_TYPE_KEYS.RETRO_OPERA,
+    alias: APP_TYPE_KEYS.THREEDO,
+    name: '3DO',
+    shortName: '3DO',
+    coreName: 'Libretro Opera',
+    location: locRetro3dO,
+    background: 'images/app/3do-background.png',
+    thumbnail: 'images/app/3do-thumb.png',
+    validate: checkDiscs,
+    extensions: [],
+    slowExit: true,
+    addProps: (feedProps, outProps) => {
+      const bios = feedProps.threedo_bios;
+      const fonts = feedProps.threedo_fonts;
+      if (bios) {
+        outProps.threedo_bios = bios;
+      }
+      if (fonts) {
+        outProps.threedo_fonts = fonts;
+      }
+    },
+    defaults: {
+      discs: [],
+      uid: "",
+      zoomLevel: 0,
+      hack: 0
+    }
+  // }, {
+  //   key: APP_TYPE_KEYS.RETRO_YABAUSE,
+  //   alias: APP_TYPE_KEYS.SATURN,
+  //   name: 'Saturn',
+  //   shortName: 'Saturn',
+  //   coreName: 'Libretro Yabause',
+  //   location: locRetroSaturn,
+  //   background: 'images/app/3do-background.png',
+  //   thumbnail: 'images/app/3do-thumb.png',
+  //   validate: checkDiscs,
+  //   extensions: [],
+  //   slowExit: true,
+  //   addProps: (feedProps, outProps) => {
+  //     // const bios = feedProps.threedo_bios;
+  //     // if (bios) {
+  //     //   outProps.threedo_bios = bios;
+  //     // }
+  //   },
+  //   defaults: {
+  //     discs: [],
+  //     uid: "",
+  //     zoomLevel: 0,
+  //     // hack: 0
+  //   }
+  }, {
     key: APP_TYPE_KEYS.BEETLE_PCFX,
     alias: APP_TYPE_KEYS.PCFX,
     name: 'NEC PC-FX',
@@ -769,11 +827,13 @@ addAlias(types, APP_TYPE_KEYS.PCECD, APP_TYPE_KEYS.RETRO_PCE_FAST);
 addAlias(types, APP_TYPE_KEYS.PCFX, APP_TYPE_KEYS.BEETLE_PCFX);
 addAlias(types, APP_TYPE_KEYS.PSX, APP_TYPE_KEYS.BEETLE_PSX);
 addAlias(types, APP_TYPE_KEYS.QUAKE, APP_TYPE_KEYS.TYRQUAKE);
+// addAlias(types, APP_TYPE_KEYS.SATURN, APP_TYPE_KEYS.RETRO_YABAUSE);
 addAlias(types, APP_TYPE_KEYS.SEGACD, APP_TYPE_KEYS.RETRO_GENPLUSGX_SEGACD);
 addAlias(types, APP_TYPE_KEYS.SG1000, APP_TYPE_KEYS.GENPLUSGX_SG);
 addAlias(types, APP_TYPE_KEYS.SGX, APP_TYPE_KEYS.MEDNAFEN_SGX);
 addAlias(types, APP_TYPE_KEYS.SMS, APP_TYPE_KEYS.GENPLUSGX_SMS);
 addAlias(types, APP_TYPE_KEYS.SNES, APP_TYPE_KEYS.SNES9X);
+addAlias(types, APP_TYPE_KEYS.THREEDO, APP_TYPE_KEYS.RETRO_OPERA);
 addAlias(types, APP_TYPE_KEYS.VB, APP_TYPE_KEYS.MEDNAFEN_VB);
 addAlias(types, APP_TYPE_KEYS.WSC, APP_TYPE_KEYS.MEDNAFEN_WSC);
 addAlias(types, APP_TYPE_KEYS.WS, APP_TYPE_KEYS.MEDNAFEN_WS);
