@@ -95,6 +95,7 @@ const NineKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/9_Ke
 const MinusKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/Minus_Key_Dark.png");
 const EqualsKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/Equals_Key_Dark.png");
 
+const Atari2600Background = resolvePath("images/app/2600-background.png");
 const ThreedoBackground = resolvePath("images/app/3do-background.png");
 const NesBackground = resolvePath("images/app/nes-background.png");
 const SnesBackground = resolvePath("images/app/snes-background.png");
@@ -247,6 +248,7 @@ export {
   A5200Controller,
   A5200Background,
   ThreedoBackground,
+  Atari2600Background,
 
   resolvePath as resolveImagePath
 }

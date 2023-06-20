@@ -433,6 +433,18 @@ export class RetroAppWrapper extends AppWrapper {
     throw "resizeScreen() has not been implemented."
   }
 
+  createDisplayLoop(debug) {
+    const loop = new DisplayLoop(
+      60, // frame rate (ignored due to no wait)
+      true, // vsync
+      debug, // debug
+      true, // force native
+      false, // no wait
+    );
+    loop.setAdjustTimestampEnabled(false);
+    return loop;
+  }
+
   onFrame() {}
 
   async extractArchive() {
@@ -582,14 +594,7 @@ export class RetroAppWrapper extends AppWrapper {
           }, 50);
         }
 
-        this.displayLoop = new DisplayLoop(
-          60, // frame rate (ignored due to no wait)
-          true, // vsync
-          debug, // debug
-          true, // force native
-          false, // no wait
-        );
-        this.displayLoop.setAdjustTimestampEnabled(false);
+        this.displayLoop = this.createDisplayLoop(debug);
 
         setTimeout(() => {
           this.resizeScreen(canvas);
