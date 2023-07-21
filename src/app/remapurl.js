@@ -14,8 +14,8 @@ const CONTENT_REMAP_PREFIX = "https://raw.githubusercontent.com/webrcade/webrcad
 const remapDropbox = (urlLower, url) => {
   // Check for Dropbox
   if (urlLower.substring(0, DB_PREFIX.length) === DB_PREFIX) {
-    if (urlLower.includes("&rlkey=")) {
-      url = url.replace("?dl=0", "?dl=1");
+    if (urlLower.includes("&rlkey=") || urlLower.includes("?rlkey=")) {
+      url = url.replace("dl=0", "dl=1");
       LOG.info("Remapped dropbox url: '" + url + "'");
       return url;
     } else {

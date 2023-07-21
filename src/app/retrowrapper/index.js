@@ -139,6 +139,10 @@ export class RetroAppWrapper extends AppWrapper {
     return "";
   }
 
+  isEscapeHackEnabled() {
+    return true;
+  }
+
   pollControls() {
     const { analogMode, CONTROLLER_COUNT, controllers } = this;
 
@@ -160,7 +164,7 @@ export class RetroAppWrapper extends AppWrapper {
     for (let i = 0; i < CONTROLLER_COUNT; i++) {
       let input = 0;
 
-      const escapeOk = (this.escapeCount === -1 || this.escapeCount < 60);
+      const escapeOk = !this.isEscapeHackEnabled() || (this.escapeCount === -1 || this.escapeCount < 60);
 
       // Hack to reduce likelihood of accidentally bringing up menu
       if (

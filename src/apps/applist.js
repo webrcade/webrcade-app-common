@@ -263,6 +263,11 @@ const types = [{
       rom: "",
       swap: false,
       zoomLevel: 0,
+      port0: 0,
+      port1: 0,
+      paddleSensitivity: 0,
+      paddleCenter: 0,
+      paddleVertical: false,
     }
   }, {
     key: APP_TYPE_KEYS.JS7800,
