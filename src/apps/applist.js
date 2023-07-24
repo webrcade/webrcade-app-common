@@ -268,6 +268,7 @@ const types = [{
       paddleSensitivity: 0,
       paddleCenter: 0,
       paddleVertical: false,
+      paddleInverted: false,
     }
   }, {
     key: APP_TYPE_KEYS.JS7800,
@@ -632,7 +633,8 @@ const types = [{
       uid: "",
       zoomLevel: 0,
       pad6button: false,
-      mapRunSelect: false
+      mapRunSelect: false,
+      customBios: ""
     }
   }, {
     key: APP_TYPE_KEYS.RETRO_NEOCD,

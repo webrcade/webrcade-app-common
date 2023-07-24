@@ -1,5 +1,6 @@
 import React from "react";
 import UAParser from "ua-parser-js"
+import * as LOG from '../log';
 
 const isXbox = () => {
   const userAgent = navigator.userAgent.toLowerCase();
@@ -97,9 +98,29 @@ const isParentSameOrigin = () =>  {
   return false;
 }
 
+const isStoragePersisted = async () => {
+  return await navigator?.storage?.persisted();
+}
+
+const storagePersist = () => {
+  (async () => {
+    try {
+      if (!await isStoragePersisted()) {
+        LOG.info("Storage is not persisted long term.");
+        LOG.info("Result of requesting long term storage: " + await navigator?.storage?.persist());
+      } else {
+        LOG.info("Storage is persisted long term.")
+      }
+    } catch (e) {
+      LOG.error("Error requesting long term storage", e);
+    }
+  })();
+}
+
 export {
   isParentSameOrigin,
   isMacOs,
+  isStoragePersisted,
   isXbox,
   isIos,
   isMobileSafari,
@@ -108,5 +129,6 @@ export {
   isTouchSupported,
   addXboxFullscreenCallback,
   getXboxViewMessage,
+  storagePersist,
   UAParser
 }
