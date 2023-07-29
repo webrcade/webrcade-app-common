@@ -139,6 +139,10 @@ export class RetroAppWrapper extends AppWrapper {
     return "";
   }
 
+  isEscapeHackEnabled() {
+    return true;
+  }
+
   pollControls() {
     const { analogMode, CONTROLLER_COUNT, controllers } = this;
 
@@ -160,7 +164,7 @@ export class RetroAppWrapper extends AppWrapper {
     for (let i = 0; i < CONTROLLER_COUNT; i++) {
       let input = 0;
 
-      const escapeOk = (this.escapeCount === -1 || this.escapeCount < 60);
+      const escapeOk = !this.isEscapeHackEnabled() || (this.escapeCount === -1 || this.escapeCount < 60);
 
       // Hack to reduce likelihood of accidentally bringing up menu
       if (
@@ -433,6 +437,18 @@ export class RetroAppWrapper extends AppWrapper {
     throw "resizeScreen() has not been implemented."
   }
 
+  createDisplayLoop(debug) {
+    const loop = new DisplayLoop(
+      60, // frame rate (ignored due to no wait)
+      true, // vsync
+      debug, // debug
+      true, // force native
+      false, // no wait
+    );
+    loop.setAdjustTimestampEnabled(false);
+    return loop;
+  }
+
   onFrame() {}
 
   async extractArchive() {
@@ -582,14 +598,7 @@ export class RetroAppWrapper extends AppWrapper {
           }, 50);
         }
 
-        this.displayLoop = new DisplayLoop(
-          60, // frame rate (ignored due to no wait)
-          true, // vsync
-          debug, // debug
-          true, // force native
-          false, // no wait
-        );
-        this.displayLoop.setAdjustTimestampEnabled(false);
+        this.displayLoop = this.createDisplayLoop(debug);
 
         setTimeout(() => {
           this.resizeScreen(canvas);
