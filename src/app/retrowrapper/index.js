@@ -451,59 +451,6 @@ export class RetroAppWrapper extends AppWrapper {
 
   onFrame() {}
 
-  async extractArchive() {
-    const CONTENT_DIR = "/content";
-    const FS = window.FS;
-    const BrowserFS = window.BrowserFS;
-    const myZipFs = new BrowserFS.FileSystem.ZipFS(new Buffer(this.romBytes));
-
-    FS.mkdir(CONTENT_DIR);
-
-    // Determine extracted size of files
-    let size = 0;
-    const recurse = (path, files, cb) => {
-      for (let i = 0; i < files.length; i++) {
-        const f = path + files[i];
-        const stats = myZipFs.statSync(f, true);
-        const isDir = stats.isDirectory();
-        if (isDir) {
-          cb(true, f, stats);
-          recurse(f + "/", myZipFs.readdirSync(f), cb);
-        } else {
-          cb(false, f, stats)
-        }
-      }
-    }
-    recurse("/", myZipFs.readdirSync("/"), (isDir, f, stats) => {
-      this.onArchiveFile(isDir, CONTENT_DIR + f);
-      if (!isDir) {
-        size += stats.size;
-      }
-    });
-    this.onArchiveFilesFinished();
-
-    // If less than threshold, extract and write files.
-    // Otherwise use the ZipFS directly (much slower, but uses less memory)
-    if (size < (256 * 1024 * 1024)) { // 256MB
-      recurse("/", myZipFs.readdirSync("/"), (isDir, f, stats) => {
-        const path = CONTENT_DIR + f;
-        if (isDir) {
-          FS.mkdir(path);
-        } else {
-          let data = myZipFs.readFileSync(f, null, FileFlag.getFileFlag("r"));
-          FS.writeFile(path, data);
-          data = null;
-        }
-      });
-    } else {
-      const MFS = new BrowserFS.FileSystem.MountableFileSystem();
-      MFS.mount(CONTENT_DIR, myZipFs);
-      BrowserFS.initialize(MFS);
-      const BFS = new BrowserFS.EmscriptenFS();
-      FS.mount(BFS, {root: `${CONTENT_DIR}/`}, `${CONTENT_DIR}/`);
-    }
-  }
-
   async onStart(canvas) {
     const { app, debug, game } = this;
     const { FS, Module } = window;
@@ -544,8 +491,11 @@ export class RetroAppWrapper extends AppWrapper {
         setTimeout(() => {
           app.setState({ loadingMessage: 'Preparing files' });
         }, 0);
+
         // Extract the archive
-        await this.extractArchive();
+        await this.extractArchive(
+          window.FS, "/content", this.romBytes, this.DEFAULT_MAX_EXTRACT_SIZE, this
+        );
       } else {
         // Write rom file
         let stream = FS.open(game, 'a');

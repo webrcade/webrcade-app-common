@@ -307,4 +307,66 @@ export class AppWrapper {
       this.touchListener = this.createTouchListener();
     }, 100);
   }
+
+  DEFAULT_MAX_EXTRACT_SIZE = (256 * 1024 * 1024);
+  //
+  // callback:
+  //
+  // {
+  //    onArchiveFile(isDir, path);
+  //    onArchiveFilesFinished();
+  // }
+  //
+  async extractArchive(FS, contentDir, bytes, maxExtractSize, callback) {
+    const BrowserFS = window.BrowserFS;
+    const myZipFs = new BrowserFS.FileSystem.ZipFS(new Buffer(bytes));
+
+    FS.mkdir(contentDir);
+
+    // Determine extracted size of files
+    let size = 0;
+    const recurse = (path, files, cb) => {
+      for (let i = 0; i < files.length; i++) {
+        const f = path + files[i];
+        const stats = myZipFs.statSync(f, true);
+        const isDir = stats.isDirectory();
+        if (isDir) {
+          cb(true, f, stats);
+          recurse(f + "/", myZipFs.readdirSync(f), cb);
+        } else {
+          cb(false, f, stats)
+        }
+      }
+    }
+    recurse("/", myZipFs.readdirSync("/"), (isDir, f, stats) => {
+      if (callback) callback.onArchiveFile(isDir, contentDir + f);
+      if (!isDir) {
+        size += stats.size;
+      }
+    });
+    if (callback) callback.onArchiveFilesFinished();
+
+    // If less than threshold, extract and write files.
+    // Otherwise use the ZipFS directly (much slower, but uses less memory)
+    if (size < maxExtractSize) {
+      console.log("EXTRACTING FILES.")
+      recurse("/", myZipFs.readdirSync("/"), (isDir, f, stats) => {
+        const path = contentDir + f;
+        if (isDir) {
+          FS.mkdir(path);
+        } else {
+          let data = myZipFs.readFileSync(f, null, FileFlag.getFileFlag("r"));
+          FS.writeFile(path, data);
+          data = null;
+        }
+      });
+    } else {
+      console.log("USING ZIP.")
+      const MFS = new BrowserFS.FileSystem.MountableFileSystem();
+      MFS.mount(contentDir, myZipFs);
+      BrowserFS.initialize(MFS);
+      const BFS = new BrowserFS.EmscriptenFS();
+      FS.mount(BFS, {root: `${contentDir}/`}, `${contentDir}/`);
+    }
+  }
 }

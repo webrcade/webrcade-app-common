@@ -32,6 +32,7 @@ const locRetro5200 = isDev() ? `http://${localIp}:3306` : 'app/retro-a5200/';
 const locRetroNeocd = isDev() ? `http://${localIp}:3307` : 'app/retro-neocd/';
 const locQuake = isDev() ? `http://${localIp}:3308` : 'app/quake/';
 const locRetro3dO = isDev() ? `http://${localIp}:3311` : 'app/3do/';
+// const locScummVm = isDev() ? `http://${localIp}:3313` : 'app/scumm/';
 // const locRetroSaturn = isDev() ? `http://${localIp}:3312` : 'app/saturn/';
 // const locRetroParallelN64 = isDev() ? `http://${localIp}:3309` : 'app/retro-n64/';
 const locStandalone = isDev() ? `http://${localIp}:3080` : 'app/standalone/';
@@ -89,6 +90,7 @@ const APP_TYPE_KEYS = /*Object.freeze(*/{
   RETRO_PARALLEL_N64: "retro-parallel-n64",
   RETRO_STELLA: "retro-stella",
   // RETRO_YABAUSE: "retro-yabause",
+  // SCUMMVM: "scummvm",
   SNES9X: "snes9x",
   TYRQUAKE: "tyrquake",
   VBA_M_GBA: "vba-m-gba",
@@ -117,6 +119,7 @@ const APP_TYPE_KEYS = /*Object.freeze(*/{
   PCECD: "pcecd",
   QUAKE: "quake",
   // SATURN: "saturn",
+  // SCUMM: "scumm",
   SEGACD: "segacd",
   SG1000: 'sg1000',
   SGX: 'sgx',
@@ -742,6 +745,7 @@ const types = [{
     alias: APP_TYPE_KEYS.QUAKE,
     name: 'Quake',
     coreName: 'TyrQuake',
+    slowExit: true,
     location: locQuake,
     background: 'images/app/quake-background.png',
     thumbnail: 'images/app/quake-thumb.png',
@@ -754,6 +758,22 @@ const types = [{
       uid: "",
       zoomLevel: 0
     }
+  // }, {
+  //   key: APP_TYPE_KEYS.SCUMMVM,
+  //   alias: APP_TYPE_KEYS.SCUMM,
+  //   name: 'ScummVM',
+  //   coreName: 'ScummVM',
+  //   slowExit: true,
+  //   location: locScummVm,
+  //   background: 'images/app/quake-background.png',
+  //   thumbnail: 'images/app/quake-thumb.png',
+  //   validate: checkArchive,
+  //   extensions: [],
+  //   defaults: {
+  //     archive: "",
+  //     uid: "",
+  //     zoomLevel: 0
+  //   }
   },
   // {
   //   key: APP_TYPE_KEYS.RETRO_PARALLEL_N64,
@@ -852,6 +872,7 @@ addAlias(types, APP_TYPE_KEYS.PCFX, APP_TYPE_KEYS.BEETLE_PCFX);
 addAlias(types, APP_TYPE_KEYS.PSX, APP_TYPE_KEYS.BEETLE_PSX);
 addAlias(types, APP_TYPE_KEYS.QUAKE, APP_TYPE_KEYS.TYRQUAKE);
 // addAlias(types, APP_TYPE_KEYS.SATURN, APP_TYPE_KEYS.RETRO_YABAUSE);
+// addAlias(types, APP_TYPE_KEYS.SCUMM, APP_TYPE_KEYS.SCUMMVM);
 addAlias(types, APP_TYPE_KEYS.SEGACD, APP_TYPE_KEYS.RETRO_GENPLUSGX_SEGACD);
 addAlias(types, APP_TYPE_KEYS.SG1000, APP_TYPE_KEYS.GENPLUSGX_SG);
 addAlias(types, APP_TYPE_KEYS.SGX, APP_TYPE_KEYS.MEDNAFEN_SGX);

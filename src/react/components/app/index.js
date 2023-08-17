@@ -343,5 +343,43 @@ export class WebrcadeApp extends Component {
       }
     }
   }
+
+  // TODO: Move this to common
+  async fetchResponseBuffer(response) {
+    //let checksum = 0;
+
+    let length = response.headers.get('Content-Length');
+    if (length) {
+      length = parseInt(length);
+      let array = new Uint8Array(length);
+      let at = 0;
+      let reader = response.body.getReader();
+      for (;;) {
+        let { done, value } = await reader.read();
+        if (done) {
+          break;
+        }
+        array.set(value, at);
+        at += value.length;
+
+        // for (let i = 0; i < value.length; i++) {
+        //   checksum += value[i];
+        // }
+
+        const progress = ((at / length).toFixed(2) * 100).toFixed(0);
+        this.setState({ loadingPercent: progress | 0 });
+      }
+      try {
+        // console.log("##### " + checksum)
+        // alert(checksum)
+        return array;
+      } finally {
+        array = null;
+      }
+    } else {
+      const blob = await response.blob();
+      return new Uint8Array(await new Response(blob).arrayBuffer());
+    }
+  }
 }
 

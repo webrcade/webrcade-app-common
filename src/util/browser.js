@@ -117,6 +117,16 @@ const storagePersist = () => {
   })();
 }
 
+const fullScreen = (elem) => {
+  if (elem.requestFullscreen) {
+    elem.requestFullscreen();
+  } else if (elem.webkitRequestFullscreen) { /* Safari */
+    elem.webkitRequestFullscreen();
+  } else if (elem.msRequestFullscreen) { /* IE11 */
+    elem.msRequestFullscreen();
+  }
+}
+
 export {
   isParentSameOrigin,
   isMacOs,
@@ -125,6 +135,7 @@ export {
   isIos,
   isMobileSafari,
   applyIosNavBarHack,
+  fullScreen,
   removeIosNavBarHack,
   isTouchSupported,
   addXboxFullscreenCallback,
