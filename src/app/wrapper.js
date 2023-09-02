@@ -13,6 +13,11 @@ import { SCREEN_SIZES } from '../settings'
 
 export class AppWrapper {
   constructor(app, debug = false) {
+    this.SS_NATIVE = SCREEN_SIZES.SS_NATIVE;
+    this.SS_DEFAULT = SCREEN_SIZES.SS_DEFAULT;
+    this.SS_16_9 = SCREEN_SIZES.SS_16_9;
+    this.SS_FILL = SCREEN_SIZES.SS_FILL;
+
     this.app = app;
     this.started = false;
     this.debug = debug;
@@ -64,8 +69,12 @@ export class AppWrapper {
     return false;
   }
 
+  isScreenFill() {
+    return false;
+  }
+
   updateScreenSize() {
-    let fill = false;
+    let fill = this.isScreenFill();
     let ar = this.getDefaultAspectRatio();
     const ss = this.getScreenSize();
     const canvas = this.canvas;
@@ -81,7 +90,6 @@ export class AppWrapper {
       ar = 1;
       fill = true;
     }
-
 
     if (ar !== 0) {
       // Determine the zoom level
@@ -368,5 +376,13 @@ export class AppWrapper {
       const BFS = new BrowserFS.EmscriptenFS();
       FS.mount(BFS, {root: `${contentDir}/`}, `${contentDir}/`);
     }
+  }
+
+  wait(time) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve();
+      }, time);
+    });
   }
 }

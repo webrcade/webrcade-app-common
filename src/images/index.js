@@ -29,6 +29,7 @@ const LinkBlackImage = Icons.link_black_24dp;
 const LinkWhiteImage = Icons.link_white_24dp;
 const LinkOffBlackImage = Icons.link_off_black_24dp;
 const LinkOffWhiteImage = Icons.link_off_white_24dp;
+const ListsWhiteImage = Icons.lists_white_24dp;
 const PlayArrowWhiteImage = Icons.play_arrow_white_24dp; //resolvePath("images/common/play_arrow_white_24dp.svg");
 const TuneWhiteImage = Icons.tune_white_24dp; //resolvePath("images/common/tune_white_24dp.svg");
 const VolumeOffBlackImage = Icons.volume_off_black_24dp; //resolvePath("images/common/volume_off_black_24dp.svg");
@@ -128,6 +129,8 @@ const A5200Background = resolvePath("images/app/5200-background.png");
 const ColecoVisionBackground = resolvePath("images/app/colecovision-background.png");
 const ColecoController = resolvePath("images/app/coleco/controller.png");
 const A5200Controller = resolvePath("images/app/a5200/controller.png");
+const ScummVmBackground = resolvePath("images/app/scummvm-background.png");
+
 
 export {
   AddCircleBlackImage,
@@ -251,6 +254,8 @@ export {
   ThreedoBackground,
   Atari2600Background,
   Atari7800Background,
+  ListsWhiteImage,
+  ScummVmBackground,
 
   resolvePath as resolveImagePath
 }

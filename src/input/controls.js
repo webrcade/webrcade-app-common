@@ -436,6 +436,6 @@ export class Controllers {
 }
 
 export function isEscapeKeySequence(e) {
-  return ((e.getModifierState("Control") || e.getModifierState("Alt")) &&
+  return (e.getModifierState && (e.getModifierState("Control") || e.getModifierState("Alt")) &&
     (e.code === KCODES.ENTER || e.code === KCODES.SHIFT_LEFT || e.code === KCODES.SHIFT_RIGHT));
 }

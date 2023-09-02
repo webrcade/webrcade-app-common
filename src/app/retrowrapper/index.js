@@ -398,14 +398,6 @@ export class RetroAppWrapper extends AppWrapper {
     }
   }
 
-  wait(time) {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        resolve();
-      }, time);
-    });
-  }
-
   applyGameSettings() {
   }
 
@@ -414,7 +406,6 @@ export class RetroAppWrapper extends AppWrapper {
     const enabled = this.isBilinearFilterEnabled();
     window.Module._wrc_enable_bilinear_filter(enabled ? 1 : 0);
   }
-
 
   isForceAspectRatio() {
     return this.getScreenSize() === this.SS_NATIVE;
