@@ -30,6 +30,7 @@ const LinkWhiteImage = Icons.link_white_24dp;
 const LinkOffBlackImage = Icons.link_off_black_24dp;
 const LinkOffWhiteImage = Icons.link_off_white_24dp;
 const ListsWhiteImage = Icons.lists_white_24dp;
+const PauseWhiteImage = Icons.pause_white_24dp;
 const PlayArrowWhiteImage = Icons.play_arrow_white_24dp; //resolvePath("images/common/play_arrow_white_24dp.svg");
 const TuneWhiteImage = Icons.tune_white_24dp; //resolvePath("images/common/tune_white_24dp.svg");
 const VolumeOffBlackImage = Icons.volume_off_black_24dp; //resolvePath("images/common/volume_off_black_24dp.svg");
@@ -40,6 +41,9 @@ const SettingsRedImage = Icons.settings_red_24dp; //resolvePath("images/common/s
 const SettingsWhiteImage = Icons.settings_white_24dp; //resolvePath("images/common/settings_white_24dp.svg");
 const SettingsAppWhiteImage = Icons.settings_applications_white_24dp;
 const TelevisionWhiteImage = Icons.tv_white_24dp; //resolvePath("images/common/tv_white_24dp.svg");
+const MouseWhiteImage = Icons.mouse_white_24dp;
+const SwipeWhiteImage = Icons.swipe_white_24dp;
+
 const CategoryThumbImage = resolvePath("images/folder.png");
 const CategoryBackgroundImage = resolvePath("images/folder-background.png");
 const FeedThumbImage = resolvePath("images/feed.png");
@@ -160,6 +164,7 @@ export {
   LinkWhiteImage,
   LinkOffBlackImage,
   LinkOffWhiteImage,
+  PauseWhiteImage,
   PlayArrowBlackImage,
   PlayArrowWhiteImage,
   SaveWhiteImage,
@@ -256,6 +261,8 @@ export {
   Atari7800Background,
   ListsWhiteImage,
   ScummVmBackground,
+  MouseWhiteImage,
+  SwipeWhiteImage,
 
   resolvePath as resolveImagePath
 }
