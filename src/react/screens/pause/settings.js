@@ -35,7 +35,7 @@ export class AppSettingsEditor extends Component {
   }
 
   render() {
-    const { emulator, onClose } = this.props;
+    const { emulator, onClose, hideBilinear } = this.props;
     const { tabIndex, values, focusGridComps } = this.state;
 
     const setFocusGridComps = (comps) => {
@@ -51,7 +51,7 @@ export class AppSettingsEditor extends Component {
         showCancel={true}
         onOk={() => {
           let change = false;
-          if (values.origBilinearMode !== values.bilinearMode) {
+          if (!hideBilinear && values.origBilinearMode !== values.bilinearMode) {
             emulator.getPrefs().setBilinearEnabled(values.bilinearMode);
             emulator.updateBilinearFilter();
             change = true;
@@ -76,6 +76,7 @@ export class AppSettingsEditor extends Component {
             content: (
               <AppDisplaySettingsTab
                 emulator={emulator}
+                hideBilinear={hideBilinear}
                 isActive={tabIndex === 0}
                 setFocusGridComps={setFocusGridComps}
                 values={values}
