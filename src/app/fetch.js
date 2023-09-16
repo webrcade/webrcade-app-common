@@ -3,17 +3,33 @@ import { isDev, limitString } from '../util';
 import { remapUrl } from './remapurl.js';
 import * as LOG from '../log';
 
+const PROXY_DISABLED = "proxy-disabled";
+
+const DIRECT = "direct";
+const HTTP_PROXY = "http-proxy";
+const HTTPS_PROXY = "https-proxy";
+
 export class FetchAppData {
   constructor(url) {
     this.url = remapUrl(url);
     this.retries = 1;
     this.proxyDisabled = false;
+    this.successMethod = null;
+    this.method = null;
   }
 
   //P = (isDev() ? (config.getLocalIp() + "/?y=") : config.getCorsProxy());
   P = config.getCorsProxy() ?
     ((config.isPublicServer() ? "" : window.location.host) + config.getCorsProxy()) :
     null;
+
+  getSuccessMethod() {
+    return this.successMethod;
+  }
+
+  setMethod(method) {
+    this.method = method;
+  }
 
   getHeaders(res) {
     const headers = res.headers;
@@ -85,6 +101,52 @@ export class FetchAppData {
       }
     }
 
+    const directFetch = async (url) => {
+      res = await doFetch(url);
+      if (!res) throw new Error("result is undefined");
+      this.successMethod = DIRECT;
+      return res;
+    }
+
+    const httpProxyFetch = async (url) => {
+      if (!this.isProxyDisabled()) {
+        res = await doFetch(`${h(s)}${P}${encodeURIComponent(encodeURI(url))}`);
+        if (!res) throw new Error("result is undefined");
+        this.successMethod = HTTP_PROXY;
+        return res;
+      }
+      throw Error(PROXY_DISABLED);
+    }
+
+    const httpsProxyFetch = async (url) => {
+      if (!this.isProxyDisabled()) {
+        res = await doFetch(`${h(!s)}${P}${encodeURIComponent(encodeURI(url))}`);
+        if (!res) throw new Error("result is undefined");
+        this.successMethod = HTTPS_PROXY;
+        return res;
+      }
+      throw Error(PROXY_DISABLED);
+    }
+
+    const methods = [];
+    if (this.method === DIRECT) {
+      methods.push(directFetch);
+    } else if (this.method === HTTP_PROXY) {
+      methods.push(httpProxyFetch);
+    } else if (this.method === HTTPS_PROXY) {
+      methods.push(httpsProxyFetch);
+    }
+
+    if (this.method !== DIRECT) {
+      methods.push(directFetch);
+    }
+    if (this.method !== HTTP_PROXY) {
+      methods.push(httpProxyFetch);
+    }
+    if (this.method !== HTTPS_PROXY) {
+      methods.push(httpsProxyFetch);
+    }
+
     let res = null;
     let error = null;
     for (let x = 0; x <= retries; x++) {
@@ -92,29 +154,27 @@ export class FetchAppData {
         LOG.info("Retry: " + x);
       }
       try {
-        res = await doFetch(url);
-        if (!res) throw new Error("result is undefined");
-        return res;
+        return await methods[0](url);
       } catch (e) {
-        LOG.error(e);
-        if (!this.isProxyDisabled()) {
-          try {
-            res = await doFetch(`${h(s)}${P}${encodeURIComponent(encodeURI(url))}`);
-            if (!res) throw new Error("result is undefined");
-            return res;
-          } catch (e) {
+        if (e.message !== PROXY_DISABLED) {
+          LOG.error(e);
+          error = e;
+        }
+        try {
+          return await methods[1](url);
+        } catch (e) {
+          if (e.message !== PROXY_DISABLED) {
             LOG.error(e);
-            try {
-              res = await doFetch(`${h(!s)}${P}${encodeURIComponent(encodeURI(url))}`);
-              if (!res) throw new Error("result is undefined");
-              return res;
-            } catch (e) {
+            error = e;
+          }
+          try {
+            return await methods[2](url);
+          } catch (e) {
+            if (e.message !== PROXY_DISABLED) {
               LOG.error(e);
               error = e;
             }
           }
-        } else {
-          error = e;
         }
       }
     }

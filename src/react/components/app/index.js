@@ -349,25 +349,35 @@ export class WebrcadeApp extends Component {
     //let checksum = 0;
 
     let length = response.headers.get('Content-Length');
+    // console.log("Length: " + length);
     if (length) {
       length = parseInt(length);
-      let array = new Uint8Array(length);
-      let at = 0;
-      let reader = response.body.getReader();
-      for (;;) {
-        let { done, value } = await reader.read();
-        if (done) {
-          break;
+      let array = length > 0 ? new Uint8Array(length) : new Uint8Array();
+      if (length > 0) {
+        let at = 0;
+        let reader = response.body.getReader();
+        for (;;) {
+          let { done, value } = await reader.read();
+          if (done) {
+            break;
+          }
+
+          if (at + value.length > length) {
+            LOG.error("File exceeded reported length!");
+            // TODO: Fix this! Download the file w/o streaming...
+            return array;
+          }
+
+          array.set(value, at);
+          at += value.length;
+
+          // for (let i = 0; i < value.length; i++) {
+          //   checksum += value[i];
+          // }
+
+          const progress = ((at / length).toFixed(2) * 100).toFixed(0);
+          this.setState({ loadingPercent: progress | 0 });
         }
-        array.set(value, at);
-        at += value.length;
-
-        // for (let i = 0; i < value.length; i++) {
-        //   checksum += value[i];
-        // }
-
-        const progress = ((at / length).toFixed(2) * 100).toFixed(0);
-        this.setState({ loadingPercent: progress | 0 });
       }
       try {
         // console.log("##### " + checksum)

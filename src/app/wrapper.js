@@ -329,7 +329,11 @@ export class AppWrapper {
     const BrowserFS = window.BrowserFS;
     const myZipFs = new BrowserFS.FileSystem.ZipFS(new Buffer(bytes));
 
-    FS.mkdir(contentDir);
+    try {
+      FS.mkdir(contentDir);
+    } catch (e) {
+      LOG.info("## Error making directory, it may already exist.");
+    }
 
     // Determine extracted size of files
     let size = 0;
@@ -364,7 +368,10 @@ export class AppWrapper {
           FS.mkdir(path);
         } else {
           let data = myZipFs.readFileSync(f, null, FileFlag.getFileFlag("r"));
-          FS.writeFile(path, data);
+          let stream = FS.open(path, 'a');
+          console.log("write: " + path);
+          FS.write(stream, data, 0, data.length, 0, true);
+          FS.close(stream);
           data = null;
         }
       });
