@@ -198,6 +198,9 @@ export class WebrcadeRetroApp extends WebrcadeApp {
         })
         .then((bytes) => {
           emulator.setRoms(this.uid, frontend, biosBuffers, bytes, extension);
+          if (this.isArchiveBased()) {
+            emulator.setArchiveUrl(this.archive);
+          }
           return bytes;
         })
         .then(() =>

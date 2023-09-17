@@ -8,6 +8,7 @@ import { Resources } from '../../resources';
 import { CIDS } from '../../input';
 import { getScreenShot } from '../../display';
 import { TEXT_IDS } from '../../resources';
+import { FileManifest } from '../filemanifest';
 import * as LOG from '../../log'
 
 const STATE_FILE_PATH = "/home/web_user/retroarch/userdata/states/game.state";
@@ -105,9 +106,14 @@ export class RetroAppWrapper extends AppWrapper {
     this.biosBuffers = biosBuffers;
     this.romBytes = romBytes;
     this.ext = ext;
+    this.archiveUrl = null;
     this.game = this.isDiscBased() ?
       (this.RA_DIR + 'game.' + (ext != null && ext === 'pbp' ? 'pbp' : 'chd')) :
       (this.RA_DIR + "game.bin");
+  }
+
+  setArchiveUrl(url) {
+    this.archiveUrl = url;
   }
 
   createControllers() {
@@ -483,10 +489,18 @@ export class RetroAppWrapper extends AppWrapper {
           app.setState({ loadingMessage: 'Preparing files' });
         }, 0);
 
-        // Extract the archive
-        await this.extractArchive(
-          window.FS, "/content", this.romBytes, this.DEFAULT_MAX_EXTRACT_SIZE, this
-        );
+        try {
+          // Extract the archive
+          await this.extractArchive(
+            window.FS, "/content", this.romBytes, this.DEFAULT_MAX_EXTRACT_SIZE, this
+          );
+        } catch (e) {
+          LOG.info("Not a zip file, checking for a manifest.");
+          FS.mkdir("/content");
+          const manifest = new FileManifest(this, FS, "/content", this.romBytes, this.archiveUrl, this);
+          const totalSize = await manifest.process();
+          if (!totalSize) throw e;
+        }
       } else {
         // Write rom file
         let stream = FS.open(game, 'a');

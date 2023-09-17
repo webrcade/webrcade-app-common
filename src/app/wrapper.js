@@ -316,7 +316,7 @@ export class AppWrapper {
     }, 100);
   }
 
-  DEFAULT_MAX_EXTRACT_SIZE = (256 * 1024 * 1024);
+  DEFAULT_MAX_EXTRACT_SIZE = (2 * 1024 * 1024 * 1024);
   //
   // callback:
   //
