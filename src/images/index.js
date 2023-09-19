@@ -86,6 +86,7 @@ const WKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/W_Key_D
 const TKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/T_Key_Dark.png");
 const RKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/R_Key_Dark.png");
 const EKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/E_Key_Dark.png");
+const PeriodKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/Period_Key_Dark.png");
 
 const ZeroKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/0_Key_Dark.png");
 const OneKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/1_Key_Dark.png");
@@ -99,6 +100,9 @@ const EightKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/8_K
 const NineKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/9_Key_Dark.png");
 const MinusKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/Minus_Key_Dark.png");
 const EqualsKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/Equals_Key_Dark.png");
+
+const F5Key = resolvePath("images/common/controller/Keyboard & Mouse/Dark/F5_Key_Dark.png");
+const F7Key = resolvePath("images/common/controller/Keyboard & Mouse/Dark/F7_Key_Dark.png");
 
 const Atari2600Background = resolvePath("images/app/2600-background.png");
 const Atari7800Background = resolvePath("images/app/7800-background.png");
@@ -214,6 +218,9 @@ export {
   TKey,
   RKey,
   EKey,
+  PeriodKey,
+  F5Key,
+  F7Key,
   ZeroKey,
   OneKey,
   TwoKey,

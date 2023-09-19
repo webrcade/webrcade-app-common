@@ -485,15 +485,20 @@ export class RetroAppWrapper extends AppWrapper {
 
       // Prepare game content
       if (this.isArchiveBased()) {
-        setTimeout(() => {
-          app.setState({ loadingMessage: 'Preparing files' });
-        }, 0);
 
         try {
+          if (this.romBytes.length > 10 * 1024 * 1024) {
+            app.setState({ loadingMessage: 'Preparing files' });
+            await this.wait(10);
+          }
+
           // Extract the archive
           await this.extractArchive(
             window.FS, "/content", this.romBytes, this.DEFAULT_MAX_EXTRACT_SIZE, this
           );
+
+          app.setState({ loadingMessage: null });
+          await this.wait(10);
         } catch (e) {
           LOG.info("Not a zip file, checking for a manifest.");
           FS.mkdir("/content");

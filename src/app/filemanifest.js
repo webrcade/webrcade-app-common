@@ -95,10 +95,11 @@ class FileManifest {
         }
 
         if (files.length > 1) {
-          setTimeout(() => {
-            app.setState({ loadingMessage: `Loading ${i + 1} of ${files.length}`,  loadingPercent: null });
-          }, 0);
+          app.setState({ loadingMessage: `Loading ${i + 1} of ${files.length}`,  loadingPercent: null });
+        } else {
+          app.setState({ loadingMessage: "Loading",  loadingPercent: null });
         }
+        await this.emulator.wait(10);
 
         requestUrl = requestUrl.replaceAll("#", "%23");
         LOG.info(requestUrl);
@@ -112,6 +113,8 @@ class FileManifest {
         size += bytes.length;
 
         console.log(destinationFile);
+
+        await this.emulator.wait(10);
 
         if (extract) {
           console.log("#### extract")
@@ -137,10 +140,6 @@ class FileManifest {
       if (this.archiveCallback) {
         this.archiveCallback.onArchiveFilesFinished();
       }
-
-      setTimeout(() => {
-        app.setState({ loadingMessage: "Starting",  loadingPercent: null })
-      }, 0);
 
       return size;
     }

@@ -40,6 +40,7 @@ import {
   TKey,
   RKey,
   EKey,
+  PeriodKey,
   SpaceKey,
   ZeroKey,
   OneKey,
@@ -53,6 +54,8 @@ import {
   NineKey,
   MinusKey,
   EqualsKey,
+  F5Key,
+  F7Key
 } from '../../../../images'
 
 import styles from './controls-style.scss'
@@ -144,6 +147,8 @@ export class ControlsTab extends EditorTab {
         return RKey;
       case 'KeyE':
         return EKey;
+      case 'KeyPeriod':
+        return PeriodKey;
       case 'Digit0':
         return ZeroKey;
       case 'Digit1':
@@ -168,6 +173,10 @@ export class ControlsTab extends EditorTab {
         return MinusKey;
       case 'Equal':
         return EqualsKey;
+      case 'KeyF5':
+        return F5Key;
+      case 'KeyF7':
+        return F7Key;
       default:
         return "";
     }
@@ -178,6 +187,32 @@ export class ControlsTab extends EditorTab {
       <div key={key} className={styles['controls-screen-row']}>
         <div className={styles['controls-screen-column']}>
           <img className={styles['controls-gamepad-button']} src={this.getKeyImage(key)} alt=""></img>
+        </div>
+        <div className={styles['controls-screen-column']}>
+          {description}
+        </div>
+      </div>
+    );
+  }
+
+  renderKeys(keyList, description) {
+    const keys = [];
+    for (let i = 0; i < keyList.length; i++) {
+      const key = keyList[i];
+      if (i > 0) {
+        keys.push(<div style={{whiteSpace: 'nowrap'}}>&nbsp;+&nbsp;</div>);
+      }
+      keys.push(
+        <img className={styles['controls-gamepad-button']} src={this.getKeyImage(key)} alt=""></img>
+      )
+    }
+
+    return (
+      <div /*key={key}*/ className={styles['controls-screen-row']}>
+        <div className={styles['controls-screen-column']}>
+          <div style={{display: 'flex', alignItems: 'center'}} >
+            {keys}
+          </div>
         </div>
         <div className={styles['controls-screen-column']}>
           {description}

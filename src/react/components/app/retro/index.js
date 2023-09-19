@@ -206,7 +206,7 @@ export class WebrcadeRetroApp extends WebrcadeApp {
         .then(() =>
           this.setState({
             mode: ModeEnum.LOADED,
-            loadingMessage: 'Loading',
+            loadingMessage: null,
           }),
         )
         .catch((msg) => {
