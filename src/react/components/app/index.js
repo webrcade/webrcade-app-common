@@ -154,7 +154,7 @@ export class WebrcadeApp extends Component {
   renderLoading() {
     const { loadingMessage, loadingPercent } = this.state;
     return (
-      <div>
+      <div key={loadingMessage ? loadingMessage : "loading"}>
         <div className={styles.loading}>{loadingMessage ? loadingMessage : Resources.getText(TEXT_IDS.LOADING)}...</div>
         {loadingPercent !== null ?
           <div className={styles['loading-percent']}>{loadingPercent}%</div> : null}
@@ -362,6 +362,7 @@ export class WebrcadeApp extends Component {
             break;
           }
 
+// TODO: FIX THIS BEFORE RELEASE !!!
           if (at + value.length > length) {
             LOG.error("File exceeded reported length!");
             // TODO: Fix this! Download the file w/o streaming...
