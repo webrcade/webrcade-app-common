@@ -63,6 +63,7 @@ export class RetroAppWrapper extends AppWrapper {
     window.emulator = this;
     window.readyAudioContext = null;
 
+    this.discIndex = null;
     this.romBytes = null;
     this.biosBuffers = null;
     this.escapeCount = -1;
@@ -75,6 +76,10 @@ export class RetroAppWrapper extends AppWrapper {
 
   RA_DIR = '/home/web_user/retroarch/';
   RA_SYSTEM_DIR = this.RA_DIR + 'system/';
+
+  setDiscIndex(index) {
+    this.discIndex = index;
+  }
 
   setExiting(exiting) {
     this.exiting = true;
@@ -448,6 +453,9 @@ export class RetroAppWrapper extends AppWrapper {
 
   onFrame() {}
 
+  async onWriteAdditionalFiles() {
+  }
+
   async onStart(canvas) {
     const { app, debug, game } = this;
     const { FS, Module } = window;
@@ -472,6 +480,7 @@ export class RetroAppWrapper extends AppWrapper {
 
       // // Load preferences
       // await this.prefs.load();
+      await this.onWriteAdditionalFiles();
 
       // Apply the game settings
       this.applyGameSettings();
@@ -485,7 +494,6 @@ export class RetroAppWrapper extends AppWrapper {
 
       // Prepare game content
       if (this.isArchiveBased()) {
-
         try {
           if (this.romBytes.length > 10 * 1024 * 1024) {
             app.setState({ loadingMessage: 'Preparing files' });

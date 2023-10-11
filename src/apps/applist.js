@@ -583,6 +583,7 @@ const types = [{
     },
     defaults: {
       discs: [],
+      sbi: [],
       multitap: false,
       analog: false,
       uid: "",

@@ -332,7 +332,7 @@ export class AppWrapper {
     try {
       FS.mkdir(contentDir);
     } catch (e) {
-      LOG.info("## Error making directory, it may already exist.");
+      LOG.info("## Error making directory, it may already exist: " + contentDir);
     }
 
     // Determine extracted size of files
@@ -365,7 +365,11 @@ export class AppWrapper {
       recurse("/", myZipFs.readdirSync("/"), (isDir, f, stats) => {
         const path = contentDir + f;
         if (isDir) {
-          FS.mkdir(path);
+          try {
+            FS.mkdir(path);
+          } catch (e) {
+            LOG.info("## Error making directory, it may already exist: " + path);
+          }
         } else {
           let data = myZipFs.readFileSync(f, null, FileFlag.getFileFlag("r"));
           let stream = FS.open(path, 'a');

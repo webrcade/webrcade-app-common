@@ -175,6 +175,7 @@ export class WebrcadeRetroApp extends WebrcadeApp {
         .then((response) => {
           if (this.isDiscBased()) {
             extension = this.getExtension(discUrl, fad, response);
+            emulator.setDiscIndex(discIndex);
           }
           return response;
         })
