@@ -73,6 +73,8 @@ export class AppWrapper {
     return false;
   }
 
+  updateOnScreenControls(initial = false) {}
+
   updateScreenSize() {
     let fill = this.isScreenFill();
     let ar = this.getDefaultAspectRatio();
@@ -308,6 +310,9 @@ export class AppWrapper {
 
     // Update the screen size
     this.updateScreenSize();
+
+    // Update on screen controls
+    this.updateOnScreenControls(true);
 
     await this.onStart(canvas);
 

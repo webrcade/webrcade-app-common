@@ -40,7 +40,8 @@ export class WebrcadeApp extends Component {
       yesNoInfo: null,
       showOverlay: false,
       showXboxViewMessage: false,
-      statusMessage: null
+      statusMessage: null,
+      refresh: 0
     };
 
     this.pauseExit = false;
@@ -69,6 +70,10 @@ export class WebrcadeApp extends Component {
           }, 0)
         });
     }
+  }
+
+  forceRefresh() {
+    this.setState({refresh: this.state.refresh + 1});
   }
 
   componentDidMount() {
