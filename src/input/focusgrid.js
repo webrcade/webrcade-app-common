@@ -12,6 +12,10 @@ class FocusGrid {
     this.comps = comps;
   }
 
+  getComponents() {
+    return this.comps;
+  }
+
   setDefaultComponent(comp) {
     this.defaultComp = comp;
   }

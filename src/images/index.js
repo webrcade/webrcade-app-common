@@ -43,6 +43,11 @@ const SettingsAppWhiteImage = Icons.settings_applications_white_24dp;
 const TelevisionWhiteImage = Icons.tv_white_24dp; //resolvePath("images/common/tv_white_24dp.svg");
 const MouseWhiteImage = Icons.mouse_white_24dp;
 const SwipeWhiteImage = Icons.swipe_white_24dp;
+const ArrowUpwardImage = Icons.arrow_upward_24dp;
+const ArrowDownwardImage = Icons.arrow_downward_24dp;
+const ArrowBackImage = Icons.arrow_back_24dp;
+const ArrowForwardImage = Icons.arrow_forward_24dp;
+const SwapVertImage = Icons.swap_vert_24dp;
 
 const CategoryThumbImage = resolvePath("images/folder.png");
 const CategoryBackgroundImage = resolvePath("images/folder-background.png");
@@ -270,6 +275,11 @@ export {
   ScummVmBackground,
   MouseWhiteImage,
   SwipeWhiteImage,
+  ArrowUpwardImage,
+  ArrowDownwardImage,
+  ArrowBackImage,
+  ArrowForwardImage,
+  SwapVertImage,
 
   resolvePath as resolveImagePath
 }

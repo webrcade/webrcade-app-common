@@ -15,7 +15,7 @@ export class ImageButton extends Component {
   }
 
   gamepadCallback = (e) => {
-    const { disabled, onPad } = this.props;
+    const { disabled, onPad, onPadClick } = this.props;
     const { focused } = this.state;
 
     if (!focused) return false;
@@ -27,6 +27,7 @@ export class ImageButton extends Component {
 
     switch (e.type) {
       case GamepadEnum.A:
+        if (onPadClick) onPadClick(e);
         this.onClick(e);
         break;
       case GamepadEnum.DOWN:
@@ -41,6 +42,10 @@ export class ImageButton extends Component {
         break;
     }
     return true;
+  }
+
+  getButton() {
+    return this.button;
   }
 
   componentDidMount() {
@@ -117,7 +122,7 @@ export class ImageButton extends Component {
   }
 
   render() {
-    const { className, disabled, hoverImgSrc, imgSrc, label } = this.props;
+    const { className, disabled, hoverImgSrc, imgSrc, label, labelClassName, onTouchStart, onTouchEnd, onMouseDown } = this.props;
     const { focused } = this.state;
 
     const disabledBtn = disabled ? true : false;
@@ -127,13 +132,16 @@ export class ImageButton extends Component {
         disabled={disabledBtn}
         className={className === undefined ? styles['image-button'] : className}
         ref={(button) => { this.button = button; }}
+        onTouchStart={onTouchStart}
+        onTouchEnd={onTouchEnd}
         onClick={this.onClick}
         onFocus={this.onFocus}
+        onMouseDown={onMouseDown}
         onMouseEnter={this.onMouseEnter}
         onMouseLeave={this.onMouseLeave}
         onBlur={this.onBlur}> {imgSrc ?
           <img alt={label} src={focused && hoverImgSrc ? hoverImgSrc : imgSrc}></img> : null}
-        <div>{label}</div>
+        {labelClassName ? <div className={labelClassName}>{label}</div> : <div>{label}</div>}
       </button>
     );
   }
