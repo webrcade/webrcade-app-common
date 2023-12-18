@@ -116,44 +116,6 @@ export class WebrcadeRetroApp extends WebrcadeApp {
     return biosBuffers;
   }
 
-  // TODO: Move this to common
-  async fetchResponseBuffer(response) {
-    //let checksum = 0;
-
-    let length = response.headers.get('Content-Length');
-    if (length) {
-      length = parseInt(length);
-      let array = new Uint8Array(length);
-      let at = 0;
-      let reader = response.body.getReader();
-      for (;;) {
-        let { done, value } = await reader.read();
-        if (done) {
-          break;
-        }
-        array.set(value, at);
-        at += value.length;
-
-        // for (let i = 0; i < value.length; i++) {
-        //   checksum += value[i];
-        // }
-
-        const progress = ((at / length).toFixed(2) * 100).toFixed(0);
-        this.setState({ loadingPercent: progress | 0 });
-      }
-      try {
-        // console.log("##### " + checksum)
-        // alert(checksum)
-        return array;
-      } finally {
-        array = null;
-      }
-    } else {
-      const blob = await response.blob();
-      return new Uint8Array(await new Response(blob).arrayBuffer());
-    }
-  }
-
   getExtension(url, fad, res) {
     let filename = fad.getFilename(res);
     if (!filename) {
@@ -193,7 +155,7 @@ export class WebrcadeRetroApp extends WebrcadeApp {
         fad = new FetchAppData(discUrl);
       } else if (this.isArchiveBased()) {
         fad = new FetchAppData(this.archive);
-      }else {
+      } else {
         exts = AppRegistry.instance.getExtensions(
           type, true, false
         );
@@ -213,6 +175,7 @@ export class WebrcadeRetroApp extends WebrcadeApp {
         .then((response) => {
           if (this.isDiscBased()) {
             extension = this.getExtension(discUrl, fad, response);
+            emulator.setDiscIndex(discIndex);
           }
           return response;
         })
@@ -236,12 +199,15 @@ export class WebrcadeRetroApp extends WebrcadeApp {
         })
         .then((bytes) => {
           emulator.setRoms(this.uid, frontend, biosBuffers, bytes, extension);
+          if (this.isArchiveBased()) {
+            emulator.setArchiveUrl(this.archive);
+          }
           return bytes;
         })
         .then(() =>
           this.setState({
             mode: ModeEnum.LOADED,
-            loadingMessage: 'Loading',
+            loadingMessage: null,
           }),
         )
         .catch((msg) => {

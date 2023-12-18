@@ -13,6 +13,11 @@ import { SCREEN_SIZES } from '../settings'
 
 export class AppWrapper {
   constructor(app, debug = false) {
+    this.SS_NATIVE = SCREEN_SIZES.SS_NATIVE;
+    this.SS_DEFAULT = SCREEN_SIZES.SS_DEFAULT;
+    this.SS_16_9 = SCREEN_SIZES.SS_16_9;
+    this.SS_FILL = SCREEN_SIZES.SS_FILL;
+
     this.app = app;
     this.started = false;
     this.debug = debug;
@@ -64,8 +69,14 @@ export class AppWrapper {
     return false;
   }
 
+  isScreenFill() {
+    return false;
+  }
+
+  updateOnScreenControls(initial = false) {}
+
   updateScreenSize() {
-    let fill = false;
+    let fill = this.isScreenFill();
     let ar = this.getDefaultAspectRatio();
     const ss = this.getScreenSize();
     const canvas = this.canvas;
@@ -81,7 +92,6 @@ export class AppWrapper {
       ar = 1;
       fill = true;
     }
-
 
     if (ar !== 0) {
       // Determine the zoom level
@@ -301,10 +311,94 @@ export class AppWrapper {
     // Update the screen size
     this.updateScreenSize();
 
+    // Update on screen controls
+    this.updateOnScreenControls(true);
+
     await this.onStart(canvas);
 
     setTimeout(() => {
       this.touchListener = this.createTouchListener();
     }, 100);
+  }
+
+  DEFAULT_MAX_EXTRACT_SIZE = (2 * 1024 * 1024 * 1024);
+  //
+  // callback:
+  //
+  // {
+  //    onArchiveFile(isDir, path);
+  //    onArchiveFilesFinished();
+  // }
+  //
+  async extractArchive(FS, contentDir, bytes, maxExtractSize, callback) {
+    const BrowserFS = window.BrowserFS;
+    const myZipFs = new BrowserFS.FileSystem.ZipFS(new Buffer(bytes));
+
+    try {
+      FS.mkdir(contentDir);
+    } catch (e) {
+      LOG.info("## Error making directory, it may already exist: " + contentDir);
+    }
+
+    // Determine extracted size of files
+    let size = 0;
+    const recurse = (path, files, cb) => {
+      for (let i = 0; i < files.length; i++) {
+        const f = path + files[i];
+        const stats = myZipFs.statSync(f, true);
+        const isDir = stats.isDirectory();
+        if (isDir) {
+          cb(true, f, stats);
+          recurse(f + "/", myZipFs.readdirSync(f), cb);
+        } else {
+          cb(false, f, stats)
+        }
+      }
+    }
+    recurse("/", myZipFs.readdirSync("/"), (isDir, f, stats) => {
+      if (callback) callback.onArchiveFile(isDir, contentDir + f);
+      if (!isDir) {
+        size += stats.size;
+      }
+    });
+    if (callback) callback.onArchiveFilesFinished();
+
+    // If less than threshold, extract and write files.
+    // Otherwise use the ZipFS directly (much slower, but uses less memory)
+    if (size < maxExtractSize) {
+      console.log("EXTRACTING FILES.")
+      recurse("/", myZipFs.readdirSync("/"), (isDir, f, stats) => {
+        const path = contentDir + f;
+        if (isDir) {
+          try {
+            FS.mkdir(path);
+          } catch (e) {
+            LOG.info("## Error making directory, it may already exist: " + path);
+          }
+        } else {
+          let data = myZipFs.readFileSync(f, null, FileFlag.getFileFlag("r"));
+          let stream = FS.open(path, 'a');
+          console.log("write: " + path);
+          FS.write(stream, data, 0, data.length, 0, true);
+          FS.close(stream);
+          data = null;
+        }
+      });
+    } else {
+      console.log("USING ZIP.")
+      const MFS = new BrowserFS.FileSystem.MountableFileSystem();
+      MFS.mount(contentDir, myZipFs);
+      BrowserFS.initialize(MFS);
+      const BFS = new BrowserFS.EmscriptenFS();
+      FS.mount(BFS, {root: `${contentDir}/`}, `${contentDir}/`);
+    }
+  }
+
+  wait(time) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve();
+      }, time);
+    });
   }
 }

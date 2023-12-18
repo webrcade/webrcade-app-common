@@ -1,5 +1,5 @@
 import { Component } from "react";
-import { FocusGrid, GamepadEnum, GamepadNotifier, KCODES } from "../../../input"
+import { FocusGrid, GamepadEnum, GamepadNotifier, KCODES, isEscapeKeySequence } from "../../../input"
 
 import styles from './style.scss'
 
@@ -47,7 +47,7 @@ export class Screen extends Component {
   }
 
   handleKeyUpEvent = (e) => {
-    if (e.code === KCODES.ESCAPE) {
+    if (isEscapeKeySequence(e) ||e.code === KCODES.ESCAPE) {
       this.close();
     }
   }

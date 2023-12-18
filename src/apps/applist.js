@@ -15,6 +15,7 @@ const locSms = locGenesis;
 const locRetroGenesis = isDev() ? `http://${localIp}:3101` : 'app/retro-genesis/';
 const locRetroPceFast = isDev() ? `http://${localIp}:3202` : 'app/retro-pce-fast/';
 const locRetroStella = isDev() ? `http://${localIp}:3312` : 'app/retro-stella/';
+// const locRetroProsystem = isDev() ? `http://${localIp}:3314` : 'app/retro-prosystem/';
 const locPsx = isDev() ? `http://${localIp}:3099` : 'app/psx/';
 const loc7800 = isDev() ? `http://${localIp}:3020` : 'app/7800/';
 const locNes = isDev() ? `http://${localIp}:3030` : 'app/nes/';
@@ -32,6 +33,8 @@ const locRetro5200 = isDev() ? `http://${localIp}:3306` : 'app/retro-a5200/';
 const locRetroNeocd = isDev() ? `http://${localIp}:3307` : 'app/retro-neocd/';
 const locQuake = isDev() ? `http://${localIp}:3308` : 'app/quake/';
 const locRetro3dO = isDev() ? `http://${localIp}:3311` : 'app/3do/';
+const locScummVm = isDev() ? `http://${localIp}:3313` : 'app/scummvm/';
+
 // const locRetroSaturn = isDev() ? `http://${localIp}:3312` : 'app/saturn/';
 // const locRetroParallelN64 = isDev() ? `http://${localIp}:3309` : 'app/retro-n64/';
 const locStandalone = isDev() ? `http://${localIp}:3080` : 'app/standalone/';
@@ -87,8 +90,10 @@ const APP_TYPE_KEYS = /*Object.freeze(*/{
   RETRO_NEOCD: "retro-neocd",
   RETRO_OPERA: "retro-opera",
   RETRO_PARALLEL_N64: "retro-parallel-n64",
+  // RETRO_PROSYSTEM: "retro-prosystem",
   RETRO_STELLA: "retro-stella",
   // RETRO_YABAUSE: "retro-yabause",
+  SCUMMVM: "scummvm",
   SNES9X: "snes9x",
   TYRQUAKE: "tyrquake",
   VBA_M_GBA: "vba-m-gba",
@@ -117,6 +122,7 @@ const APP_TYPE_KEYS = /*Object.freeze(*/{
   PCECD: "pcecd",
   QUAKE: "quake",
   // SATURN: "saturn",
+  SCUMM: "scumm",
   SEGACD: "segacd",
   SG1000: 'sg1000',
   SGX: 'sgx',
@@ -270,6 +276,22 @@ const types = [{
       paddleVertical: false,
       paddleInverted: false,
     }
+  // }, {
+  //   key: APP_TYPE_KEYS.RETRO_PROSYSTEM,
+  //   alias: APP_TYPE_KEYS.A7800,
+  //   name: 'Atari 7800',
+  //   coreName: 'Libretro ProSystem',
+  //   location: locRetroProsystem,
+  //   thumbnail: "images/app/7800-thumb.png",
+  //   background: "images/app/7800-background.png",
+  //   validate: checkRom,
+  //   extensions: ['a78'],
+  //   testMagic: Atari7800.testMagic,
+  //   getMd5: Atari7800.getMd5,
+  //   defaults: {
+  //     rom: "",
+  //     zoomLevel: 0,
+  //   }
   }, {
     key: APP_TYPE_KEYS.JS7800,
     alias: APP_TYPE_KEYS.A7800,
@@ -580,6 +602,7 @@ const types = [{
     },
     defaults: {
       discs: [],
+      sbi: [],
       multitap: false,
       analog: false,
       uid: "",
@@ -742,6 +765,7 @@ const types = [{
     alias: APP_TYPE_KEYS.QUAKE,
     name: 'Quake',
     coreName: 'TyrQuake',
+    slowExit: true,
     location: locQuake,
     background: 'images/app/quake-background.png',
     thumbnail: 'images/app/quake-thumb.png',
@@ -751,6 +775,22 @@ const types = [{
       archive: "",
       wadType: 0,
       wadPath: "",
+      uid: "",
+      zoomLevel: 0
+    }
+  }, {
+    key: APP_TYPE_KEYS.SCUMMVM,
+    alias: APP_TYPE_KEYS.SCUMM,
+    name: 'ScummVM',
+    coreName: 'ScummVM',
+    slowExit: true,
+    location: locScummVm,
+    background: 'images/app/scummvm-background.png',
+    thumbnail: 'images/app/scummvm-thumb.png',
+    validate: checkArchive,
+    extensions: [],
+    defaults: {
+      archive: "",
       uid: "",
       zoomLevel: 0
     }
@@ -852,6 +892,7 @@ addAlias(types, APP_TYPE_KEYS.PCFX, APP_TYPE_KEYS.BEETLE_PCFX);
 addAlias(types, APP_TYPE_KEYS.PSX, APP_TYPE_KEYS.BEETLE_PSX);
 addAlias(types, APP_TYPE_KEYS.QUAKE, APP_TYPE_KEYS.TYRQUAKE);
 // addAlias(types, APP_TYPE_KEYS.SATURN, APP_TYPE_KEYS.RETRO_YABAUSE);
+addAlias(types, APP_TYPE_KEYS.SCUMM, APP_TYPE_KEYS.SCUMMVM);
 addAlias(types, APP_TYPE_KEYS.SEGACD, APP_TYPE_KEYS.RETRO_GENPLUSGX_SEGACD);
 addAlias(types, APP_TYPE_KEYS.SG1000, APP_TYPE_KEYS.GENPLUSGX_SG);
 addAlias(types, APP_TYPE_KEYS.SGX, APP_TYPE_KEYS.MEDNAFEN_SGX);

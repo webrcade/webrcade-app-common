@@ -8,6 +8,7 @@ import { FieldLabel } from '../editor/tabs';
 import { FieldControl } from '../editor/tabs';
 import { TelevisionWhiteImage } from '../../../images';
 import { ScreenSizeSelect } from '../../components/select/screensizeselect';
+import { ScreenControlsSelect } from '../../components/select/screencontrolsselect';
 import { Switch } from '../../components/switch';
 import { WebrcadeContext } from '../../context/webrcadecontext';
 
@@ -29,13 +30,15 @@ export class AppSettingsEditor extends Component {
         origBilinearMode: emulator.getPrefs().isBilinearEnabled(),
         bilinearMode: emulator.getPrefs().isBilinearEnabled(),
         origScreenSize: emulator.getPrefs().getScreenSize(),
-        screenSize: emulator.getPrefs().getScreenSize()
+        screenSize: emulator.getPrefs().getScreenSize(),
+        origScreenControls: emulator.getPrefs().getScreenControls(),
+        screenControls: emulator.getPrefs().getScreenControls()
       },
     });
   }
 
   render() {
-    const { emulator, onClose } = this.props;
+    const { emulator, onClose, hideBilinear, showOnScreenControls } = this.props;
     const { tabIndex, values, focusGridComps } = this.state;
 
     const setFocusGridComps = (comps) => {
@@ -51,7 +54,7 @@ export class AppSettingsEditor extends Component {
         showCancel={true}
         onOk={() => {
           let change = false;
-          if (values.origBilinearMode !== values.bilinearMode) {
+          if (!hideBilinear && values.origBilinearMode !== values.bilinearMode) {
             emulator.getPrefs().setBilinearEnabled(values.bilinearMode);
             emulator.updateBilinearFilter();
             change = true;
@@ -59,6 +62,11 @@ export class AppSettingsEditor extends Component {
           if (values.origScreenSize !== values.screenSize) {
             emulator.getPrefs().setScreenSize(values.screenSize);
             emulator.updateScreenSize();
+            change = true;
+          }
+          if (values.origScreenControls !== values.screenControls) {
+            emulator.getPrefs().setScreenControls(values.screenControls);
+            emulator.updateOnScreenControls();
             change = true;
           }
           if (change) {
@@ -76,6 +84,8 @@ export class AppSettingsEditor extends Component {
             content: (
               <AppDisplaySettingsTab
                 emulator={emulator}
+                hideBilinear={hideBilinear}
+                showOnScreenControls={showOnScreenControls}
                 isActive={tabIndex === 0}
                 setFocusGridComps={setFocusGridComps}
                 values={values}
@@ -94,9 +104,11 @@ export class AppDisplaySettingsTab extends FieldsTab {
     super();
     this.bilinearRef = React.createRef();
     this.screenSizeRef = React.createRef();
+    this.screenControlsRef = React.createRef();
     this.gridComps = [
       [this.screenSizeRef],
-      [this.bilinearRef]
+      [this.bilinearRef],
+      [this.screenControlsRef]
     ];
   }
 
@@ -111,9 +123,9 @@ export class AppDisplaySettingsTab extends FieldsTab {
   }
 
   render() {
-    const { bilinearRef, screenSizeRef } = this;
+    const { bilinearRef, screenSizeRef, screenControlsRef } = this;
     const { focusGrid } = this.context;
-    const { setValues, values, hideBilinear } = this.props;
+    const { setValues, values, hideBilinear, showOnScreenControls } = this.props;
 
     return (
       <Fragment>
@@ -124,7 +136,7 @@ export class AppDisplaySettingsTab extends FieldsTab {
               selectRef={screenSizeRef}
               addDefault={true}
               onChange={(value) => {
-                setValues({ ...values, ...{ screenSize: value }});
+                setValues({ ...values, ...{ screenSize: value } });
               }}
               value={values.screenSize}
               onPad={e => focusGrid.moveFocus(e.type, screenSizeRef)}
@@ -146,7 +158,23 @@ export class AppDisplaySettingsTab extends FieldsTab {
             </FieldControl>
           </FieldRow>
         )}
-        </Fragment>
+        {showOnScreenControls && (
+          <FieldRow>
+            <FieldLabel>On-screen controls</FieldLabel>
+            <FieldControl>
+              <ScreenControlsSelect
+                selectRef={screenControlsRef}
+                addDefault={true}
+                onChange={(value) => {
+                  setValues({ ...values, ...{ screenControls: value } });
+                }}
+                value={values.screenControls}
+                onPad={e => focusGrid.moveFocus(e.type, screenControlsRef)}
+              />
+            </FieldControl>
+          </FieldRow>
+        )}
+      </Fragment>
     );
   }
 }

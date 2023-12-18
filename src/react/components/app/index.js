@@ -40,7 +40,8 @@ export class WebrcadeApp extends Component {
       yesNoInfo: null,
       showOverlay: false,
       showXboxViewMessage: false,
-      statusMessage: null
+      statusMessage: null,
+      refresh: 0
     };
 
     this.pauseExit = false;
@@ -69,6 +70,10 @@ export class WebrcadeApp extends Component {
           }, 0)
         });
     }
+  }
+
+  forceRefresh() {
+    this.setState({refresh: this.state.refresh + 1});
   }
 
   componentDidMount() {
@@ -154,7 +159,7 @@ export class WebrcadeApp extends Component {
   renderLoading() {
     const { loadingMessage, loadingPercent } = this.state;
     return (
-      <div>
+      <div key={loadingMessage ? loadingMessage : "loading"}>
         <div className={styles.loading}>{loadingMessage ? loadingMessage : Resources.getText(TEXT_IDS.LOADING)}...</div>
         {loadingPercent !== null ?
           <div className={styles['loading-percent']}>{loadingPercent}%</div> : null}
@@ -341,6 +346,55 @@ export class WebrcadeApp extends Component {
       } else {
         await this._exit(navigateBack);
       }
+    }
+  }
+
+  // TODO: Move this to common
+  async fetchResponseBuffer(response) {
+    //let checksum = 0;
+
+    let length = response.headers.get('Content-Length');
+    // console.log("Length: " + length);
+    if (length) {
+      length = parseInt(length);
+      let array = length > 0 ? new Uint8Array(length) : new Uint8Array();
+      if (length > 0) {
+        let at = 0;
+        let reader = response.body.getReader();
+        for (;;) {
+          let { done, value } = await reader.read();
+          if (done) {
+            break;
+          }
+
+// TODO: FIX THIS BEFORE RELEASE !!!
+          if (at + value.length > length) {
+            LOG.error("File exceeded reported length!");
+            // TODO: Fix this! Download the file w/o streaming...
+            return array;
+          }
+
+          array.set(value, at);
+          at += value.length;
+
+          // for (let i = 0; i < value.length; i++) {
+          //   checksum += value[i];
+          // }
+
+          const progress = ((at / length).toFixed(2) * 100).toFixed(0);
+          this.setState({ loadingPercent: progress | 0 });
+        }
+      }
+      try {
+        // console.log("##### " + checksum)
+        // alert(checksum)
+        return array;
+      } finally {
+        array = null;
+      }
+    } else {
+      const blob = await response.blob();
+      return new Uint8Array(await new Response(blob).arrayBuffer());
     }
   }
 }

@@ -29,6 +29,8 @@ const LinkBlackImage = Icons.link_black_24dp;
 const LinkWhiteImage = Icons.link_white_24dp;
 const LinkOffBlackImage = Icons.link_off_black_24dp;
 const LinkOffWhiteImage = Icons.link_off_white_24dp;
+const ListsWhiteImage = Icons.lists_white_24dp;
+const PauseWhiteImage = Icons.pause_white_24dp;
 const PlayArrowWhiteImage = Icons.play_arrow_white_24dp; //resolvePath("images/common/play_arrow_white_24dp.svg");
 const TuneWhiteImage = Icons.tune_white_24dp; //resolvePath("images/common/tune_white_24dp.svg");
 const VolumeOffBlackImage = Icons.volume_off_black_24dp; //resolvePath("images/common/volume_off_black_24dp.svg");
@@ -39,6 +41,14 @@ const SettingsRedImage = Icons.settings_red_24dp; //resolvePath("images/common/s
 const SettingsWhiteImage = Icons.settings_white_24dp; //resolvePath("images/common/settings_white_24dp.svg");
 const SettingsAppWhiteImage = Icons.settings_applications_white_24dp;
 const TelevisionWhiteImage = Icons.tv_white_24dp; //resolvePath("images/common/tv_white_24dp.svg");
+const MouseWhiteImage = Icons.mouse_white_24dp;
+const SwipeWhiteImage = Icons.swipe_white_24dp;
+const ArrowUpwardImage = Icons.arrow_upward_24dp;
+const ArrowDownwardImage = Icons.arrow_downward_24dp;
+const ArrowBackImage = Icons.arrow_back_24dp;
+const ArrowForwardImage = Icons.arrow_forward_24dp;
+const SwapVertImage = Icons.swap_vert_24dp;
+
 const CategoryThumbImage = resolvePath("images/folder.png");
 const CategoryBackgroundImage = resolvePath("images/folder-background.png");
 const FeedThumbImage = resolvePath("images/feed.png");
@@ -81,6 +91,7 @@ const WKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/W_Key_D
 const TKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/T_Key_Dark.png");
 const RKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/R_Key_Dark.png");
 const EKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/E_Key_Dark.png");
+const PeriodKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/Period_Key_Dark.png");
 
 const ZeroKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/0_Key_Dark.png");
 const OneKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/1_Key_Dark.png");
@@ -94,6 +105,9 @@ const EightKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/8_K
 const NineKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/9_Key_Dark.png");
 const MinusKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/Minus_Key_Dark.png");
 const EqualsKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/Equals_Key_Dark.png");
+
+const F5Key = resolvePath("images/common/controller/Keyboard & Mouse/Dark/F5_Key_Dark.png");
+const F7Key = resolvePath("images/common/controller/Keyboard & Mouse/Dark/F7_Key_Dark.png");
 
 const Atari2600Background = resolvePath("images/app/2600-background.png");
 const Atari7800Background = resolvePath("images/app/7800-background.png");
@@ -128,6 +142,8 @@ const A5200Background = resolvePath("images/app/5200-background.png");
 const ColecoVisionBackground = resolvePath("images/app/colecovision-background.png");
 const ColecoController = resolvePath("images/app/coleco/controller.png");
 const A5200Controller = resolvePath("images/app/a5200/controller.png");
+const ScummVmBackground = resolvePath("images/app/scummvm-background.png");
+
 
 export {
   AddCircleBlackImage,
@@ -157,6 +173,7 @@ export {
   LinkWhiteImage,
   LinkOffBlackImage,
   LinkOffWhiteImage,
+  PauseWhiteImage,
   PlayArrowBlackImage,
   PlayArrowWhiteImage,
   SaveWhiteImage,
@@ -206,6 +223,9 @@ export {
   TKey,
   RKey,
   EKey,
+  PeriodKey,
+  F5Key,
+  F7Key,
   ZeroKey,
   OneKey,
   TwoKey,
@@ -251,6 +271,15 @@ export {
   ThreedoBackground,
   Atari2600Background,
   Atari7800Background,
+  ListsWhiteImage,
+  ScummVmBackground,
+  MouseWhiteImage,
+  SwipeWhiteImage,
+  ArrowUpwardImage,
+  ArrowDownwardImage,
+  ArrowBackImage,
+  ArrowForwardImage,
+  SwapVertImage,
 
   resolvePath as resolveImagePath
 }

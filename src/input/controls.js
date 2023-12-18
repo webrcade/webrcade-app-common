@@ -139,10 +139,18 @@ export class KeyCodeToControlMapping {
       this.downHeld = false;
       this.rightHeld = false;
       this.leftHeld = false;
+      this.escape = false;
     }
   }
 
   handleKeyEvent(e, down) {
+    if (isEscapeKeySequence(e)) {
+      e.preventDefault();
+      this.escape = true;
+      return;
+    }
+    this.escape = false;
+
     const cid = this.keyCodeToControlId[e.code];
     if (cid !== undefined) {
       e.preventDefault();
@@ -170,6 +178,10 @@ export class KeyCodeToControlMapping {
   }
 
   isControlDown(cid) {
+    if (this.escape && cid === CIDS.ESCAPE) {
+      return true;
+    }
+
     let down = this.controlIdState[cid];
 
     if (down !== undefined && down) {
@@ -421,4 +433,9 @@ export class Controllers {
   getAxisValue(controllerIdx, stick, isX) {
     return this.controllers[controllerIdx].getAxisValue(stick, isX);
   }
+}
+
+export function isEscapeKeySequence(e) {
+  return (e.getModifierState && (e.getModifierState("Control") || e.getModifierState("Alt")) &&
+    (e.code === KCODES.ENTER || e.code === KCODES.SHIFT_LEFT || e.code === KCODES.SHIFT_RIGHT));
 }

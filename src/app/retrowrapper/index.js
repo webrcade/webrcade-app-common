@@ -8,6 +8,7 @@ import { Resources } from '../../resources';
 import { CIDS } from '../../input';
 import { getScreenShot } from '../../display';
 import { TEXT_IDS } from '../../resources';
+import { FileManifest } from '../filemanifest';
 import * as LOG from '../../log'
 
 const STATE_FILE_PATH = "/home/web_user/retroarch/userdata/states/game.state";
@@ -62,6 +63,7 @@ export class RetroAppWrapper extends AppWrapper {
     window.emulator = this;
     window.readyAudioContext = null;
 
+    this.discIndex = null;
     this.romBytes = null;
     this.biosBuffers = null;
     this.escapeCount = -1;
@@ -74,6 +76,10 @@ export class RetroAppWrapper extends AppWrapper {
 
   RA_DIR = '/home/web_user/retroarch/';
   RA_SYSTEM_DIR = this.RA_DIR + 'system/';
+
+  setDiscIndex(index) {
+    this.discIndex = index;
+  }
 
   setExiting(exiting) {
     this.exiting = true;
@@ -105,9 +111,14 @@ export class RetroAppWrapper extends AppWrapper {
     this.biosBuffers = biosBuffers;
     this.romBytes = romBytes;
     this.ext = ext;
+    this.archiveUrl = null;
     this.game = this.isDiscBased() ?
       (this.RA_DIR + 'game.' + (ext != null && ext === 'pbp' ? 'pbp' : 'chd')) :
       (this.RA_DIR + "game.bin");
+  }
+
+  setArchiveUrl(url) {
+    this.archiveUrl = url;
   }
 
   createControllers() {
@@ -398,14 +409,6 @@ export class RetroAppWrapper extends AppWrapper {
     }
   }
 
-  wait(time) {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        resolve();
-      }, time);
-    });
-  }
-
   applyGameSettings() {
   }
 
@@ -414,7 +417,6 @@ export class RetroAppWrapper extends AppWrapper {
     const enabled = this.isBilinearFilterEnabled();
     window.Module._wrc_enable_bilinear_filter(enabled ? 1 : 0);
   }
-
 
   isForceAspectRatio() {
     return this.getScreenSize() === this.SS_NATIVE;
@@ -451,57 +453,7 @@ export class RetroAppWrapper extends AppWrapper {
 
   onFrame() {}
 
-  async extractArchive() {
-    const CONTENT_DIR = "/content";
-    const FS = window.FS;
-    const BrowserFS = window.BrowserFS;
-    const myZipFs = new BrowserFS.FileSystem.ZipFS(new Buffer(this.romBytes));
-
-    FS.mkdir(CONTENT_DIR);
-
-    // Determine extracted size of files
-    let size = 0;
-    const recurse = (path, files, cb) => {
-      for (let i = 0; i < files.length; i++) {
-        const f = path + files[i];
-        const stats = myZipFs.statSync(f, true);
-        const isDir = stats.isDirectory();
-        if (isDir) {
-          cb(true, f, stats);
-          recurse(f + "/", myZipFs.readdirSync(f), cb);
-        } else {
-          cb(false, f, stats)
-        }
-      }
-    }
-    recurse("/", myZipFs.readdirSync("/"), (isDir, f, stats) => {
-      this.onArchiveFile(isDir, CONTENT_DIR + f);
-      if (!isDir) {
-        size += stats.size;
-      }
-    });
-    this.onArchiveFilesFinished();
-
-    // If less than threshold, extract and write files.
-    // Otherwise use the ZipFS directly (much slower, but uses less memory)
-    if (size < (256 * 1024 * 1024)) { // 256MB
-      recurse("/", myZipFs.readdirSync("/"), (isDir, f, stats) => {
-        const path = CONTENT_DIR + f;
-        if (isDir) {
-          FS.mkdir(path);
-        } else {
-          let data = myZipFs.readFileSync(f, null, FileFlag.getFileFlag("r"));
-          FS.writeFile(path, data);
-          data = null;
-        }
-      });
-    } else {
-      const MFS = new BrowserFS.FileSystem.MountableFileSystem();
-      MFS.mount(CONTENT_DIR, myZipFs);
-      BrowserFS.initialize(MFS);
-      const BFS = new BrowserFS.EmscriptenFS();
-      FS.mount(BFS, {root: `${CONTENT_DIR}/`}, `${CONTENT_DIR}/`);
-    }
+  async onWriteAdditionalFiles() {
   }
 
   async onStart(canvas) {
@@ -528,6 +480,7 @@ export class RetroAppWrapper extends AppWrapper {
 
       // // Load preferences
       // await this.prefs.load();
+      await this.onWriteAdditionalFiles();
 
       // Apply the game settings
       this.applyGameSettings();
@@ -541,11 +494,26 @@ export class RetroAppWrapper extends AppWrapper {
 
       // Prepare game content
       if (this.isArchiveBased()) {
-        setTimeout(() => {
-          app.setState({ loadingMessage: 'Preparing files' });
-        }, 0);
-        // Extract the archive
-        await this.extractArchive();
+        try {
+          if (this.romBytes.length > 10 * 1024 * 1024) {
+            app.setState({ loadingMessage: 'Preparing files' });
+            await this.wait(10);
+          }
+
+          // Extract the archive
+          await this.extractArchive(
+            window.FS, "/content", this.romBytes, this.DEFAULT_MAX_EXTRACT_SIZE, this
+          );
+
+          app.setState({ loadingMessage: null });
+          await this.wait(10);
+        } catch (e) {
+          LOG.info("Not a zip file, checking for a manifest.");
+          FS.mkdir("/content");
+          const manifest = new FileManifest(this, FS, "/content", this.romBytes, this.archiveUrl, this);
+          const totalSize = await manifest.process();
+          if (!totalSize) throw e;
+        }
       } else {
         // Write rom file
         let stream = FS.open(game, 'a');

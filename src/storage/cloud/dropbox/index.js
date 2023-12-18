@@ -140,6 +140,28 @@ class WrcDropbox {
     return ret;
   }
 
+  async listFolder(path) {
+    const dbx = await this.getDropbox();
+    const result = await dbx.filesListFolder({
+        path: path,
+        limit: 2000,
+        include_non_downloadable_files: false
+      }
+    );
+
+    return result;
+  }
+
+  async createSharedLink(path) {
+    const dbx = await this.getDropbox();
+    const result = await dbx.sharingCreateSharedLinkWithSettings({
+        path: path,
+      }
+    );
+
+    return result;
+  }
+
   async downloadFile(path) {
     const dbx = await this.getDropbox();
     const result = await dbx.filesDownload({path: path});

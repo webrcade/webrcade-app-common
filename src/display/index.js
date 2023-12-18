@@ -13,7 +13,7 @@ export async function getScreenShot(canvas, advanceCb, maxTries) {
   try {
     const doIt = async (advance) => {
       if (advance) {
-        advanceCb();
+        await advanceCb();
       }
 
       const result = canvas.toDataURL();
@@ -34,10 +34,15 @@ export async function getScreenShot(canvas, advanceCb, maxTries) {
     }
 
     for (i = 0; i < maxTries; i++) {
-      let shot = await doIt(false);
+      let shot = null;
+      try {
+        shot = await doIt(false);
+      } catch (e) {}
       if (shot) return shot;
 
-      shot = await doIt(true);
+      try {
+        shot = await doIt(true);
+      } catch (e) {}
       if (shot) return shot;
     }
   } finally {
