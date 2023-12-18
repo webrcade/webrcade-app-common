@@ -15,6 +15,7 @@ const locSms = locGenesis;
 const locRetroGenesis = isDev() ? `http://${localIp}:3101` : 'app/retro-genesis/';
 const locRetroPceFast = isDev() ? `http://${localIp}:3202` : 'app/retro-pce-fast/';
 const locRetroStella = isDev() ? `http://${localIp}:3312` : 'app/retro-stella/';
+// const locRetroProsystem = isDev() ? `http://${localIp}:3314` : 'app/retro-prosystem/';
 const locPsx = isDev() ? `http://${localIp}:3099` : 'app/psx/';
 const loc7800 = isDev() ? `http://${localIp}:3020` : 'app/7800/';
 const locNes = isDev() ? `http://${localIp}:3030` : 'app/nes/';
@@ -33,6 +34,7 @@ const locRetroNeocd = isDev() ? `http://${localIp}:3307` : 'app/retro-neocd/';
 const locQuake = isDev() ? `http://${localIp}:3308` : 'app/quake/';
 const locRetro3dO = isDev() ? `http://${localIp}:3311` : 'app/3do/';
 const locScummVm = isDev() ? `http://${localIp}:3313` : 'app/scummvm/';
+
 // const locRetroSaturn = isDev() ? `http://${localIp}:3312` : 'app/saturn/';
 // const locRetroParallelN64 = isDev() ? `http://${localIp}:3309` : 'app/retro-n64/';
 const locStandalone = isDev() ? `http://${localIp}:3080` : 'app/standalone/';
@@ -88,6 +90,7 @@ const APP_TYPE_KEYS = /*Object.freeze(*/{
   RETRO_NEOCD: "retro-neocd",
   RETRO_OPERA: "retro-opera",
   RETRO_PARALLEL_N64: "retro-parallel-n64",
+  // RETRO_PROSYSTEM: "retro-prosystem",
   RETRO_STELLA: "retro-stella",
   // RETRO_YABAUSE: "retro-yabause",
   SCUMMVM: "scummvm",
@@ -273,6 +276,22 @@ const types = [{
       paddleVertical: false,
       paddleInverted: false,
     }
+  // }, {
+  //   key: APP_TYPE_KEYS.RETRO_PROSYSTEM,
+  //   alias: APP_TYPE_KEYS.A7800,
+  //   name: 'Atari 7800',
+  //   coreName: 'Libretro ProSystem',
+  //   location: locRetroProsystem,
+  //   thumbnail: "images/app/7800-thumb.png",
+  //   background: "images/app/7800-background.png",
+  //   validate: checkRom,
+  //   extensions: ['a78'],
+  //   testMagic: Atari7800.testMagic,
+  //   getMd5: Atari7800.getMd5,
+  //   defaults: {
+  //     rom: "",
+  //     zoomLevel: 0,
+  //   }
   }, {
     key: APP_TYPE_KEYS.JS7800,
     alias: APP_TYPE_KEYS.A7800,

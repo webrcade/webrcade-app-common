@@ -77,7 +77,7 @@ class FileManifest {
 
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
-        let requestUrl = this.getUrl(file.name, file.url)
+        let requestUrl = this.getUrl(file.name, file.url ? file.url : "")
         const destinationFile = this.getDestinationFile(file.name);
         const extract = file.extract;
 

@@ -155,7 +155,7 @@ export class WebrcadeRetroApp extends WebrcadeApp {
         fad = new FetchAppData(discUrl);
       } else if (this.isArchiveBased()) {
         fad = new FetchAppData(this.archive);
-      }else {
+      } else {
         exts = AppRegistry.instance.getExtensions(
           type, true, false
         );

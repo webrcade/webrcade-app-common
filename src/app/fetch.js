@@ -9,6 +9,33 @@ const DIRECT = "direct";
 const HTTP_PROXY = "http-proxy";
 const HTTPS_PROXY = "https-proxy";
 
+export function getContentDispositionFilename(headers) {
+  const disposition = headers['content-disposition'];
+  if (disposition) {
+    //const matches = /filename\*?=['"]?(?:UTF-\d['"]*)?([^;\r\n"']*)['"]?;?/gim.exec(disposition);
+    const matches = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/gim.exec(disposition);
+    if (matches.length > 1) {
+      let match = matches[1];
+      match = match.trim();
+      if (match.length > 0) {
+        // Strip leading quote
+        if (match[0] === '"' ||  match[0] === '\'') {
+          match = match.substring(1);
+        }
+        // Strip trailing quote
+        if (match.length > 0) {
+          if (match[match.length - 1] === '"' || match[match.length - 1] === '\'') {
+            match = match.substring(0, match.length - 1);
+          }
+        }
+        console.log(match);
+        return match;
+      }
+    }
+  }
+  return null;
+}
+
 export class FetchAppData {
   constructor(url) {
     this.url = remapUrl(url);
@@ -61,14 +88,8 @@ export class FetchAppData {
 
   getFilename(res) {
     const headers = this.getHeaders(res);
-    console.log(headers);
-    // TODO: Move to common
-    const disposition = headers['content-disposition'];
-    if (disposition) {
-      const matches = /filename\*?=['"]?(?:UTF-\d['"]*)?([^;\r\n"']*)['"]?;?/gim.exec(disposition);
-      if (matches.length > 1) {
-        return matches[1];
-      }
+    if (headers) {
+      return getContentDispositionFilename(headers);
     }
     return null;
   }
