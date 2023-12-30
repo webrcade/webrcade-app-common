@@ -148,7 +148,7 @@ class FileManifest {
       if (!(this.bytes.length < 10 * 1024 * 1024)) { // 10mb max
         return false;
       }
-
+      
       let parsed = false;
       try {
         const contents = new TextDecoder().decode(this.bytes);

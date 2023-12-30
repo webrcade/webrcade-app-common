@@ -354,8 +354,15 @@ export class WebrcadeApp extends Component {
     //let checksum = 0;
 
     let length = response.headers.get('Content-Length');
+    let type = response.headers.get("Content-Type");
+    let isText = (type &&
+      (type.toLowerCase().indexOf("text/") !== -1) ||
+      (type.toLowerCase().indexOf("application/json") !== -1) ||
+      (type.toLowerCase().indexOf("application/xml") !== -1)
+    );
+
     // console.log("Length: " + length);
-    if (length) {
+    if (!isText && length) {
       length = parseInt(length);
       let array = length > 0 ? new Uint8Array(length) : new Uint8Array();
       if (length > 0) {
@@ -369,7 +376,7 @@ export class WebrcadeApp extends Component {
 
 // TODO: FIX THIS BEFORE RELEASE !!!
           if (at + value.length > length) {
-            LOG.error("File exceeded reported length!");
+            LOG.error("File exceeded reported length! " + (at + value.length) + ", " + length);
             // TODO: Fix this! Download the file w/o streaming...
             return array;
           }
