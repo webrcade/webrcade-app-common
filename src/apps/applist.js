@@ -15,6 +15,7 @@ const locSms = locGenesis;
 const locRetroGenesis = isDev() ? `http://${localIp}:3101` : 'app/retro-genesis/';
 const locRetroPceFast = isDev() ? `http://${localIp}:3202` : 'app/retro-pce-fast/';
 const locRetroStella = isDev() ? `http://${localIp}:3312` : 'app/retro-stella/';
+const locRetroStellaLatest = isDev() ? `http://${localIp}:3314` : 'app/retro-stella-latest/';
 // const locRetroProsystem = isDev() ? `http://${localIp}:3314` : 'app/retro-prosystem/';
 const locPsx = isDev() ? `http://${localIp}:3099` : 'app/psx/';
 const loc7800 = isDev() ? `http://${localIp}:3020` : 'app/7800/';
@@ -92,6 +93,7 @@ const APP_TYPE_KEYS = /*Object.freeze(*/{
   RETRO_PARALLEL_N64: "retro-parallel-n64",
   // RETRO_PROSYSTEM: "retro-prosystem",
   RETRO_STELLA: "retro-stella",
+  RETRO_STELLA_LATEST: "retro-stella-latest",
   // RETRO_YABAUSE: "retro-yabause",
   SCUMMVM: "scummvm",
   SNES9X: "snes9x",
@@ -259,8 +261,29 @@ const types = [{
     key: APP_TYPE_KEYS.RETRO_STELLA,
     alias: APP_TYPE_KEYS.A2600,
     name: 'Atari 2600',
-    coreName: 'Libretro Stella',
+    coreName: 'Libretro Stella 2014',
     location: locRetroStella,
+    thumbnail: "images/app/2600-thumb.png",
+    background: "images/app/2600-background.png",
+    validate: checkRom,
+    extensions: ['a26'],
+    defaults: {
+      rom: "",
+      swap: false,
+      zoomLevel: 0,
+      port0: 0,
+      port1: 0,
+      paddleSensitivity: 0,
+      paddleCenter: 0,
+      paddleVertical: false,
+      paddleInverted: false,
+    }
+  }, {
+    key: APP_TYPE_KEYS.RETRO_STELLA_LATEST,
+    alias: APP_TYPE_KEYS.A2600,
+    name: 'Atari 2600',
+    coreName: 'Libretro Stella',
+    location: locRetroStellaLatest,
     thumbnail: "images/app/2600-thumb.png",
     background: "images/app/2600-background.png",
     validate: checkRom,
@@ -869,7 +892,8 @@ if (enable5200) {
 }
 
 // Aliases
-addAlias(types, APP_TYPE_KEYS.A2600, APP_TYPE_KEYS.RETRO_STELLA);
+// addAlias(types, APP_TYPE_KEYS.A2600, APP_TYPE_KEYS.RETRO_STELLA);
+addAlias(types, APP_TYPE_KEYS.A2600, APP_TYPE_KEYS.RETRO_STELLA_LATEST);
 addAlias(types, APP_TYPE_KEYS.A7800, APP_TYPE_KEYS.JS7800);
 addAlias(types, APP_TYPE_KEYS.ARCADE, APP_TYPE_KEYS.FBNEO_ARCADE);
 addAlias(types, APP_TYPE_KEYS.ARCADE_CAPCOM, APP_TYPE_KEYS.FBNEO_CAPCOM);
