@@ -16,6 +16,7 @@ const locRetroGenesis = isDev() ? `http://${localIp}:3101` : 'app/retro-genesis/
 const locRetroPceFast = isDev() ? `http://${localIp}:3202` : 'app/retro-pce-fast/';
 const locRetroStella = isDev() ? `http://${localIp}:3312` : 'app/retro-stella/';
 const locRetroStellaLatest = isDev() ? `http://${localIp}:3314` : 'app/retro-stella-latest/';
+const locRetroCommodore8Bit = isDev() ? `http://${localIp}:3315` : 'app/retro-commodore-8bit/';
 // const locRetroProsystem = isDev() ? `http://${localIp}:3314` : 'app/retro-prosystem/';
 const locPsx = isDev() ? `http://${localIp}:3099` : 'app/psx/';
 const loc7800 = isDev() ? `http://${localIp}:3020` : 'app/7800/';
@@ -58,12 +59,19 @@ const checkDiscs = app => {
   }
 }
 
+const checkMedia = app => {
+  if (app.props === undefined || app.props.media === undefined || app.props.media.length === 0) {
+    throw new Error("Missing 'media' property");
+  }
+}
+
 const APP_TYPE_KEYS = /*Object.freeze(*/{
   // Types
   AT5200: "a5200",
   BEETLE_PSX: "beetle-psx",
   BEETLE_PCFX: "beetle-pcfx",
   COLEM: "colem",
+  COMMODORE_C64: "commodore-c64",
   FBNEO_ARCADE: "fbneo-arcade",
   FBNEO_CAPCOM: "fbneo-capcom",
   FBNEO_KONAMI: "fbneo-konami",
@@ -86,6 +94,7 @@ const APP_TYPE_KEYS = /*Object.freeze(*/{
   PCFX: "pcfx",
   PRBOOM: "prboom",
   PSX: "psx",
+  RETRO_COMMODORE_C64: "retro-commodore-c64",
   RETRO_GENPLUSGX_SEGACD: "retro-genplusgx-segacd",
   RETRO_PCE_FAST: "retro-pce-fast",
   RETRO_NEOCD: "retro-neocd",
@@ -277,6 +286,29 @@ const types = [{
       paddleCenter: 0,
       paddleVertical: false,
       paddleInverted: false,
+    }
+  }, {
+    key: APP_TYPE_KEYS.RETRO_COMMODORE_C64,
+    alias: APP_TYPE_KEYS.COMMODORE_C64,
+    name: 'Commodore 64',
+    coreName: 'Libretro Commodore 64',
+    location: locRetroCommodore8Bit,
+    thumbnail: "images/app/c64-thumb.png",
+    background: "images/app/2600-background.png",
+    validate: checkMedia,
+    extensions: ['d64', 't64', 'crt', 'prg'], // TODO: More, and check cartridges for proper header
+    addProps: (feedProps, outProps) => {
+      const bios = feedProps.commodore8bit_bios;
+      if (bios) {
+        outProps.commodore8bit_bios = bios;
+      }
+    },
+    defaults: {
+      uid: "",
+      media: [],
+      swap: false,
+      zoomLevel: 0,
+      jiffydos: 0
     }
   }, {
     key: APP_TYPE_KEYS.RETRO_STELLA_LATEST,
@@ -899,6 +931,7 @@ addAlias(types, APP_TYPE_KEYS.ARCADE, APP_TYPE_KEYS.FBNEO_ARCADE);
 addAlias(types, APP_TYPE_KEYS.ARCADE_CAPCOM, APP_TYPE_KEYS.FBNEO_CAPCOM);
 addAlias(types, APP_TYPE_KEYS.ARCADE_KONAMI, APP_TYPE_KEYS.FBNEO_KONAMI);
 addAlias(types, APP_TYPE_KEYS.COLECO, APP_TYPE_KEYS.COLEM);
+addAlias(types, APP_TYPE_KEYS.COMMODORE_C64, APP_TYPE_KEYS.RETRO_COMMODORE_C64);
 addAlias(types, APP_TYPE_KEYS.GBA, APP_TYPE_KEYS.VBA_M_GBA);
 addAlias(types, APP_TYPE_KEYS.GB, APP_TYPE_KEYS.VBA_M_GB);
 addAlias(types, APP_TYPE_KEYS.GBC, APP_TYPE_KEYS.VBA_M_GBC);

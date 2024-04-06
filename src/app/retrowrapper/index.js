@@ -97,6 +97,10 @@ export class RetroAppWrapper extends AppWrapper {
     return this.app.isArchiveBased();
   }
 
+  isMediaBased() {
+    return this.app.isMediaBased();
+  }
+
   getCustomStartHandler() {
     return null;
   }
@@ -112,6 +116,7 @@ export class RetroAppWrapper extends AppWrapper {
     this.romBytes = romBytes;
     this.ext = ext;
     this.archiveUrl = null;
+    this.media = null;
     this.game = this.isDiscBased() ?
       (this.RA_DIR + 'game.' + (ext != null && ext === 'pbp' ? 'pbp' : 'chd')) :
       (this.RA_DIR + "game.bin");
@@ -119,6 +124,10 @@ export class RetroAppWrapper extends AppWrapper {
 
   setArchiveUrl(url) {
     this.archiveUrl = url;
+  }
+
+  setMedia(media) {
+    this.media = media;
   }
 
   createControllers() {
@@ -302,6 +311,7 @@ export class RetroAppWrapper extends AppWrapper {
           FS.mkdir('/home/web_user/retroarch/userdata');
           FS.mkdir('/home/web_user/retroarch/userdata/system');
           FS.mkdir('/home/web_user/retroarch/userdata/system/neocd');
+          FS.mkdir('/home/web_user/retroarch/userdata/system/vice');
           FS.mkdir('/home/web_user/retroarch/userdata/saves');
           FS.mkdir('/home/web_user/retroarch/userdata/saves/opera');
           FS.mkdir('/home/web_user/retroarch/userdata/saves/opera/per_game');
@@ -474,7 +484,7 @@ export class RetroAppWrapper extends AppWrapper {
         app.setState({ loadingMessage: null, loadingPercent: null });
       }
 
-      if (this.romBytes.byteLength === 0) {
+      if (this.romBytes && this.romBytes.byteLength === 0) {
         throw new Error('The size is invalid (0 bytes).');
       }
 
@@ -514,6 +524,23 @@ export class RetroAppWrapper extends AppWrapper {
           const totalSize = await manifest.process();
           if (!totalSize) throw e;
         }
+      } else if (this.isMediaBased()) {
+        for (let i = 0; i < this.media.length; i++) {
+          const m = this.media[i];
+          const bytes = m[0];
+          let name = m[1];
+          if (!name) {
+            name = "game" + i + ".bin";
+          }
+
+          const path = this.RA_DIR + name;
+          if (i == 0) {
+            this.game = path;
+          }
+          let stream = FS.open(path, 'a');
+          FS.write(stream, bytes, 0, bytes.length, 0, true);
+          FS.close(stream);
+        }
       } else {
         // Write rom file
         let stream = FS.open(game, 'a');
@@ -544,7 +571,7 @@ export class RetroAppWrapper extends AppWrapper {
         console.log(window.readyAudioContext);
 
         try {
-          const name = this.isArchiveBased() ? this.getArchiveBinaryFileName() : game;
+          const name = this.isArchiveBased() ? this.getArchiveBinaryFileName() : this.game;
           Module.callMain(['-v', name]);
         } catch (e) {
           LOG.error(e);
