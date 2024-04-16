@@ -294,7 +294,7 @@ const types = [{
     coreName: 'Libretro Commodore 64',
     location: locRetroCommodore8Bit,
     thumbnail: "images/app/c64-thumb.png",
-    background: "images/app/2600-background.png",
+    background: "images/app/c64-background.png",
     validate: checkMedia,
     extensions: ['d64', 't64', 'crt', 'prg'], // TODO: More, and check cartridges for proper header
     addProps: (feedProps, outProps) => {
