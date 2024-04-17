@@ -296,7 +296,7 @@ const types = [{
     thumbnail: "images/app/c64-thumb.png",
     background: "images/app/c64-background.png",
     validate: checkMedia,
-    extensions: ['d64', 't64', 'crt', 'prg'], // TODO: More, and check cartridges for proper header
+    extensions: ['d64', 'g64', 't64', 'crt', 'prg'], // TODO: More, and check cartridges for proper header
     addProps: (feedProps, outProps) => {
       const bios = feedProps.commodore8bit_bios;
       if (bios) {
@@ -308,7 +308,8 @@ const types = [{
       media: [],
       swap: false,
       zoomLevel: 0,
-      jiffydos: 0
+      jiffydos: 0,
+      region: 0
     }
   }, {
     key: APP_TYPE_KEYS.RETRO_STELLA_LATEST,
