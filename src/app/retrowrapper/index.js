@@ -11,7 +11,7 @@ import { TEXT_IDS } from '../../resources';
 import { FileManifest } from '../filemanifest';
 import * as LOG from '../../log'
 
-const STATE_FILE_PATH = "/home/web_user/retroarch/userdata/states/game.state";
+let STATE_FILE_PATH = "/home/web_user/retroarch/userdata/states/game.state";
 
 export class RetroAppWrapper extends AppWrapper {
   INP_LEFT = 1;
@@ -262,6 +262,8 @@ export class RetroAppWrapper extends AppWrapper {
     }
   }
 
+  updateSaveStateForSlotProps(slot, props) {}
+
   loadEmscriptenModule(canvas) {
     const { app, frontendArray, RA_DIR } = this;
 
@@ -366,12 +368,16 @@ export class RetroAppWrapper extends AppWrapper {
           props.transform = `rotate(${rot}deg)`;
         }
 
+        const otherProps = {}
+        this.updateSaveStateForSlotProps(slot, otherProps);
+
         await this.getSaveManager().saveState(
           this.saveStatePrefix, slot, s,
           shot ? null : this.canvas,
           this.saveMessageCallback,
           shot,
-          props);
+          props,
+          otherProps);
       }
     } catch (e) {
       LOG.error('Error saving state: ' + e);
@@ -466,6 +472,12 @@ export class RetroAppWrapper extends AppWrapper {
   async onWriteAdditionalFiles() {
   }
 
+  setStateFilePath(path) {
+    STATE_FILE_PATH = path;
+  }
+
+  onStoreMedia() {}
+
   async onStart(canvas) {
     const { app, debug, game } = this;
     const { FS, Module } = window;
@@ -525,22 +537,7 @@ export class RetroAppWrapper extends AppWrapper {
           if (!totalSize) throw e;
         }
       } else if (this.isMediaBased()) {
-        for (let i = 0; i < this.media.length; i++) {
-          const m = this.media[i];
-          const bytes = m[0];
-          let name = m[1];
-          if (!name) {
-            name = "game" + i + ".bin";
-          }
-
-          const path = this.RA_DIR + name;
-          if (i == 0) {
-            this.game = path;
-          }
-          let stream = FS.open(path, 'a');
-          FS.write(stream, bytes, 0, bytes.length, 0, true);
-          FS.close(stream);
-        }
+        this.onStoreMedia();
       } else {
         // Write rom file
         let stream = FS.open(game, 'a');

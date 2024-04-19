@@ -170,11 +170,11 @@ export class Select extends Component {
 
   render() {
     const { focused } = this.state;
-    const { value, options, onChange } = this.props;
+    const { value, options, onChange, width } = this.props;
     const idx = this.getIndex(value, options)
 
     // TODO: make a property that can be set
-    const width = "7.5rem";
+    const finalWidth = width ? width : "7.5rem";
 
     const opts = [];
     for (let i = 0; i < options.length; i++) {
@@ -182,9 +182,9 @@ export class Select extends Component {
         <div
           className={styles['select-group-text-inner-option']}
           style={{
-            width: width,
-            maxWidth: width,
-            minWidth: width
+            width: finalWidth,
+            maxWidth: finalWidth,
+            minWidth: finalWidth
           }}
         >
           {options[i].label}
@@ -212,9 +212,9 @@ export class Select extends Component {
           <div
             className={styles['select-group-text'] + (focused ? (" " + styles['select-group-text__focused'])  : "")}
             style={{
-              width: width,
-              maxWidth: width,
-              minWidth: width
+              width: finalWidth,
+              maxWidth: finalWidth,
+              minWidth: finalWidth
             }}
             onClick={() => {
               if (!this.onNext(value, options, onChange)) {

@@ -143,6 +143,7 @@ const ColecoVisionBackground = resolvePath("images/app/colecovision-background.p
 const ColecoController = resolvePath("images/app/coleco/controller.png");
 const A5200Controller = resolvePath("images/app/a5200/controller.png");
 const ScummVmBackground = resolvePath("images/app/scummvm-background.png");
+const Commodore64Background = resolvePath("images/app/c64-background.png");
 
 
 export {
@@ -266,6 +267,7 @@ export {
   N64Background,
   ColecoVisionBackground,
   ColecoController,
+  Commodore64Background,
   A5200Controller,
   A5200Background,
   ThreedoBackground,
