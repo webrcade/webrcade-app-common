@@ -270,12 +270,15 @@ export class FetchAppData {
         }
       }
       if (error.message && error.message.indexOf("returning HTML content") !== -1) {
+        LOG.info("Dropbox HTML content issue.")
         if (dropboxHtmlRetries-- > 0) {
-          console.log("Retrying Dropbox HTML error...: " + (dropboxHtmlRetries + 1));
+          LOG.info("Retrying Dropbox HTML error...: " + (dropboxHtmlRetries + 1));
           x = 0;
         }
       }
     }
+
+
     throw error;
   }
 }
