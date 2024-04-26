@@ -9,11 +9,7 @@ const DIRECT = "direct";
 const HTTP_PROXY = "http-proxy";
 const HTTPS_PROXY = "https-proxy";
 
-class DropboxHtmlError extends Error {
-  constructor() {
-    super("Dropbox is returning HTML content.");
-  }
-}
+const DROPBOX_HTML_ERROR = "Dropbox is returning HTML content.";
 
 export function getContentDispositionFilename(headers) {
   const disposition = headers['content-disposition'];
@@ -49,6 +45,8 @@ export class FetchAppData {
     this.proxyDisabled = false;
     this.successMethod = null;
     this.method = null;
+    this.dropboxHtmlIssue = false;
+    this.dropboxHtmlRetries = 10;
   }
 
   // getRedirect() {
@@ -174,7 +172,8 @@ export class FetchAppData {
         const ctype = headers["content-type"];
         const disposition = headers["content-disposition"];
         if (ctype && (disposition === undefined) && (ctype.indexOf("text/html") !== -1)) {
-          throw new DropboxHtmlError();
+          this.dropboxHtmlIssue = true;
+          throw DROPBOX_HTML_ERROR;
         }
       }
     }
@@ -237,8 +236,6 @@ export class FetchAppData {
       methods.push(httpsProxyFetch);
     }
 
-    let dropboxHtmlRetries = 10;
-
     let res = null;
     let error = null;
     for (let x = 0; x <= retries; x++) {
@@ -269,15 +266,16 @@ export class FetchAppData {
           }
         }
       }
-      if (error.message && error.message.indexOf("returning HTML content") !== -1) {
+
+      if (this.dropboxHtmlIssue) {
+        this.dropboxHtmlIssue = false;
         LOG.info("Dropbox HTML content issue.")
-        if (dropboxHtmlRetries-- > 0) {
-          LOG.info("Retrying Dropbox HTML error...: " + (dropboxHtmlRetries + 1));
+        if (this.dropboxHtmlRetries-- > 0) {
+          LOG.info("Retrying Dropbox HTML error...: " + (this.dropboxHtmlRetries + 1));
           x = 0;
         }
       }
     }
-
 
     throw error;
   }
