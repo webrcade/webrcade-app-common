@@ -9,6 +9,12 @@ const DIRECT = "direct";
 const HTTP_PROXY = "http-proxy";
 const HTTPS_PROXY = "https-proxy";
 
+class DropboxHtmlError extends Error {
+  constructor() {
+    super("Dropbox is returning HTML content.");
+  }
+}
+
 export function getContentDispositionFilename(headers) {
   const disposition = headers['content-disposition'];
   if (disposition) {
@@ -44,6 +50,33 @@ export class FetchAppData {
     this.successMethod = null;
     this.method = null;
   }
+
+  // getRedirect() {
+  //   return new Promise((resolve, reject) => {
+  //     console.log(this.url)
+  //     try {
+  //      var xhr = new XMLHttpRequest();
+  //      xhr.onload = function() {
+  //       alert('onload');
+  //        const responseURL = this.responseURL;
+  //        if (responseURL != this.url) {
+  //         resolve(remapUrl(responseURL));
+  //        } else {
+  //         resolve(null);
+  //        }
+  //      }
+  //      xhr.onerror= function(e) {
+  //       console.log(e);
+  //       reject("Error determining redirect");
+  //      }
+  //      xhr.open('HEAD', this.url, true);
+  //     } catch (e) {
+  //       console.log(e);
+  //       reject("Error determining redirect");
+  //     }
+  //     xhr.send();
+  //   });
+  // }
 
   //P = (isDev() ? (config.getLocalIp() + "/?y=") : config.getCorsProxy());
   P = config.getCorsProxy() ?
@@ -94,12 +127,34 @@ export class FetchAppData {
     return null;
   }
 
+  // async fetch(props) {
+  //   try {
+  //     const redirect = await this.getRedirect();
+  //     console.log("#### redirect: " + redirect);
+  //     if (redirect !== null) {
+  //       return await this._fetch(props, redirect);
+  //     }
+  //   } catch (e) {
+  //   }
+
+  //   return await this._fetch(props, this.url);
+  // }
+
   async fetch(props) {
     let { P } = this;
     const { retries, proxyDisabled } = this;
     const url = this.url;
     const s = url.toLowerCase().startsWith("https");
     const h = s => (s ? "https://" : "http://");
+
+    // try {
+    //   const redirect = await this.getRedirect();
+    //   console.log("#### redirect: " + redirect);
+    //   if (redirect !== null) {
+    //     // return await this._fetch(props, redirect);
+    //   }
+    // } catch (e) {
+    // }
 
     if (isDev() && config.getCorsProxyDev()) {
       P = config.getCorsProxyDev();
@@ -113,6 +168,17 @@ export class FetchAppData {
       return `${r.status}: ${limitString(text, 80)}`;
     };
 
+    const checkDropboxHtml = (res) => {
+      if (url.indexOf("dropbox" !== -1)) {
+        const headers = this.getHeaders(res);
+        const ctype = headers["content-type"];
+        const disposition = headers["content-disposition"];
+        if (ctype && (disposition === undefined) && (ctype.indexOf("text/html") !== -1)) {
+          throw new DropboxHtmlError();
+        }
+      }
+    }
+
     const doFetch = async url => {
       const res = await fetch(url, props);
       if (res.ok) {
@@ -124,6 +190,7 @@ export class FetchAppData {
 
     const directFetch = async (url) => {
       res = await doFetch(url);
+      checkDropboxHtml(res);
       if (!res) throw new Error("result is undefined");
       this.successMethod = DIRECT;
       return res;
@@ -132,6 +199,7 @@ export class FetchAppData {
     const httpProxyFetch = async (url) => {
       if (!this.isProxyDisabled()) {
         res = await doFetch(`${h(s)}${P}${encodeURIComponent(encodeURI(url))}`);
+        checkDropboxHtml(res);
         if (!res) throw new Error("result is undefined");
         this.successMethod = HTTP_PROXY;
         return res;
@@ -142,6 +210,7 @@ export class FetchAppData {
     const httpsProxyFetch = async (url) => {
       if (!this.isProxyDisabled()) {
         res = await doFetch(`${h(!s)}${P}${encodeURIComponent(encodeURI(url))}`);
+        checkDropboxHtml(res);
         if (!res) throw new Error("result is undefined");
         this.successMethod = HTTPS_PROXY;
         return res;
@@ -167,6 +236,8 @@ export class FetchAppData {
     if (this.method !== HTTPS_PROXY) {
       methods.push(httpsProxyFetch);
     }
+
+    let dropboxHtmlRetries = 10;
 
     let res = null;
     let error = null;
@@ -196,6 +267,12 @@ export class FetchAppData {
               error = e;
             }
           }
+        }
+      }
+      if (error instanceof DropboxHtmlError) {
+        if (dropboxHtmlRetries-- > 0) {
+          console.log("Retrying Dropbox HTML error...: " + (dropboxHtmlRetries + 1));
+          x = 0;
         }
       }
     }
