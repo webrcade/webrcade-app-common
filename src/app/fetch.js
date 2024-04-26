@@ -269,7 +269,7 @@ export class FetchAppData {
           }
         }
       }
-      if (error instanceof DropboxHtmlError) {
+      if (error.message && error.message.indexOf("returning HTML content") !== -1) {
         if (dropboxHtmlRetries-- > 0) {
           console.log("Retrying Dropbox HTML error...: " + (dropboxHtmlRetries + 1));
           x = 0;
