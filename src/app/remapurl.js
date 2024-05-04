@@ -16,6 +16,7 @@ const remapDropbox = (urlLower, url) => {
   if (urlLower.substring(0, DB_PREFIX.length) === DB_PREFIX) {
     if (urlLower.includes("&rlkey=") || urlLower.includes("?rlkey=")) {
       url = url.replace("dl=0", "dl=1");
+      url = url.replace(DB_PREFIX, "https://dl.dropbox.com/");
       LOG.info("Remapped dropbox url: '" + url + "'");
       return url;
     } else {
