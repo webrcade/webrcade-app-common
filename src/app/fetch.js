@@ -167,7 +167,7 @@ export class FetchAppData {
     };
 
     const checkDropboxHtml = (res) => {
-      if (url.indexOf("dropbox" !== -1)) {
+      if (url.indexOf("dropbox") !== -1) {
         const headers = this.getHeaders(res);
         const ctype = headers["content-type"];
         const disposition = headers["content-disposition"];
