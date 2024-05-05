@@ -9,6 +9,9 @@ const DIRECT = "direct";
 const HTTP_PROXY = "http-proxy";
 const HTTPS_PROXY = "https-proxy";
 
+const DROPBOX_HTML_ERROR = "Dropbox is returning HTML content.";
+const GDRIVE_HTML_ERROR = "Google Drive is returning HTML content.";
+
 export function getContentDispositionFilename(headers) {
   const disposition = headers['content-disposition'];
   if (disposition) {
@@ -43,7 +46,37 @@ export class FetchAppData {
     this.proxyDisabled = false;
     this.successMethod = null;
     this.method = null;
+    this.updatedUrl = null;
+    this.dropboxHtmlIssue = false;
+    this.htmlRetries = 10;
   }
+
+  // getRedirect() {
+  //   return new Promise((resolve, reject) => {
+  //     console.log(this.url)
+  //     try {
+  //      var xhr = new XMLHttpRequest();
+  //      xhr.onload = function() {
+  //       alert('onload');
+  //        const responseURL = this.responseURL;
+  //        if (responseURL != this.url) {
+  //         resolve(remapUrl(responseURL));
+  //        } else {
+  //         resolve(null);
+  //        }
+  //      }
+  //      xhr.onerror= function(e) {
+  //       console.log(e);
+  //       reject("Error determining redirect");
+  //      }
+  //      xhr.open('HEAD', this.url, true);
+  //     } catch (e) {
+  //       console.log(e);
+  //       reject("Error determining redirect");
+  //     }
+  //     xhr.send();
+  //   });
+  // }
 
   //P = (isDev() ? (config.getLocalIp() + "/?y=") : config.getCorsProxy());
   P = config.getCorsProxy() ?
@@ -94,12 +127,34 @@ export class FetchAppData {
     return null;
   }
 
+  // async fetch(props) {
+  //   try {
+  //     const redirect = await this.getRedirect();
+  //     console.log("#### redirect: " + redirect);
+  //     if (redirect !== null) {
+  //       return await this._fetch(props, redirect);
+  //     }
+  //   } catch (e) {
+  //   }
+
+  //   return await this._fetch(props, this.url);
+  // }
+
   async fetch(props) {
     let { P } = this;
     const { retries, proxyDisabled } = this;
-    const url = this.url;
+    let url = this.url;
     const s = url.toLowerCase().startsWith("https");
     const h = s => (s ? "https://" : "http://");
+
+    // try {
+    //   const redirect = await this.getRedirect();
+    //   console.log("#### redirect: " + redirect);
+    //   if (redirect !== null) {
+    //     // return await this._fetch(props, redirect);
+    //   }
+    // } catch (e) {
+    // }
 
     if (isDev() && config.getCorsProxyDev()) {
       P = config.getCorsProxyDev();
@@ -113,6 +168,40 @@ export class FetchAppData {
       return `${r.status}: ${limitString(text, 80)}`;
     };
 
+    const checkDropboxHtml = async (res) => {
+      const isDropbox = url.indexOf("dropbox") !== -1;
+      const isGDrive = url.indexOf("drive.google.com") !== -1;
+
+      if (isDropbox || isGDrive) {
+        const headers = this.getHeaders(res);
+        const ctype = headers["content-type"];
+        const disposition = headers["content-disposition"];
+        if (ctype && (disposition === undefined) && (ctype.indexOf("text/html") !== -1)) {
+          if (isGDrive) {
+            const body = await res.text();
+            const search = "name=\"uuid\" value=\"";
+            const idIndex = body.indexOf(search);
+            let uuid = null;
+            if (idIndex !== -1) {
+              uuid = body.substring(search.length + idIndex);
+              const qidx = uuid.indexOf("\"");
+              if (qidx !== -1) {
+                uuid = uuid.substring(0, qidx);
+              }
+              const idx = url.indexOf("?");
+              if (idx !== -1) {
+                this.updatedUrl = `https://drive.usercontent.google.com/download${url.substring(idx)}&uuid=${uuid}`;
+                throw GDRIVE_HTML_ERROR;
+              }
+            }
+          } else {
+            this.dropboxHtmlIssue = true;
+            throw DROPBOX_HTML_ERROR;
+          }
+        }
+      }
+    }
+
     const doFetch = async url => {
       const res = await fetch(url, props);
       if (res.ok) {
@@ -124,6 +213,7 @@ export class FetchAppData {
 
     const directFetch = async (url) => {
       res = await doFetch(url);
+      await checkDropboxHtml(res);
       if (!res) throw new Error("result is undefined");
       this.successMethod = DIRECT;
       return res;
@@ -132,6 +222,7 @@ export class FetchAppData {
     const httpProxyFetch = async (url) => {
       if (!this.isProxyDisabled()) {
         res = await doFetch(`${h(s)}${P}${encodeURIComponent(encodeURI(url))}`);
+        await checkDropboxHtml(res);
         if (!res) throw new Error("result is undefined");
         this.successMethod = HTTP_PROXY;
         return res;
@@ -142,6 +233,7 @@ export class FetchAppData {
     const httpsProxyFetch = async (url) => {
       if (!this.isProxyDisabled()) {
         res = await doFetch(`${h(!s)}${P}${encodeURIComponent(encodeURI(url))}`);
+        await checkDropboxHtml(res);
         if (!res) throw new Error("result is undefined");
         this.successMethod = HTTPS_PROXY;
         return res;
@@ -198,7 +290,26 @@ export class FetchAppData {
           }
         }
       }
+
+      if (this.dropboxHtmlIssue) {
+        this.dropboxHtmlIssue = false;
+        LOG.info("Dropbox HTML content issue.")
+        if (this.htmlRetries-- > 0) {
+          LOG.info("Retrying Dropbox HTML error...: " + (this.htmlRetries + 1));
+          x = 0;
+        }
+      }
+
+      if (this.updatedUrl && this.updatedUrl !== url) {
+        url = this.updatedUrl;
+        LOG.info("Updated URL: " + url);
+        if (this.htmlRetries-- > 0) {
+          LOG.info("Retrying HTML error...: " + (this.htmlRetries + 1));
+          x = 0;
+        }
+      }
     }
+
     throw error;
   }
 }

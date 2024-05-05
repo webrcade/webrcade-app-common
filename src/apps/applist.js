@@ -60,7 +60,9 @@ const checkDiscs = app => {
 }
 
 const checkMedia = app => {
-  if (app.props === undefined || app.props.media === undefined || app.props.media.length === 0) {
+  if (app.props === undefined ||
+      ((app.props.media === undefined || app.props.media.length === 0 ) &&
+      (app.props.saveDisks === undefined || app.props.saveDisks <= 0))){
     throw new Error("Missing 'media' property");
   }
 }
@@ -309,7 +311,9 @@ const types = [{
       swap: false,
       zoomLevel: 0,
       jiffydos: 0,
-      region: 0
+      region: 0,
+      saveDisks: 0,
+      disableAutoload: false,
     }
   }, {
     key: APP_TYPE_KEYS.RETRO_STELLA_LATEST,

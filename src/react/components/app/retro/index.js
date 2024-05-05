@@ -61,26 +61,28 @@ export class WebrcadeRetroApp extends WebrcadeApp {
 
   async fetchMedia(media) {
     const ret = [];
-    for (let i = 0; i < media.length; i++) {
-      const mediaUrl = media[i];
-      if (mediaUrl.trim().length === 0) {
-        continue;
-      }
-      const fad = new FetchAppData(mediaUrl);
-      const res = await fad.fetch();
-      if (res.ok) {
-        let blob = await res.blob();
-        const uz = new Unzip().setDebug(this.isDebug());
-        blob = await uz.unzip(blob, this.extsNotUnique, this.exts, romNameScorer);
-        let filename = uz.getName();
-        if (!filename) {
-          filename = fad.getFilename(res);
+    if (media) {
+      for (let i = 0; i < media.length; i++) {
+        const mediaUrl = media[i];
+        if (mediaUrl.trim().length === 0) {
+          continue;
         }
-        if (!filename) {
-          filename = UrlUtil.getFileName(mediaUrl);
+        const fad = new FetchAppData(mediaUrl);
+        const res = await fad.fetch();
+        if (res.ok) {
+          let blob = await res.blob();
+          const uz = new Unzip().setDebug(this.isDebug());
+          blob = await uz.unzip(blob, this.extsNotUnique, this.exts, romNameScorer);
+          let filename = uz.getName();
+          if (!filename) {
+            filename = fad.getFilename(res);
+          }
+          if (!filename) {
+            filename = UrlUtil.getFileName(mediaUrl);
+          }
+          const bytes = new Uint8Array(await blob.arrayBuffer());
+          ret.push([bytes, filename])
         }
-        const bytes = new Uint8Array(await blob.arrayBuffer());
-        ret.push([bytes, filename])
       }
     }
     return ret;
@@ -247,6 +249,7 @@ export class WebrcadeRetroApp extends WebrcadeApp {
           }
           if (this.isMediaBased()) {
             emulator.setMedia(content);
+            emulator.setSaveDisks(this.saveDisks);
           }
           return content;
         })
@@ -292,8 +295,9 @@ export class WebrcadeRetroApp extends WebrcadeApp {
           } else if (this.isMediaBased()) {
             // Get the media that was specified
             this.media = appProps.media;
+            this.saveDisks = appProps.saveDisks;
             if (this.media) this.media = removeEmptyArrayItems(this.media);
-            if (!this.media || this.media.length === 0)
+            if ((!this.media || this.media.length === 0) && (!this.saveDisks || this.saveDisks <= 0))
               throw new Error('No media was specified.');
           } else {
             this.archive = appProps.archive;

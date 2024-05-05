@@ -72,6 +72,7 @@ export class RetroAppWrapper extends AppWrapper {
     this.saveStatePath = null;
     this.exiting = false;
     this.mainStarted = false;
+    this.disableInput = false;
   }
 
   RA_DIR = '/home/web_user/retroarch/';
@@ -117,6 +118,7 @@ export class RetroAppWrapper extends AppWrapper {
     this.ext = ext;
     this.archiveUrl = null;
     this.media = null;
+    this.saveDisks = 0;
     this.game = this.isDiscBased() ?
       (this.RA_DIR + 'game.' + (ext != null && ext === 'pbp' ? 'pbp' : 'chd')) :
       (this.RA_DIR + "game.bin");
@@ -128,6 +130,10 @@ export class RetroAppWrapper extends AppWrapper {
 
   setMedia(media) {
     this.media = media;
+  }
+
+  setSaveDisks(count) {
+    this.saveDisks = count;
   }
 
   createControllers() {
@@ -251,14 +257,17 @@ export class RetroAppWrapper extends AppWrapper {
       const analog1y = controllers.getAxisValue(i, 1, false);
 
       let controller = this.getControllerIndex(i);
-      window.Module._wrc_set_input(
-        controller,
-        input,
-        analog0x,
-        analog0y,
-        analog1x,
-        analog1y,
-      );
+
+      if (!this.disableInput) {
+        window.Module._wrc_set_input(
+          controller,
+          input,
+          analog0x,
+          analog0y,
+          analog1x,
+          analog1y,
+        );
+      }
     }
   }
 
@@ -476,7 +485,7 @@ export class RetroAppWrapper extends AppWrapper {
     STATE_FILE_PATH = path;
   }
 
-  onStoreMedia() {}
+  async onStoreMedia() {}
 
   async onStart(canvas) {
     const { app, debug, game } = this;
@@ -537,7 +546,7 @@ export class RetroAppWrapper extends AppWrapper {
           if (!totalSize) throw e;
         }
       } else if (this.isMediaBased()) {
-        this.onStoreMedia();
+        await this.onStoreMedia();
       } else {
         // Write rom file
         let stream = FS.open(game, 'a');

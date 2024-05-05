@@ -78,10 +78,10 @@ export class ImageButton extends Component {
     if (onClick) onClick(e);
   }
 
-  onFocus = () => {
+  onFocus = (e) => {
     this.setState({ focused: true });
     const { onFocus } = this.props;
-    if (onFocus) onFocus();
+    if (onFocus) onFocus(e);
   }
 
   onMouseEnter = () => {
