@@ -17,7 +17,7 @@ class SaveManager {
     this.errorCallback = errorCallback;
     this.lastHashes = {};
     this.gameSavesDisabled = false;
-    this.disableGameSaveOnStateLoad = true;
+    //this.disableGameSaveOnStateLoad = true */
   }
 
   _compareHashes(a, b) {
@@ -36,7 +36,8 @@ class SaveManager {
   }
 
   setDisableGameSaveOnStateLoad(val) {
-    this.disableGameSaveOnStateLoad = val;
+    // Now available via settings
+    //this.disableGameSaveOnStateLoad = val;
   }
 
   async checkFilesChanged(files) {
@@ -280,7 +281,7 @@ class SaveManager {
           for (var i = 0; i < files.length; i++) {
             const f = files[i];
             if (f.name == STATE_NAME) {
-              if (!this.gameSavesDisabled && this.disableGameSaveOnStateLoad) {
+              if (!this.gameSavesDisabled && settings.isGameSavesDisabledAfterState()) {
                 this.gameSavesDisabled = true;
                 LOG.info("Save state was loaded, game-based saves are disabled.");
               }

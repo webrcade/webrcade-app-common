@@ -18,6 +18,7 @@ export class Settings extends BaseSettings {
     this.bilinearFilter = false;
     this.cloudStorage = false;
     this.hideTitleBar = false;
+    this.disableGameSavesAfterState = false;
     this.dbToken = null;
     this.screenSize = SCREEN_SIZES.SS_NATIVE;
   }
@@ -30,6 +31,7 @@ export class Settings extends BaseSettings {
   CLOUD_STORAGE_PROP = this.PREFIX + "cloudStorage";
   HIDE_TITLE_BAR_PROP = this.PREFIX + "hideTitleBar";
   DB_TOKEN = this.PREFIX + "dbToken";
+  DISABLE_GAME_SAVES_AFTER_STATE = this.PREFIX + "disableGameSavesAfterState"
 
   async load() {
     LOG.info("Loading settings.");
@@ -40,6 +42,7 @@ export class Settings extends BaseSettings {
     this.hideTitleBar = await this.loadBool(this.HIDE_TITLE_BAR_PROP, this.hideTitleBar);
     this.dbToken = await this.loadValue(this.DB_TOKEN, this.dbToken);
     this.screenSize = await this.loadValue(this.SCREEN_SIZE_PROP, this.screenSize);
+    this.disableGameSavesAfterState = await this.loadValue(this.DISABLE_GAME_SAVES_AFTER_STATE, this.disableGameSavesAfterState);
 
     AppRegistry.instance.enableExpApps(this.expApps);
   }
@@ -53,6 +56,7 @@ export class Settings extends BaseSettings {
     await this.saveBool(this.HIDE_TITLE_BAR_PROP, this.hideTitleBar);
     await this.saveValue(this.DB_TOKEN, this.dbToken);
     await this.saveValue(this.SCREEN_SIZE_PROP, this.screenSize);
+    await this.saveValue(this.DISABLE_GAME_SAVES_AFTER_STATE, this.disableGameSavesAfterState);
     AppRegistry.instance.enableExpApps(this.expApps);
   }
 
@@ -110,6 +114,14 @@ export class Settings extends BaseSettings {
 
   setScreenSize(s) {
     this.screenSize = s;
+  }
+
+  isGameSavesDisabledAfterState() {
+    return this.disableGameSavesAfterState;
+  }
+
+  setGameSavesDisabledAfterState(b) {
+    this.disableGameSavesAfterState = b;
   }
 }
 

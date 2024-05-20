@@ -72,16 +72,26 @@ export class WebrcadeRetroApp extends WebrcadeApp {
         if (res.ok) {
           let blob = await res.blob();
           const uz = new Unzip().setDebug(this.isDebug());
-          blob = await uz.unzip(blob, this.extsNotUnique, this.exts, romNameScorer);
-          let filename = uz.getName();
-          if (!filename) {
-            filename = fad.getFilename(res);
+          let multi = null;
+          blob = await uz.unzip(blob, this.extsNotUnique, this.exts, (s) => {multi = s;});
+          if (multi && (Object.keys(multi).length > 1)) {
+            for (key in multi) {
+              const entry = multi[key];
+              const blob = await uz.extractEntry(entry.entry);
+              const bytes = new Uint8Array(await blob.arrayBuffer());
+              ret.push([bytes, key])
+            }
+          } else {
+            let filename = uz.getName();
+            if (!filename) {
+              filename = fad.getFilename(res);
+            }
+            if (!filename) {
+              filename = UrlUtil.getFileName(mediaUrl);
+            }
+            const bytes = new Uint8Array(await blob.arrayBuffer());
+            ret.push([bytes, filename])
           }
-          if (!filename) {
-            filename = UrlUtil.getFileName(mediaUrl);
-          }
-          const bytes = new Uint8Array(await blob.arrayBuffer());
-          ret.push([bytes, filename])
         }
       }
     }

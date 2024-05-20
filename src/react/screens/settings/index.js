@@ -33,7 +33,8 @@ export class SettingsEditor extends Component {
       cloudStorage: settings.isCloudStorageEnabled(),
       hideTitleBar: settings.getHideTitleBar(),
       screenSize: settings.getScreenSize(),
-      dbLinked: settings.getDbToken() !== null
+      dbLinked: settings.getDbToken() !== null,
+      disableInGame: settings.isGameSavesDisabledAfterState()
     };
     this.state = {
       tabIndex: null,
@@ -70,6 +71,7 @@ export class SettingsEditor extends Component {
           settings.setCloudStorageEnabled(values.cloudStorage);
           settings.setHideTitleBar(values.hideTitleBar);
           settings.setScreenSize(values.screenSize);
+          settings.setGameSavesDisabledAfterState(values.disableInGame);
           if (originalValues.expApps !== values.expApps) {
             ctx.showAlertScreen(true,
               Resources.getText(TEXT_IDS.RELOAD_EXP_APPS),
@@ -351,9 +353,11 @@ class CloudStorageTab extends FieldsTab {
     super();
     this.cloudStorageRef = React.createRef();
     this.dropboxRef = React.createRef();
+    this.disableSavesRef = React.createRef();
     this.gridComps = [
       [this.cloudStorageRef],
       [this.dropboxRef],
+      [this.disableSavesRef],
     ]
   }
 
@@ -368,7 +372,7 @@ class CloudStorageTab extends FieldsTab {
   }
 
   render() {
-    const { cloudStorageRef, dropboxRef } = this;
+    const { cloudStorageRef, dropboxRef, disableSavesRef } = this;
     const { focusGrid } = this.context;
     const { isStandalone, setValues, values } = this.props;
 
@@ -415,6 +419,21 @@ class CloudStorageTab extends FieldsTab {
           </FieldLabel>
           <FieldControl>
             <div>{Resources.getText(values.dbLinked ? TEXT_IDS.LINKED : TEXT_IDS.UNLINKED)}</div>
+          </FieldControl>
+        </FieldRow>,
+        <FieldRow>
+          <FieldLabel>
+            Disable saves after state load
+          </FieldLabel>
+          <FieldControl>
+            <Switch
+              ref={disableSavesRef}
+              onPad={e => focusGrid.moveFocus(e.type, disableSavesRef)}
+              onChange={e => {
+                setValues({ ...values, ...{ disableInGame: e.target.checked } });
+              }}
+              checked={values.disableInGame}
+            />
           </FieldControl>
         </FieldRow>
       ]
