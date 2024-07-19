@@ -257,17 +257,27 @@ export class RetroAppWrapper extends AppWrapper {
       const analog1y = controllers.getAxisValue(i, 1, false);
 
       let controller = this.getControllerIndex(i);
+      this.sendInput(
+        controller,
+        input,
+        analog0x,
+        analog0y,
+        analog1x,
+        analog1y,
+      );
+    }
+  }
 
-      if (!this.disableInput) {
-        window.Module._wrc_set_input(
-          controller,
-          input,
-          analog0x,
-          analog0y,
-          analog1x,
-          analog1y,
-        );
-      }
+  sendInput(controller, input, analog0x, analog0y, analog1x, analog1y) {
+    if (!this.disableInput) {
+      window.Module._wrc_set_input(
+        controller,
+        input,
+        analog0x,
+        analog0y,
+        analog1x,
+        analog1y,
+      );
     }
   }
 

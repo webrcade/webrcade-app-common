@@ -316,7 +316,7 @@ const types = [{
       disableAutoload: false,
       disableTrueDriveEmulation: false,
       ramExpansion: 0,
-      // mappings: {},
+      mappings: {},
     }
   }, {
     key: APP_TYPE_KEYS.RETRO_STELLA_LATEST,
