@@ -159,7 +159,7 @@ class SlotTab extends EditorTab {
                     if (editor.busy) return;
                     try {
                       editor.busy = true;
-                      await emulator.loadStateForSlot(slot);
+                      await emulator.loadStateForSlot(slot, currentSlot);
                       onClose();
                     } finally {
                       editor.busy = false;

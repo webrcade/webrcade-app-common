@@ -233,4 +233,17 @@ export class ControlsTab extends EditorTab {
       </div>
     );
   }
+
+  renderControlWithText(control, text, description) {
+    return (
+      <div className={styles['controls-screen-row']}>
+        <div className={styles['controls-screen-column']}>
+          <img className={styles['controls-gamepad-button']} src={this.getGamepadImage(control)} alt=""></img>{text}
+        </div>
+        <div className={styles['controls-screen-column']}>
+          {description}
+        </div>
+      </div>
+    );
+  }
 }

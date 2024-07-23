@@ -68,6 +68,14 @@ export class Unzip {
     });
   }
 
+  extractEntry(entry) {
+    return new Promise((success, failure) => {
+      const writer = new zip.BlobWriter();
+      // TODO: what about failures here?
+      entry.getData(writer, success);
+    });
+  }
+
   unzip(file, exts, prefExts, scorer) {
     zip.useWebWorkers = false;
     const that = this;

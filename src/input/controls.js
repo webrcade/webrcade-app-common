@@ -143,6 +143,10 @@ export class KeyCodeToControlMapping {
     }
   }
 
+  getKeyCodeToControlId() {
+    return this.keyCodeToControlId;
+  }
+
   handleKeyEvent(e, down) {
     if (isEscapeKeySequence(e)) {
       e.preventDefault();
@@ -233,6 +237,10 @@ export class Controller {
     this.padMapping = new StandardPadMapping();
     this.pad = null;
     this.isXbox = isXbox();
+  }
+
+  getKeyCodeToControllerMapping() {
+    return this.keyCodeToControlMapping;
   }
 
   setPad(pad) {
@@ -337,7 +345,16 @@ export class Controllers {
     this.controllers = controllerArray;
 
     this.enabled = false;
+    this.keyboardDisabled = false;
     this.setEnabled(true);
+  }
+
+  getController(index) {
+    return this.controllers[index];
+  }
+
+  setKeyboardDisabled(v) {
+    this.keyboardDisabled = v;
   }
 
   addFakeKeyEvent(code, down) {
@@ -370,6 +387,8 @@ export class Controllers {
   }
 
   handleKeyEvent(e, down) {
+    if (this.keyboardDisabled) return;
+
     for (let i = 0; i < this.controllers.length; i++) {
       this.controllers[i].handleKeyEvent(e, down);
     }

@@ -1,5 +1,5 @@
 import * as LOG from '../log'
-import { isDebug } from '../util'
+import { isDebug, uuidv4 } from '../util'
 
 const DB_PREFIX = "https://www.dropbox.com/";
 const DB_REMAP_PREFIX = "https://dl.dropboxusercontent.com/";

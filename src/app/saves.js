@@ -17,7 +17,7 @@ class SaveManager {
     this.errorCallback = errorCallback;
     this.lastHashes = {};
     this.gameSavesDisabled = false;
-    this.disableGameSaveOnStateLoad = true;
+    //this.disableGameSaveOnStateLoad = true */
   }
 
   _compareHashes(a, b) {
@@ -36,7 +36,8 @@ class SaveManager {
   }
 
   setDisableGameSaveOnStateLoad(val) {
-    this.disableGameSaveOnStateLoad = val;
+    // Now available via settings
+    //this.disableGameSaveOnStateLoad = val;
   }
 
   async checkFilesChanged(files) {
@@ -231,7 +232,7 @@ class SaveManager {
     }
   }
 
-  async saveState(pathPrefix, slot, state, canvas, callback, shot, imageProps) {
+  async saveState(pathPrefix, slot, state, canvas, callback, shot, imageProps, otherProps = {}) {
     try {
       imageProps = imageProps ? imageProps : {};
       const path = `${pathPrefix}state.${slot}`;
@@ -254,7 +255,8 @@ class SaveManager {
             time: new Date().getTime(),
             shot: shot ? shot :
               canvas ? canvas.toDataURL() : null,
-            imageProps: imageProps
+            imageProps: imageProps,
+            ...otherProps
           }));
         } catch (e) {
           LOG.error(`Error persisting state to cloud: ${e}`);
@@ -279,7 +281,7 @@ class SaveManager {
           for (var i = 0; i < files.length; i++) {
             const f = files[i];
             if (f.name == STATE_NAME) {
-              if (!this.gameSavesDisabled && this.disableGameSaveOnStateLoad) {
+              if (!this.gameSavesDisabled && settings.isGameSavesDisabledAfterState()) {
                 this.gameSavesDisabled = true;
                 LOG.info("Save state was loaded, game-based saves are disabled.");
               }
