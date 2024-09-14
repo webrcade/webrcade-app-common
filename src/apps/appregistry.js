@@ -107,6 +107,7 @@ class AppRegistry {
     let outProps = {
       type: appType.type,
       title: this.getLongTitle(app),
+      mt: appType?.multiThreaded,
       app: this.getName(app)
     };
 
@@ -142,6 +143,12 @@ class AppRegistry {
 
   getTitle(app) {
     return app.title;
+  }
+
+  isMultiThreaded(type) {
+    const APP_TYPES = this.APP_TYPES;
+    const t = APP_TYPES[type];
+    return t.multiThreaded;
   }
 
   getLongTitle(app) {

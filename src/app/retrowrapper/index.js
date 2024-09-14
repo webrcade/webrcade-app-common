@@ -118,10 +118,15 @@ export class RetroAppWrapper extends AppWrapper {
     this.ext = ext;
     this.archiveUrl = null;
     this.media = null;
+    this.filename = null;
     this.saveDisks = 0;
     this.game = this.isDiscBased() ?
       (this.RA_DIR + 'game.' + (ext != null && ext === 'pbp' ? 'pbp' : 'chd')) :
       (this.RA_DIR + "game.bin");
+  }
+
+  setFilename(name) {
+    this.filename = name;
   }
 
   setArchiveUrl(url) {
@@ -486,6 +491,10 @@ export class RetroAppWrapper extends AppWrapper {
     return loop;
   }
 
+  setExitErrorMessage(message) {
+    this.exitErrorMessage = message;
+  }
+
   onFrame() {}
 
   async onWriteAdditionalFiles() {
@@ -641,7 +650,7 @@ export class RetroAppWrapper extends AppWrapper {
             if (e.status === 1971) {
               // Menu was displayed, should never happen (bad rom?
               if (!this.exiting) {
-                app.exit(Resources.getText(TEXT_IDS.ERROR_UNKNOWN));
+                app.exit(this.exitErrorMessage ? this.exitErrorMessage : Resources.getText(TEXT_IDS.ERROR_UNKNOWN));
               } else {
                 app.exit();
               }

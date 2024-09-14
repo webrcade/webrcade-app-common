@@ -82,8 +82,10 @@ export class PauseScreen extends Screen {
                   className={styles["pause-screen-image-button"]}
                   imgSrc={ArrowBackWhiteImage}
                   buttonRef={exitOrSettingsButtonRef}
-                  label={Resources.getText(isEditor ?
-                    TEXT_IDS.RETURN_TO_EDITOR : TEXT_IDS.RETURN_TO_BROWSE)}
+                  label={Resources.getText(
+                    isEditor ? 
+                      appProps.mt ? TEXT_IDS.EXIT : TEXT_IDS.RETURN_TO_EDITOR :
+                      TEXT_IDS.RETURN_TO_BROWSE)}
                   onHandlePad={(focusGrid, e) => focusGrid.moveFocus(e.type, exitOrSettingsButtonRef)}
                   onClick={() => { if (exitCallback) exitCallback() }}
                 />

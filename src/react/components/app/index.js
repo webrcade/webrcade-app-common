@@ -116,6 +116,11 @@ export class WebrcadeApp extends Component {
     this.isEditor = context && context === AppProps.RV_CONTEXT_EDITOR;
     this.isStandalone = context && context === AppProps.RV_CONTEXT_STANDALONE;
 
+    // Set title if multi-threaded and in editor
+    if (this.isEditor && this?.appProps?.mt && this?.appProps?.title) {
+      window.document.title = this.appProps.title;
+    }
+
     // Set debug flag
     this.debug = UrlUtil.getBoolParam(url, AppProps.RP_DEBUG);
 
@@ -305,7 +310,12 @@ export class WebrcadeApp extends Component {
 
     if (navigateBack) {
       if (!this.isStandalone) {
-        window.history.back();
+        if (this.appProps.mt && this.isEditor) {
+          // Editor and multi-threaded, close tab
+          window.close();
+        } else {
+          window.history.back();
+        }
       } else {
         window.document.body.innerHTML = '';
       }

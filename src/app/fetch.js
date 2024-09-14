@@ -12,6 +12,15 @@ const HTTPS_PROXY = "https-proxy";
 const DROPBOX_HTML_ERROR = "Dropbox is returning HTML content.";
 const GDRIVE_HTML_ERROR = "Google Drive is returning HTML content.";
 
+export function getProxyToUrl(url) {
+  let P = config.getCorsProxy() ?
+    ((config.isPublicServer() ? "" : window.location.host) + config.getCorsProxy()) : null;
+  if (isDev() && config.getCorsProxyDev()) {
+    P = config.getCorsProxyDev();
+  }
+  return (P && P.length > 0) ? `http${window.location.protocol === "https:" ? "s" : ""}://${P}${encodeURIComponent(encodeURI(url))}` : url;
+}
+
 export function getContentDispositionFilename(headers) {
   const disposition = headers['content-disposition'];
   if (disposition) {
