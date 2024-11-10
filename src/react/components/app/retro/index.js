@@ -233,6 +233,9 @@ export class WebrcadeRetroApp extends WebrcadeApp {
         })
         .then((response) => {
           if (this.isDiscBased() || this.isArchiveBased()) {
+            try {
+              romFilename = fad.getFilename(response);
+            } catch (e) {}
             return this.fetchResponseBuffer(response)
           } else if (this.isMediaBased()) {
             return this.fetchMedia(this.media)
@@ -267,6 +270,7 @@ export class WebrcadeRetroApp extends WebrcadeApp {
           );
           if (this.isArchiveBased()) {
             emulator.setArchiveUrl(this.archive);
+            emulator.setFilename(romFilename);
           }
           if (this.isMediaBased()) {
             emulator.setMedia(content);

@@ -127,12 +127,19 @@ class FileManifest {
           );
         } else {
           // Write file
-          let stream = FS.open(destinationFile, 'a');
+          const outFile = this.destination + this.emulator.getExtractPath(destinationFile.substring(this.destination.length));
+          const lastIndex = outFile.lastIndexOf("/");
+          if (lastIndex !== -1) {
+            const path = outFile.substring(0, lastIndex);
+            this.emulator.createDirectories(this.FS, path);
+          }
+
+          let stream = FS.open(outFile, 'a');
           FS.write(stream, bytes, 0, bytes.length, 0, true);
           FS.close(stream);
 
           if (this.archiveCallback) {
-            this.archiveCallback.onArchiveFile(false, destinationFile, null /*TODO*/)
+            this.archiveCallback.onArchiveFile(false, outFile, null /*TODO*/)
           }
         }
       }
@@ -148,7 +155,7 @@ class FileManifest {
       if (!(this.bytes.length < 10 * 1024 * 1024)) { // 10mb max
         return false;
       }
-      
+
       let parsed = false;
       try {
         const contents = new TextDecoder().decode(this.bytes);

@@ -4,6 +4,7 @@ class Config {
   isEmptyDefault = true;
 
   getLocalIp() { return CONFIG.localIp; }
+  getLocalExternalIp() { return CONFIG.localExternalIp; }
   getLocalPort() { return CONFIG.localPort; }
   getLocalUrl() { return `http://${this.getLocalIp()}:${this.getLocalPort()}`; }
   getCorsProxy() { return CONFIG.corsProxy ? CONFIG.corsProxy : null;  }

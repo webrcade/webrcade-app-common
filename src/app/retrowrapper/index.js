@@ -504,6 +504,14 @@ export class RetroAppWrapper extends AppWrapper {
     STATE_FILE_PATH = path;
   }
 
+  getRaConfigContents() {
+    return null;
+  }
+
+  isDirectFileSupportedForArchives() {
+    return false;
+  }
+
   async onStoreMedia() {}
 
   async onStart(canvas) {
@@ -558,11 +566,27 @@ export class RetroAppWrapper extends AppWrapper {
           app.setState({ loadingMessage: null });
           await this.wait(10);
         } catch (e) {
-          LOG.info("Not a zip file, checking for a manifest.");
-          FS.mkdir("/content");
-          const manifest = new FileManifest(this, FS, "/content", this.romBytes, this.archiveUrl, this);
-          const totalSize = await manifest.process();
-          if (!totalSize) throw e;
+          try {
+            LOG.info("Not a zip file, checking for a manifest.");
+            FS.mkdir("/content");
+            const manifest = new FileManifest(this, FS, "/content", this.romBytes, this.archiveUrl, this);
+            const totalSize = await manifest.process();
+            if (!totalSize) throw e;
+          } catch (e) {
+            if (this.isDirectFileSupportedForArchives() && this.filename) {
+              LOG.info("Not a manifest, just use file directly");
+              const fullPath = "/content/" + this.filename;
+              const pathIndex = fullPath.lastIndexOf("/");
+              if (pathIndex !== -1) {
+                this.createDirectories(FS, fullPath.substring(0, pathIndex));
+              }
+              let stream = FS.open(fullPath, 'a');
+              FS.write(stream, this.romBytes, 0, this.romBytes.length, 0, true);
+              FS.close(stream);
+            } else {
+              throw e;
+            }
+          }
         }
       } else if (this.isMediaBased()) {
         await this.onStoreMedia();
@@ -595,8 +619,35 @@ export class RetroAppWrapper extends AppWrapper {
         window.readyAudioContext.resume();
         console.log(window.readyAudioContext);
 
+        // # Audio settings
+        // audio_driver = "sdl" # or "openal", "xaudio2", etc.
+        // audio_sample_rate = "44100" # or "48000"
+        // audio_latency = "256" # Increasing this can help reduce popping
+        // audio_buffer_size = "512" # Adjust as necessary
+
+        // # Frame throttle settings
+        // frame_throttle = "true"
+        // run_ahead = "0" # Disable run-ahead to help with audio issues
+
+        // # Video settings
+        // video_sync = "true" # Enable V-Sync to help with frame/audio sync
+        // threaded_video = "true" # Improves performance on multi-core CPUs
+
+        // # Enable audio sync settings
+        // audio_sync = "false" # You may want to disable this if you're having issues
+
         try {
           const name = this.isArchiveBased() ? this.getArchiveBinaryFileName() : this.game;
+          const raConfigContents = this.getRaConfigContents();
+          if (raConfigContents) {
+            LOG.info("RA Config:");
+            LOG.info(raConfigContents);
+            window.FS.writeFile(
+              "/home/web_user/retroarch/userdata/retroarch.cfg",
+              raConfigContents
+            );
+          }
+
           Module.callMain(['-v', name]);
         } catch (e) {
           LOG.error(e);
