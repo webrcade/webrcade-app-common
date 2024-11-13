@@ -33,7 +33,7 @@ export function setMessageAnchorId(id) {
   anchorId = id;
 }
 
-export function showMessage(message, addConsoleMessage = true) {
+export function showMessage(message, addConsoleMessage = true, isError = true) {
   const container = document.getElementById(styles['message-container']);
   const el = document.getElementById(styles['snackbar']);
 
@@ -54,7 +54,7 @@ export function showMessage(message, addConsoleMessage = true) {
     if (timeoutId > 0) {
       window.clearTimeout(timeoutId);
     }
-    timeoutId = window.setTimeout(() => hideMessage(), 5000);
+    timeoutId = window.setTimeout(() => hideMessage(), isError ? 5000 : 2000);
   }
 }
 

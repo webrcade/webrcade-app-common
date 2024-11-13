@@ -162,6 +162,12 @@ export class AppWrapper {
     }
   }
 
+  showMessage(message) {
+    if (this.showMessageEnabled) {
+      showMessage(message, false, false);
+    }
+  }
+
   getShowMessageCallback() {
     return (error) => {
       this.showErrorMessage(error);
