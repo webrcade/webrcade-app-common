@@ -78,6 +78,14 @@ export class RetroAppWrapper extends AppWrapper {
   RA_DIR = '/home/web_user/retroarch/';
   RA_SYSTEM_DIR = this.RA_DIR + 'system/';
 
+  setDisableInput(val) {
+    this.disableInput = val;
+  }
+
+  getDisableInput() {
+    return this.disableInput;
+  }
+
   setDiscIndex(index) {
     this.discIndex = index;
   }
@@ -174,6 +182,8 @@ export class RetroAppWrapper extends AppWrapper {
     return true;
   }
 
+  handleEscape(controllers) {}
+
   pollControls() {
     const { analogMode, CONTROLLER_COUNT, controllers } = this;
 
@@ -201,7 +211,9 @@ export class RetroAppWrapper extends AppWrapper {
       if (
         controllers.isControlDown(0 /*i*/, CIDS.ESCAPE) && escapeOk
       ) {
-        if (this.pause(true)) {
+        if (this.handleEscape(controllers)) {
+            return;
+        } else if (this.pause(true)) {
           controllers
             .waitUntilControlReleased(0 /*i*/, CIDS.ESCAPE)
             .then(() => this.showPauseMenu());
@@ -274,7 +286,7 @@ export class RetroAppWrapper extends AppWrapper {
   }
 
   sendInput(controller, input, analog0x, analog0y, analog1x, analog1y) {
-    if (!this.disableInput) {
+    if (!this.getDisableInput()) {
       window.Module._wrc_set_input(
         controller,
         input,
@@ -282,6 +294,10 @@ export class RetroAppWrapper extends AppWrapper {
         analog0y,
         analog1x,
         analog1y,
+      );
+    } else {
+      window.Module._wrc_set_input(
+        controller, 0, 0, 0, 0, 0
       );
     }
   }
