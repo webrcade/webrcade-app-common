@@ -9,6 +9,7 @@ class FileManifest {
         this.FS = FS;
         this.destination = destination;
         this.bytes = bytes;
+        this.parsed = false;
         const lastIndex = url.lastIndexOf("/");
         this.url = url.substring(0, lastIndex);;
     }
@@ -53,6 +54,10 @@ class FileManifest {
           slash === 1 ? path + name :
             path.substring(1) + name
       )
+    }
+
+    getParsed() {
+      return this.parsed;
     }
 
     async walkFiles() {
@@ -153,26 +158,24 @@ class FileManifest {
 
     async process() {
       if (!(this.bytes.length < 10 * 1024 * 1024)) { // 10mb max
-        return false;
+        return 0;
       }
 
-      let parsed = false;
       try {
         const contents = new TextDecoder().decode(this.bytes);
         this.manifest = JSON.parse(contents);
         if (!this.manifest.files) {
           throw new Error("Unable to find files in manifest.");
         }
-        parsed = true;
+        this.parsed = true;
         const size = await this.walkFiles();
-
         return size;
       } catch (e) {
         LOG.error(e);
-        if (parsed) throw e;
+        if (this.parsed) throw e;
       }
 
-      return null;
+      return 0;
     }
 }
 

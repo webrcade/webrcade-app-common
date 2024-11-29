@@ -8,8 +8,22 @@ import {
   XboxOneXButton,
   XboxOneYButton,
   XboxOneDpad,
+  XboxOneDpadLeft,
+  XboxOneDpadRight,
+  XboxOneDpadUp,
+  XboxOneDpadDown,
   XboxOneLeftStick,
+  XboxOneLeftStickUp,
+  XboxOneLeftStickDown,
+  XboxOneLeftStickLeft,
+  XboxOneLeftStickRight,
   XboxOneRightStick,
+  XboxOneRightStickUp,
+  XboxOneRightStickDown,
+  XboxOneRightStickLeft,
+  XboxOneRightStickRight,
+  XboxOneLeftStickClick,
+  XboxOneRightStickClick,
   XboxOneMenuButton,
   XboxOneWindowsButton,
   XboxOneLeftBumper,
@@ -70,10 +84,38 @@ export class ControlsTab extends EditorTab {
         return XboxOneWindowsButton;
       case "dpad":
         return XboxOneDpad;
+      case "dpadl":
+        return XboxOneDpadLeft;
+      case "dpadr":
+        return XboxOneDpadRight;
+      case "dpadu":
+        return XboxOneDpadUp;
+      case "dpadd":
+        return XboxOneDpadDown;
       case "lanalog":
         return XboxOneLeftStick;
+      case "lanalogu":
+        return XboxOneLeftStickUp;
+      case "lanalogd":
+        return XboxOneLeftStickDown;
+      case "lanalogl":
+        return XboxOneLeftStickLeft;
+      case "lanalogr":
+        return XboxOneLeftStickRight;
       case "ranalog":
         return XboxOneRightStick;
+      case "ranalogu":
+        return XboxOneRightStickUp;
+      case "ranalogd":
+        return XboxOneRightStickDown;
+      case "ranalogl":
+        return XboxOneRightStickLeft;
+      case "ranalogr":
+        return XboxOneRightStickRight;
+      case "lanalogc":
+        return XboxOneLeftStickClick;
+      case "ranalogc":
+        return XboxOneRightStickClick;
       case "a":
         return XboxOneAButton;
       case "b":
@@ -182,11 +224,20 @@ export class ControlsTab extends EditorTab {
     }
   }
 
+  formatDescription(description) {
+    return description.split('\n').map((line, index) => (
+      <React.Fragment key={index}>
+        {line}
+        <br />
+      </React.Fragment>
+    ));
+  }
+
   renderKey(key, description) {
     return (
       <div key={key} className={styles['controls-screen-row']}>
         <div className={styles['controls-screen-column']}>
-          <img className={styles['controls-gamepad-button']} src={this.getKeyImage(key)} alt=""></img>
+          <img className={styles['controls-key']} src={this.getKeyImage(key)} alt=""></img>
         </div>
         <div className={styles['controls-screen-column']}>
           {description}
@@ -215,7 +266,7 @@ export class ControlsTab extends EditorTab {
           </div>
         </div>
         <div className={styles['controls-screen-column']}>
-          {description}
+        {this.formatDescription(description)}
         </div>
       </div>
     );
@@ -228,7 +279,7 @@ export class ControlsTab extends EditorTab {
           <img className={styles['controls-gamepad-button']} src={this.getGamepadImage(control)} alt=""></img>
         </div>
         <div className={styles['controls-screen-column']}>
-          {description}
+          {this.formatDescription(description)}
         </div>
       </div>
     );
@@ -241,7 +292,7 @@ export class ControlsTab extends EditorTab {
           <img className={styles['controls-gamepad-button']} src={this.getGamepadImage(control)} alt=""></img>{text}
         </div>
         <div className={styles['controls-screen-column']}>
-          {description}
+          {this.formatDescription(description)}
         </div>
       </div>
     );

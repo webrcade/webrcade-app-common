@@ -119,6 +119,7 @@ export class RetroAppWrapper extends AppWrapper {
   }
 
   setRoms(uid, frontendArray, biosBuffers, romBytes, ext) {
+    console.log("#### " + uid);
     this.uid = uid;
     this.frontendArray = frontendArray;
     this.biosBuffers = biosBuffers;
@@ -582,23 +583,28 @@ export class RetroAppWrapper extends AppWrapper {
           app.setState({ loadingMessage: null });
           await this.wait(10);
         } catch (e) {
+          let manifest = null;
           try {
             LOG.info("Not a zip file, checking for a manifest.");
             FS.mkdir("/content");
-            const manifest = new FileManifest(this, FS, "/content", this.romBytes, this.archiveUrl, this);
+            manifest = new FileManifest(this, FS, "/content", this.romBytes, this.archiveUrl, this);
             const totalSize = await manifest.process();
             if (!totalSize) throw e;
           } catch (e) {
-            if (this.isDirectFileSupportedForArchives() && this.filename) {
-              LOG.info("Not a manifest, just use file directly");
-              const fullPath = "/content/" + this.filename;
-              const pathIndex = fullPath.lastIndexOf("/");
-              if (pathIndex !== -1) {
-                this.createDirectories(FS, fullPath.substring(0, pathIndex));
+            if (manifest && !manifest.getParsed()) {
+              if (this.isDirectFileSupportedForArchives() && this.filename) {
+                LOG.info("Not a manifest, just use file directly");
+                const fullPath = "/content/" + this.filename;
+                const pathIndex = fullPath.lastIndexOf("/");
+                if (pathIndex !== -1) {
+                  this.createDirectories(FS, fullPath.substring(0, pathIndex));
+                }
+                let stream = FS.open(fullPath, 'a');
+                FS.write(stream, this.romBytes, 0, this.romBytes.length, 0, true);
+                FS.close(stream);
+              } else {
+                throw e;
               }
-              let stream = FS.open(fullPath, 'a');
-              FS.write(stream, this.romBytes, 0, this.romBytes.length, 0, true);
-              FS.close(stream);
             } else {
               throw e;
             }
