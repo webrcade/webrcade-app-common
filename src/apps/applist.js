@@ -889,6 +889,8 @@ const types = [{
       archive: "",
       autoStartPath: "",
       uid: "",
+      controllerMode: 0,
+      mouseSpeed: 0,
       zoomLevel: 0
     }
   }, {
