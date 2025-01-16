@@ -215,6 +215,8 @@ export class WebrcadeRetroApp extends WebrcadeApp {
         fad = new FetchAppData(this.rom);
       }
 
+      let romFilename = null;
+
       // Load Emscripten and ROM binaries
       settings
         .load()
@@ -231,15 +233,27 @@ export class WebrcadeRetroApp extends WebrcadeApp {
         })
         .then((response) => {
           if (this.isDiscBased() || this.isArchiveBased()) {
+            try {
+              romFilename = fad.getFilename(response);
+            } catch (e) {}
             return this.fetchResponseBuffer(response)
           } else if (this.isMediaBased()) {
             return this.fetchMedia(this.media)
           } else {
             let romBlob = null;
             const uz = new Unzip().setDebug(this.isDebug());
+
             return response.blob()
               .then((blob) => uz.unzip(blob, extsNotUnique, exts, romNameScorer))
               .then((blob) => {
+                let filename = uz.getName();
+                if (!filename) {
+                  filename = fad.getFilename(response);
+                }
+                if (!filename) {
+                  filename = UrlUtil.getFileName(this.rom);
+                }
+                romFilename = filename;
                 romBlob = blob;
                 return blob;
               })
@@ -256,10 +270,14 @@ export class WebrcadeRetroApp extends WebrcadeApp {
           );
           if (this.isArchiveBased()) {
             emulator.setArchiveUrl(this.archive);
+            emulator.setFilename(romFilename);
           }
           if (this.isMediaBased()) {
             emulator.setMedia(content);
             emulator.setSaveDisks(this.saveDisks);
+          }
+          if (romFilename) {
+            emulator.setFilename(romFilename);
           }
           return content;
         })

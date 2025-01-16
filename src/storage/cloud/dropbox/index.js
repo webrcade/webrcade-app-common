@@ -60,6 +60,16 @@ class WrcDropbox {
   }, {
     uri: "https://webrcade.github.io/webrcade-mirror/app/standalone",
     redirectUri: "https://webrcade.github.io/webrcade-mirror/app/standalone/dropbox/"
+  }, {
+    uri: "https://play-staging-flare.webrcade.com",
+    redirectUri: "https://play-staging-flare.webrcade.com/dropbox/"
+  }, {
+    uri: "https://play-staging-flare.webrcade.com/app/editor",
+    redirectUri: "https://play-staging-flare.webrcade.com/app/editor/dropbox/"
+  }, {
+    uri: "https://play-staging-flare.webrcade.com/app/standalone",
+    redirectUri: "https://play-staging-flare.webrcade.com/app/standalone/dropbox/"
+  }, {
   }];
 
   constructor() {

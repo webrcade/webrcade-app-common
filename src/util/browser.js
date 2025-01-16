@@ -127,6 +127,10 @@ const fullScreen = (elem) => {
   }
 }
 
+const isLocalhostOrHttps = () => {
+  return window.location.hostname === 'localhost' || window.location.protocol === 'https:';
+}
+
 export {
   isParentSameOrigin,
   isMacOs,
@@ -141,5 +145,6 @@ export {
   addXboxFullscreenCallback,
   getXboxViewMessage,
   storagePersist,
+  isLocalhostOrHttps,
   UAParser
 }

@@ -56,12 +56,26 @@ const CategoryBackgroundImage = resolvePath("images/folder-background.png");
 const FeedThumbImage = resolvePath("images/feed.png");
 const FeedBackgroundImage = resolvePath("images/feed-background.png");
 const XboxOneDpad = resolvePath("images/common/controller/Xbox One/XboxOne_Dpad.png");
+const XboxOneDpadLeft = resolvePath("images/common/controller/Xbox One/XboxOne_Dpad_Left.png");
+const XboxOneDpadRight = resolvePath("images/common/controller/Xbox One/XboxOne_Dpad_Right.png");
+const XboxOneDpadUp = resolvePath("images/common/controller/Xbox One/XboxOne_Dpad_Up.png");
+const XboxOneDpadDown = resolvePath("images/common/controller/Xbox One/XboxOne_Dpad_Down.png");
 const XboxOneAButton = resolvePath("images/common/controller/Xbox One/XboxOne_A.png");
 const XboxOneBButton = resolvePath("images/common/controller/Xbox One/XboxOne_B.png");
 const XboxOneXButton = resolvePath("images/common/controller/Xbox One/XboxOne_X.png");
 const XboxOneYButton = resolvePath("images/common/controller/Xbox One/XboxOne_Y.png");
 const XboxOneLeftStick = resolvePath("images/common/controller/Xbox One/XboxOne_Left_Stick.png");
+const XboxOneLeftStickUp = resolvePath("images/common/controller/Xbox One/XboxOne_Left_Stick_Up.png");
+const XboxOneLeftStickDown = resolvePath("images/common/controller/Xbox One/XboxOne_Left_Stick_Down.png");
+const XboxOneLeftStickLeft = resolvePath("images/common/controller/Xbox One/XboxOne_Left_Stick_Left.png");
+const XboxOneLeftStickRight = resolvePath("images/common/controller/Xbox One/XboxOne_Left_Stick_Right.png");
 const XboxOneRightStick = resolvePath("images/common/controller/Xbox One/XboxOne_Right_Stick.png");
+const XboxOneRightStickUp = resolvePath("images/common/controller/Xbox One/XboxOne_Right_Stick_Up.png");
+const XboxOneRightStickDown = resolvePath("images/common/controller/Xbox One/XboxOne_Right_Stick_Down.png");
+const XboxOneRightStickLeft = resolvePath("images/common/controller/Xbox One/XboxOne_Right_Stick_Left.png");
+const XboxOneRightStickRight = resolvePath("images/common/controller/Xbox One/XboxOne_Right_Stick_Right.png");
+const XboxOneLeftStickClick = resolvePath("images/common/controller/Xbox One/XboxOne_Left_Stick_Click.png");
+const XboxOneRightStickClick = resolvePath("images/common/controller/Xbox One/XboxOne_Right_Stick_Click.png");
 const XboxOneMenuButton = resolvePath("images/common/controller/Xbox One/XboxOne_Menu.png");
 const XboxOneWindowsButton = resolvePath("images/common/controller/Xbox One/XboxOne_Windows.png");
 const XboxOneRightBumper = resolvePath("images/common/controller/Xbox One/XboxOne_RB.png");
@@ -146,6 +160,7 @@ const ColecoController = resolvePath("images/app/coleco/controller.png");
 const A5200Controller = resolvePath("images/app/a5200/controller.png");
 const ScummVmBackground = resolvePath("images/app/scummvm-background.png");
 const Commodore64Background = resolvePath("images/app/c64-background.png");
+const DosBackground = resolvePath("images/app/dos-background.png");
 
 export {
   AddCircleBlackImage,
@@ -193,13 +208,27 @@ export {
   XboxOneYButton,
   XboxOneDpad,
   XboxOneLeftStick,
+  XboxOneLeftStickUp,
+  XboxOneLeftStickDown,
+  XboxOneLeftStickLeft,
+  XboxOneLeftStickRight,
   XboxOneRightStick,
+  XboxOneRightStickUp,
+  XboxOneRightStickDown,
+  XboxOneRightStickLeft,
+  XboxOneRightStickRight,
+  XboxOneLeftStickClick,
+  XboxOneRightStickClick,
   XboxOneMenuButton,
   XboxOneWindowsButton,
   XboxOneRightBumper,
   XboxOneLeftBumper,
   XboxOneRightTrigger,
   XboxOneLeftTrigger,
+  XboxOneDpadLeft,
+  XboxOneDpadRight,
+  XboxOneDpadUp,
+  XboxOneDpadDown,
   ArrowUpKey,
   ArrowDownKey,
   ArrowLeftKey,
@@ -274,6 +303,7 @@ export {
   ThreedoBackground,
   Atari2600Background,
   Atari7800Background,
+  DosBackground,
   ListsWhiteImage,
   ScummVmBackground,
   MouseWhiteImage,

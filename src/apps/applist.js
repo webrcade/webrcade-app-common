@@ -9,37 +9,41 @@ import * as Coleco from './type/coleco';
 // Whether to enable Atari 5200
 const enable5200 = false;
 
-const localIp = config.getLocalIp();
-const locGenesis = isDev() ? `http://${localIp}:3010` : 'app/genesis/';
-const locSms = locGenesis;
-const locRetroGenesis = isDev() ? `http://${localIp}:3101` : 'app/retro-genesis/';
-const locRetroPceFast = isDev() ? `http://${localIp}:3202` : 'app/retro-pce-fast/';
-const locRetroStella = isDev() ? `http://${localIp}:3312` : 'app/retro-stella/';
-const locRetroStellaLatest = isDev() ? `http://${localIp}:3314` : 'app/retro-stella-latest/';
-const locRetroCommodore8Bit = isDev() ? `http://${localIp}:3315` : 'app/retro-commodore-8bit/';
-// const locRetroProsystem = isDev() ? `http://${localIp}:3314` : 'app/retro-prosystem/';
-const locPsx = isDev() ? `http://${localIp}:3099` : 'app/psx/';
-const loc7800 = isDev() ? `http://${localIp}:3020` : 'app/7800/';
-const locNes = isDev() ? `http://${localIp}:3030` : 'app/nes/';
-const locDoom = isDev() ? `http://${localIp}:3040` : 'app/doom/';
-const loc2600 = isDev() ? `http://${localIp}:3050` : 'app/2600/';
-const locSnes = isDev() ? `http://${localIp}:3060` : 'app/snes/';
-const locN64 = isDev() ? `http://${localIp}:3065` : 'app/n64/';
-const locGba = isDev() ? `http://${localIp}:3070` : 'app/gba/';
-const locNeo = isDev() ? `http://${localIp}:3077` : 'app/neo/';
-const locMednafen = isDev() ? `http://${localIp}:3075` : 'app/mednafen/';
-const locColeco = isDev() ? `http://${localIp}:3303` : 'app/colem/';
-const loc5200 = isDev() ? `http://${localIp}:3304` : 'app/5200/';
-const locPcfx = isDev() ? `http://${localIp}:3305` : 'app/pcfx/';
-const locRetro5200 = isDev() ? `http://${localIp}:3306` : 'app/retro-a5200/';
-const locRetroNeocd = isDev() ? `http://${localIp}:3307` : 'app/retro-neocd/';
-const locQuake = isDev() ? `http://${localIp}:3308` : 'app/quake/';
-const locRetro3dO = isDev() ? `http://${localIp}:3311` : 'app/3do/';
-const locScummVm = isDev() ? `http://${localIp}:3313` : 'app/scummvm/';
+// const http = "https://";
+const http = "http://";
 
-// const locRetroSaturn = isDev() ? `http://${localIp}:3312` : 'app/saturn/';
-// const locRetroParallelN64 = isDev() ? `http://${localIp}:3309` : 'app/retro-n64/';
-const locStandalone = isDev() ? `http://${localIp}:3080` : 'app/standalone/';
+const localIp = config.getLocalIp();
+const locGenesis = isDev() ? `${http}${localIp}:3010` : 'app/genesis/';
+const locSms = locGenesis;
+const locRetroGenesis = isDev() ? `${http}${localIp}:3101` : 'app/retro-genesis/';
+const locRetroPceFast = isDev() ? `${http}${localIp}:3202` : 'app/retro-pce-fast/';
+const locRetroStella = isDev() ? `${http}${localIp}:3312` : 'app/retro-stella/';
+const locRetroStellaLatest = isDev() ? `${http}${localIp}:3314` : 'app/retro-stella-latest/';
+const locRetroCommodore8Bit = isDev() ? `${http}${localIp}:3315` : 'app/retro-commodore-8bit/';
+// const locRetroProsystem = isDev() ? `${http}${localIp}:3314` : 'app/retro-prosystem/';
+const locPsx = isDev() ? `${http}${localIp}:3099` : 'app/psx/';
+const loc7800 = isDev() ? `${http}${localIp}:3020` : 'app/7800/';
+const locNes = isDev() ? `${http}${localIp}:3030` : 'app/nes/';
+const locDoom = isDev() ? `${http}${localIp}:3040` : 'app/doom/';
+const loc2600 = isDev() ? `${http}${localIp}:3050` : 'app/2600/';
+const locSnes = isDev() ? `${http}${localIp}:3060` : 'app/snes/';
+const locN64 = isDev() ? `${http}${localIp}:3065` : 'app/n64/';
+const locGba = isDev() ? `${http}${localIp}:3070` : 'app/gba/';
+const locNeo = isDev() ? `${http}${localIp}:3077` : 'app/neo/';
+const locMednafen = isDev() ? `${http}${localIp}:3075` : 'app/mednafen/';
+const locColeco = isDev() ? `${http}${localIp}:3303` : 'app/colem/';
+const loc5200 = isDev() ? `${http}${localIp}:3304` : 'app/5200/';
+const locPcfx = isDev() ? `${http}${localIp}:3305` : 'app/pcfx/';
+const locRetro5200 = isDev() ? `${http}${localIp}:3306` : 'app/retro-a5200/';
+const locRetroNeocd = isDev() ? `${http}${localIp}:3307` : 'app/retro-neocd/';
+const locQuake = isDev() ? `${http}${localIp}:3308` : 'app/quake/';
+const locRetro3dO = isDev() ? `${http}${localIp}:3311` : 'app/3do/';
+const locScummVm = isDev() ? `${http}${localIp}:3313` : 'app/scummvm/';
+const locRetroFceumm = isDev() ? `${http}${localIp}:3377` : 'app/retro-fceumm/';
+const locRetroDosBoxPure = isDev() ? `${http}${localIp}:3333` : 'app/retro-dosbox-pure/';
+const locRetroSaturn = isDev() ? `${http}${localIp}:3312` : 'app/saturn/';
+// const locRetroParallelN64 = isDev() ? `${http}${localIp}:3309` : 'app/retro-n64/';
+const locStandalone = isDev() ? `${http}${localIp}:3080` : 'app/standalone/';
 
 const checkRom = app => {
   if (app.props === undefined || isEmptyString(app.props.rom)) {
@@ -74,6 +78,7 @@ const APP_TYPE_KEYS = /*Object.freeze(*/{
   BEETLE_PCFX: "beetle-pcfx",
   COLEM: "colem",
   COMMODORE_C64: "commodore-c64",
+  DOS: "dos",
   FBNEO_ARCADE: "fbneo-arcade",
   FBNEO_CAPCOM: "fbneo-capcom",
   FBNEO_KONAMI: "fbneo-konami",
@@ -105,7 +110,9 @@ const APP_TYPE_KEYS = /*Object.freeze(*/{
   // RETRO_PROSYSTEM: "retro-prosystem",
   RETRO_STELLA: "retro-stella",
   RETRO_STELLA_LATEST: "retro-stella-latest",
-  // RETRO_YABAUSE: "retro-yabause",
+  RETRO_FCEUMM: "retro-fceumm",
+  RETRO_DOSBOX_PURE: "retro-dosbox-pure",
+  RETRO_YABAUSE: "retro-yabause",
   SCUMMVM: "scummvm",
   SNES9X: "snes9x",
   TYRQUAKE: "tyrquake",
@@ -134,7 +141,7 @@ const APP_TYPE_KEYS = /*Object.freeze(*/{
   PCE: "pce",
   PCECD: "pcecd",
   QUAKE: "quake",
-  // SATURN: "saturn",
+  SATURN: "saturn",
   SCUMM: "scumm",
   SEGACD: "segacd",
   SG1000: 'sg1000',
@@ -401,6 +408,30 @@ const types = [{
     extensions: ['nes'],
     testMagic: Nes.testMagic,
     getMd5: Nes.getMd5,
+    defaults: {
+      rom: "",
+      pal: false,
+      zoomLevel: 0
+    }
+  }, {
+    key: APP_TYPE_KEYS.RETRO_FCEUMM,
+    alias: APP_TYPE_KEYS.NES,
+    name: 'Nintendo Entertainment System',
+    shortName: 'Nintendo NES',
+    coreName: 'Libretro FCEUmm',
+    location: locRetroFceumm,
+    background: 'images/app/nes-background.png',
+    thumbnail: 'images/app/nes-thumb.png',
+    validate: checkRom,
+    extensions: ['nes', 'fds'],
+    testMagic: Nes.testMagic,
+    getMd5: Nes.getMd5,
+    addProps: (feedProps, outProps) => {
+      const rom = feedProps.fds_bios;
+      if (rom) {
+        outProps.fds_bios = rom;
+      }
+    },
     defaults: {
       rom: "",
       pal: false,
@@ -776,30 +807,31 @@ const types = [{
       zoomLevel: 0,
       hack: 0
     }
-  // }, {
-  //   key: APP_TYPE_KEYS.RETRO_YABAUSE,
-  //   alias: APP_TYPE_KEYS.SATURN,
-  //   name: 'Saturn',
-  //   shortName: 'Saturn',
-  //   coreName: 'Libretro Yabause',
-  //   location: locRetroSaturn,
-  //   background: 'images/app/3do-background.png',
-  //   thumbnail: 'images/app/3do-thumb.png',
-  //   validate: checkDiscs,
-  //   extensions: [],
-  //   slowExit: true,
-  //   addProps: (feedProps, outProps) => {
-  //     // const bios = feedProps.threedo_bios;
-  //     // if (bios) {
-  //     //   outProps.threedo_bios = bios;
-  //     // }
-  //   },
-  //   defaults: {
-  //     discs: [],
-  //     uid: "",
-  //     zoomLevel: 0,
-  //     // hack: 0
-  //   }
+  }, {
+    key: APP_TYPE_KEYS.RETRO_YABAUSE,
+    alias: APP_TYPE_KEYS.SATURN,
+    name: 'Saturn',
+    shortName: 'Saturn',
+    coreName: 'Libretro Yabause',
+    location: locRetroSaturn,
+    background: 'images/app/3do-background.png',
+    thumbnail: 'images/app/3do-thumb.png',
+    validate: checkDiscs,
+    extensions: [],
+    slowExit: true,
+    multiThreaded: true,
+    addProps: (feedProps, outProps) => {
+      // const bios = feedProps.threedo_bios;
+      // if (bios) {
+      //   outProps.threedo_bios = bios;
+      // }
+    },
+    defaults: {
+      discs: [],
+      uid: "",
+      zoomLevel: 0,
+      // hack: 0
+    }
   }, {
     key: APP_TYPE_KEYS.BEETLE_PCFX,
     alias: APP_TYPE_KEYS.PCFX,
@@ -839,6 +871,26 @@ const types = [{
       wadType: 0,
       wadPath: "",
       uid: "",
+      zoomLevel: 0
+    }
+  }, {
+    key: APP_TYPE_KEYS.RETRO_DOSBOX_PURE,
+    alias: APP_TYPE_KEYS.DOS,
+    name: 'DOS',
+    coreName: 'Retro DosBox Pure',
+    slowExit: true,
+    location: locRetroDosBoxPure,
+    background: 'images/app/dos-background.png',
+    thumbnail: 'images/app/dos-thumb.png',
+    validate: checkArchive,
+    extensions: [],
+    multiThreaded: true,
+    defaults: {
+      archive: "",
+      autoStartPath: "",
+      uid: "",
+      controllerMode: 0,
+      mouseSpeed: 0,
       zoomLevel: 0
     }
   }, {
@@ -940,6 +992,7 @@ addAlias(types, APP_TYPE_KEYS.ARCADE_CAPCOM, APP_TYPE_KEYS.FBNEO_CAPCOM);
 addAlias(types, APP_TYPE_KEYS.ARCADE_KONAMI, APP_TYPE_KEYS.FBNEO_KONAMI);
 addAlias(types, APP_TYPE_KEYS.COLECO, APP_TYPE_KEYS.COLEM);
 addAlias(types, APP_TYPE_KEYS.COMMODORE_C64, APP_TYPE_KEYS.RETRO_COMMODORE_C64);
+addAlias(types, APP_TYPE_KEYS.DOS, APP_TYPE_KEYS.RETRO_DOSBOX_PURE);
 addAlias(types, APP_TYPE_KEYS.GBA, APP_TYPE_KEYS.VBA_M_GBA);
 addAlias(types, APP_TYPE_KEYS.GB, APP_TYPE_KEYS.VBA_M_GB);
 addAlias(types, APP_TYPE_KEYS.GBC, APP_TYPE_KEYS.VBA_M_GBC);
@@ -956,7 +1009,7 @@ addAlias(types, APP_TYPE_KEYS.PCECD, APP_TYPE_KEYS.RETRO_PCE_FAST);
 addAlias(types, APP_TYPE_KEYS.PCFX, APP_TYPE_KEYS.BEETLE_PCFX);
 addAlias(types, APP_TYPE_KEYS.PSX, APP_TYPE_KEYS.BEETLE_PSX);
 addAlias(types, APP_TYPE_KEYS.QUAKE, APP_TYPE_KEYS.TYRQUAKE);
-// addAlias(types, APP_TYPE_KEYS.SATURN, APP_TYPE_KEYS.RETRO_YABAUSE);
+addAlias(types, APP_TYPE_KEYS.SATURN, APP_TYPE_KEYS.RETRO_YABAUSE);
 addAlias(types, APP_TYPE_KEYS.SCUMM, APP_TYPE_KEYS.SCUMMVM);
 addAlias(types, APP_TYPE_KEYS.SEGACD, APP_TYPE_KEYS.RETRO_GENPLUSGX_SEGACD);
 addAlias(types, APP_TYPE_KEYS.SG1000, APP_TYPE_KEYS.GENPLUSGX_SG);

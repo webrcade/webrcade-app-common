@@ -162,6 +162,12 @@ export class AppWrapper {
     }
   }
 
+  showMessage(message) {
+    if (this.showMessageEnabled) {
+      showMessage(message, false, false);
+    }
+  }
+
   getShowMessageCallback() {
     return (error) => {
       this.showErrorMessage(error);
@@ -321,6 +327,23 @@ export class AppWrapper {
     }, 100);
   }
 
+  // Allows extract path to be modified
+  getExtractPath(path) {
+    return path;
+  }
+
+  createDirectories(FS, path) {
+    const parts = path.split('/');
+    for (let i = 1; i <= parts.length; i++) {
+      const dirPath = parts.slice(0, i).join('/');
+      try {
+        FS.mkdir(dirPath);
+      } catch (e) {
+        //LOG.info("## Error making directory, it may already exist: " + dirPath);
+      }
+    }
+  }
+
   DEFAULT_MAX_EXTRACT_SIZE = (2 * 1024 * 1024 * 1024);
   //
   // callback:
@@ -368,7 +391,7 @@ export class AppWrapper {
     if (size < maxExtractSize) {
       console.log("EXTRACTING FILES.")
       recurse("/", myZipFs.readdirSync("/"), (isDir, f, stats) => {
-        const path = contentDir + f;
+        const path = contentDir + this.getExtractPath(f);
         if (isDir) {
           try {
             FS.mkdir(path);

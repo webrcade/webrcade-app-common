@@ -6,6 +6,7 @@ import {
   UrlUtil,
   isEmptyString,
   isValidString,
+  isLocalhostOrHttps,
 } from '../util';
 import { resolveImagePath } from '../images';
 
@@ -14,6 +15,7 @@ class AppRegistry {
 
   constructor() {
     this.updateAppTypes();
+    this.allowMultiThreaded = false;
   }
 
   APP_TYPES = {}
@@ -42,6 +44,9 @@ class AppRegistry {
     }
     if (APP_TYPES[app.type] === undefined) {
       throw new Error("'type' is invalid.");
+    }
+    if (this.isMultiThreaded(app.type) && (!this.allowMultiThreaded && !isLocalhostOrHttps())) {
+      throw new Error("is multi-threaded, and not localhost or https.");
     }
     APP_TYPES[app.type].validate(app);
   }
@@ -107,6 +112,7 @@ class AppRegistry {
     let outProps = {
       type: appType.type,
       title: this.getLongTitle(app),
+      mt: appType?.multiThreaded,
       app: this.getName(app)
     };
 
@@ -142,6 +148,12 @@ class AppRegistry {
 
   getTitle(app) {
     return app.title;
+  }
+
+  isMultiThreaded(type) {
+    const APP_TYPES = this.APP_TYPES;
+    const t = APP_TYPES[type];
+    return t.multiThreaded;
   }
 
   getLongTitle(app) {
@@ -314,6 +326,10 @@ class AppRegistry {
     }
 
     return result != null ? result : md5(await blobToStr(blob));
+  }
+
+  setAllowMultiThreaded(val) {
+    this.allowMultiThreaded = val;
   }
 }
 
