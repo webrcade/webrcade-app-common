@@ -5,6 +5,7 @@ const DB_PREFIX = "https://www.dropbox.com/";
 const DB_REMAP_PREFIX = "https://dl.dropboxusercontent.com/";
 const GDRIVE_PREFIX ="https://drive.google.com/file/d/";
 const GDRIVE_REMAP_PREFIX = "https://drive.google.com/uc?export=download&id=";
+const BOX_PREFIX = "https://app.box.com/file/"; 
 
 const IMG_PREFIX = "https://play.webrcade.com/default-feed/images/";
 const IMG_REMAP_PREFIX = "https://webrcade.github.io/webrcade-default-feed/images/";
@@ -45,6 +46,24 @@ const remapGdrive = (urlLower, url) => {
   return null;
 }
 
+const remapBox = (urlLower, url) => {
+  // Check for Box.com shared file prefix
+  if (urlLower.substring(0, BOX_PREFIX.length) === BOX_PREFIX) {
+    const fileId = url.substring(BOX_PREFIX.length).split('?')[0];
+    const sharedNameMatch = url.match(/[?&]s=([^&]+)/);
+    if (!sharedNameMatch) {
+      return null; // Return null if the 's' parameter (SHARED-NAME) is missing
+    }
+    const sharedName = sharedNameMatch[1];
+    url = `https://app.box.com/index.php?rm=box_download_shared_file&shared_name=${sharedName}&file_id=f_${fileId}`;
+    if (isDebug()) {
+      LOG.info("Remapped Box.com url: '" + url + "'");
+    }
+    return url;
+  }
+  return null;
+};
+
 const remapOldDefaultImage = (urlLower, url) => {
   if (urlLower.substring(0, IMG_PREFIX.length) === IMG_PREFIX) {
     url = IMG_REMAP_PREFIX + url.substring(IMG_PREFIX.length);
@@ -81,6 +100,9 @@ const remapUrl = (url) => {
   if (newUrl) return newUrl;
 
   newUrl = remapGdrive(urlLower, url);
+  if (newUrl) return newUrl;
+
+  newUrl = remapBox(urlLower, url);
   if (newUrl) return newUrl;
 
   return url;
