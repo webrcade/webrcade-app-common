@@ -102,6 +102,9 @@ const remapUrl = (url) => {
   newUrl = remapGdrive(urlLower, url);
   if (newUrl) return newUrl;
 
+  newUrl = remapBox(urlLower, url);
+  if (newUrl) return newUrl;
+
   return url;
 }
 
