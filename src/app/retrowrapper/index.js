@@ -691,7 +691,7 @@ export class RetroAppWrapper extends AppWrapper {
           }, 50);
         }
 
-        this.displayLoop = this.createDisplayLoop(debug);
+        this.displayLoop = await this.createDisplayLoop(debug);
 
         setTimeout(() => {
           this.resizeScreen(canvas);

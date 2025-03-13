@@ -50,6 +50,8 @@ const ArrowForwardImage = Icons.arrow_forward_24dp;
 const SwapVertImage = Icons.swap_vert_24dp;
 const VideoGameAssetWhiteImage = Icons.videogame_asset_white_24dp;
 const VideoGameAssetOffWhiteImage = Icons.videogame_asset_off_white_24dp;
+const SelectWindowImage = Icons.select_window_24dp;
+const SplitSceneImage = Icons.split_scene_24dp;
 
 const CategoryThumbImage = resolvePath("images/folder.png");
 const CategoryBackgroundImage = resolvePath("images/folder-background.png");
@@ -161,6 +163,7 @@ const A5200Controller = resolvePath("images/app/a5200/controller.png");
 const ScummVmBackground = resolvePath("images/app/scummvm-background.png");
 const Commodore64Background = resolvePath("images/app/c64-background.png");
 const DosBackground = resolvePath("images/app/dos-background.png");
+const NdsBackground = resolvePath("images/app/nds-background.png");
 
 export {
   AddCircleBlackImage,
@@ -304,6 +307,7 @@ export {
   Atari2600Background,
   Atari7800Background,
   DosBackground,
+  NdsBackground,
   ListsWhiteImage,
   ScummVmBackground,
   MouseWhiteImage,
@@ -315,6 +319,8 @@ export {
   SwapVertImage,
   VideoGameAssetWhiteImage,
   VideoGameAssetOffWhiteImage,
+  SelectWindowImage,
+  SplitSceneImage,
 
   resolvePath as resolveImagePath
 }

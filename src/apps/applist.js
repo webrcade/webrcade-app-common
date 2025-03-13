@@ -42,6 +42,7 @@ const locScummVm = isDev() ? `${http}${localIp}:3313` : 'app/scummvm/';
 const locRetroFceumm = isDev() ? `${http}${localIp}:3377` : 'app/retro-fceumm/';
 const locRetroDosBoxPure = isDev() ? `${http}${localIp}:3333` : 'app/retro-dosbox-pure/';
 const locRetroSaturn = isDev() ? `${http}${localIp}:3312` : 'app/saturn/';
+const locRetroMelonDS = isDev() ? `${http}${localIp}:3444` : 'app/retro-melonds/';
 // const locRetroParallelN64 = isDev() ? `${http}${localIp}:3309` : 'app/retro-n64/';
 const locStandalone = isDev() ? `${http}${localIp}:3080` : 'app/standalone/';
 
@@ -104,6 +105,7 @@ const APP_TYPE_KEYS = /*Object.freeze(*/{
   RETRO_COMMODORE_C64: "retro-commodore-c64",
   RETRO_GENPLUSGX_SEGACD: "retro-genplusgx-segacd",
   RETRO_PCE_FAST: "retro-pce-fast",
+  RETRO_MELONDS: "retro-melonds",
   RETRO_NEOCD: "retro-neocd",
   RETRO_OPERA: "retro-opera",
   RETRO_PARALLEL_N64: "retro-parallel-n64",
@@ -133,6 +135,7 @@ const APP_TYPE_KEYS = /*Object.freeze(*/{
   GENESIS: "genesis",
   GG: "gg",
   LNX: "lnx",
+  NDS: "nds",
   NEOGEO: "neogeo",
   NEOGEOCD: "neogeocd",
   NES: "nes",
@@ -894,6 +897,28 @@ const types = [{
       zoomLevel: 0
     }
   }, {
+    key: APP_TYPE_KEYS.RETRO_MELONDS,
+    alias: APP_TYPE_KEYS.NDS,
+    name: 'Nintendo DS',
+    coreName: 'Retro MelonDS',
+    slowExit: true,
+    location: locRetroMelonDS,
+    background: 'images/app/nds-background.png',
+    thumbnail: 'images/app/nds-thumb.png',
+    validate: checkRom,
+    extensions: ['dsi', 'nds'],
+    multiThreaded: true,
+    addProps: (feedProps, outProps) => {
+      const bios = feedProps.ds_bios;
+      if (bios) {
+        outProps.ds_bios = bios;
+      }
+    },
+    defaults: {
+      rom: "",
+      zoomLevel: 0
+    }
+  }, {
     key: APP_TYPE_KEYS.SCUMMVM,
     alias: APP_TYPE_KEYS.SCUMM,
     name: 'ScummVM',
@@ -1001,6 +1026,7 @@ addAlias(types, APP_TYPE_KEYS.GG, APP_TYPE_KEYS.GENPLUSGX_GG);
 addAlias(types, APP_TYPE_KEYS.LNX, APP_TYPE_KEYS.MEDNAFEN_LNX);
 addAlias(types, APP_TYPE_KEYS.NEOGEO, APP_TYPE_KEYS.FBNEO_NEOGEO);
 addAlias(types, APP_TYPE_KEYS.NEOGEOCD, APP_TYPE_KEYS.RETRO_NEOCD);
+addAlias(types, APP_TYPE_KEYS.NDS, APP_TYPE_KEYS.RETRO_MELONDS);
 addAlias(types, APP_TYPE_KEYS.NES, APP_TYPE_KEYS.FCEUX);
 addAlias(types, APP_TYPE_KEYS.NGC, APP_TYPE_KEYS.MEDNAFEN_NGC);
 addAlias(types, APP_TYPE_KEYS.NGP, APP_TYPE_KEYS.MEDNAFEN_NGP);
