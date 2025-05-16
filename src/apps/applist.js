@@ -916,7 +916,9 @@ const types = [{
     },
     defaults: {
       rom: "",
-      zoomLevel: 0
+      zoomLevel: 0,
+      screenLayout: "default",
+      screenGap: false,
     }
   }, {
     key: APP_TYPE_KEYS.SCUMMVM,
