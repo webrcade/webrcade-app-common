@@ -12,6 +12,7 @@ const enable5200 = false;
 // const http = "https://";
 const http = "http://";
 
+//const localIp = "192.168.1.157"; // config.getLocalIp();
 const localIp = config.getLocalIp();
 const locGenesis = isDev() ? `${http}${localIp}:3010` : 'app/genesis/';
 const locSms = locGenesis;
@@ -919,6 +920,8 @@ const types = [{
       zoomLevel: 0,
       screenLayout: "default",
       screenGap: false,
+      bookMode: false,
+      dualAnalog: false,
     }
   }, {
     key: APP_TYPE_KEYS.SCUMMVM,

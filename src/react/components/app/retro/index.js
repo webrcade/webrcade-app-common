@@ -8,7 +8,7 @@ import { settings } from '../../../../settings';
 import { DiscSelectionEditor } from '../../../screens/selectdisc'
 import { FetchAppData } from '../../../../app';
 import { Resources } from '../../../../resources';
-import { UrlUtil } from '../../../../util';
+import { UrlUtil, md5Uint8Array } from '../../../../util';
 import { WebrcadeApp } from '..';
 import { AppRegistry } from "../../../../apps";
 import { romNameScorer } from "../../../../zip";
@@ -29,6 +29,18 @@ export class WebrcadeRetroApp extends WebrcadeApp {
 
   createEmulator(app, isDebug) {
     throw "createEmulator is not implemented.";
+  }
+
+  isRomProgressBased() {
+    return false;
+  }
+
+  isHeapAllocEnabled() {
+    return false;
+  }
+
+  getHeapAllocSize(size) {
+    return size;
   }
 
   isDiscBased() {
@@ -216,6 +228,9 @@ export class WebrcadeRetroApp extends WebrcadeApp {
       }
 
       let romFilename = null;
+      let heapPtr = null;
+      let heapBuff = null;
+      let heapPtrLength = 0;
 
       // Load Emscripten and ROM binaries
       settings
@@ -232,13 +247,82 @@ export class WebrcadeRetroApp extends WebrcadeApp {
           return response;
         })
         .then((response) => {
+          // Disk or archive based
           if (this.isDiscBased() || this.isArchiveBased()) {
             try {
               romFilename = fad.getFilename(response);
             } catch (e) {}
             return this.fetchResponseBuffer(response)
+          // Media based
           } else if (this.isMediaBased()) {
             return this.fetchMedia(this.media)
+          // Progress based ROM (progress when reading rom, supports heap allocated buffers)
+          } else if (this.isRomProgressBased()) {
+            // Create unzip instance
+            const uz = new Unzip().setDebug(this.isDebug()).setUseUint8Array(true);
+
+            // Configure heap allocator if applicable
+            let heapAlloc = null;
+            if (this.isHeapAllocEnabled()) {
+              heapAlloc = (size) => {
+                // Allocate the heap based on the size
+                heapPtrLength = this.getHeapAllocSize(size);
+                heapPtr = window.Module._malloc(heapPtrLength);
+                // Set the array to the requested size
+                heapBuff = new Uint8Array(window.Module.HEAPU8.buffer, heapPtr, size);
+                heapBuff.fill(0);
+                return heapBuff;
+              }
+            }
+
+            // Progress-based incremental fetch
+            return this.fetchResponseBuffer(response, heapAlloc)
+              .then((romArray) => {
+                // Perform the unzip operation
+                return uz.unzip(romArray, extsNotUnique, exts, romNameScorer)
+              })
+              .then((romArray) => {
+                // If we unzipped something
+                if (heapBuff !== null && (heapBuff !== romArray)) {
+                  if (heapBuff) {
+                    // If the heap buffer is larger than what was unzipped, use the heap buffer
+                    // otherwise throw it away, and just use the result of the zip operation
+                    if (romArray.length <= heapPtrLength) {
+                      heapBuff = new Uint8Array(window.Module.HEAPU8.buffer, heapPtr, romArray.length);
+                      for(let i = 0; i < romArray.length; i++) {
+                        heapBuff[i] = romArray[i];
+                      }
+                      romArray = heapBuff;
+                    } else {
+                      // Clear the heap buffer, we are using the array that was the result of the
+                      // zip operation
+                      Module._free(heapPtr);
+                      heapPtr = 0;
+                      heapPtrLength = 0;
+                      heapBuff = null;
+                    }
+                  }
+                }
+                return romArray;
+              })
+              .then((romArray) => {
+                // Try to determine the filename
+                let filename = uz.getName();
+                if (!filename) {
+                  filename = fad.getFilename(response);
+                }
+                if (!filename) {
+                  filename = UrlUtil.getFileName(this.rom);
+                }
+                romFilename = filename;
+                return romArray;
+              })
+              .then((romArray) => {
+                // Calculate the MD5
+                this.uid = md5Uint8Array(romArray);
+                return romArray;
+              })
+          // Normal ROM (not progress-based)
           } else {
             let romBlob = null;
             const uz = new Unzip().setDebug(this.isDebug());
@@ -268,6 +352,8 @@ export class WebrcadeRetroApp extends WebrcadeApp {
             this.isMediaBased() ? null : content,
             extension
           );
+          emulator.setRomPointer(heapPtr);
+          emulator.setRomPointerLength(heapPtrLength);
           if (this.isArchiveBased()) {
             emulator.setArchiveUrl(this.archive);
             emulator.setFilename(romFilename);

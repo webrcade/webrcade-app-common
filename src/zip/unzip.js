@@ -7,6 +7,7 @@ export class Unzip {
     this.debug = false;
     this.entriesCb = null;
     this.failIfNotFound = true;
+    this.useUint8Array = false;
   }
 
   setDebug(debug) {
@@ -21,6 +22,11 @@ export class Unzip {
 
   setFailIfNotFound(v) {
     this.failIfNotFound = v;
+    return this;
+  }
+
+  setUseUint8Array(v) {
+    this.useUint8Array = v;
     return this;
   }
 
@@ -141,7 +147,7 @@ export class Unzip {
 
         if (romEntry) {
           that.name = romEntry.filename;
-          let writer = new zip.BlobWriter();
+          let writer = this.useUint8Array ? new zip.Uint8ArrayWriter() : new zip.BlobWriter();
           romEntry.getData(writer, success);
         } else {
           if (this.failIfNotFound) {
@@ -160,7 +166,7 @@ export class Unzip {
       }
 
       zip.createReader(
-        new zip.BlobReader(file),
+        this.useUint8Array ? new zip.Uint8ArrayReader(file) : new zip.BlobReader(file),
         blobReader,
         (failure) => {
           if (this.debug) {

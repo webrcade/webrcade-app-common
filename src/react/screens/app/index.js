@@ -35,6 +35,12 @@ export class AppScreen extends Component {
       LOG.info("app loaded message received.")
       this.clearRefreshTimout();
     }
+    if (e.data === 'appExiting') {
+      const { popstateCallback } = this.props;
+      if (popstateCallback) {
+        popstateCallback();
+      }
+    }
   }
 
   getAppDiv() {

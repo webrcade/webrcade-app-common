@@ -113,6 +113,62 @@ var zipExport = {};
   function Reader() {
   }
 
+  function Uint8ArrayWriter() {
+    let chunks = [];
+    let totalLength = 0;
+
+    this.init = function(callback) {
+      callback();
+    };
+
+    this.writeUint8Array = function(array, callback) {
+      chunks.push(array);
+      totalLength += array.length;
+      callback();
+    };
+
+    this.getData = function(callback) {
+      const result = new Uint8Array(totalLength);
+      let offset = 0;
+      for (const chunk of chunks) {
+        result.set(chunk, offset);
+        offset += chunk.length;
+      }
+      callback(result);
+    };
+  }
+  Uint8ArrayWriter.prototype = new Reader();
+  Uint8ArrayWriter.prototype.constructor = Uint8ArrayWriter;
+
+  function Uint8ArrayReader(uint8array) {
+    this.size = uint8array.length;
+
+    this.init = function(callback) {
+      callback();
+    };
+
+    this.readUint8Array = function(index, length, callback, onerror) {
+      try {
+        if (
+          index < 0 ||
+          length < 0 ||
+          index + length > this.size
+        ) {
+          throw new RangeError(`Out of bounds: index=${index}, length=${length}, size=${this.size}`);
+        }
+        // Full copy to avoid issues with subarray buffers
+        const slice = new Uint8Array(length);
+        slice.set(uint8array.subarray(index, index + length));
+        callback(slice);
+      } catch (e) {
+        if (onerror) onerror(e);
+        else throw e;
+      }
+    };
+  }
+  Uint8ArrayReader.prototype = new Reader();
+  Uint8ArrayReader.prototype.constructor = Uint8ArrayReader;
+
   function TextReader(text) {
     var that = this, blobReader;
 
@@ -929,6 +985,8 @@ var zipExport = {};
     TextReader: TextReader,
     BlobWriter: BlobWriter,
     Data64URIWriter: Data64URIWriter,
+    Uint8ArrayReader: Uint8ArrayReader,
+    Uint8ArrayWriter: Uint8ArrayWriter,
     TextWriter: TextWriter,
     createReader: function (reader, callback, onerror) {
       onerror = onerror || onerror_default;
