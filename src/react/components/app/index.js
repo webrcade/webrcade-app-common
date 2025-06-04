@@ -12,7 +12,7 @@ import { PauseScreen } from "../../screens/pause";
 import { Resources, TEXT_IDS } from "../../../resources";
 import { StatusScreen } from "../../screens/status";
 import { YesNoScreen } from "../../screens/yesno";
-import { applyIosNavBarHack, removeIosNavBarHack, UrlUtil, isIos,addXboxFullscreenCallback, getXboxViewMessage, preloadImages } from '../../../util';
+import { applyIosNavBarHack, removeIosNavBarHack, UrlUtil, isIos,isSafariOnMac, addXboxFullscreenCallback, getXboxViewMessage, preloadImages } from '../../../util';
 import {
   VolumeOffBlackImage,
   ArrowBackWhiteImage,
@@ -314,7 +314,7 @@ export class WebrcadeApp extends Component {
           // Editor and multi-threaded, close tab
           window.close();
         } else {
-          if (isIos()) {
+          if (isIos() || isSafariOnMac()) {
             window.parent.postMessage("appExiting", '*');
           } else {
             window.history.back();

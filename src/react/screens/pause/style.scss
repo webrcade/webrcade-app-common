@@ -73,6 +73,9 @@
     outline: none;
     overflow: hidden;
     opacity: .7;
+    user-select: none !important;
+    -webkit-user-select: none !important;
+    -webkit-touch-callout: none !important;
 
     &>img {
       width: 3.5rem;

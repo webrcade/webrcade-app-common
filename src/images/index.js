@@ -52,6 +52,7 @@ const VideoGameAssetWhiteImage = Icons.videogame_asset_white_24dp;
 const VideoGameAssetOffWhiteImage = Icons.videogame_asset_off_white_24dp;
 const SelectWindowImage = Icons.select_window_24dp;
 const SplitSceneImage = Icons.split_scene_24dp;
+const MicrophoneImage = Icons.microphone_white_24dp;
 
 const CategoryThumbImage = resolvePath("images/folder.png");
 const CategoryBackgroundImage = resolvePath("images/folder-background.png");
@@ -321,6 +322,7 @@ export {
   VideoGameAssetOffWhiteImage,
   SelectWindowImage,
   SplitSceneImage,
+  MicrophoneImage,
 
   resolvePath as resolveImagePath
 }

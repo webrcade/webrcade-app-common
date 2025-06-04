@@ -162,9 +162,9 @@ export class AppWrapper {
     }
   }
 
-  showMessage(message) {
+  showMessage(message, timeout = null) {
     if (this.showMessageEnabled) {
-      showMessage(message, false, false);
+      showMessage(message, false, false, timeout);
     }
   }
 

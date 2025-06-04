@@ -17,6 +17,16 @@ const isMacOs = () => {
   return /mac os/.test(userAgent);
 }
 
+function isSafariOnMac() {
+  const ua = navigator.userAgent;
+  const platform = navigator.platform;
+
+  const isMac = /Macintosh|MacIntel|MacPPC|Mac68K/.test(platform);
+  const isSafari = /^((?!chrome|android|crios|fxios|firefox|edg|opr).)*safari/i.test(ua);
+
+  return isMac && isSafari;
+}
+
 const isMobileSafari = () => {
   const userAgent = navigator.userAgent.toLowerCase();
   return userAgent.includes('safari/') &&
@@ -138,6 +148,7 @@ export {
   isXbox,
   isIos,
   isMobileSafari,
+  isSafariOnMac,
   applyIosNavBarHack,
   fullScreen,
   removeIosNavBarHack,

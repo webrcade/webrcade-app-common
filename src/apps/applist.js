@@ -12,8 +12,8 @@ const enable5200 = false;
 // const http = "https://";
 const http = "http://";
 
-//const localIp = "192.168.1.157"; // config.getLocalIp();
 const localIp = config.getLocalIp();
+// const localIp = "192.168.1.157"; // config.getLocalIp();
 const locGenesis = isDev() ? `${http}${localIp}:3010` : 'app/genesis/';
 const locSms = locGenesis;
 const locRetroGenesis = isDev() ? `${http}${localIp}:3101` : 'app/retro-genesis/';
@@ -914,6 +914,13 @@ const types = [{
       if (bios) {
         outProps.ds_bios = bios;
       }
+      const nickname = feedProps.ds_nickname;
+      if (nickname) {
+        const nick = nickname.trim();
+        if (nick.length > 0) {
+          outProps.ds_nickname = nick;
+        }
+      }
     },
     defaults: {
       rom: "",
@@ -922,6 +929,7 @@ const types = [{
       screenGap: false,
       bookMode: false,
       dualAnalog: false,
+      microphone: false,
     }
   }, {
     key: APP_TYPE_KEYS.SCUMMVM,
