@@ -49,8 +49,16 @@ export function getContentDispositionFilename(headers) {
 }
 
 export class FetchAppData {
-  constructor(url) {
+  constructor(url, addPrefix = false) {
     this.url = remapUrl(url);
+
+    if (addPrefix) {
+      // Append https (if not specified)
+      const trimmed = this.url.trim();
+      const hasScheme = /^https?:\/\//i.test(trimmed);
+      this.url =  hasScheme ? trimmed : `https://${trimmed}`;
+    }
+
     this.retries = 1;
     this.proxyDisabled = false;
     this.successMethod = null;

@@ -12,7 +12,7 @@ import { PauseScreen } from "../../screens/pause";
 import { Resources, TEXT_IDS } from "../../../resources";
 import { StatusScreen } from "../../screens/status";
 import { YesNoScreen } from "../../screens/yesno";
-import { applyIosNavBarHack, removeIosNavBarHack, UrlUtil, addXboxFullscreenCallback, getXboxViewMessage, preloadImages } from '../../../util';
+import { applyIosNavBarHack, removeIosNavBarHack, UrlUtil, isIos,isSafariOnMac, addXboxFullscreenCallback, getXboxViewMessage, preloadImages } from '../../../util';
 import {
   VolumeOffBlackImage,
   ArrowBackWhiteImage,
@@ -314,7 +314,11 @@ export class WebrcadeApp extends Component {
           // Editor and multi-threaded, close tab
           window.close();
         } else {
-          window.history.back();
+          if (isIos() || isSafariOnMac()) {
+            window.parent.postMessage("appExiting", '*');
+          } else {
+            window.history.back();
+          }
         }
       } else {
         window.document.body.innerHTML = '';
@@ -360,7 +364,7 @@ export class WebrcadeApp extends Component {
   }
 
   // TODO: Move this to common
-  async fetchResponseBuffer(response) {
+  async fetchResponseBuffer(response, heapAllocCallback = null) {
     //let checksum = 0;
 
     let length = response.headers.get('Content-Length');
@@ -374,7 +378,15 @@ export class WebrcadeApp extends Component {
     // console.log("Length: " + length);
     if (!isText && length) {
       length = parseInt(length);
-      let array = length > 0 ? new Uint8Array(length) : new Uint8Array();
+
+      // If we were passed a heap allocator, use it
+      let array = null;
+      if (heapAllocCallback && length > 0) {
+        array = heapAllocCallback(length);
+      } else {
+        array = length > 0 ? new Uint8Array(length) : new Uint8Array();
+      }
+
       if (length > 0) {
         let at = 0;
         let reader = response.body.getReader();

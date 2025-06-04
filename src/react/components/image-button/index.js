@@ -95,7 +95,9 @@ export class ImageButton extends Component {
   }
 
   onBlur = () => {
+    const { onBlur } = this.props;
     this.setState({ focused: false });
+    if (onBlur) onBlur();
   }
 
   isFocusable() {
@@ -122,7 +124,7 @@ export class ImageButton extends Component {
   }
 
   render() {
-    const { className, disabled, hoverImgSrc, imgSrc, label, labelClassName, onTouchStart, onTouchEnd, onMouseDown } = this.props;
+    const { className, disabled, hoverImgSrc, imgSrc, label, labelClassName, onTouchStart, onTouchEnd, onMouseDown, onMouseUp } = this.props;
     const { focused } = this.state;
 
     const disabledBtn = disabled ? true : false;
@@ -137,8 +139,10 @@ export class ImageButton extends Component {
         onClick={this.onClick}
         onFocus={this.onFocus}
         onMouseDown={onMouseDown}
+        onMouseUp={onMouseUp}
         onMouseEnter={this.onMouseEnter}
         onMouseLeave={this.onMouseLeave}
+        onContextMenu={(e) => {e.preventDefault();}}
         onBlur={this.onBlur}> {imgSrc ?
           <img alt={label} src={focused && hoverImgSrc ? hoverImgSrc : imgSrc}></img> : null}
         {labelClassName ? <div className={labelClassName}>{label}</div> : <div>{label}</div>}

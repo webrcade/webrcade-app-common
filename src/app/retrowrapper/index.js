@@ -98,6 +98,10 @@ export class RetroAppWrapper extends AppWrapper {
     throw "getScriptUrl() has not been implemented";
   }
 
+  isWriteEmptyRomEnabled() {
+    return false;
+  }
+
   isDiscBased() {
     return this.app.isDiscBased();
   }
@@ -128,10 +132,28 @@ export class RetroAppWrapper extends AppWrapper {
     this.archiveUrl = null;
     this.media = null;
     this.filename = null;
+    this.romPointer = null;
+    this.romPointerLength = 0;
     this.saveDisks = 0;
     this.game = this.isDiscBased() ?
       (this.RA_DIR + 'game.' + (ext != null && ext === 'pbp' ? 'pbp' : 'chd')) :
       (this.RA_DIR + "game.bin");
+  }
+
+  setRomPointer(ptr) {
+    this.romPointer = ptr;
+  }
+
+  getRomPointer() {
+    return this.romPointer ? this.romPointer : 0;
+  }
+
+  setRomPointerLength(len) {
+    this.romPointerLength = len;
+  }
+
+  getRomPointerLength() {
+    return this.romPointerLength ? this.romPointerLength : 0;
   }
 
   setFilename(name) {
@@ -615,7 +637,9 @@ export class RetroAppWrapper extends AppWrapper {
       } else {
         // Write rom file
         let stream = FS.open(game, 'a');
-        FS.write(stream, this.romBytes, 0, this.romBytes.length, 0, true);
+        if (!this.isWriteEmptyRomEnabled()) {
+          FS.write(stream, this.romBytes, 0, this.romBytes.length, 0, true);
+        }
         FS.close(stream);
       }
       this.romBytes = null;
@@ -691,7 +715,7 @@ export class RetroAppWrapper extends AppWrapper {
           }, 50);
         }
 
-        this.displayLoop = this.createDisplayLoop(debug);
+        this.displayLoop = await this.createDisplayLoop(debug);
 
         setTimeout(() => {
           this.resizeScreen(canvas);

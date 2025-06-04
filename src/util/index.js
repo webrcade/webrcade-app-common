@@ -9,6 +9,7 @@ export * from './md5.js'
 export * from './stringutil.js'
 export * from './browser.js'
 export * from './uuid.js'
+export * from './md5uint8array.js'
 
 const cloneObject = (obj) => {
   return JSON.parse(JSON.stringify(obj));

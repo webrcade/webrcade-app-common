@@ -8,6 +8,9 @@
   border-radius: .25rem;
   background: white;
   border: .2rem solid white;
+  user-select: none !important;
+  -webkit-user-select: none !important;
+  -webkit-touch-callout: none !important;
 
   color: black;
   white-space: nowrap;

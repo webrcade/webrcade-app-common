@@ -285,6 +285,24 @@ export class ControlsTab extends EditorTab {
     );
   }
 
+  renderControls(control, control2, description) {
+    return (
+      <div className={styles['controls-screen-row']}>
+        <div className={styles['controls-screen-column']}>
+          <div style={{display: 'flex', alignItems: 'center'}}>
+            <img className={styles['controls-gamepad-button']} src={this.getGamepadImage(control)} alt=""></img>
+            <span style={{ margin: '0 0.5rem' }}>+</span>
+            <img className={styles['controls-gamepad-button']} src={this.getGamepadImage(control2)} alt=""></img>
+          </div>
+        </div>
+        <div className={styles['controls-screen-column']}>
+          {this.formatDescription(description)}
+        </div>
+      </div>
+    );
+  }
+
+
   renderControlWithText(control, text, description) {
     return (
       <div className={styles['controls-screen-row']}>
