@@ -115,7 +115,7 @@ const APP_TYPE_KEYS = /*Object.freeze(*/{
   RETRO_STELLA_LATEST: "retro-stella-latest",
   RETRO_FCEUMM: "retro-fceumm",
   RETRO_DOSBOX_PURE: "retro-dosbox-pure",
-  RETRO_YABAUSE: "retro-yabause",
+  // RETRO_YABAUSE: "retro-yabause",
   SCUMMVM: "scummvm",
   SNES9X: "snes9x",
   TYRQUAKE: "tyrquake",
@@ -145,7 +145,7 @@ const APP_TYPE_KEYS = /*Object.freeze(*/{
   PCE: "pce",
   PCECD: "pcecd",
   QUAKE: "quake",
-  SATURN: "saturn",
+  // SATURN: "saturn",
   SCUMM: "scumm",
   SEGACD: "segacd",
   SG1000: 'sg1000',
@@ -811,31 +811,31 @@ const types = [{
       zoomLevel: 0,
       hack: 0
     }
-  }, {
-    key: APP_TYPE_KEYS.RETRO_YABAUSE,
-    alias: APP_TYPE_KEYS.SATURN,
-    name: 'Saturn',
-    shortName: 'Saturn',
-    coreName: 'Libretro Yabause',
-    location: locRetroSaturn,
-    background: 'images/app/3do-background.png',
-    thumbnail: 'images/app/3do-thumb.png',
-    validate: checkDiscs,
-    extensions: [],
-    slowExit: true,
-    multiThreaded: true,
-    addProps: (feedProps, outProps) => {
-      // const bios = feedProps.threedo_bios;
-      // if (bios) {
-      //   outProps.threedo_bios = bios;
-      // }
-    },
-    defaults: {
-      discs: [],
-      uid: "",
-      zoomLevel: 0,
-      // hack: 0
-    }
+  // }, {
+  //   key: APP_TYPE_KEYS.RETRO_YABAUSE,
+  //   alias: APP_TYPE_KEYS.SATURN,
+  //   name: 'Saturn',
+  //   shortName: 'Saturn',
+  //   coreName: 'Libretro Yabause',
+  //   location: locRetroSaturn,
+  //   background: 'images/app/3do-background.png',
+  //   thumbnail: 'images/app/3do-thumb.png',
+  //   validate: checkDiscs,
+  //   extensions: [],
+  //   slowExit: true,
+  //   multiThreaded: true,
+  //   addProps: (feedProps, outProps) => {
+  //     // const bios = feedProps.threedo_bios;
+  //     // if (bios) {
+  //     //   outProps.threedo_bios = bios;
+  //     // }
+  //   },
+  //   defaults: {
+  //     discs: [],
+  //     uid: "",
+  //     zoomLevel: 0,
+  //     // hack: 0
+  //   }
   }, {
     key: APP_TYPE_KEYS.BEETLE_PCFX,
     alias: APP_TYPE_KEYS.PCFX,
@@ -1048,7 +1048,7 @@ addAlias(types, APP_TYPE_KEYS.PCECD, APP_TYPE_KEYS.RETRO_PCE_FAST);
 addAlias(types, APP_TYPE_KEYS.PCFX, APP_TYPE_KEYS.BEETLE_PCFX);
 addAlias(types, APP_TYPE_KEYS.PSX, APP_TYPE_KEYS.BEETLE_PSX);
 addAlias(types, APP_TYPE_KEYS.QUAKE, APP_TYPE_KEYS.TYRQUAKE);
-addAlias(types, APP_TYPE_KEYS.SATURN, APP_TYPE_KEYS.RETRO_YABAUSE);
+// addAlias(types, APP_TYPE_KEYS.SATURN, APP_TYPE_KEYS.RETRO_YABAUSE);
 addAlias(types, APP_TYPE_KEYS.SCUMM, APP_TYPE_KEYS.SCUMMVM);
 addAlias(types, APP_TYPE_KEYS.SEGACD, APP_TYPE_KEYS.RETRO_GENPLUSGX_SEGACD);
 addAlias(types, APP_TYPE_KEYS.SG1000, APP_TYPE_KEYS.GENPLUSGX_SG);
