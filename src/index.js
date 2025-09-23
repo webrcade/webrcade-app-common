@@ -24,6 +24,7 @@ export * from './react/components/text-field';
 export * from './react/screens/editor';
 export * from './react/screens/editor/tabs';
 export * from './react/screens/pause';
+export * from './react/screens/pause/tab';
 export * from './react/screens/pause/settings';
 export * from './react/screens/selectdisc';
 export * from './react/screens/settings';

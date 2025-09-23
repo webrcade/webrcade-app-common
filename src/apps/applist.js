@@ -44,6 +44,8 @@ const locRetroFceumm = isDev() ? `${http}${localIp}:3377` : 'app/retro-fceumm/';
 const locRetroDosBoxPure = isDev() ? `${http}${localIp}:3333` : 'app/retro-dosbox-pure/';
 const locRetroSaturn = isDev() ? `${http}${localIp}:3312` : 'app/saturn/';
 const locRetroMelonDS = isDev() ? `${http}${localIp}:3444` : 'app/retro-melonds/';
+const locRetroPokeMini = isDev() ? `${http}${localIp}:3555` : 'app/retro-pokemini/';
+const locRetroSnes9x = isDev() ? `${http}${localIp}:3378` : 'app/retro-snes9x/';
 // const locRetroParallelN64 = isDev() ? `${http}${localIp}:3309` : 'app/retro-n64/';
 const locStandalone = isDev() ? `${http}${localIp}:3080` : 'app/standalone/';
 
@@ -104,13 +106,19 @@ const APP_TYPE_KEYS = /*Object.freeze(*/{
   PRBOOM: "prboom",
   PSX: "psx",
   RETRO_COMMODORE_C64: "retro-commodore-c64",
+  RETRO_GENPLUSGX_GG: "retro-genplusgx-gg",
+  RETRO_GENPLUSGX_MD: "retro-genplusgx-md",
   RETRO_GENPLUSGX_SEGACD: "retro-genplusgx-segacd",
+  RETRO_GENPLUSGX_SG: "retro-genplusgx-sg",
+  RETRO_GENPLUSGX_SMS: "retro-genplusgx-sms",
   RETRO_PCE_FAST: "retro-pce-fast",
   RETRO_MELONDS: "retro-melonds",
   RETRO_NEOCD: "retro-neocd",
   RETRO_OPERA: "retro-opera",
   RETRO_PARALLEL_N64: "retro-parallel-n64",
+  RETRO_POKEMINI: "retro-pokemini",
   // RETRO_PROSYSTEM: "retro-prosystem",
+  RETRO_SNES9X: "retro-snes9x",
   RETRO_STELLA: "retro-stella",
   RETRO_STELLA_LATEST: "retro-stella-latest",
   RETRO_FCEUMM: "retro-fceumm",
@@ -144,6 +152,7 @@ const APP_TYPE_KEYS = /*Object.freeze(*/{
   NGP: "ngp",
   PCE: "pce",
   PCECD: "pcecd",
+  POKEMINI: "pokemini",
   QUAKE: "quake",
   // SATURN: "saturn",
   SCUMM: "scumm",
@@ -254,6 +263,23 @@ const types = [{
     shortName: 'Nintendo SNES',
     coreName: 'SNES9X',
     location: locSnes,
+    thumbnail: "images/app/snes-thumb.png",
+    background: "images/app/snes-background.png",
+    validate: checkRom,
+    extensions: ['smc', 'sfc', 'swc'],
+    defaults: {
+      rom: "",
+      zoomLevel: 0,
+      pal: false,
+      port2: 0
+    }
+  }, {
+    key: APP_TYPE_KEYS.RETRO_SNES9X,
+    alias: APP_TYPE_KEYS.SNES,
+    name: 'Super Nintendo',
+    shortName: 'Nintendo SNES',
+    coreName: 'Libretro SNES9X',
+    location: locRetroSnes9x,
     thumbnail: "images/app/snes-thumb.png",
     background: "images/app/snes-background.png",
     validate: checkRom,
@@ -400,6 +426,23 @@ const types = [{
       zoomLevel: 0
     }
   }, {
+    key: APP_TYPE_KEYS.RETRO_GENPLUSGX_MD,
+    alias: APP_TYPE_KEYS.GENESIS,
+    name: 'Sega Genesis',
+    coreName: 'Libretro Genesis Plus GX',
+    location: locRetroGenesis,
+    background: 'images/app/genesis-background.png',
+    thumbnail: 'images/app/genesis-thumb.png',
+    validate: checkRom,
+    extensions: ['smd', 'md', 'gen'],
+    testMagic: Genesis.testMagic,
+    defaults: {
+      rom: "",
+      pal: false,
+      pad3button: false,
+      zoomLevel: 0
+    }
+  }, {
     key: APP_TYPE_KEYS.FCEUX,
     alias: APP_TYPE_KEYS.NES,
     name: 'Nintendo Entertainment System',
@@ -439,6 +482,30 @@ const types = [{
     defaults: {
       rom: "",
       pal: false,
+      zoomLevel: 0
+    }
+  }, {
+    key: APP_TYPE_KEYS.RETRO_POKEMINI,
+    alias: APP_TYPE_KEYS.POKEMINI,
+    name: 'Nintendo Pokémon Mini',
+    shortName: 'Nintendo Pokémon Mini',
+    coreName: 'Libretro Pokémon Mini',
+    location: locRetroPokeMini,
+    background: 'images/app/nes-background.png',
+    thumbnail: 'images/app/nes-thumb.png',
+    validate: checkRom,
+    extensions: ['min'],
+    // testMagic: Nes.testMagic,
+    // getMd5: Nes.getMd5,
+    // addProps: (feedProps, outProps) => {
+    //   const rom = feedProps.fds_bios;
+    //   if (rom) {
+    //     outProps.fds_bios = rom;
+    //   }
+    // },
+    defaults: {
+      rom: "",
+      // pal: false,
       zoomLevel: 0
     }
   }, {
@@ -485,6 +552,23 @@ const types = [{
       zoomLevel: 0
     }
   }, {
+      key: APP_TYPE_KEYS.RETRO_GENPLUSGX_SMS,
+      alias: APP_TYPE_KEYS.SMS,
+      name: 'Sega Master System',
+      coreName: 'Libretro Genesis Plus GX',
+      location: locRetroGenesis,
+      background: 'images/app/mastersystem-background.png',
+      thumbnail: 'images/app/mastersystem-thumb.png',
+      validate: checkRom,
+      extensions: ['sms'],
+      defaults: {
+        rom: "",
+        hwType: 0,
+        pal: false,
+        ym2413: false,
+        zoomLevel: 0
+      }
+  }, {
     key: APP_TYPE_KEYS.GENPLUSGX_SG,
     alias: APP_TYPE_KEYS.SG1000,
     name: 'Sega SG-1000',
@@ -500,11 +584,40 @@ const types = [{
       zoomLevel: 0
     }
   }, {
+    key: APP_TYPE_KEYS.RETRO_GENPLUSGX_SG,
+    alias: APP_TYPE_KEYS.SG1000,
+    name: 'Sega SG-1000',
+    coreName: 'Libretro Genesis Plus GX',
+    location: locRetroGenesis,
+    background: 'images/app/sg1000-background.png',
+    thumbnail: 'images/app/sg1000-thumb.png',
+    validate: checkRom,
+    extensions: ['sg'],
+    defaults: {
+      rom: "",
+      pal: false,
+      zoomLevel: 0
+    }
+  }, {
     key: APP_TYPE_KEYS.GENPLUSGX_GG,
     alias: APP_TYPE_KEYS.GG,
     name: 'Sega Game Gear',
     coreName: 'Genesis Plus GX',
     location: locSms,
+    background: 'images/app/gamegear-background.png',
+    thumbnail: 'images/app/gamegear-thumb.png',
+    validate: checkRom,
+    extensions: ['gg'],
+    defaults: {
+      rom: "",
+      zoomLevel: 0
+    }
+  }, {
+    key: APP_TYPE_KEYS.RETRO_GENPLUSGX_GG,
+    alias: APP_TYPE_KEYS.GG,
+    name: 'Sega Game Gear',
+    coreName: 'Libretro Genesis Plus GX',
+    location: locRetroGenesis,
     background: 'images/app/gamegear-background.png',
     thumbnail: 'images/app/gamegear-thumb.png',
     validate: checkRom,
@@ -729,6 +842,8 @@ const types = [{
     defaults: {
       discs: [],
       uid: "",
+      pal: false,
+      pad3button: false,
       zoomLevel: 0
     }
   }, {
@@ -1046,6 +1161,7 @@ addAlias(types, APP_TYPE_KEYS.NGP, APP_TYPE_KEYS.MEDNAFEN_NGP);
 addAlias(types, APP_TYPE_KEYS.PCE, APP_TYPE_KEYS.MEDNAFEN_PCE);
 addAlias(types, APP_TYPE_KEYS.PCECD, APP_TYPE_KEYS.RETRO_PCE_FAST);
 addAlias(types, APP_TYPE_KEYS.PCFX, APP_TYPE_KEYS.BEETLE_PCFX);
+addAlias(types, APP_TYPE_KEYS.POKEMINI, APP_TYPE_KEYS.RETRO_POKEMINI);
 addAlias(types, APP_TYPE_KEYS.PSX, APP_TYPE_KEYS.BEETLE_PSX);
 addAlias(types, APP_TYPE_KEYS.QUAKE, APP_TYPE_KEYS.TYRQUAKE);
 // addAlias(types, APP_TYPE_KEYS.SATURN, APP_TYPE_KEYS.RETRO_YABAUSE);

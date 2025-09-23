@@ -9,6 +9,7 @@ import { CIDS } from '../../input';
 import { getScreenShot } from '../../display';
 import { TEXT_IDS } from '../../resources';
 import { FileManifest } from '../filemanifest';
+import ShadersService from './shaders/shaders'
 import * as LOG from '../../log'
 
 let STATE_FILE_PATH = "/home/web_user/retroarch/userdata/states/game.state";
@@ -63,6 +64,8 @@ export class RetroAppWrapper extends AppWrapper {
     window.emulator = this;
     window.readyAudioContext = null;
 
+    this.shader = null;
+    this.shaders = new ShadersService(this);
     this.discIndex = null;
     this.romBytes = null;
     this.biosBuffers = null;
@@ -138,6 +141,13 @@ export class RetroAppWrapper extends AppWrapper {
     this.game = this.isDiscBased() ?
       (this.RA_DIR + 'game.' + (ext != null && ext === 'pbp' ? 'pbp' : 'chd')) :
       (this.RA_DIR + "game.bin");
+  }
+
+  async setShader(shaderId) {
+  }
+
+  getShadersService() {
+    return this.shaders;
   }
 
   setRomPointer(ptr) {
@@ -381,6 +391,7 @@ export class RetroAppWrapper extends AppWrapper {
           FS.mkdir('/home/web_user/retroarch/userdata/saves/opera');
           FS.mkdir('/home/web_user/retroarch/userdata/saves/opera/per_game');
           FS.mkdir('/home/web_user/retroarch/userdata/states');
+          FS.mkdir('/home/web_user/retroarch/userdata/shaders');
         },
       };
 
@@ -488,8 +499,7 @@ export class RetroAppWrapper extends AppWrapper {
     }
   }
 
-  applyGameSettings() {
-  }
+  async applyGameSettings() {}
 
   updateBilinearFilter() {
     if (!this.mainStarted) return;
@@ -580,7 +590,7 @@ export class RetroAppWrapper extends AppWrapper {
       await this.onWriteAdditionalFiles();
 
       // Apply the game settings
-      this.applyGameSettings();
+      await this.applyGameSettings();
 
       // Copy BIOS files
       for (let bios in this.biosBuffers) {
@@ -709,6 +719,9 @@ export class RetroAppWrapper extends AppWrapper {
           Module._wrc_enable_bilinear_filter(1);
         }
 
+        // Apply shader value
+        await this.getShadersService().setShader(this.getPrefs().getShaderId());
+
         if (this.isDiscBased()) {
           setTimeout(() => {
             app.setState({ loadingMessage: null });
@@ -736,7 +749,7 @@ export class RetroAppWrapper extends AppWrapper {
         let s = false;
 
         // Start the display loop
-        this.displayLoop.start(() => {
+        this.displayLoop.start(async () => {
           try {
             if (!exit) {
               this.pollControls();

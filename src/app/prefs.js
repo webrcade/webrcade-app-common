@@ -19,9 +19,11 @@ export class AppPrefs extends BaseSettings {
     this.bilinearPath = app.getStoragePath(`${this.PREFS_PREFIX}.forceBilinear`);
     this.screenSizePath = app.getStoragePath(`${this.PREFS_PREFIX}.screenSize`);
     this.screenControlsPath = app.getStoragePath(`${this.PREFS_PREFIX}.screenControls`);
+    this.shaderIdPath = app.getStoragePath(`${this.PREFS_PREFIX}.shaderPath`);
     this.bilinearEnabled = false;
     this.screenSize = SCREEN_SIZES.SS_DEFAULT;
     this.screenControls = SCREEN_CONTROLS.SC_AUTO;
+    this.shaderId = "";
   }
 
   async load() {
@@ -39,12 +41,18 @@ export class AppPrefs extends BaseSettings {
       this.screenControlsPath,
       this.screenControls,
     );
+
+    this.shaderId = await super.loadValue(
+      this.shaderIdPath,
+      this.shaderId,
+    );
   }
 
   async save() {
     await super.saveBool(this.bilinearPath, this.bilinearEnabled);
     await super.saveValue(this.screenSizePath, this.screenSize);
     await super.saveValue(this.screenControlsPath, this.screenControls);
+    await super.saveValue(this.shaderIdPath, this.shaderId);
   }
 
   isBilinearEnabled() {
@@ -69,5 +77,13 @@ export class AppPrefs extends BaseSettings {
 
   setScreenControls(value) {
     this.screenControls = value;
+  }
+
+  getShaderId() {
+    return this.shaderId;
+  }
+
+  setShaderId(value) {
+    this.shaderId = value;
   }
 }

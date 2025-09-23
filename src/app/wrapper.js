@@ -353,7 +353,7 @@ export class AppWrapper {
   //    onArchiveFilesFinished();
   // }
   //
-  async extractArchive(FS, contentDir, bytes, maxExtractSize, callback) {
+  async extractArchive(FS, contentDir, bytes, maxExtractSize, callback, forceLower = false) {
     const BrowserFS = window.BrowserFS;
     const myZipFs = new BrowserFS.FileSystem.ZipFS(new Buffer(bytes));
 
@@ -391,7 +391,10 @@ export class AppWrapper {
     if (size < maxExtractSize) {
       console.log("EXTRACTING FILES.")
       recurse("/", myZipFs.readdirSync("/"), (isDir, f, stats) => {
-        const path = contentDir + this.getExtractPath(f);
+        let path = contentDir + this.getExtractPath(f);
+        if (forceLower) {
+          path = path.toLowerCase();
+        }
         if (isDir) {
           try {
             FS.mkdir(path);
