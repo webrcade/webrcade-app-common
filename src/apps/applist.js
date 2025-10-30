@@ -46,6 +46,9 @@ const locRetroSaturn = isDev() ? `${http}${localIp}:3312` : 'app/saturn/';
 const locRetroMelonDS = isDev() ? `${http}${localIp}:3444` : 'app/retro-melonds/';
 const locRetroPokeMini = isDev() ? `${http}${localIp}:3555` : 'app/retro-pokemini/';
 const locRetroSnes9x = isDev() ? `${http}${localIp}:3378` : 'app/retro-snes9x/';
+const locRetroMednafenLynx = isDev() ? `${http}${localIp}:3379` : 'app/retro-mednafen-lynx/';
+const locRetroMednafenNgp = isDev() ? `${http}${localIp}:3380` : 'app/retro-mednafen-npg/';
+const locRetroMednafenSgx = isDev() ? `${http}${localIp}:3381` : 'app/retro-mednafen-sgx/';
 // const locRetroParallelN64 = isDev() ? `${http}${localIp}:3309` : 'app/retro-n64/';
 const locStandalone = isDev() ? `${http}${localIp}:3080` : 'app/standalone/';
 
@@ -111,6 +114,11 @@ const APP_TYPE_KEYS = /*Object.freeze(*/{
   RETRO_GENPLUSGX_SEGACD: "retro-genplusgx-segacd",
   RETRO_GENPLUSGX_SG: "retro-genplusgx-sg",
   RETRO_GENPLUSGX_SMS: "retro-genplusgx-sms",
+  RETRO_MEDNAFEN_LYNX: "retro-mednafen-lynx",
+  RETRO_MEDNAFEN_NGC: "retro-mednafen-npc",
+  RETRO_MEDNAFEN_NGP: "retro-mednafen-ngp",
+  RETRO_MEDNAFEN_PCE: "retro-mednafen-pce",
+  RETRO_MEDNAFEN_SGX: "retro-mednafen-sgx",
   RETRO_PCE_FAST: "retro-pce-fast",
   RETRO_MELONDS: "retro-melonds",
   RETRO_NEOCD: "retro-neocd",
@@ -491,8 +499,8 @@ const types = [{
     shortName: 'Nintendo Pokémon Mini',
     coreName: 'Libretro Pokémon Mini',
     location: locRetroPokeMini,
-    background: 'images/app/nes-background.png',
-    thumbnail: 'images/app/nes-thumb.png',
+    background: 'images/app/pokemini-background.png',
+    thumbnail: 'images/app/pokemini-thumb.png',
     validate: checkRom,
     extensions: ['min'],
     // testMagic: Nes.testMagic,
@@ -694,12 +702,36 @@ const types = [{
     extensions: ['pce'],
     defaults: {...PCE_DEFAULTS, mapRunSelect: false}
   }, {
+    key: APP_TYPE_KEYS.RETRO_MEDNAFEN_PCE,
+    alias: APP_TYPE_KEYS.PCE,
+    name: 'NEC PC Engine',
+    shortName: 'NEC PC Engine',
+    coreName: 'Libretro Mednafen PCE Fast',
+    location: locRetroPceFast,
+    background: 'images/app/pce-background.png',
+    thumbnail: 'images/app/pce-thumb.png',
+    validate: checkRom,
+    extensions: ['pce'],
+    defaults: {...PCE_DEFAULTS, mapRunSelect: false}
+  }, {
     key: APP_TYPE_KEYS.MEDNAFEN_SGX,
     alias: APP_TYPE_KEYS.SGX,
     name: 'NEC SuperGrafx',
     shortName: 'NEC SuperGrafx',
     coreName: 'Mednafen',
     location: locMednafen,
+    background: 'images/app/sgx-background.png',
+    thumbnail: 'images/app/sgx-thumb.png',
+    validate: checkRom,
+    extensions: ['sgx'],
+    defaults: PCE_DEFAULTS
+  }, {
+    key: APP_TYPE_KEYS.RETRO_MEDNAFEN_SGX,
+    alias: APP_TYPE_KEYS.SGX,
+    name: 'NEC SuperGrafx',
+    shortName: 'NEC SuperGrafx',
+    coreName: 'Libretro Mednafen SuperGrafx',
+    location: locRetroMednafenSgx,
     background: 'images/app/sgx-background.png',
     thumbnail: 'images/app/sgx-thumb.png',
     validate: checkRom,
@@ -740,6 +772,30 @@ const types = [{
     shortName: 'SNK Neo Geo Pocket',
     coreName: 'Mednafen',
     location: locMednafen,
+    background: 'images/app/ngp-background.png',
+    thumbnail: 'images/app/ngp-thumb.png',
+    validate: checkRom,
+    extensions: ['ngp'],
+    defaults: NGP_DEFAULTS
+  }, {
+    key: APP_TYPE_KEYS.RETRO_MEDNAFEN_NGC,
+    alias: APP_TYPE_KEYS.NGC,
+    name: 'SNK Neo Geo Pocket Color',
+    shortName: 'SNK Neo Geo Pocket Color',
+    coreName: 'Libretro Mednafen NGP',
+    location: locRetroMednafenNgp,
+    background: 'images/app/ngc-background.png',
+    thumbnail: 'images/app/ngc-thumb.png',
+    validate: checkRom,
+    extensions: ['ngc'],
+    defaults: NGP_DEFAULTS
+  }, {
+    key: APP_TYPE_KEYS.RETRO_MEDNAFEN_NGP,
+    alias: APP_TYPE_KEYS.NGP,
+    name: 'SNK Neo Geo Pocket',
+    shortName: 'SNK Neo Geo Pocket',
+    coreName: 'Libretro Mednafen NGP',
+    location: locRetroMednafenNgp,
     background: 'images/app/ngp-background.png',
     thumbnail: 'images/app/ngp-thumb.png',
     validate: checkRom,
@@ -790,7 +846,31 @@ const types = [{
     },
     defaults: {
       rom: "",
-      rotation: 0,
+      rotation: -1,
+      zoomLevel: 0,
+    }
+  }, {
+    key: APP_TYPE_KEYS.RETRO_MEDNAFEN_LYNX,
+    alias: APP_TYPE_KEYS.LNX,
+    name: 'Atari Lynx',
+    shortName: 'Atari Lynx',
+    coreName: 'Libretro Mednafen Lynx',
+    location: locRetroMednafenLynx,
+    background: 'images/app/lynx-background.png',
+    thumbnail: 'images/app/lynx-thumb.png',
+    validate: checkRom,
+    extensions: ['lnx'],
+    testMagic: Lynx.testMagic,
+    getMd5: Lynx.getMd5,
+    addProps: (feedProps, outProps) => {
+      const boot = feedProps.lnx_boot;
+      if (boot) {
+        outProps.lnx_boot = boot;
+      }
+    },
+    defaults: {
+      rom: "",
+      rotation: -1,
       zoomLevel: 0,
     }
   }, {
@@ -851,7 +931,7 @@ const types = [{
     alias: APP_TYPE_KEYS.PCECD,
     name: 'NEC PC Engine CD',
     shortName: 'NEC PC Engine CD',
-    coreName: 'Libretro PCE Fast',
+    coreName: 'Libretro Mednafen PCE Fast',
     location: locRetroPceFast,
     background: 'images/app/pcecd-background.png',
     thumbnail: 'images/app/pcecd-thumb.png',

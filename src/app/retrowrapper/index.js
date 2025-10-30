@@ -563,6 +563,8 @@ export class RetroAppWrapper extends AppWrapper {
 
   async onStoreMedia() {}
 
+  getDisplayLoopReturn() { return undefined; }
+
   async onStart(canvas) {
     const { app, debug, game } = this;
     const { FS, Module } = window;
@@ -749,7 +751,7 @@ export class RetroAppWrapper extends AppWrapper {
         let s = false;
 
         // Start the display loop
-        this.displayLoop.start(async () => {
+        this.displayLoop.start(() => {
           try {
             if (!exit) {
               this.pollControls();
@@ -778,6 +780,8 @@ export class RetroAppWrapper extends AppWrapper {
             s = true;
             app.setState({loadingMessage: null, loadingPercent: null});
           }
+
+          return this.getDisplayLoopReturn();
         });
       }
     } catch (e) {

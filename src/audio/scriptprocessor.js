@@ -44,7 +44,8 @@ const registerAudioResume = (obj, cb, interval) => {
               setTimeout(resumeFunc, interval);
             }
           }
-        });
+        })
+        .catch((e) => {console.log(e);});
     } else {
       fSuccess();
     }
