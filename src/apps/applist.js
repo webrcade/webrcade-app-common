@@ -49,6 +49,8 @@ const locRetroSnes9x = isDev() ? `${http}${localIp}:3378` : 'app/retro-snes9x/';
 const locRetroMednafenLynx = isDev() ? `${http}${localIp}:3379` : 'app/retro-mednafen-lynx/';
 const locRetroMednafenNgp = isDev() ? `${http}${localIp}:3380` : 'app/retro-mednafen-npg/';
 const locRetroMednafenSgx = isDev() ? `${http}${localIp}:3381` : 'app/retro-mednafen-sgx/';
+const locRetroMednafenVb = isDev() ? `${http}${localIp}:3382` : 'app/retro-mednafen-vb/';
+const locRetroMednafenWswan = isDev() ? `${http}${localIp}:3383` : 'app/retro-mednafen-wswan/';
 // const locRetroParallelN64 = isDev() ? `${http}${localIp}:3309` : 'app/retro-n64/';
 const locStandalone = isDev() ? `${http}${localIp}:3080` : 'app/standalone/';
 
@@ -119,6 +121,9 @@ const APP_TYPE_KEYS = /*Object.freeze(*/{
   RETRO_MEDNAFEN_NGP: "retro-mednafen-ngp",
   RETRO_MEDNAFEN_PCE: "retro-mednafen-pce",
   RETRO_MEDNAFEN_SGX: "retro-mednafen-sgx",
+  RETRO_MEDNAFEN_VB: "retro-mednafen-vb",
+  RETRO_MEDNAFEN_WS: "retro-mednafen-ws",
+  RETRO_MEDNAFEN_WSC: "retro-mednafen-wsc",
   RETRO_PCE_FAST: "retro-pce-fast",
   RETRO_MELONDS: "retro-melonds",
   RETRO_NEOCD: "retro-neocd",
@@ -754,6 +759,22 @@ const types = [{
       zoomLevel: 0,
     }
   }, {
+    key: APP_TYPE_KEYS.RETRO_MEDNAFEN_VB,
+    alias: APP_TYPE_KEYS.VB,
+    name: 'Nintendo Virtual Boy',
+    shortName: 'Nintendo Virtual Boy',
+    coreName: 'Libretro Mednafen VB',
+    location: locRetroMednafenVb,
+    background: 'images/app/vb-background.png',
+    thumbnail: 'images/app/vb-thumb.png',
+    validate: checkRom,
+    extensions: ['vb'], // TODO: More?
+    defaults: {
+      rom: "",
+      pad6button: false,
+      zoomLevel: 0,
+    }
+  }, {
     key: APP_TYPE_KEYS.MEDNAFEN_NGC,
     alias: APP_TYPE_KEYS.NGC,
     name: 'SNK Neo Geo Pocket Color',
@@ -820,6 +841,30 @@ const types = [{
     shortName: 'Bandai WonderSwan',
     coreName: 'Mednafen',
     location: locMednafen,
+    background: 'images/app/ws-background.png',
+    thumbnail: 'images/app/ws-thumb.png',
+    validate: checkRom,
+    extensions: ['ws'],
+    defaults: WS_DEFAULTS
+  }, {
+    key: APP_TYPE_KEYS.RETRO_MEDNAFEN_WSC,
+    alias: APP_TYPE_KEYS.WSC,
+    name: 'Bandai WonderSwan Color',
+    shortName: 'Bandai WonderSwan Color',
+    coreName: 'Libretro Mednafen Wswan',
+    location: locRetroMednafenWswan,
+    background: 'images/app/wsc-background.png',
+    thumbnail: 'images/app/wsc-thumb.png',
+    validate: checkRom,
+    extensions: ['wsc'],
+    defaults: WS_DEFAULTS
+  }, {
+    key: APP_TYPE_KEYS.RETRO_MEDNAFEN_WS,
+    alias: APP_TYPE_KEYS.WS,
+    name: 'Bandai WonderSwan',
+    shortName: 'Bandai WonderSwan',
+    coreName: 'Libretro Mednafen Wswan',
+    location: locRetroMednafenWswan,
     background: 'images/app/ws-background.png',
     thumbnail: 'images/app/ws-thumb.png',
     validate: checkRom,
