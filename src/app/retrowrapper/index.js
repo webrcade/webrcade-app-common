@@ -413,12 +413,27 @@ export class RetroAppWrapper extends AppWrapper {
   async saveStateForSlot(slot) {
     const { Module } = window;
 
-    const shot = await getScreenShot(this.canvas,
-      () => {
-        Module._cmd_audio_stop();
-        Module._emscripten_mainloop();
-        Module._cmd_audio_start();
-      }, 10)
+    let shot = null;
+    let oldShaderId = null;
+    try {
+      let shaderId = this.shaders.getShaderId();
+      if (shaderId !== this.shaders.DISABLED) {
+        oldShaderId = shaderId;
+        this.shaders.setShader(this.shaders.DISABLED, false)
+      } else {
+        console.log("Shader is disabled, ignoring shot swap.");
+      }
+      shot = await getScreenShot(this.canvas,
+        () => {
+          Module._cmd_audio_stop();
+          Module._emscripten_mainloop();
+          Module._cmd_audio_start();
+        }, 10)
+    } finally {
+      if (oldShaderId) {
+        this.shaders.setShader(oldShaderId, false)
+      }
+    }
 
     Module._cmd_save_state();
 
@@ -759,6 +774,7 @@ export class RetroAppWrapper extends AppWrapper {
               this.onFrame();
             }
           } catch (e) {
+            console.log(e)
             if (e.status === 1971) {
               // Menu was displayed, should never happen (bad rom?
               if (!this.exiting) {

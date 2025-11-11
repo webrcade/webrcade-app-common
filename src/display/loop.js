@@ -142,6 +142,10 @@ export class DisplayLoop {
           frameTicks = (1000.0 / freq);
           adjustTolerance = (frameTicks * freq * 2); // 2 secs
           checkFrequency = freq * 5;
+
+          // TODO: Rethink all of this
+          this.frequency = freq;
+          //this.vsync = false;
         }
         fc++;
         let now = Date.now();

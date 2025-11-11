@@ -51,6 +51,7 @@ const locRetroMednafenNgp = isDev() ? `${http}${localIp}:3380` : 'app/retro-medn
 const locRetroMednafenSgx = isDev() ? `${http}${localIp}:3381` : 'app/retro-mednafen-sgx/';
 const locRetroMednafenVb = isDev() ? `${http}${localIp}:3382` : 'app/retro-mednafen-vb/';
 const locRetroMednafenWswan = isDev() ? `${http}${localIp}:3383` : 'app/retro-mednafen-wswan/';
+const locRetroMgba = isDev() ? `${http}${localIp}:3384` : 'app/retro-mgba/';
 // const locRetroParallelN64 = isDev() ? `${http}${localIp}:3309` : 'app/retro-n64/';
 const locStandalone = isDev() ? `${http}${localIp}:3080` : 'app/standalone/';
 
@@ -124,6 +125,7 @@ const APP_TYPE_KEYS = /*Object.freeze(*/{
   RETRO_MEDNAFEN_VB: "retro-mednafen-vb",
   RETRO_MEDNAFEN_WS: "retro-mednafen-ws",
   RETRO_MEDNAFEN_WSC: "retro-mednafen-wsc",
+  RETRO_MGBA: "retro-mgba-gba",
   RETRO_PCE_FAST: "retro-pce-fast",
   RETRO_MELONDS: "retro-melonds",
   RETRO_NEOCD: "retro-neocd",
@@ -646,6 +648,27 @@ const types = [{
     shortName: 'Nintendo GBA',
     coreName: 'VBA-M',
     location: locGba,
+    background: 'images/app/gba-background.png',
+    thumbnail: 'images/app/gba-thumb.png',
+    validate: checkRom,
+    extensions: ['gba'],
+    defaults: {
+      rom: "",
+      rotation: 0,
+      rtc: false,
+      mirroring: false,
+      saveType: 0,
+      flashSize: 65536,
+      disableLookup: false,
+      zoomLevel: 0
+    }
+  }, {
+    key: APP_TYPE_KEYS.RETRO_MGBA,
+    alias: APP_TYPE_KEYS.GBA,
+    name: 'Nintendo Game Boy Advance',
+    shortName: 'Nintendo GBA',
+    coreName: 'Libretro mGBA',
+    location: locRetroMgba,
     background: 'images/app/gba-background.png',
     thumbnail: 'images/app/gba-thumb.png',
     validate: checkRom,

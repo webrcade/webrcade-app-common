@@ -95,22 +95,10 @@
           "description": "Simulates a low-resolution dot matrix display, similar to early handheld systems. Emulates pixel separation, subpixel glow, and screen diffusion."
         },
         {
-          "id": "lcd-gameboy-dmg",
-          "title": "LCD Game Boy (DMG)",
-          "file": "handheld/gameboy.glslp",
-          "description": "Simulates the original Game Boy's iconic green-tinted screen. Renders grayscale graphics with the ghosting and pixel response of the DMG-01's monochrome LCD display."
-        },
-        {
-          "id": "lcd-gameboy-light",
-          "title": "LCD Game Boy Light",
-          "file": "handheld/gameboy-light.glslp",
-          "description": "Emulates the Game Boy Light's backlit monochrome display, offering a brighter and cooler screen tone with reduced ghosting compared to the original DMG."
-        },
-        {
-          "id": "lcd-gameboy-pocket",
-          "title": "LCD Game Boy Pocket",
-          "file": "handheld/gameboy-pocket.glslp",
-          "description": "Simulates the Game Boy Pocket's sharper monochrome LCD with improved contrast and reduced motion blur, while keeping a neutral gray tone."
+          "id": "lcd-zfast",
+          "title": "LCD zFast",
+          "file": "handheld/zfast-lcd.glslp",
+          "description": "High-performance shader that emulates the look of LCD pixels using minimal system resources. Ideal for gameplay-focused setups needing low latency."
         },
         {
           "id": "lcd-generic",
@@ -131,10 +119,22 @@
           "description": "720p-optimized version of the Simpletex LCD shader. Maintains clean LCD simulation while improving performance and sharpness at lower resolutions."
         },
         {
-          "id": "lcd-zfast",
-          "title": "LCD zFast",
-          "file": "handheld/zfast-lcd.glslp",
-          "description": "High-performance shader that emulates the look of LCD pixels using minimal system resources. Ideal for gameplay-focused setups needing low latency."
+          "id": "lcd-gameboy-dmg",
+          "title": "LCD Game Boy (DMG)",
+          "file": "handheld/gameboy.glslp",
+          "description": "Simulates the original Game Boy's iconic green-tinted screen. Renders grayscale graphics with the ghosting and pixel response of the DMG-01's monochrome LCD display."
+        },
+        {
+          "id": "lcd-gameboy-light",
+          "title": "LCD Game Boy Light",
+          "file": "handheld/gameboy-light.glslp",
+          "description": "Emulates the Game Boy Light's backlit monochrome display, offering a brighter and cooler screen tone with reduced ghosting compared to the original DMG."
+        },
+        {
+          "id": "lcd-gameboy-pocket",
+          "title": "LCD Game Boy Pocket",
+          "file": "handheld/gameboy-pocket.glslp",
+          "description": "Simulates the Game Boy Pocket's sharper monochrome LCD with improved contrast and reduced motion blur, while keeping a neutral gray tone."
         }
       ]
     },

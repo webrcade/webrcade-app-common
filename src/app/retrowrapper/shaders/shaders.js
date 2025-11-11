@@ -12,6 +12,7 @@ export default class ShadersService {
     this.shaderId = DISABLED;
     this.emulator = emulator;
     this.downloaded = false;
+    this.DISABLED = DISABLED;
   }
 
   getShaders() {
@@ -58,10 +59,12 @@ export default class ShadersService {
     }
   }
 
-  async setShader(shaderId) {
+  async setShader(shaderId, updatePrefs = true) {
     await this.loadShader(shaderId);
-    this.emulator.getPrefs().setShaderId(shaderId);
-    await this.emulator.getPrefs().save();
+    if (updatePrefs) {
+      this.emulator.getPrefs().setShaderId(shaderId);
+      await this.emulator.getPrefs().save();
+    }
   }
 
   async loadShader(shaderId) {
