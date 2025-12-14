@@ -12,6 +12,7 @@ import { PauseScreen } from "../../screens/pause";
 import { Resources, TEXT_IDS } from "../../../resources";
 import { StatusScreen } from "../../screens/status";
 import { YesNoScreen } from "../../screens/yesno";
+import { DefaultChangedScreen } from "../../screens/defaultchanged";
 import { applyIosNavBarHack, removeIosNavBarHack, UrlUtil, isIos,isSafariOnMac, addXboxFullscreenCallback, getXboxViewMessage, preloadImages } from '../../../util';
 import {
   VolumeOffBlackImage,
@@ -38,9 +39,11 @@ export class WebrcadeApp extends Component {
       loadingPercent: null,
       errorMessage: null,
       yesNoInfo: null,
+      defaultChangedInfo: null,
       showOverlay: false,
       showXboxViewMessage: false,
       statusMessage: null,
+      alertInfo: null,
       refresh: 0
     };
 
@@ -56,7 +59,8 @@ export class WebrcadeApp extends Component {
     LOADED: "loaded",
     ERROR: "error",
     YESNO: "yesno",
-    PAUSE: "pause"
+    PAUSE: "pause",
+    DEFAULT_CHANGED: "default-changed",
   }
 
   messageListener = (e) => {
@@ -74,6 +78,10 @@ export class WebrcadeApp extends Component {
 
   forceRefresh() {
     this.setState({refresh: this.state.refresh + 1});
+  }
+
+  setModeToLoaded() {
+    this.setState({mode: this.ModeEnum.LOADED});
   }
 
   componentDidMount() {
@@ -115,6 +123,7 @@ export class WebrcadeApp extends Component {
     const context = UrlUtil.getParam(url, AppProps.RP_CONTEXT);
     this.isEditor = context && context === AppProps.RV_CONTEXT_EDITOR;
     this.isStandalone = context && context === AppProps.RV_CONTEXT_STANDALONE;
+    this.isGlobalDefault = this.appProps.isGlobal;
 
     // Set title if multi-threaded and in editor
     if (this.isEditor && this?.appProps?.mt && this?.appProps?.title) {
@@ -150,7 +159,8 @@ export class WebrcadeApp extends Component {
   }
 
   getStoragePath(postfix) {
-    return `/wrc/${this.getAppType()}/${postfix}`;
+    const path = AppRegistry.instance.getStoragePath(this.getAppType(), postfix);
+    return path;
   }
 
   getCanvasStyles() {
@@ -178,6 +188,16 @@ export class WebrcadeApp extends Component {
     return (
       <ErrorScreen message={errorMessage} closeCallback={errorCloseCallback} />
     );
+  }
+
+  renderAlertScreen() {
+    const { alertInfo } = this.state;
+    return (
+      <AlertScreen
+        message={alertInfo.message}
+        showButtons={true}
+        callback={alertInfo.callback}
+    />)
   }
 
   renderYesNoScreen() {
@@ -219,21 +239,78 @@ export class WebrcadeApp extends Component {
     );
   }
 
+  renderDefaultChanged() {
+    const { defaultChangedInfo } = this.state;
+
+    return (
+      <DefaultChangedScreen info={defaultChangedInfo} />
+    )
+  }
+
+  checkDefaultChanged(callback) {
+    const { ModeEnum } = this;
+    const registry = AppRegistry.instance;
+
+    //this.isGlobalDefault
+    //this.isStandalone
+
+    let showMessage = false;
+
+    /*
+    const type = registry.getType(this.type);
+    if (type) {
+      const oldDefault = type.oldDefault;
+      if (oldDefault) {
+        const oldType = registry.getType(oldDefault);
+
+        this.setState({
+          mode: ModeEnum.DEFAULT_CHANGED,
+          defaultChangedInfo: {
+            onNo: () => { callback(); },
+            onYes: () => {
+              this.setState({
+                mode: ModeEnum.LOADED,
+                alertInfo: {
+                  message: "Your default settings have been updated.\nPlease relaunch this item for the change to take effect.",
+                  callback: async () => {
+                    this.exitFromPause()
+                  }
+                }
+              });
+            },
+            applicationType: registry.getGeneralNameForType(this.type),
+            shortApplicationType: registry.getGeneralShortNameForType(this.type),
+            oldDefault: oldType.coreName,
+            newDefault: type.coreName,
+          }
+        })
+        showMessage = true;
+      }
+    }
+    */
+
+    if (!showMessage) callback();
+  }
+
   isDebug() {
     return this.debug;
   }
 
   render() {
     const { ModeEnum } = this;
-    const { mode, showOverlay, showXboxViewMessage, statusMessage } = this.state;
+    const { mode, showOverlay, showXboxViewMessage, statusMessage, alertInfo } = this.state;
 
     let render = null;
     if (showXboxViewMessage) {
       render = this.renderXboxViewScreen();
+    } else if (alertInfo !== null) {
+      render = this.renderAlertScreen();
     } else if (mode === ModeEnum.ERROR) {
       render = this.renderErrorScreen();
     } else if (mode === ModeEnum.YESNO) {
       render = this.renderYesNoScreen();
+    } else if (mode === ModeEnum.DEFAULT_CHANGED) {
+      render = this.renderDefaultChanged();
     } else if (showOverlay) {
       render = this.renderOverlayScreen();
     }

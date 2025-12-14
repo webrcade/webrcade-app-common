@@ -38,6 +38,8 @@ const registerAudioResume = (obj, cb, interval) => {
       audioCtx.resume()
         .then(() => {
           if (audioCtx.state === 'running') {
+            obj.mixhead = 0;
+            obj.mixtail = 0;
             fSuccess();
           } else {
             if (interval !== undefined) {
@@ -130,6 +132,8 @@ class ScriptAudioProcessor {
       return;
     if (this.audioCtx) {
       if (!p) {
+        this.mixhead = 0;
+        this.mixtail = 0;
         this.audioCtx.resume();
       } else {
         this.audioCtx.suspend();

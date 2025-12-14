@@ -54,6 +54,7 @@ const SelectWindowImage = Icons.select_window_24dp;
 const SplitSceneImage = Icons.split_scene_24dp;
 const MicrophoneImage = Icons.microphone_white_24dp;
 const BlurImage = Icons.blur_on_24dp;
+const ExtensionImage = Icons.extension_24dp;
 
 const CategoryThumbImage = resolvePath("images/folder.png");
 const CategoryBackgroundImage = resolvePath("images/folder-background.png");
@@ -208,6 +209,7 @@ export {
   WebrcadeLogoDarkImage,
   WebrcadeLogoLargeImage,
   VolumeOffBlackImage,
+  ExtensionImage,
   XboxOneAButton,
   XboxOneBButton,
   XboxOneXButton,

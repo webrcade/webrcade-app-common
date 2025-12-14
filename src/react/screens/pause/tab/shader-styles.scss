@@ -22,6 +22,20 @@
       }
     }
   }
+
+  &-title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 98vw;
+
+    &-inner {
+      margin-bottom: 1.5rem;
+      font-size: 1.4rem;
+      font-weight: bold;
+      max-width: 60vw;
+    }
+  }
 }
 
 // .slottab {

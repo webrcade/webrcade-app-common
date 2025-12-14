@@ -37,6 +37,13 @@ export class ShaderSettingsTab extends FieldsTab {
     return (
       <Fragment>
         <FieldRow>
+          <div className={styles['shader-title']}>
+            <div className={styles['shader-title-inner']} >
+              Select a specific shader to apply (or choose Disabled for none)
+            </div>
+          </div>
+        </FieldRow>
+        <FieldRow>
           <FieldLabel>Shader Category</FieldLabel>
           <FieldControl>
             <ShaderCategorySelect
@@ -64,6 +71,7 @@ export class ShaderSettingsTab extends FieldsTab {
               <FieldLabel>Shader Name</FieldLabel>
               <FieldControl>
                 <ShaderSelect
+                  key={values.shaderCategoryId}
                   shaders={shaders}
                   selectRef={shaderRef}
                   selectedCategoryId={values.shaderCategoryId}
