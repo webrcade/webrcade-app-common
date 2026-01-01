@@ -22,16 +22,17 @@ export class AlertScreen extends Screen {
     const { message, showButtons, callback } = this.props;
     const buttonStyle = !showButtons ? {display: 'none'} : null;
 
+
     return (
       <WebrcadeContext.Provider value={screenContext}>
         <div className={styles['alert-screen'] }>
           <div className={styles['alert-screen-inner'] + " " + screenStyles.screen}>
             <div className={styles['alert-screen-message']}>
-              {message.split('\n').map(function (item, key) {
+              {message.split ?  message.split('\n').map(function (item, key) {
                 return key < 5 ? (
                   <div key={key}>{item}</div>
                 ) : null;
-              })}
+              }) : message}
             </div>
             <div className={styles['alert-screen-buttons']} style={buttonStyle}>
               <ImageButton

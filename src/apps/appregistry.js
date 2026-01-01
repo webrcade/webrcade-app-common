@@ -75,7 +75,7 @@ class AppRegistry {
   getDescription(app) {
     const APP_TYPES = this.APP_TYPES;
     return isValidString(app.description) ?
-      app.description : APP_TYPES[app.type].description;
+      app.description : "" /*APP_TYPES[app.type].description*/;
   }
 
   getName(app) {

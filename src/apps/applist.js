@@ -53,6 +53,7 @@ const locRetroMednafenVb = isDev() ? `${http}${localIp}:3382` : 'app/retro-medna
 const locRetroMednafenWswan = isDev() ? `${http}${localIp}:3383` : 'app/retro-mednafen-wswan/';
 const locRetroMgba = isDev() ? `${http}${localIp}:3384` : 'app/retro-mgba/';
 const locRetroSameboy = isDev() ? `${http}${localIp}:3385` : 'app/retro-sameboy/';
+// const locRetroSameCdi = isDev() ? `${http}${localIp}:3386` : 'app/retro-samecdi/';
 // const locRetroParallelN64 = isDev() ? `${http}${localIp}:3309` : 'app/retro-n64/';
 const locStandalone = isDev() ? `${http}${localIp}:3080` : 'app/standalone/';
 
@@ -141,6 +142,7 @@ const APP_TYPE_KEYS = /*Object.freeze(*/{
   RETRO_DOSBOX_PURE: "retro-dosbox-pure",
   RETRO_SAMEBOY_GB: "retro-sameboy-gb",
   RETRO_SAMEBOY_GBC: "retro-sameboy-gbc",
+  // RETRO_SAME_CDI: "retro-same-cdi",
   // RETRO_YABAUSE: "retro-yabause",
   SCUMMVM: "scummvm",
   SNES9X: "snes9x",
@@ -154,6 +156,7 @@ const APP_TYPE_KEYS = /*Object.freeze(*/{
   ARCADE: "arcade",
   ARCADE_KONAMI: "arcade-konami",
   ARCADE_CAPCOM: "arcade-capcom",
+  // CDI: "cdi",
   COLECO: "coleco",
   DOOM: "doom",
   GBA: "gba",
@@ -1295,6 +1298,30 @@ const types = [{
       dualAnalog: false,
       microphone: false,
     }
+  // }, {
+  //   key: APP_TYPE_KEYS.RETRO_SAME_CDI,
+  //   alias: APP_TYPE_KEYS.CDI,
+  //   name: 'Philips CDI',
+  //   shortName: 'Philips CDI',
+  //   coreName: 'Libretro SameCDI',
+  //   location: locRetroSameCdi,
+  //   background: 'images/app/neogeocd-background.png',
+  //   thumbnail: 'images/app/neogeocd-thumb.png',
+  //   description: "TODO",
+  //   validate: checkDiscs,
+  //   extensions: [],
+  //   slowExit: true,
+  //   addProps: (feedProps, outProps) => {
+  //     const bios = feedProps.philipscdi_bios;
+  //     if (bios) {
+  //       outProps.philipscdi_bios = bios;
+  //     }
+  //   },
+  //   defaults: {
+  //     discs: [],
+  //     uid: "",
+  //     zoomLevel: 0,
+  //   }
   }, {
     key: APP_TYPE_KEYS.SCUMMVM,
     alias: APP_TYPE_KEYS.SCUMM,
@@ -1396,6 +1423,7 @@ addAlias(types, APP_TYPE_KEYS.ARCADE_CAPCOM, APP_TYPE_KEYS.FBNEO_CAPCOM);
 addAlias(types, APP_TYPE_KEYS.ARCADE_KONAMI, APP_TYPE_KEYS.FBNEO_KONAMI);
 addAlias(types, APP_TYPE_KEYS.COLECO, APP_TYPE_KEYS.COLEM);
 addAlias(types, APP_TYPE_KEYS.COMMODORE_C64, APP_TYPE_KEYS.RETRO_COMMODORE_C64);
+// addAlias(types, APP_TYPE_KEYS.CDI, APP_TYPE_KEYS.RETRO_SAME_CDI);
 addAlias(types, APP_TYPE_KEYS.DOS, APP_TYPE_KEYS.RETRO_DOSBOX_PURE);
 addAlias(types, APP_TYPE_KEYS.GBA, APP_TYPE_KEYS.VBA_M_GBA);
 // addAlias(types, APP_TYPE_KEYS.GBA, APP_TYPE_KEYS.RETRO_MGBA);
