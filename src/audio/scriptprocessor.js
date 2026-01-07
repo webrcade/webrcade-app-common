@@ -131,6 +131,10 @@ class ScriptAudioProcessor {
 
   getFrequency() { return this.frequency; }
 
+  reset() {
+    this.mixhead = this.mixtail;
+  }
+
   pause(p) {
     if (p == this.paused)
       return;
@@ -184,7 +188,7 @@ class ScriptAudioProcessor {
 
         while (done < len) {
           for (let i = 0; i < this.channelCount; i++) {
-            this.tmpBuffers[i] = 0;
+            this.tmpBuffers[i][done] = 0;
           }
           done++;
         }

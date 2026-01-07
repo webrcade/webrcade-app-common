@@ -6,7 +6,7 @@ export class DisplayLoop {
   constructor(freq = 60, vsync = true, debug = false, forceNative = false, noWait = false) {
 
 // forceNative = false;
-// vsync = false;
+// vsync = false;//
 // noWait = true;
 
     this.frequency = freq;

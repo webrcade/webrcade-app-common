@@ -9,10 +9,20 @@ import { CIDS } from '../../input';
 import { getScreenShot } from '../../display';
 import { TEXT_IDS } from '../../resources';
 import { FileManifest } from '../filemanifest';
+import { NewRetroPrefs } from './newprefs';
+import { BILINEAR_MODE } from './newprefs';
 import ShadersService from './shaders/shaders'
 import * as LOG from '../../log'
 
 let STATE_FILE_PATH = "/home/web_user/retroarch/userdata/states/game.state";
+
+// sharp-bilinear.glslp
+const SHARP_BILINEAR_GLSLP_PATH = '/home/web_user/retroarch/userdata/shaders/sharp-bilinear.glslp';
+const SHARP_BILINEAR_GLSLP = "c2hhZGVycyA9IDEKCnNoYWRlcjAgPSBzaGFycC1iaWxpbmVhci5nbHNsCmZpbHRlcl9saW5lYXIwID0gdHJ1ZQ==";
+// sharp-bilinear.glsl
+const SHARP_BILINEAR_GLSL_PATH = '/home/web_user/retroarch/userdata/shaders/sharp-bilinear.glsl';
+//const SHARP_BILINEAR_GLSL = "LyoKICogQUFOTi1PcHRpbWl6ZWQgKEFudGktQWxpYXNlZCBOZWFyZXN0IE5laWdoYm9yIExpdGUpCiAqIE9wdGltaXplZCBmb3IgaGVhdnkgZW11bGF0b3JzIGxpa2UgRFMgb24gbW9iaWxlIGJyb3dzZXJzLgogKi8KCiNpZiBkZWZpbmVkKFZFUlRFWCkKCiNpZiBfX1ZFUlNJT05fXyA+PSAxMzAKI2RlZmluZSBDT01QQVRfVkFSWUlORyBvdXQKI2RlZmluZSBDT01QQVRfQVRUUklCVVRFIGluCiNlbHNlCiNkZWZpbmUgQ09NUEFUX1ZBUllJTkcgdmFyeWluZyAKI2RlZmluZSBDT01QQVRfQVRUUklCVVRFIGF0dHJpYnV0ZSAKI2VuZGlmCgojaWZkZWYgR0xfRVMKcHJlY2lzaW9uIGhpZ2hwIGZsb2F0OwojZW5kaWYKCkNPTVBBVF9BVFRSSUJVVEUgdmVjNCBWZXJ0ZXhDb29yZDsKQ09NUEFUX0FUVFJJQlVURSB2ZWM0IFRleENvb3JkOwpDT01QQVRfVkFSWUlORyB2ZWMyIHZUZXhDb29yZDsKCnVuaWZvcm0gbWF0NCBNVlBNYXRyaXg7CnVuaWZvcm0gdmVjMiBUZXh0dXJlU2l6ZTsKdW5pZm9ybSB2ZWMyIElucHV0U2l6ZTsKCnZvaWQgbWFpbigpCnsKICAgIGdsX1Bvc2l0aW9uID0gTVZQTWF0cml4ICogVmVydGV4Q29vcmQ7CiAgICAvLyBNYXAgdGhlIGNvb3JkaW5hdGUgc3BhY2UgY29ycmVjdGx5IGZvciB0aGUgZ2FtZSBwaXhlbHMKICAgIHZUZXhDb29yZCA9IFRleENvb3JkLnh5ICogVGV4dHVyZVNpemUueHkgLyBJbnB1dFNpemUueHk7Cn0KCiNlbGlmIGRlZmluZWQoRlJBR01FTlQpCgojaWYgX19WRVJTSU9OX18gPj0gMTMwCiNkZWZpbmUgQ09NUEFUX1ZBUllJTkcgaW4KI2RlZmluZSBDT01QQVRfVEVYVFVSRSB0ZXh0dXJlCm91dCB2ZWM0IEZyYWdDb2xvcjsKI2Vsc2UKI2RlZmluZSBDT01QQVRfVkFSWUlORyB2YXJ5aW5nCiNkZWZpbmUgRnJhZ0NvbG9yIGdsX0ZyYWdDb2xvcgojZGVmaW5lIENPTVBBVF9URVhUVVJFIHRleHR1cmUyRAojZW5kaWYKCiNpZmRlZiBHTF9FUwpwcmVjaXNpb24gaGlnaHAgZmxvYXQ7CiNlbmRpZgoKdW5pZm9ybSB2ZWMyIE91dHB1dFNpemU7CnVuaWZvcm0gdmVjMiBUZXh0dXJlU2l6ZTsKdW5pZm9ybSB2ZWMyIElucHV0U2l6ZTsKdW5pZm9ybSBzYW1wbGVyMkQgVGV4dHVyZTsKQ09NUEFUX1ZBUllJTkcgdmVjMiB2VGV4Q29vcmQ7CgovLyBTaW1wbGlmaWVkIFBlcmNlbnQgZnVuY3Rpb24gZnJvbSB0aGUgb3JpZ2luYWwgQUFOTgovLyBUaGlzIGhhbmRsZXMgdGhlIHN1Yi1waXhlbCB3ZWlnaHRpbmcgZm9yIHRoZSBjcmlzcCBlZGdlcy4KdmVjMyBwZXJjZW50KGZsb2F0IHNzaXplLCBmbG9hdCB0c2l6ZSwgZmxvYXQgY29vcmQsIGZsb2F0IG1vZCkgewogICAgLy8gRXBzaWxvbiB0byBwcmV2ZW50IGRpdmlzaW9uIGJ5IHplcm8KICAgIGZsb2F0IHNhZmVfdHNpemUgPSBtYXgodHNpemUsIDEuMCk7CiAgICAKICAgIGZsb2F0IG1pbmZ1bGwgPSAoY29vcmQgKiBzYWZlX3RzaXplIC0gMC40OTk5OSkgLyBzYWZlX3RzaXplICogc3NpemUgKiBtb2Q7CiAgICBmbG9hdCBtYXhmdWxsID0gKGNvb3JkICogc2FmZV90c2l6ZSArIDAuNDk5OTkpIC8gc2FmZV90c2l6ZSAqIHNzaXplICogbW9kOwogICAgZmxvYXQgcmVhbGZ1bGwgPSBmbG9vcihtYXhmdWxsKSArIDAuMDAwMDE7CgogICAgcmV0dXJuIHZlYzMoCiAgICAgICAgY2xhbXAoKG1heGZ1bGwgLSByZWFsZnVsbCkgLyBtYXgobWF4ZnVsbCAtIG1pbmZ1bGwsIDAuMDAwMDEpLCAwLjAsIDEuMCksCiAgICAgICAgKHJlYWxmdWxsIC0gMC40OTk5OSkgLyBzc2l6ZSwKICAgICAgICAocmVhbGZ1bGwgKyAwLjQ5OTk5KSAvIHNzaXplCiAgICApOwp9Cgp2b2lkIG1haW4oKQp7CiAgICB2ZWMyIGdhbWVDb29yZCA9IHZUZXhDb29yZDsKCiAgICAvLyBVc2UgSW5wdXRTaXplL1RleHR1cmVTaXplIHJhdGlvIHRvIGhhbmRsZSBlbXVsYXRvciBwYWRkaW5nCiAgICB2ZWMyIG1vZF9yYXRpbyA9IElucHV0U2l6ZSAvIFRleHR1cmVTaXplOwogICAgdmVjMyB4c3R1ZmYgPSBwZXJjZW50KFRleHR1cmVTaXplLngsIE91dHB1dFNpemUueCwgZ2FtZUNvb3JkLngsIG1vZF9yYXRpby54KTsKICAgIHZlYzMgeXN0dWZmID0gcGVyY2VudChUZXh0dXJlU2l6ZS55LCBPdXRwdXRTaXplLnksIGdhbWVDb29yZC55LCBtb2RfcmF0aW8ueSk7CgogICAgLy8gU2FtcGxlIHRoZSA0IHN1cnJvdW5kaW5nIHBpeGVscyAoSGFyZHdhcmUgTGluZWFyIG11c3QgYmUgT04gaW4gbWVudSkKICAgIC8vIFdlIHNhbXBsZSBleGFjdGx5IHdoZXJlIHRoZSBwaXhlbHMgb3ZlcmxhcAogICAgdmVjMyBhID0gQ09NUEFUX1RFWFRVUkUoVGV4dHVyZSwgdmVjMih4c3R1ZmYueSwgeXN0dWZmLnkpKS5yZ2I7CiAgICB2ZWMzIGIgPSBDT01QQVRfVEVYVFVSRShUZXh0dXJlLCB2ZWMyKHhzdHVmZi56LCB5c3R1ZmYueSkpLnJnYjsKICAgIHZlYzMgYyA9IENPTVBBVF9URVhUVVJFKFRleHR1cmUsIHZlYzIoeHN0dWZmLnksIHlzdHVmZi56KSkucmdiOwogICAgdmVjMyBkID0gQ09NUEFUX1RFWFRVUkUoVGV4dHVyZSwgdmVjMih4c3R1ZmYueiwgeXN0dWZmLnopKS5yZ2I7CgogICAgLy8gU2ltcGxlIExpbmVhciBJbnRlcnBvbGF0aW9uCiAgICB2ZWMzIHgxID0gbWl4KGEsIGIsIHhzdHVmZi54KTsKICAgIHZlYzMgeDIgPSBtaXgoYywgZCwgeHN0dWZmLngpOwogICAgdmVjMyByZXN1bHQgPSBtaXgoeDEsIHgyLCB5c3R1ZmYueCk7CgogICAgRnJhZ0NvbG9yID0gdmVjNChyZXN1bHQsIDEuMCk7Cn0gCiNlbmRpZg==";
+const SHARP_BILINEAR_GLSL = "LyoKICogQUFOTi1Nb2JpbGUgUHJvIChBbnRpLUFsaWFzZWQgTmVhcmVzdCBOZWlnaGJvcikKICogT3B0aW1pemVkIGZvciBoaWdoIHJlYWRhYmlsaXR5IGluIGRvd25zY2FsZWQgZ2FtZXMgKFdhcmNyYWZ0IElJKQogKiBhbmQgaGlnaCBwZXJmb3JtYW5jZSBmb3IgaGVhdnkgZW11bGF0b3JzIChOaW50ZW5kbyBEUykuCiAqLwoKI2lmIGRlZmluZWQoVkVSVEVYKQojaWYgX19WRVJTSU9OX18gPj0gMTMwCiNkZWZpbmUgQ09NUEFUX1ZBUllJTkcgb3V0CiNkZWZpbmUgQ09NUEFUX0FUVFJJQlVURSBpbgojZWxzZQojZGVmaW5lIENPTVBBVF9WQVJZSU5HIHZhcnlpbmcgCiNkZWZpbmUgQ09NUEFUX0FUVFJJQlVURSBhdHRyaWJ1dGUgCiNlbmRpZgoKI2lmZGVmIEdMX0VTCnByZWNpc2lvbiBoaWdocCBmbG9hdDsKI2VuZGlmCgpDT01QQVRfQVRUUklCVVRFIHZlYzQgVmVydGV4Q29vcmQ7CkNPTVBBVF9BVFRSSUJVVEUgdmVjNCBUZXhDb29yZDsKQ09NUEFUX1ZBUllJTkcgdmVjMiB2VGV4Q29vcmQ7CnVuaWZvcm0gbWF0NCBNVlBNYXRyaXg7CnVuaWZvcm0gdmVjMiBUZXh0dXJlU2l6ZTsKdW5pZm9ybSB2ZWMyIElucHV0U2l6ZTsKCnZvaWQgbWFpbigpIHsKICAgIGdsX1Bvc2l0aW9uID0gTVZQTWF0cml4ICogVmVydGV4Q29vcmQ7CiAgICAvLyBNYXAgdGV4dHVyZSBjb29yZHMgdG8gdGhlIGdhbWUgYXJlYSwgaGFuZGxpbmcgYW55IGVtdWxhdG9yIHBhZGRpbmcKICAgIHZUZXhDb29yZCA9IFRleENvb3JkLnh5ICogVGV4dHVyZVNpemUueHkgLyBJbnB1dFNpemUueHk7Cn0KCiNlbGlmIGRlZmluZWQoRlJBR01FTlQpCiNpZiBfX1ZFUlNJT05fXyA+PSAxMzAKI2RlZmluZSBDT01QQVRfVkFSWUlORyBpbgojZGVmaW5lIENPTVBBVF9URVhUVVJFIHRleHR1cmUKb3V0IHZlYzQgRnJhZ0NvbG9yOwojZWxzZQojZGVmaW5lIENPTVBBVF9WQVJZSU5HIHZhcnlpbmcKI2RlZmluZSBGcmFnQ29sb3IgZ2xfRnJhZ0NvbG9yCiNkZWZpbmUgQ09NUEFUX1RFWFRVUkUgdGV4dHVyZTJECiNlbmRpZgoKI2lmZGVmIEdMX0VTCnByZWNpc2lvbiBoaWdocCBmbG9hdDsKI2VuZGlmCgp1bmlmb3JtIHZlYzIgVGV4dHVyZVNpemU7CnVuaWZvcm0gdmVjMiBJbnB1dFNpemU7CnVuaWZvcm0gdmVjMiBPdXRwdXRTaXplOwp1bmlmb3JtIHNhbXBsZXIyRCBUZXh0dXJlOwpDT01QQVRfVkFSWUlORyB2ZWMyIHZUZXhDb29yZDsKCi8vIFRoaXMgZnVuY3Rpb24gY2FsY3VsYXRlcyB0aGUgIkFyZWEiIHdlaWdodCBmb3IgYSBzaW5nbGUgYXhpcy4KLy8gSXQgaXMgdGhlIGNvcmUgcmVhc29uIHdoeSBXYXJjcmFmdCBJSSB0ZXh0IGJlY29tZXMgcmVhZGFibGUuCnZlYzMgZ2V0X2FyZWFfd2VpZ2h0KGZsb2F0IHNzaXplLCBmbG9hdCB0c2l6ZSwgZmxvYXQgY29vcmQpIHsKICAgIC8vIERldGVybWluZSBzY3JlZW4gcGl4ZWwgYm91bmRhcmllcyBpbiBnYW1lLXBpeGVsIHNwYWNlCiAgICBmbG9hdCBtaW5mdWxsID0gKGNvb3JkICogdHNpemUgLSAwLjUpIC8gdHNpemUgKiBzc2l6ZTsKICAgIGZsb2F0IG1heGZ1bGwgPSAoY29vcmQgKiB0c2l6ZSArIDAuNSkgLyB0c2l6ZSAqIHNzaXplOwogICAgZmxvYXQgcmVhbGZ1bGwgPSBmbG9vcihtYXhmdWxsKSArIDAuMDAwMTsKCiAgICAvLyBXZWlnaHQ6IGhvdyBtdWNoIHRoZSAncmlnaHQnIHBpeGVsIGNvbnRyaWJ1dGVzIHZzIHRoZSAnbGVmdCcKICAgIC8vIG1heCgpIHByZXZlbnRzIGRpdmlzaW9uIGJ5IHplcm8gdGhhdCBjYXVzZXMgYmxhbmsgc2NyZWVucwogICAgZmxvYXQgd2VpZ2h0ID0gY2xhbXAoKG1heGZ1bGwgLSByZWFsZnVsbCkgLyBtYXgobWF4ZnVsbCAtIG1pbmZ1bGwsIDAuMDAwMSksIDAuMCwgMS4wKTsKCiAgICByZXR1cm4gdmVjMygKICAgICAgICB3ZWlnaHQsCiAgICAgICAgKHJlYWxmdWxsIC0gMC41KSAvIHNzaXplLCAvLyBMZWZ0IHBpeGVsIHNhbXBsZSBwb2ludAogICAgICAgIChyZWFsZnVsbCArIDAuNSkgLyBzc2l6ZSAgLy8gUmlnaHQgcGl4ZWwgc2FtcGxlIHBvaW50CiAgICApOwp9Cgp2b2lkIG1haW4oKSB7CiAgICAvLyAxLiBDYWxjdWxhdGUgdGhlIHdlaWdodCBhbmQgc2FtcGxlIGNvb3JkaW5hdGVzIGZvciBib3RoIGF4ZXMKICAgIHZlYzMgeHN0dWZmID0gZ2V0X2FyZWFfd2VpZ2h0KElucHV0U2l6ZS54LCBPdXRwdXRTaXplLngsIHZUZXhDb29yZC54KTsKICAgIHZlYzMgeXN0dWZmID0gZ2V0X2FyZWFfd2VpZ2h0KElucHV0U2l6ZS55LCBPdXRwdXRTaXplLnksIHZUZXhDb29yZC55KTsKCiAgICAvLyAyLiBNYXAgYmFjayB0byB0aGUgYWN0dWFsIFRleHR1cmUgQnVmZmVyIChoYW5kbGluZyBwYWRkaW5nKQogICAgdmVjMiByYXRpbyA9IElucHV0U2l6ZSAvIFRleHR1cmVTaXplOwogICAgCiAgICAvLyAzLiBNYW51YWwgNC1UYXAgU2FtcGxpbmc6CiAgICAvLyBUaGlzIGxvb2tzIGF0IHRoZSA0IGdhbWUgcGl4ZWxzIHRoYXQgb3ZlcmxhcCB5b3VyIDEgc2NyZWVuIHBpeGVsLgogICAgdmVjMyBhID0gQ09NUEFUX1RFWFRVUkUoVGV4dHVyZSwgdmVjMih4c3R1ZmYueSwgeXN0dWZmLnkpICogcmF0aW8pLnJnYjsKICAgIHZlYzMgYiA9IENPTVBBVF9URVhUVVJFKFRleHR1cmUsIHZlYzIoeHN0dWZmLnosIHlzdHVmZi55KSAqIHJhdGlvKS5yZ2I7CiAgICB2ZWMzIGMgPSBDT01QQVRfVEVYVFVSRShUZXh0dXJlLCB2ZWMyKHhzdHVmZi55LCB5c3R1ZmYueikgKiByYXRpbykucmdiOwogICAgdmVjMyBkID0gQ09NUEFUX1RFWFRVUkUoVGV4dHVyZSwgdmVjMih4c3R1ZmYueiwgeXN0dWZmLnopICogcmF0aW8pLnJnYjsKCiAgICAvLyA0LiBCaS1saW5lYXIgaW50ZXJwb2xhdGlvbiAoTWFudWFsIE1peCkKICAgIC8vIFRoaXMgaXMgdGhlIG9wdGltaXplZCAnTGl0ZScgYmxlbmRpbmcgdGhhdCBrZWVwcyBEUyBwZXJmb3JtYW5jZSBoaWdoLgogICAgdmVjMyB4MSA9IG1peChhLCBiLCB4c3R1ZmYueCk7CiAgICB2ZWMzIHgyID0gbWl4KGMsIGQsIHhzdHVmZi54KTsKICAgIHZlYzMgcmVzdWx0ID0gbWl4KHgxLCB4MiwgeXN0dWZmLngpOwoKICAgIEZyYWdDb2xvciA9IHZlYzQocmVzdWx0LCAxLjApOwp9CiNlbmRpZg==";
 
 export class RetroAppWrapper extends AppWrapper {
   INP_LEFT = 1;
@@ -66,6 +76,7 @@ export class RetroAppWrapper extends AppWrapper {
 
     this.shader = null;
     this.shaders = new ShadersService(this);
+    this.prefs = new NewRetroPrefs(this);
     this.discIndex = null;
     this.romBytes = null;
     this.biosBuffers = null;
@@ -387,11 +398,29 @@ export class RetroAppWrapper extends AppWrapper {
           FS.mkdir('/home/web_user/retroarch/userdata/system');
           FS.mkdir('/home/web_user/retroarch/userdata/system/neocd');
           FS.mkdir('/home/web_user/retroarch/userdata/system/vice');
+          // FS.mkdir('/home/web_user/retroarch/userdata/system/same_cdi');
+          // FS.mkdir('/home/web_user/retroarch/userdata/system/same_cdi/bios');
           FS.mkdir('/home/web_user/retroarch/userdata/saves');
           FS.mkdir('/home/web_user/retroarch/userdata/saves/opera');
           FS.mkdir('/home/web_user/retroarch/userdata/saves/opera/per_game');
           FS.mkdir('/home/web_user/retroarch/userdata/states');
           FS.mkdir('/home/web_user/retroarch/userdata/shaders');
+
+          // Write out the sharp bilinear
+          const base64ToUint8Array = (b64) => {
+            const bin = atob(b64);
+            return Uint8Array.from(bin, c => c.charCodeAt(0));
+          }
+
+          FS.writeFile(
+            SHARP_BILINEAR_GLSLP_PATH,
+            base64ToUint8Array(SHARP_BILINEAR_GLSLP)
+          );
+
+          FS.writeFile(
+            SHARP_BILINEAR_GLSL_PATH,
+            base64ToUint8Array(SHARP_BILINEAR_GLSL)
+          );
         },
       };
 
@@ -516,10 +545,30 @@ export class RetroAppWrapper extends AppWrapper {
 
   async applyGameSettings() {}
 
+  getBilinearModeSupported() {
+    return true;
+  }
+
   updateBilinearFilter() {
     if (!this.mainStarted) return;
-    const enabled = this.isBilinearFilterEnabled();
-    window.Module._wrc_enable_bilinear_filter(enabled ? 1 : 0);
+
+    const shaderSelected = this.shaders.isShaderSelected();
+
+    if (shaderSelected) {
+      window.Module._wrc_enable_bilinear_filter(0);
+      return;
+    }
+
+    const bilinearMode = this.prefs.getBilinearMode();
+    if (bilinearMode === BILINEAR_MODE.BL_OFF) {
+      this.shaders.untrackedUnloadShader();
+      window.Module._wrc_enable_bilinear_filter(0);
+    } else if (bilinearMode === BILINEAR_MODE.BL_SOFT) {
+      this.shaders.untrackedUnloadShader();
+      window.Module._wrc_enable_bilinear_filter(1);
+    } else {
+      this.shaders.untrackedLoadShaderByPath(SHARP_BILINEAR_GLSLP_PATH);
+    }
   }
 
   isForceAspectRatio() {
@@ -548,10 +597,10 @@ export class RetroAppWrapper extends AppWrapper {
       60, // frame rate (ignored due to no wait)
       true, // vsync
       debug, // debug
-      true, // force native
+      false, // force native
       false, // no wait
     );
-    loop.setAdjustTimestampEnabled(false);
+    //loop.setAdjustTimestampEnabled(false);
     return loop;
   }
 
@@ -613,6 +662,8 @@ export class RetroAppWrapper extends AppWrapper {
       for (let bios in this.biosBuffers) {
         const bytes = this.biosBuffers[bios];
         const path = '/home/web_user/retroarch/userdata/system/' + bios;
+
+//console.log("Writing bios file: " + path);
         FS.writeFile(path, bytes);
       }
 
@@ -730,10 +781,11 @@ export class RetroAppWrapper extends AppWrapper {
         this.mainStarted = true;
 
         // Bilinear filter
-        if (this.isBilinearFilterEnabled()) {
+        const bilinearMode = this.prefs.getBilinearMode();
+        if (bilinearMode !== BILINEAR_MODE.BL_OFF) {
           // TODO: Figure out a way to do this without re-init of video
           await this.wait(1000);
-          Module._wrc_enable_bilinear_filter(1);
+          this.updateBilinearFilter();
         }
 
         // Apply shader value

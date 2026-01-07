@@ -23,6 +23,10 @@ export default class ShadersService {
     return this.shaderId;
   }
 
+  isShaderSelected() {
+    return this.shaderId !== DISABLED;
+  }
+
   getShaderById(shaderId) {
     for (const category of SHADERS.categories) {
       const shader = category.shaders.find(shader => shader.id === shaderId);
@@ -93,5 +97,15 @@ export default class ShadersService {
     const shaderCategoryId = this.getShaderCategoryId(shaderId);
     values.shaderCategoryId = shaderCategoryId;
     values.shaderId = shaderId;
+  }
+
+  untrackedUnloadShader() {
+    const setShaderFromJS = Module.cwrap('wrc_set_shader', 'void', ['string']);
+    setShaderFromJS("");
+  }
+
+  untrackedLoadShaderByPath(path) {
+    const setShaderFromJS = Module.cwrap('wrc_set_shader', 'void', ['string']);
+    setShaderFromJS(path);
   }
 }

@@ -51,6 +51,10 @@ export class AppWrapper {
     };
   }
 
+  getBilinearModeSupported() {
+    return false;
+  }
+
   isBilinearFilterEnabled() {
     return settings.isBilinearFilterEnabled() || this.prefs.isBilinearEnabled();
   }
