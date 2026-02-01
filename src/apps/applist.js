@@ -53,6 +53,7 @@ const locRetroMednafenVb = isDev() ? `${http}${localIp}:3382` : 'app/retro-medna
 const locRetroMednafenWswan = isDev() ? `${http}${localIp}:3383` : 'app/retro-mednafen-wswan/';
 const locRetroMgba = isDev() ? `${http}${localIp}:3384` : 'app/retro-mgba/';
 const locRetroSameboy = isDev() ? `${http}${localIp}:3385` : 'app/retro-sameboy/';
+//const locRetroPpsspp = isDev() ? `${http}${localIp}:3386` : 'app/retro-ppsspp/';
 // const locRetroSameCdi = isDev() ? `${http}${localIp}:3386` : 'app/retro-samecdi/';
 // const locRetroParallelN64 = isDev() ? `${http}${localIp}:3309` : 'app/retro-n64/';
 const locStandalone = isDev() ? `${http}${localIp}:3080` : 'app/standalone/';
@@ -129,6 +130,7 @@ const APP_TYPE_KEYS = /*Object.freeze(*/{
   RETRO_MEDNAFEN_WSC: "retro-mednafen-wsc",
   RETRO_MGBA: "retro-mgba-gba",
   RETRO_PCE_FAST: "retro-pce-fast",
+  //RETRO_PPSSPP: "retro-ppsspp",
   RETRO_MELONDS: "retro-melonds",
   RETRO_NEOCD: "retro-neocd",
   RETRO_OPERA: "retro-opera",
@@ -174,6 +176,7 @@ const APP_TYPE_KEYS = /*Object.freeze(*/{
   PCE: "pce",
   PCECD: "pcecd",
   POKEMINI: "pokemini",
+  //PSP: "psp",
   QUAKE: "quake",
   // SATURN: "saturn",
   SCUMM: "scumm",
@@ -1065,6 +1068,36 @@ const types = [{
       skipBios: false,
       disableMemCard1: false
     }
+  // }, {
+  //   key: APP_TYPE_KEYS.RETRO_PPSSPP,
+  //   alias: APP_TYPE_KEYS.PSP,
+  //   name: 'Sony PSP',
+  //   shortName: 'Sony PSP',
+  //   coreName: 'Retro PPSSPP',
+  //   location: locRetroPpsspp,
+  //   background: 'images/app/playstation-background.png',
+  //   thumbnail: 'images/app/playstation-thumb.png',
+  //   description: "",
+  //   validate: checkDiscs,
+  //   extensions: [],
+  //   multiThreaded: true,
+  //   slowExit: true,
+  //   // addProps: (feedProps, outProps) => {
+  //   //   const bios = feedProps.psx_bios;
+  //   //   if (bios) {
+  //   //     outProps.psx_bios = bios;
+  //   //   }
+  //   // },
+  //   defaults: {
+  //     discs: [],
+  //     // sbi: [],
+  //     // multitap: false,
+  //     // analog: false,
+  //     uid: "",
+  //     zoomLevel: 0,
+  //     // skipBios: false,
+  //     // disableMemCard1: false
+  //   }
   }, {
     key: APP_TYPE_KEYS.RETRO_GENPLUSGX_SEGACD,
     alias: APP_TYPE_KEYS.SEGACD,
@@ -1174,31 +1207,6 @@ const types = [{
       zoomLevel: 0,
       hack: 0
     }
-  // }, {
-  //   key: APP_TYPE_KEYS.RETRO_YABAUSE,
-  //   alias: APP_TYPE_KEYS.SATURN,
-  //   name: 'Saturn',
-  //   shortName: 'Saturn',
-  //   coreName: 'Libretro Yabause',
-  //   location: locRetroSaturn,
-  //   background: 'images/app/3do-background.png',
-  //   thumbnail: 'images/app/3do-thumb.png',
-  //   validate: checkDiscs,
-  //   extensions: [],
-  //   slowExit: true,
-  //   multiThreaded: true,
-  //   addProps: (feedProps, outProps) => {
-  //     // const bios = feedProps.threedo_bios;
-  //     // if (bios) {
-  //     //   outProps.threedo_bios = bios;
-  //     // }
-  //   },
-  //   defaults: {
-  //     discs: [],
-  //     uid: "",
-  //     zoomLevel: 0,
-  //     // hack: 0
-  //   }
   }, {
     key: APP_TYPE_KEYS.BEETLE_PCFX,
     alias: APP_TYPE_KEYS.PCFX,
@@ -1442,6 +1450,7 @@ addAlias(types, APP_TYPE_KEYS.PCE, APP_TYPE_KEYS.MEDNAFEN_PCE);
 addAlias(types, APP_TYPE_KEYS.PCECD, APP_TYPE_KEYS.RETRO_PCE_FAST);
 addAlias(types, APP_TYPE_KEYS.PCFX, APP_TYPE_KEYS.BEETLE_PCFX);
 addAlias(types, APP_TYPE_KEYS.POKEMINI, APP_TYPE_KEYS.RETRO_POKEMINI);
+// addAlias(types, APP_TYPE_KEYS.PSP, APP_TYPE_KEYS.RETRO_PPSSPP);
 addAlias(types, APP_TYPE_KEYS.PSX, APP_TYPE_KEYS.BEETLE_PSX);
 addAlias(types, APP_TYPE_KEYS.QUAKE, APP_TYPE_KEYS.TYRQUAKE);
 // addAlias(types, APP_TYPE_KEYS.SATURN, APP_TYPE_KEYS.RETRO_YABAUSE);
@@ -1572,7 +1581,60 @@ const enableExperimentalApps = (b) => {
       }
     });
     addAlias(types, APP_TYPE_KEYS.A5200, APP_TYPE_KEYS.RETRO_A5200);
+  }
 
+  //
+  // Remove Saturn
+  //
+
+  for (let i = 0; i < clone.length; i++) {
+    const t = clone[i];
+    if ((!APP_TYPE_KEYS.RETRO_YABAUSE || t.key !== APP_TYPE_KEYS.RETRO_YABAUSE) &&
+        (!APP_TYPE_KEYS.SATURN || t.key !== APP_TYPE_KEYS.SATURN)) {
+      APP_TYPES.push(t);
+    }
+  }
+
+  delete APP_TYPE_KEYS.RETRO_YABAUSE;
+  delete APP_TYPE_KEYS.SATURN;
+
+  //
+  // Add Saturn
+  //
+
+  if (b) {
+    APP_TYPE_KEYS.RETRO_YABAUSE = "retro-yabause";
+    APP_TYPE_KEYS.SATURN = "saturn";
+
+    APP_TYPES.push({
+      key: APP_TYPE_KEYS.RETRO_YABAUSE,
+      alias: APP_TYPE_KEYS.SATURN,
+      name: 'Sega Saturn',
+      shortName: 'Sega Saturn',
+      coreName: 'Libretro Yabause',
+      location: locRetroSaturn,
+      background: 'images/app/3do-background.png',
+      thumbnail: 'images/app/3do-thumb.png',
+      validate: checkDiscs,
+      extensions: [],
+      slowExit: true,
+      multiThreaded: true,
+      addProps: (feedProps, outProps) => {
+        const bios = feedProps.saturn_bios;
+        if (bios) {
+          outProps.saturn_bios = bios;
+        }
+      },
+      defaults: {
+        discs: [],
+        uid: "",
+        zoomLevel: 0,
+        forceEmulatedBios: false,
+        ramExpansion: 0,
+        // hack: 0
+      }
+    });
+    addAlias(types, APP_TYPE_KEYS.SATURN, APP_TYPE_KEYS.RETRO_YABAUSE);
   }
 }
 

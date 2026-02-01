@@ -149,6 +149,33 @@ export class RetroAppWrapper extends AppWrapper {
     this.romPointer = null;
     this.romPointerLength = 0;
     this.saveDisks = 0;
+
+
+    if (this.isDiscBased()) {
+      const lowerExt = ext.toLowerCase();
+      let outExt = "chd";
+      if (lowerExt === 'pbp')
+      {
+         outExt = 'pbp';
+      }
+      else if (lowerExt === 'iso')
+      {
+         outExt = 'iso';
+      }
+      else if (lowerExt === 'cso')
+      {
+         outExt = 'cso';
+      }
+      else
+      {
+         /* anything else defaults to chd */
+         outExt = 'chd';
+      }
+      this.game = this.RA_DIR + 'game.' + outExt;
+    } else {
+      this.game = this.RA_DIR + "game.bin";
+    }
+
     this.game = this.isDiscBased() ?
       (this.RA_DIR + 'game.' + (ext != null && ext === 'pbp' ? 'pbp' : 'chd')) :
       (this.RA_DIR + "game.bin");
@@ -357,6 +384,15 @@ export class RetroAppWrapper extends AppWrapper {
       window.Module = {
         canvas: canvas,
         noInitialRun: true,
+        print: function(text) {
+            console.log(text);
+        },
+        // Redirect stderr (fprintf) to console.log to stop the red error spam
+        printErr: function(text) {
+            //console.log(text);
+            // Optional: If you still want to see real errors in red, you could do:
+            if (text.toLowerCase().includes('error')) console.error(text); else console.log(text);
+        },
         onAbort: (msg) => app.exit(msg),
         onExit: () => app.exit(),
         onRuntimeInitialized: () => {
@@ -390,6 +426,19 @@ export class RetroAppWrapper extends AppWrapper {
           setTimeout(f, 1000);
           resolve();
         },
+// PPSSSPP: Add this?
+        // preRun: function() {
+        //   // FORCE the stencil buffer. PPSSPP will not boot without it.
+        //   Module.webglContextAttributes = {
+        //       alpha: false,
+        //       depth: true,
+        //       stencil: true, // <--- CRITICAL
+        //       antialias: false,
+        //       preserveDrawingBuffer: false,
+        //       powerPreference: "high-performance",
+        //       majorVersion: 2 // Prefer WebGL 2
+        //   };
+        // },
         preInit: function () {
           const FS = window.FS;
           FS.mkdir('/home/web_user/retroarch');
@@ -421,6 +470,8 @@ export class RetroAppWrapper extends AppWrapper {
             SHARP_BILINEAR_GLSL_PATH,
             base64ToUint8Array(SHARP_BILINEAR_GLSL)
           );
+
+          window.emulator.preInit(FS);
         },
       };
 
@@ -435,6 +486,8 @@ export class RetroAppWrapper extends AppWrapper {
       this.saveStatePrefix, showStatus ? this.saveMessageCallback : null
     );
   }
+
+  preInit(fs) {}
 
   getShotAspectRatio() { return null; }
   getShotRotation() { return null; }
@@ -550,6 +603,7 @@ export class RetroAppWrapper extends AppWrapper {
   }
 
   updateBilinearFilter() {
+// PPSSPP: Disable or errors
     if (!this.mainStarted) return;
 
     const shaderSelected = this.shaders.isShaderSelected();
@@ -576,6 +630,7 @@ export class RetroAppWrapper extends AppWrapper {
   }
 
   updateScreenSize() {
+// PPSSPP: Disable or errors
     if (!this.mainStarted) return;
 
     try {
