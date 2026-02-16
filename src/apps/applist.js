@@ -1433,20 +1433,20 @@ addAlias(types, APP_TYPE_KEYS.COLECO, APP_TYPE_KEYS.COLEM);
 addAlias(types, APP_TYPE_KEYS.COMMODORE_C64, APP_TYPE_KEYS.RETRO_COMMODORE_C64);
 // addAlias(types, APP_TYPE_KEYS.CDI, APP_TYPE_KEYS.RETRO_SAME_CDI);
 addAlias(types, APP_TYPE_KEYS.DOS, APP_TYPE_KEYS.RETRO_DOSBOX_PURE);
-addAlias(types, APP_TYPE_KEYS.GBA, APP_TYPE_KEYS.VBA_M_GBA);
+addAlias(types, APP_TYPE_KEYS.GBA, APP_TYPE_KEYS.RETRO_MGBA);
 // addAlias(types, APP_TYPE_KEYS.GBA, APP_TYPE_KEYS.RETRO_MGBA);
-addAlias(types, APP_TYPE_KEYS.GB, APP_TYPE_KEYS.VBA_M_GB);
-addAlias(types, APP_TYPE_KEYS.GBC, APP_TYPE_KEYS.VBA_M_GBC);
-addAlias(types, APP_TYPE_KEYS.GENESIS, APP_TYPE_KEYS.GENPLUSGX_MD);
-addAlias(types, APP_TYPE_KEYS.GG, APP_TYPE_KEYS.GENPLUSGX_GG);
-addAlias(types, APP_TYPE_KEYS.LNX, APP_TYPE_KEYS.MEDNAFEN_LNX);
+addAlias(types, APP_TYPE_KEYS.GB, APP_TYPE_KEYS.RETRO_SAMEBOY_GB);
+addAlias(types, APP_TYPE_KEYS.GBC, APP_TYPE_KEYS.RETRO_SAMEBOY_GBC);
+addAlias(types, APP_TYPE_KEYS.GENESIS, APP_TYPE_KEYS.RETRO_GENPLUSGX_MD);
+addAlias(types, APP_TYPE_KEYS.GG, APP_TYPE_KEYS.RETRO_GENPLUSGX_GG);
+addAlias(types, APP_TYPE_KEYS.LNX, APP_TYPE_KEYS.RETRO_MEDNAFEN_LYNX);
 addAlias(types, APP_TYPE_KEYS.NEOGEO, APP_TYPE_KEYS.FBNEO_NEOGEO);
 addAlias(types, APP_TYPE_KEYS.NEOGEOCD, APP_TYPE_KEYS.RETRO_NEOCD);
 addAlias(types, APP_TYPE_KEYS.NDS, APP_TYPE_KEYS.RETRO_MELONDS);
-addAlias(types, APP_TYPE_KEYS.NES, APP_TYPE_KEYS.FCEUX);
-addAlias(types, APP_TYPE_KEYS.NGC, APP_TYPE_KEYS.MEDNAFEN_NGC);
-addAlias(types, APP_TYPE_KEYS.NGP, APP_TYPE_KEYS.MEDNAFEN_NGP);
-addAlias(types, APP_TYPE_KEYS.PCE, APP_TYPE_KEYS.MEDNAFEN_PCE);
+addAlias(types, APP_TYPE_KEYS.NES, APP_TYPE_KEYS.RETRO_FCEUMM);
+addAlias(types, APP_TYPE_KEYS.NGC, APP_TYPE_KEYS.RETRO_MEDNAFEN_NGC);
+addAlias(types, APP_TYPE_KEYS.NGP, APP_TYPE_KEYS.RETRO_MEDNAFEN_NGP);
+addAlias(types, APP_TYPE_KEYS.PCE, APP_TYPE_KEYS.RETRO_MEDNAFEN_PCE);
 addAlias(types, APP_TYPE_KEYS.PCECD, APP_TYPE_KEYS.RETRO_PCE_FAST);
 addAlias(types, APP_TYPE_KEYS.PCFX, APP_TYPE_KEYS.BEETLE_PCFX);
 addAlias(types, APP_TYPE_KEYS.POKEMINI, APP_TYPE_KEYS.RETRO_POKEMINI);
@@ -1456,14 +1456,14 @@ addAlias(types, APP_TYPE_KEYS.QUAKE, APP_TYPE_KEYS.TYRQUAKE);
 // addAlias(types, APP_TYPE_KEYS.SATURN, APP_TYPE_KEYS.RETRO_YABAUSE);
 addAlias(types, APP_TYPE_KEYS.SCUMM, APP_TYPE_KEYS.SCUMMVM);
 addAlias(types, APP_TYPE_KEYS.SEGACD, APP_TYPE_KEYS.RETRO_GENPLUSGX_SEGACD);
-addAlias(types, APP_TYPE_KEYS.SG1000, APP_TYPE_KEYS.GENPLUSGX_SG);
-addAlias(types, APP_TYPE_KEYS.SGX, APP_TYPE_KEYS.MEDNAFEN_SGX);
-addAlias(types, APP_TYPE_KEYS.SMS, APP_TYPE_KEYS.GENPLUSGX_SMS);
-addAlias(types, APP_TYPE_KEYS.SNES, APP_TYPE_KEYS.SNES9X);
+addAlias(types, APP_TYPE_KEYS.SG1000, APP_TYPE_KEYS.RETRO_GENPLUSGX_SG);
+addAlias(types, APP_TYPE_KEYS.SGX, APP_TYPE_KEYS.RETRO_MEDNAFEN_SGX);
+addAlias(types, APP_TYPE_KEYS.SMS, APP_TYPE_KEYS.RETRO_GENPLUSGX_SMS);
+addAlias(types, APP_TYPE_KEYS.SNES, APP_TYPE_KEYS.RETRO_SNES9X);
 addAlias(types, APP_TYPE_KEYS.THREEDO, APP_TYPE_KEYS.RETRO_OPERA);
-addAlias(types, APP_TYPE_KEYS.VB, APP_TYPE_KEYS.MEDNAFEN_VB);
-addAlias(types, APP_TYPE_KEYS.WSC, APP_TYPE_KEYS.MEDNAFEN_WSC);
-addAlias(types, APP_TYPE_KEYS.WS, APP_TYPE_KEYS.MEDNAFEN_WS);
+addAlias(types, APP_TYPE_KEYS.VB, APP_TYPE_KEYS.RETRO_MEDNAFEN_VB);
+addAlias(types, APP_TYPE_KEYS.WSC, APP_TYPE_KEYS.RETRO_MEDNAFEN_WSC);
+addAlias(types, APP_TYPE_KEYS.WS, APP_TYPE_KEYS.RETRO_MEDNAFEN_WS);
 
 const APP_TYPES = types;
 
@@ -1613,8 +1613,9 @@ const enableExperimentalApps = (b) => {
       shortName: 'Sega Saturn',
       coreName: 'Libretro Yabause',
       location: locRetroSaturn,
-      background: 'images/app/3do-background.png',
-      thumbnail: 'images/app/3do-thumb.png',
+      description: "A Libretro core for emulating the Sega Saturn, delivering its classic CD-based library with modern rendering and shader support.",
+      background: 'images/app/saturn-background.png',
+      thumbnail: 'images/app/saturn-thumb.png',
       validate: checkDiscs,
       extensions: [],
       slowExit: true,
