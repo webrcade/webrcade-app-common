@@ -1,0 +1,51 @@
+.default-changed-screen {
+  font-size: 1.5rem;
+  text-align: center;
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  left: 0px;
+  bottom: 0px;
+
+  &-inner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 60vw;
+    transform: translate(-50%, -50%);
+  }
+
+  &-heading {
+    font-size: 2rem;
+    padding-bottom: 2rem;
+  }
+
+  &-message {
+    padding: 0 2rem 0 2rem;
+    line-height: 140%;
+  }
+
+  &-message-save {
+    padding: 2rem 2rem 0 2rem;
+    line-height: 140%;
+  }
+
+  &-prompt {
+    padding-top: 2rem;
+  }
+
+  &-buttons {
+    padding-top: 2rem;
+    display: flex;
+    justify-content: center;
+
+    &>button {
+      margin-right:1rem;
+    }
+  }
+
+  /* Highlighted text */
+  .highlight {
+    font-weight: bold;
+  }
+}

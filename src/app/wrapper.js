@@ -51,6 +51,10 @@ export class AppWrapper {
     };
   }
 
+  getBilinearModeSupported() {
+    return false;
+  }
+
   isBilinearFilterEnabled() {
     return settings.isBilinearFilterEnabled() || this.prefs.isBilinearEnabled();
   }
@@ -302,29 +306,33 @@ export class AppWrapper {
     if (this.started) return;
     this.started = true;
 
-    this.canvas = canvas;
+    this.getApp().checkDefaultChanged(async () => {
+      this.getApp().setModeToLoaded();
 
-    if (canvas) {
-      hideInactiveMouse(canvas);
-    }
+      this.canvas = canvas;
 
-    // Load preferences
-    await this.prefs.load();
+      if (canvas) {
+        hideInactiveMouse(canvas);
+      }
 
-    // Force the bilinear filter
-    this.updateBilinearFilter();
+      // Load preferences
+      await this.prefs.load();
 
-    // Update the screen size
-    this.updateScreenSize();
+      // Force the bilinear filter
+      this.updateBilinearFilter();
 
-    // Update on screen controls
-    this.updateOnScreenControls(true);
+      // Update the screen size
+      this.updateScreenSize();
 
-    await this.onStart(canvas);
+      // Update on screen controls
+      this.updateOnScreenControls(true);
 
-    setTimeout(() => {
-      this.touchListener = this.createTouchListener();
-    }, 100);
+      await this.onStart(canvas);
+
+      setTimeout(() => {
+        this.touchListener = this.createTouchListener();
+      }, 100);
+    });
   }
 
   // Allows extract path to be modified
@@ -353,7 +361,7 @@ export class AppWrapper {
   //    onArchiveFilesFinished();
   // }
   //
-  async extractArchive(FS, contentDir, bytes, maxExtractSize, callback) {
+  async extractArchive(FS, contentDir, bytes, maxExtractSize, callback, forceLower = false) {
     const BrowserFS = window.BrowserFS;
     const myZipFs = new BrowserFS.FileSystem.ZipFS(new Buffer(bytes));
 
@@ -391,7 +399,10 @@ export class AppWrapper {
     if (size < maxExtractSize) {
       console.log("EXTRACTING FILES.")
       recurse("/", myZipFs.readdirSync("/"), (isDir, f, stats) => {
-        const path = contentDir + this.getExtractPath(f);
+        let path = contentDir + this.getExtractPath(f);
+        if (forceLower) {
+          path = path.toLowerCase();
+        }
         if (isDir) {
           try {
             FS.mkdir(path);

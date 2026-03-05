@@ -9,6 +9,7 @@ import { FieldControl } from '../editor/tabs';
 import { TelevisionWhiteImage } from '../../../images';
 import { ScreenSizeSelect } from '../../components/select/screensizeselect';
 import { ScreenControlsSelect } from '../../components/select/screencontrolsselect';
+import { BilinearModeSelect } from '../../components/select/bilinearmodeselect';
 import { Switch } from '../../components/switch';
 import { WebrcadeContext } from '../../context/webrcadecontext';
 
@@ -125,7 +126,7 @@ export class AppDisplaySettingsTab extends FieldsTab {
   render() {
     const { bilinearRef, screenSizeRef, screenControlsRef } = this;
     const { focusGrid } = this.context;
-    const { setValues, values, hideBilinear, showOnScreenControls } = this.props;
+    const { setValues, values, hideBilinear, showOnScreenControls, isBilinearMode} = this.props;
 
     return (
       <Fragment>
@@ -144,6 +145,20 @@ export class AppDisplaySettingsTab extends FieldsTab {
           </FieldControl>
         </FieldRow>
         {!hideBilinear && (
+          isBilinearMode ?
+            <FieldRow>
+            <FieldLabel>Bilinear mode</FieldLabel>
+            <FieldControl>
+              <BilinearModeSelect
+                selectRef={bilinearRef}
+                onChange={(value) => {
+                  setValues({ ...values, ...{ bilinearMode: value } });
+                }}
+                value={values.bilinearMode}
+                onPad={e => focusGrid.moveFocus(e.type, bilinearRef)}
+              />
+            </FieldControl>
+          </FieldRow> :
           <FieldRow>
             <FieldLabel>Force bilinear filter</FieldLabel>
             <FieldControl>

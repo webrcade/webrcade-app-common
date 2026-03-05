@@ -128,6 +128,9 @@ export class WebrcadeRetroApp extends WebrcadeApp {
       const blobStr = await blobToStr(blob);
       const md5Hash = md5(blobStr);
       let name = BIOS_MAP[md5Hash];
+      if (!name && BIOS_MAP["anyhash"]) {
+        name = BIOS_MAP["anyhash"];
+      }
       if (ALT_BIOS_MAP && !name) {
         name = ALT_BIOS_MAP[md5Hash];
       }
@@ -455,7 +458,9 @@ export class WebrcadeRetroApp extends WebrcadeApp {
     try {
       await super.onPreExit();
       if (!this.isExitFromPause()) {
-        await this.emulator.saveState();
+        if (this.emulator) {
+          await this.emulator.saveState();
+        }
       }
     } catch (e) {
       LOG.error(e);
@@ -468,7 +473,7 @@ export class WebrcadeRetroApp extends WebrcadeApp {
 
     if (mode === ModeEnum.LOADED) {
       window.focus();
-      // Start the emulator
+
       emulator.start(canvas);
     }
   }

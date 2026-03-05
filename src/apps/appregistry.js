@@ -1,4 +1,4 @@
-import { enableExperimentalApps, APP_TYPES } from './applist.js';
+import { enableExperimentalApps, getAppStoragePath, APP_TYPES } from './applist.js';
 import { AppProps } from '../app/props.js';
 import {
   blobToStr,
@@ -16,6 +16,7 @@ class AppRegistry {
   constructor() {
     this.updateAppTypes();
     this.allowMultiThreaded = false;
+    this.settings = null;
   }
 
   APP_TYPES = {}
@@ -74,7 +75,7 @@ class AppRegistry {
   getDescription(app) {
     const APP_TYPES = this.APP_TYPES;
     return isValidString(app.description) ?
-      app.description : APP_TYPES[app.type].description;
+      app.description : "" /*APP_TYPES[app.type].description*/;
   }
 
   getName(app) {
@@ -108,12 +109,40 @@ class AppRegistry {
     const { props } = app;
     const { APP_TYPES } = this;
 
-    const appType = APP_TYPES[app.type];
+    let appType = APP_TYPES[app.type];
+    let isGlobal = true;
+
+    // Check for feed override
+    if (feedProps.overrides) {
+      const overrideType = feedProps.overrides[app.type];
+      if (overrideType) {
+        const newType = APP_TYPES[overrideType];
+        if (newType) {
+          appType = newType;
+          isGlobal = false;
+        }
+      }
+    }
+
+    // Check for user override
+    if (this.settings) {
+      const overrides = this.settings.getOverrides();
+      const overrideType = overrides[app.type];
+      if (overrideType) {
+        const newType = APP_TYPES[overrideType];
+        if (newType) {
+          appType = newType;
+          isGlobal = false;
+        }
+      }
+    }
+
     let outProps = {
       type: appType.type,
       title: this.getLongTitle(app),
       mt: appType?.multiThreaded,
-      app: this.getName(app)
+      app: this.getName(app),
+      isGlobal: isGlobal,
     };
 
     if (otherProps) {
@@ -159,6 +188,11 @@ class AppRegistry {
   getLongTitle(app) {
     return isValidString(app.longTitle) ?
       app.longTitle : this.getTitle(app);
+  }
+
+  getType(type) {
+    const APP_TYPES = this.APP_TYPES;
+    return APP_TYPES[type];
   }
 
   getNameForType(type) {
@@ -285,6 +319,12 @@ class AppRegistry {
     return extensions;
   }
 
+  getStoragePath(appType, postfix) {
+    const path = getAppStoragePath(appType, postfix);
+    console.log(path);
+    return path;
+  }
+
   testMagic(bytes) {
     const APP_TYPES = this.APP_TYPES;
 
@@ -330,6 +370,51 @@ class AppRegistry {
 
   setAllowMultiThreaded(val) {
     this.allowMultiThreaded = val;
+  }
+
+  setSettings(settings) {
+    this.settings = settings;
+  }
+
+  buildAliasToAppsMap() {
+    const aliasToApps = {};
+    const visited = {}; // key → app entry reference
+
+    for (const typeName in this.APP_TYPES) {
+      const appType = this.APP_TYPES[typeName];
+      const alias = appType.alias;
+      const key = appType.absoluteKey || appType.key;
+      const coreName = appType.coreName;
+
+      if (!aliasToApps[alias]) {
+        aliasToApps[alias] = [];
+      }
+
+      // Already seen this core?
+      if (visited[key]) {
+        const existingApp = visited[key];
+
+        // Update default if this type indicates it should be default
+        if (!existingApp.default) {
+          existingApp.default = typeName === alias;
+        }
+
+        continue;
+      }
+
+      // First time seeing this core
+      const app = {
+        typeName,
+        name: coreName,
+        description: appType.description || "",
+        default: typeName === alias
+      };
+
+      visited[key] = app;
+      aliasToApps[alias].push(app);
+    }
+
+    return aliasToApps;
   }
 }
 

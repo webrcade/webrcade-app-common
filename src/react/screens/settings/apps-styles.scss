@@ -1,0 +1,40 @@
+.apps {
+  &-description {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 98vw;
+
+    &-inner {
+      margin-top: 1.5rem;
+      margin-bottom: 1.5rem;
+      font-size: 1.4rem;
+      color: #AAA;
+      max-width: 60vw;
+      opacity: 0;
+      transition: opacity 0.8s ease;
+
+      &.fade-in {
+        opacity: 1;
+      }
+
+      &.fade-out {
+        opacity: 0;
+      }
+    }
+  }
+
+  &-title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 98vw;
+
+    &-inner {
+      margin-bottom: 1.5rem;
+      font-size: 1.4rem;
+      font-weight: bold;
+      max-width: 60vw;
+    }
+  }
+}

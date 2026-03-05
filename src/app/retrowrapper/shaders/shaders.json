@@ -1,0 +1,154 @@
+{
+  "categories": [
+    {
+      "id": "disabled",
+      "title": "(Disabled)",
+      "shaders": [
+        {
+          "id": "disabled",
+          "title": "Disabled",
+          "file": "disabled",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "id": "crt",
+      "title": "CRT Displays",
+      "shaders": [
+        {
+          "id": "crt-soft-curved",
+          "title": "CRT Soft (Curved)",
+          "file": "crt/zfast_crt_geo.glslp",
+          "description": "Has scanlines, but they’re softened and blended for less harshness. Includes screen curvature for a classic CRT look."
+        },
+        {
+          "id": "crt-soft-flat",
+          "title": "CRT Soft (Flat)",
+          "file": "crt/zfast-crt.glslp",
+          "description": "Light scanlines with a clean and softened appearance. Designed for flat screens without curvature."
+        },
+        {
+          "id": "crt-arcade-flat",
+          "title": "CRT Arcade (Flat)",
+          "file": "crt/crt-easymode.glslp",
+          "description": "Mimics an arcade CRT with strong scanlines and vibrant color. Flat display with a retro feel."
+        },
+        {
+          "id": "crt-classic-curved",
+          "title": "CRT Classic (Curved)",
+          "file": "crt/crt-geom.glslp",
+          "description": "Bold scanlines with strong curvature. Feels like an older curved CRT TV with deep contrast."
+        },
+        {
+          "id": "crt-clean-flat",
+          "title": "CRT Clean (Flat)",
+          "file": "crt/crt-hyllian-multipass.glslp",
+          "description": "Subtle and high-quality scanlines with accurate color blending. No curvature; ideal for crisp CRT emulation."
+        }
+      ]
+    },
+    {
+      "id": "scaling-hqx",
+      "title": "Scaling (HQx)",
+      "shaders": [
+        {
+          "id": "upscale-hq2x",
+          "title": "Upscale HQ2x",
+          "file": "hqx/hq2x.glslp",
+          "description": "Doubles the game’s resolution with smooth pixel edges. Great for making low-res games look cleaner without blurring."
+        },
+        {
+          "id": "upscale-hq3x",
+          "title": "Upscale HQ3x",
+          "file": "hqx/hq3x.glslp",
+          "description": "Triples the original resolution, smoothing out jagged edges while keeping the classic pixel style."
+        },
+        {
+          "id": "upscale-hq4x",
+          "title": "Upscale HQ4x",
+          "file": "hqx/hq4x.glslp",
+          "description": "Upscales the image to four times the resolution. Ideal for clean, high-res output of classic games on modern displays."
+        }
+      ]
+    },
+    {
+      "id": "scaling-fsr",
+      "title": "Scaling (FSR)",
+      "shaders": [
+        {
+          "id": "upscale-fsr",
+          "title": "Upscale FidelityFX",
+          "file": "fsr/fsr.glslp",
+          "description": "Uses AMD’s FidelityFX algorithm to upscale low-resolution graphics with better sharpness and edge clarity. Enhances visuals without blurring."
+        }
+      ]
+    },
+    {
+      "id": "handheld",
+      "title": "LCD Handheld Displays",
+      "shaders": [
+        {
+          "id": "lcd-dot-matrix",
+          "title": "LCD Dot Matrix",
+          "file": "handheld/dot.glslp",
+          "description": "Simulates a low-resolution dot matrix display, similar to early handheld systems. Emulates pixel separation, subpixel glow, and screen diffusion."
+        },
+        {
+          "id": "lcd-zfast",
+          "title": "LCD zFast",
+          "file": "handheld/zfast-lcd.glslp",
+          "description": "High-performance shader that emulates the look of LCD pixels using minimal system resources. Ideal for gameplay-focused setups needing low latency."
+        },
+        {
+          "id": "lcd-generic",
+          "title": "LCD Generic",
+          "file": "handheld/lcd-shader.glslp",
+          "description": "Applies general LCD-like visual effects including low refresh artifacts, mild ghosting, and slight flicker to mimic early handheld displays."
+        },
+        {
+          "id": "lcd-simpletex",
+          "title": "LCD Simpletex",
+          "file": "handheld/simpletex_lcd.glslp",
+          "description": "A lightweight LCD shader that simulates basic screen diffusion and texture. Optimized for low-resource devices and sharp pixel rendering."
+        },
+        {
+          "id": "lcd-simpletex-720p",
+          "title": "LCD Simpletex (720p Optimized)",
+          "file": "handheld/simpletex_lcd_720p.glslp",
+          "description": "720p-optimized version of the Simpletex LCD shader. Maintains clean LCD simulation while improving performance and sharpness at lower resolutions."
+        },
+        {
+          "id": "lcd-gameboy-dmg",
+          "title": "LCD Game Boy (DMG)",
+          "file": "handheld/gameboy.glslp",
+          "description": "Simulates the original Game Boy's iconic green-tinted screen. Renders grayscale graphics with the ghosting and pixel response of the DMG-01's monochrome LCD display."
+        },
+        {
+          "id": "lcd-gameboy-light",
+          "title": "LCD Game Boy Light",
+          "file": "handheld/gameboy-light.glslp",
+          "description": "Emulates the Game Boy Light's backlit monochrome display, offering a brighter and cooler screen tone with reduced ghosting compared to the original DMG."
+        },
+        {
+          "id": "lcd-gameboy-pocket",
+          "title": "LCD Game Boy Pocket",
+          "file": "handheld/gameboy-pocket.glslp",
+          "description": "Simulates the Game Boy Pocket's sharper monochrome LCD with improved contrast and reduced motion blur, while keeping a neutral gray tone."
+        }
+      ]
+    },
+    {
+      "id": "effects",
+      "title": "Visual Effects",
+      "shaders": [
+        {
+          "id": "effect-vhs",
+          "title": "VHS Tape Effect",
+          "file": "vhs/vhs.glslp",
+          "description": "Adds VHS-style distortion, jitter, and color bleed. Looks like a worn-out tape on an old VCR."
+        }
+      ]
+    }
+  ]
+}

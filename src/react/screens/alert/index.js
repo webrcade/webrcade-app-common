@@ -19,19 +19,29 @@ export class AlertScreen extends Screen {
 
   render() {
     const { okButtonRef, screenContext, screenStyles } = this;
-    const { message, showButtons } = this.props;
+    const { message, showButtons, callback } = this.props;
     const buttonStyle = !showButtons ? {display: 'none'} : null;
+
 
     return (
       <WebrcadeContext.Provider value={screenContext}>
         <div className={styles['alert-screen'] }>
           <div className={styles['alert-screen-inner'] + " " + screenStyles.screen}>
-            <div className={styles['alert-screen-message']}>{message}</div>
-            <div className={styles['error-screen-buttons']} style={buttonStyle}>
+            <div className={styles['alert-screen-message']}>
+              {message.split ?  message.split('\n').map(function (item, key) {
+                return key < 5 ? (
+                  <div key={key}>{item}</div>
+                ) : null;
+              }) : message}
+            </div>
+            <div className={styles['alert-screen-buttons']} style={buttonStyle}>
               <ImageButton
                 ref={okButtonRef}
                 label={Resources.getText(TEXT_IDS.OK)}
-                onClick={() => this.close()}
+                onClick={() => {
+                  if (callback) callback();
+                  this.close();
+                }}
               />
             </div>
           </div>

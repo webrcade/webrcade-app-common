@@ -2,6 +2,7 @@ import { BaseSettings } from "./base";
 import { storage } from "../storage/storage.js"
 import * as LOG from "../log";
 import { AppRegistry } from "../apps"
+import { cloneObject } from "../util/index.js";
 
 export const SCREEN_SIZES = {
   SS_DEFAULT: "default",
@@ -21,6 +22,8 @@ export class Settings extends BaseSettings {
     this.disableGameSavesAfterState = false;
     this.dbToken = null;
     this.screenSize = SCREEN_SIZES.SS_NATIVE;
+    this.hideVersion = "";
+    this.overrides = {};
   }
 
   PREFIX = "wrcSettings.";
@@ -31,7 +34,11 @@ export class Settings extends BaseSettings {
   CLOUD_STORAGE_PROP = this.PREFIX + "cloudStorage";
   HIDE_TITLE_BAR_PROP = this.PREFIX + "hideTitleBar";
   DB_TOKEN = this.PREFIX + "dbToken";
+  OVERRIDES = this.PREFIX + "overrides";
+  HIDE_VERSION = this.PREFIX + "hideVersion";
   DISABLE_GAME_SAVES_AFTER_STATE = this.PREFIX + "disableGameSavesAfterState"
+
+  VERSION = "0.2.0-pre3";
 
   async load() {
     LOG.info("Loading settings.");
@@ -42,7 +49,11 @@ export class Settings extends BaseSettings {
     this.hideTitleBar = await this.loadBool(this.HIDE_TITLE_BAR_PROP, this.hideTitleBar);
     this.dbToken = await this.loadValue(this.DB_TOKEN, this.dbToken);
     this.screenSize = await this.loadValue(this.SCREEN_SIZE_PROP, this.screenSize);
+    this.overrides = await this.loadValue(this.OVERRIDES, this.overrides);
+    this.hideVersion = await this.loadValue(this.HIDE_VERSION, "");
     this.disableGameSavesAfterState = await this.loadValue(this.DISABLE_GAME_SAVES_AFTER_STATE, this.disableGameSavesAfterState);
+
+    console.log(this.overrides)
 
     AppRegistry.instance.enableExpApps(this.expApps);
   }
@@ -57,6 +68,8 @@ export class Settings extends BaseSettings {
     await this.saveValue(this.DB_TOKEN, this.dbToken);
     await this.saveValue(this.SCREEN_SIZE_PROP, this.screenSize);
     await this.saveValue(this.DISABLE_GAME_SAVES_AFTER_STATE, this.disableGameSavesAfterState);
+    await this.saveValue(this.OVERRIDES, this.overrides);
+    await this.saveValue(this.HIDE_VERSION, this.hideVersion);
     AppRegistry.instance.enableExpApps(this.expApps);
   }
 
@@ -116,6 +129,14 @@ export class Settings extends BaseSettings {
     this.screenSize = s;
   }
 
+  getOverrides() {
+    return cloneObject(this.overrides);
+  }
+
+  setOverrides(s) {
+    this.overrides = s;
+  }
+
   isGameSavesDisabledAfterState() {
     return this.disableGameSavesAfterState;
   }
@@ -123,7 +144,16 @@ export class Settings extends BaseSettings {
   setGameSavesDisabledAfterState(b) {
     this.disableGameSavesAfterState = b;
   }
+
+  setHideVersionInfo() {
+    this.hideVersion = this.VERSION;
+  }
+
+  getHideVersionInfo() {
+    return this.hideVersion === this.VERSION;
+  }
 }
 
 const settings = new Settings(storage);
+AppRegistry.instance.setSettings(settings);
 export { settings };

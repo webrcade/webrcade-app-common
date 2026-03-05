@@ -5,6 +5,7 @@ import { dropbox } from "../../../storage";
 import { settings } from '../../../settings'
 import { showMessage } from "../../components/message";
 import { CloudWhiteImage } from "../../../images";
+import { ExtensionImage } from "../../../images";
 import { EditorScreen } from "../editor";
 import { FieldsTab } from "../editor/tabs";
 import { FieldRow } from "../editor/tabs";
@@ -21,6 +22,7 @@ import { Switch } from "../../components/switch";
 import { TelevisionWhiteImage } from "../../../images";
 import { TuneWhiteImage } from "../../../images";
 import { WebrcadeContext } from "../../context/webrcadecontext";
+import { AppsTab } from "./apps";
 import { TEXT_IDS } from "../../../resources";
 
 export class SettingsEditor extends Component {
@@ -34,7 +36,8 @@ export class SettingsEditor extends Component {
       hideTitleBar: settings.getHideTitleBar(),
       screenSize: settings.getScreenSize(),
       dbLinked: settings.getDbToken() !== null,
-      disableInGame: settings.isGameSavesDisabledAfterState()
+      disableInGame: settings.isGameSavesDisabledAfterState(),
+      overrides: (settings.getOverrides() ? settings.getOverrides() : {})
     };
     this.state = {
       tabIndex: null,
@@ -72,6 +75,7 @@ export class SettingsEditor extends Component {
           settings.setHideTitleBar(values.hideTitleBar);
           settings.setScreenSize(values.screenSize);
           settings.setGameSavesDisabledAfterState(values.disableInGame);
+          settings.setOverrides(values.overrides)
           if (originalValues.expApps !== values.expApps) {
             ctx.showAlertScreen(true,
               Resources.getText(TEXT_IDS.RELOAD_EXP_APPS),
@@ -131,11 +135,22 @@ export class SettingsEditor extends Component {
                 />
               )
             }, {
+              image: ExtensionImage,
+              label: "Applications",
+              content: (
+                <AppsTab
+                  isActive={tabIndex === 1}
+                  setFocusGridComps={setFocusGridComps}
+                  values={values}
+                  setValues={setValues}
+                />
+              )
+            }, {
               image: CloudWhiteImage,
               label: Resources.getText(TEXT_IDS.CLOUD_STORAGE),
               content: (
                 <CloudStorageTab
-                  isActive={tabIndex === 1}
+                  isActive={tabIndex === 2}
                   setFocusGridComps={setFocusGridComps}
                   values={values}
                   setValues={setValues}
@@ -146,7 +161,7 @@ export class SettingsEditor extends Component {
               label: Resources.getText(TEXT_IDS.ADVANCED_SETTINGS),
               content: (
                 <AdvancedSettingsTab
-                  isActive={tabIndex === 2}
+                  isActive={tabIndex === 3}
                   setFocusGridComps={setFocusGridComps}
                   values={values}
                   setValues={setValues}

@@ -6,7 +6,7 @@ export class DisplayLoop {
   constructor(freq = 60, vsync = true, debug = false, forceNative = false, noWait = false) {
 
 // forceNative = false;
-// vsync = false;
+// vsync = false;//
 // noWait = true;
 
     this.frequency = freq;
@@ -41,7 +41,7 @@ export class DisplayLoop {
   }
 
   checkNativeFps() {
-    if (!this.vsync) {
+    if (!this.vsync || ((this.frequency % 1) !== 0)) {
       this.isNativeCheckDone = true;
       return;
     }
@@ -54,9 +54,10 @@ export class DisplayLoop {
     let end = start;
 
     const f = () => {
-      fc++; end = Date.now();
+      const NOW = performance.now();
+      fc++; end = NOW;
       if (start === 0 && fc === this.TEST_BEGIN) {
-        start = Date.now();
+        start = NOW;
         fc = 0;
         LOG.info('native fps test beginning.')
         requestAnimationFrame(f);
@@ -65,21 +66,46 @@ export class DisplayLoop {
 
         const fps = (1000/((end - start)/fc));
         const round = Math.round(fps/10)*10;
-        const diff = Math.abs(round - fps);
-        const nFaster = fps > this.frequency;
+        // const diff = Math.abs(round - fps);
+        // const nFaster = fps > this.frequency;
 
         LOG.info('Native FPS: ' + fps + ", round: " + round);
-        if ((round === this.frequency) && (diff < 0.5) && this.vsync) {
+
+        const tolerance = 0.5;       // acceptable small error
+        // const maxDeviation = 5;      // optional, bigger margin for high FPS
+
+        if (Math.abs(fps - this.frequency) <= tolerance && this.vsync) {
+          // FPS is within acceptable range
           LOG.info('Native matches frequency.');
           this.isNative = true;
           this.forceAdjustTimestamp = true;
-        } else if (round < this.frequency || (!nFaster && diff >= 5 /*0.5*/)) {
-          LOG.info('Native frequency too slow, vsync disabled.');
-          this.vsync = false;
-          this.forceAdjustTimestamp = true;
         } else {
-          LOG.info('Native not close enough to frequency: ' + fps + ', vsync: ' + this.vsync);
+          // FPS is too slow or too fast
+          LOG.info('Native frequency out of bounds: ' + fps);
+
+          const is60 = (fps > 59.8 && fps <= 60.2);
+          console.log("is60: " + is60);
+          const retainVsync = this.frequency === 50 && is60;
+          console.log("retainVsync: " + retainVsync);
+          if (!retainVsync) {
+            console.log("Disabling vsync");
+            this.vsync = false;
+          }
+          this.forceAdjustTimestamp = true;
         }
+
+        // LOG.info('Native FPS: ' + fps + ", round: " + round);
+        // if ((round === this.frequency) && (diff < 0.5) && this.vsync) {
+        //   LOG.info('Native matches frequency.');
+        //   this.isNative = true;
+        //   this.forceAdjustTimestamp = true;
+        // } else if (round < this.frequency || (!nFaster && diff >= 5 /*0.5*/)) {
+        //   LOG.info('Native frequency too slow, vsync disabled.');
+        //   this.vsync = false;
+        //   this.forceAdjustTimestamp = true;
+        // } else {
+        //   LOG.info('Native not close enough to frequency: ' + fps + ', vsync: ' + this.vsync);
+        // }
       } else {
         requestAnimationFrame(f);
       }
@@ -121,17 +147,37 @@ export class DisplayLoop {
     LOG.info("Frame ticks: " + frameTicks);
     LOG.info("Frequency: " + frequency);
 
-    const initialStart = Date.now();
-    let start = Date.now();
+    const initialStart = performance.now();
+    let start = initialStart;
     let fc = 0;
     let avgWait = 0;
     let checkSync = (this.isNoWait || this.isNative) ? 2 : 0;
     let vsyncLow = 0;
 
     const f = () => {
+      let NOW = performance.now();
+
       if (!this.paused) {
+        let waitNow = nextTimestamp === -1 ? 0 : (nextTimestamp - NOW);
+        if (!this.isNative && waitNow > 0) {
+          const delay = (waitNow > 10) ? 5 : 0;
+          if (!this.vsync) {
+            // if (nextTimestamp !== -1 && waitNow <= 2) {
+            //   while (performance.now() < nextTimestamp) {}
+            //   // Update NOW after spin
+            //   NOW = performance.now();
+            // } else {
+              setTimeout(() => this.sync(f, true), delay);
+              return;
+            // }
+          } else {
+            this.sync(f, false);
+            return;
+          }
+        }
+
         nextTimestamp = (nextTimestamp === -1 ?
-            Date.now() + frameTicks : nextTimestamp + frameTicks);
+          NOW + frameTicks : nextTimestamp + frameTicks);
 
         const freq = cb();
         if (freq) {
@@ -142,14 +188,17 @@ export class DisplayLoop {
           frameTicks = (1000.0 / freq);
           adjustTolerance = (frameTicks * freq * 2); // 2 secs
           checkFrequency = freq * 5;
+
+          // TODO: Rethink all of this
+          this.frequency = freq;
+          //this.vsync = false;
         }
         fc++;
-        let now = Date.now();
 
         if (this.isAdjustTimestampEnabled) {
-          if (((nextTimestamp + adjustTolerance) < now) || this.forceAdjustTimestamp) {
+          if (((nextTimestamp + adjustTolerance) < NOW) || this.forceAdjustTimestamp) {
             this.forceAdjustTimestamp = false;
-            nextTimestamp = -1; fc = 0; start = now; avgWait = 0;
+            nextTimestamp = -1; fc = 0; start = NOW; avgWait = 0;
             if (this.debug) {
               LOG.info("adjusted next timestamp.");
             }
@@ -159,19 +208,20 @@ export class DisplayLoop {
         if (this.isNoWait) {
           this.sync(f, false);
         } else {
-          let wait = nextTimestamp == -1 ? 0 : (nextTimestamp - now);
+          let wait = nextTimestamp == -1 ? 0 : (nextTimestamp - NOW);
           avgWait += wait;
 
-          if (!this.isNative && wait > 0) {
+          if (!this.isNative && !this.vsync && wait > 0) {
             this.waitCount++;
-            setTimeout(() => this.sync(f, true), wait);
+            const delay = (wait > 10) ? 5 : 0;
+            setTimeout(() => this.sync(f, true), delay);
           } else {
             this.sync(f, false);
           }
         }
 
         if (fc > checkFrequency) {
-          let elapsed = Date.now() - start;
+          let elapsed = NOW - start;
           const fpsVal = (1000.0 / (elapsed / fc));
 
           if (this.debug && checkSync === 1) {
@@ -179,7 +229,7 @@ export class DisplayLoop {
           }
 
           if (this.vsync && (checkSync === 1)) {
-            if (fpsVal < (frequency - 0.5)) {
+            if (fpsVal < (frequency - 0.2)) {
               vsyncLow++;
               if (this.debug) {
                 LOG.info("VSYNC low: " + vsyncLow);
@@ -206,11 +256,11 @@ export class DisplayLoop {
 
           if (checkSync === 0 && this.isNativeCheckDone) {
             if (this.debug) {
-              LOG.info("Check sync start: " + (Date.now() - initialStart) / 1000.0);
+              LOG.info("Check sync start: " + (NOW - initialStart) / 1000.0);
             }
             checkSync = 1;
           } else if (checkSync === 1) {
-            if (((Date.now() - initialStart) / 1000.0) > 60.0) {
+            if (((NOW - initialStart) / 1000.0) > 60.0) {
               if (this.debug) {
                 LOG.info("1 minute has elapsed, disabling vsync check.");
               }
@@ -218,7 +268,7 @@ export class DisplayLoop {
             }
           }
 
-          start = Date.now(); fc = 0; avgWait = 0;
+          start = NOW; fc = 0; avgWait = 0;
         }
       } else {
         this.sync(f, false);

@@ -38,13 +38,16 @@ const registerAudioResume = (obj, cb, interval) => {
       audioCtx.resume()
         .then(() => {
           if (audioCtx.state === 'running') {
+            obj.mixhead = 0;
+            obj.mixtail = 0;
             fSuccess();
           } else {
             if (interval !== undefined) {
               setTimeout(resumeFunc, interval);
             }
           }
-        });
+        })
+        .catch((e) => {console.log(e);});
     } else {
       fSuccess();
     }
@@ -82,6 +85,10 @@ class ScriptAudioProcessor {
     this.callback = null;
     this.debug = false;
     this.adjustVol = 0;
+    this.headTime = performance.now();
+
+    this.targetFill = Math.floor(this.bufferSize * 0.5); // ideal buffer fill
+    this.maxSlew = 1; // max samples to drop/duplicate per audio frame
 
     this.tmpBuffers = new Array(channelCount);
     this.mixbuffer = new Array(channelCount);
@@ -124,11 +131,20 @@ class ScriptAudioProcessor {
 
   getFrequency() { return this.frequency; }
 
+  reset() {
+    this.mixhead = this.mixtail;
+  }
+
   pause(p) {
     if (p == this.paused)
       return;
     if (this.audioCtx) {
       if (!p) {
+        // console.log("### resetting audio...");
+        // this.mixhead = 0;
+        // this.mixtail = 0;
+        // this.readPhase = 0;    // for slewing
+        // this.rateAdjust = 0;   // for slewing
         this.audioCtx.resume();
       } else {
         this.audioCtx.suspend();
@@ -172,7 +188,7 @@ class ScriptAudioProcessor {
 
         while (done < len) {
           for (let i = 0; i < this.channelCount; i++) {
-            this.tmpBuffers[i] = 0;
+            this.tmpBuffers[i][done] = 0;
           }
           done++;
         }
@@ -203,27 +219,103 @@ class ScriptAudioProcessor {
 
   //max = 0;
 
+  // storeSoundCombinedInput(channels, channelCount, length, offset = 0, divisor = 1) {
+  //   const adjust = this.adjustVol == 0 ? 1 : this.adjustVol;
+  //   for (let i = 0; i < length;) {
+  //     for (let j = 0; j < channelCount; j++) {
+  //       const val = ((channels[offset + i++]) / divisor) * adjust;
+  //       // if (val > this.max) {
+  //       //   this.max = val;
+  //       //   console.log("## new max = " + this.max);
+  //       // }
+  //       this.mixbuffer[j][this.mixhead] = val;
+  //     }
+  //     this.mixhead++;
+  //     if (this.mixhead == this.bufferSize)
+  //       this.mixhead = 0;
+
+  //     if (this.mixtail === (this.mixhead + 1)) {
+  //       if (!this.headHitFlag) {
+  //           if (this.debug) LOG.info('head hit tail!: ' + (performance.now() - this.headTime) / 1000.0);
+  //           this.headHitFlag = true;
+  //       }
+  //       this.headTime = performance.now();
+  //       this.mixhead = this.mixtail; // reset
+  //     } else {
+  //       this.headHitFlag = false; // cleared once safe
+  //     }
+  //   }
+  // }
+
   storeSoundCombinedInput(channels, channelCount, length, offset = 0, divisor = 1) {
-    const adjust = this.adjustVol == 0 ? 1 : this.adjustVol;
+    const adjust = this.adjustVol === 0 ? 1 : this.adjustVol;
+    let logResetThisCall = false; // Only log once per batch
+
     for (let i = 0; i < length;) {
       for (let j = 0; j < channelCount; j++) {
         const val = ((channels[offset + i++]) / divisor) * adjust;
-        // if (val > this.max) {
-        //   this.max = val;
-        //   console.log("## new max = " + this.max);
-        // }
         this.mixbuffer[j][this.mixhead] = val;
       }
+
+      // Increment head
       this.mixhead++;
-      if (this.mixhead == this.bufferSize)
-        this.mixhead = 0;
-      if (this.debug) {
-        if (this.mixtail === (this.mixhead + 1)) {
-          LOG.info('head hit tail!');
+      if (this.mixhead >= this.bufferSize) this.mixhead = 0;
+
+      // Check for head hitting tail per sample
+      if (this.mixtail === (this.mixhead + 1) % this.bufferSize) {
+        this.mixhead = this.mixtail; // reset safely
+        if (!logResetThisCall && this.debug) {
+          LOG.info('head hit tail! Resetting pointers');
+          logResetThisCall = true;
         }
       }
     }
+
+    // --- Slewing logic, applied once per batch ---
+    let fill = (this.mixhead >= this.mixtail)
+      ? this.mixhead - this.mixtail
+      : this.bufferSize - this.mixtail + this.mixhead;
+
+    let error = fill - this.targetFill;
+    let slew = 0;
+    if (error > 0) slew = Math.min(this.maxSlew, error);
+    else if (error < 0) slew = -Math.min(this.maxSlew, -error);
+
+    this.mixtail += slew;
+    if (this.mixtail >= this.bufferSize) this.mixtail %= this.bufferSize;
+    if (this.mixtail < 0) this.mixtail += this.bufferSize;
   }
+
+  // resizeBuffer(newBufferSize) {
+  //   if (newBufferSize <= 0 || newBufferSize === this.bufferSize) return;
+
+  //   const newMixBuffer = new Array(this.channelCount);
+  //   for (let i = 0; i < this.channelCount; i++) {
+  //     newMixBuffer[i] = new Array(newBufferSize);
+  //   }
+
+  //   // Compute current data length in the buffer
+  //   let currentLen = this.mixtail <= this.mixhead
+  //     ? this.mixhead - this.mixtail
+  //     : this.bufferSize - this.mixtail + this.mixhead;
+
+  //   // If new buffer is smaller, we keep only the most recent samples
+  //   let lenToCopy = Math.min(currentLen, newBufferSize);
+
+  //   for (let ch = 0; ch < this.channelCount; ch++) {
+  //     for (let i = 0; i < lenToCopy; i++) {
+  //       // Compute index in old buffer starting from the newest samples
+  //       let oldIndex = (this.mixtail + (currentLen - lenToCopy) + i) % this.bufferSize;
+  //       newMixBuffer[ch][i] = this.mixbuffer[ch][oldIndex];
+  //     }
+  //   }
+
+  //   // Reset head/tail for new buffer
+  //   this.mixtail = 0;
+  //   this.mixhead = lenToCopy;
+  //   this.bufferSize = newBufferSize;
+  //   this.mixbuffer = newMixBuffer;
+  // }
 }
 
 export { ScriptAudioProcessor, registerAudioResume }
