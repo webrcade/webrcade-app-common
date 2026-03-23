@@ -1,7 +1,7 @@
 export const ReleaseData = [
 {
-    version: "v0.2.0-pre3",
-    date: "February 16, 2026 (Pending release)",
+    version: "v0.2.0",
+    date: "March 23, 2026",
     title: "New Apps, Defaults & Shaders",
     changes: [
       {
