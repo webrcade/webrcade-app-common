@@ -168,6 +168,7 @@ const Commodore64Background = resolvePath("images/app/c64-background.png");
 const DosBackground = resolvePath("images/app/dos-background.png");
 const NdsBackground = resolvePath("images/app/nds-background.png");
 const PokeminiBackground = resolvePath("images/app/pokemini-background.png");
+const SaturnBackground = resolvePath("images/app/saturn-background.png");
 
 export {
   AddCircleBlackImage,
@@ -316,6 +317,7 @@ export {
   ListsWhiteImage,
   ScummVmBackground,
   PokeminiBackground,
+  SaturnBackground,
   MouseWhiteImage,
   SwipeWhiteImage,
   ArrowUpwardImage,
