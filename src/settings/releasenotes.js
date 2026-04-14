@@ -1,5 +1,34 @@
 export const ReleaseData = [
 {
+    version: "v0.2.1-p3",
+    date: "April 1, 2026",
+    preRelease: true,
+    title: "Search & Bug Fixes",
+    changes: [
+      {
+        title: "Player",
+        items: [
+          "Added *Search* support to the player, allowing you to quickly find games across all categories.",
+          "Fixed an issue on *iOS* where closing a search or feed dialog after typing would leave the page scrolled to an incorrect position."
+        ]
+      },
+      {
+        title: "Editor",
+        items: [
+          "Added *Search* tab to the Feed Editor, allowing you to search, edit, copy, and analyze items across all categories."
+        ]
+      },
+      {
+        title: "Bugs",
+        items: [
+          "Fixed an issue where gamepad navigation was not functioning in the *Shader Settings* tab of the *Nintendo DS* emulator settings.",
+          "Fixed an issue where gamepad navigation was not functioning in the *Display* and *Shader Settings* tabs of the *Pokémon Mini* emulator settings."
+        ]
+      }
+    ],
+    image: "images/update2.png"
+  },
+{
     version: "v0.2.0",
     date: "March 23, 2026",
     title: "New Apps, Defaults & Shaders",

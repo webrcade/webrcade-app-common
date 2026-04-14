@@ -316,6 +316,7 @@ const types = [{
     extensions: ['smc', 'sfc', 'swc'],
     defaults: {
       rom: "",
+      cheat: "",
       zoomLevel: 0,
       pal: false,
       port2: 0
@@ -520,6 +521,7 @@ const types = [{
     },
     defaults: {
       rom: "",
+      cheat: "",
       pal: false,
       zoomLevel: 0
     }
@@ -1066,7 +1068,8 @@ const types = [{
       uid: "",
       zoomLevel: 0,
       skipBios: false,
-      disableMemCard1: false
+      disableMemCard1: false,
+      cheat: ""
     }
   // }, {
   //   key: APP_TYPE_KEYS.RETRO_PPSSPP,
@@ -1572,6 +1575,7 @@ const enableExperimentalApps = (b) => {
       },
       defaults: {
         rom: "",
+        cheat: "",
         zoomLevel: 0,
         swap: false,
         analog: false,

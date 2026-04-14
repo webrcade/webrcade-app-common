@@ -110,6 +110,22 @@ export class WebrcadeRetroApp extends WebrcadeApp {
     return ret;
   }
 
+  async fetchCheat(cheatUrl) {
+    try {
+      const fad = new FetchAppData(cheatUrl);
+      const res = await fad.fetch();
+      if (!res.ok) {
+        LOG.error(`[Cheats]: Failed to fetch cheat file: ${cheatUrl}`);
+        return null;
+      }
+      const buffer = await res.arrayBuffer();
+      return new Uint8Array(buffer);
+    } catch (e) {
+      LOG.error(`[Cheats]: Error fetching cheat file: ${e}`);
+      return null;
+    }
+  }
+
   async fetchBios(bios, biosMap = null, alternateBiosMap = null) {
     let biosBuffers = {};
 
@@ -241,6 +257,8 @@ export class WebrcadeRetroApp extends WebrcadeApp {
         .then(() => emulator.loadEmscriptenModule(this.canvas))
         .then(() => { return this.isBiosRequired() ? this.fetchBios(bios) : null; })
         .then((b) => { biosBuffers = b; })
+        .then(() => { return this.cheat ? this.fetchCheat(this.cheat) : null; })
+        .then((cheatBytes) => { emulator.setCheatBytes(cheatBytes); })
         .then(() => fad ? fad.fetch() : null)
         .then((response) => {
           if (this.isDiscBased()) {
@@ -427,6 +445,8 @@ export class WebrcadeRetroApp extends WebrcadeApp {
           if (!rom) throw new Error('A ROM file was not specified.');
           this.rom = rom;
         }
+
+        this.cheat = appProps.cheat || null;
 
         this.bios = this.getBiosUrls(appProps);
         if (this.bios && !Array.isArray(this.bios)) {

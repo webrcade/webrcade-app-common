@@ -30,10 +30,13 @@ export class EditorScreen extends Screen {
   }
 
   focus() {
+    const { onFocus, } = this.props;
     const { okButtonRef } = this;
 
     if (this.gamepadNotifier.padCount > 0) {
-      if (okButtonRef && okButtonRef.current) {
+      if (onFocus) {
+        onFocus();
+      } else if (okButtonRef && okButtonRef.current) {
         okButtonRef.current.focus();
       }
     }
@@ -117,12 +120,16 @@ export class EditorScreen extends Screen {
   }
 
   onUnhandledGamepadInput(input) {
+    const { onBump } = this.props;
+    if ((input === GamepadEnum.LBUMP || input === GamepadEnum.RBUMP) &&
+        onBump && onBump(input)) {
+      return;
+    }
     if (input === GamepadEnum.LBUMP) {
       this.switchTab(true, false);
     } else if (input === GamepadEnum.RBUMP) {
       this.switchTab(false, false);
     }
-
   }
 
   renderTabButton(isPrev) {

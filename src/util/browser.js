@@ -141,6 +141,14 @@ const isLocalhostOrHttps = () => {
   return window.location.hostname === 'localhost' || window.location.protocol === 'https:';
 }
 
+const iosClose = (fn) => {
+  if (isIos()) {
+    setTimeout(() => { window.scrollTo(0, 0); setTimeout(fn, 50); }, 10);
+  } else {
+    fn();
+  }
+};
+
 export {
   isParentSameOrigin,
   isMacOs,
@@ -157,5 +165,6 @@ export {
   getXboxViewMessage,
   storagePersist,
   isLocalhostOrHttps,
+  iosClose,
   UAParser
 }
