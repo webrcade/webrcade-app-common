@@ -38,6 +38,7 @@ const WebrcadeLogoDarkImage = Icons.webrcade_logo_dark; //resolvePath("images/co
 const WebrcadeLogoLargeImage = Icons.webrcade_logo_large; //resolvePath("images/common/webrcade-logo-large.svg");
 const SaveWhiteImage = Icons.save_white_24dp;
 const SettingsRedImage = Icons.settings_red_24dp; //resolvePath("images/common/settings_red_24dp.svg");
+const SearchWhiteImage = Icons.search_white_24dp;
 const SettingsWhiteImage = Icons.settings_white_24dp; //resolvePath("images/common/settings_white_24dp.svg");
 const SettingsAppWhiteImage = Icons.settings_applications_white_24dp;
 const TelevisionWhiteImage = Icons.tv_white_24dp; //resolvePath("images/common/tv_white_24dp.svg");
@@ -54,6 +55,7 @@ const SelectWindowImage = Icons.select_window_24dp;
 const SplitSceneImage = Icons.split_scene_24dp;
 const MicrophoneImage = Icons.microphone_white_24dp;
 const BlurImage = Icons.blur_on_24dp;
+const BoltWhiteImage = Icons.bolt_white_24dp;
 const ExtensionImage = Icons.extension_24dp;
 
 const CategoryThumbImage = resolvePath("images/folder.png");
@@ -202,6 +204,7 @@ export {
   PlayArrowBlackImage,
   PlayArrowWhiteImage,
   SaveWhiteImage,
+  SearchWhiteImage,
   SettingsRedImage,
   SettingsWhiteImage,
   SettingsAppWhiteImage,
@@ -331,6 +334,7 @@ export {
   SplitSceneImage,
   MicrophoneImage,
   BlurImage,
+  BoltWhiteImage,
 
   resolvePath as resolveImagePath
 }

@@ -12,6 +12,7 @@ import { FileManifest } from '../filemanifest';
 import { NewRetroPrefs } from './newprefs';
 import { BILINEAR_MODE } from './newprefs';
 import ShadersService from './shaders/shaders'
+import CheatsService from './cheats/cheats'
 import * as LOG from '../../log'
 
 let STATE_FILE_PATH = "/home/web_user/retroarch/userdata/states/game.state";
@@ -76,6 +77,7 @@ export class RetroAppWrapper extends AppWrapper {
 
     this.shader = null;
     this.shaders = new ShadersService(this);
+    this.cheats = new CheatsService(this);
     this.prefs = new NewRetroPrefs(this);
     this.discIndex = null;
     this.romBytes = null;
@@ -87,6 +89,7 @@ export class RetroAppWrapper extends AppWrapper {
     this.exiting = false;
     this.mainStarted = false;
     this.disableInput = false;
+    this.cheatBytes = null;
   }
 
   RA_DIR = '/home/web_user/retroarch/';
@@ -186,6 +189,14 @@ export class RetroAppWrapper extends AppWrapper {
 
   getShadersService() {
     return this.shaders;
+  }
+
+  getCheatsService() {
+    return this.cheats;
+  }
+
+  isOneShotCheats() {
+    return false;
   }
 
   setRomPointer(ptr) {
@@ -663,9 +674,38 @@ export class RetroAppWrapper extends AppWrapper {
     this.exitErrorMessage = message;
   }
 
+  setCheatBytes(bytes) {
+    this.cheatBytes = bytes || null;
+  }
+
+  onCheatsLoadStart(count) {
+    this.cheats.onCheatsLoadStart(count);
+  }
+
+  onCheatAdded(idx, desc, enabled, code) {
+    this.cheats.onCheatAdded(idx, desc, enabled, code);
+  }
+
+  onCheatsLoadEnd() {
+    this.cheats.onCheatsLoadEnd();
+  }
+
   onFrame() {}
 
   async onWriteAdditionalFiles() {
+    const { FS } = window;
+    if (this.cheatBytes) {
+      try {
+        const cheatsDir = '/home/web_user/retroarch/userdata/cheats';
+        try { FS.mkdir(cheatsDir); } catch (e) {}
+        FS.writeFile(`${cheatsDir}/game.cht`, this.cheatBytes);
+        LOG.info(`[Cheats]: Wrote cheat file to ${cheatsDir}/game.cht`);
+        const text = new TextDecoder().decode(this.cheatBytes);
+        LOG.info(`[Cheats]: File contents:\n${text}`);
+      } catch (e) {
+        LOG.error(`[Cheats]: Error writing cheat file: ${e}`);
+      }
+    }
   }
 
   setStateFilePath(path) {
@@ -708,6 +748,7 @@ export class RetroAppWrapper extends AppWrapper {
 
       // // Load preferences
       // await this.prefs.load();
+      await this.cheats.preloadSaved();
       await this.onWriteAdditionalFiles();
 
       // Apply the game settings

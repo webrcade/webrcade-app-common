@@ -53,24 +53,34 @@ class Feed extends FeedBase {
       return true;
     });
 
-    // Filter and expand category items
+    const isValidItem = (a) => {
+      try {
+        reg.validate(a);
+        if (a.background) a.background = remapUrl(a.background);
+        if (a.thumbnail) a.thumbnail = remapUrl(a.thumbnail);
+      } catch (e) {
+        this._logInvalidObject('Item is invalid: ' + e, a);
+        return false;
+      }
+      return true;
+    };
+
+    // Filter category items (clean, unexpanded)
     categories.forEach(category => {
-      category.items = this._expandItems(
-        category.items.filter(a => {
-          try {
-            reg.validate(a);
-            if (a.background) a.background = remapUrl(a.background);
-            if (a.thumbnail) a.thumbnail = remapUrl(a.thumbnail);
-          } catch (e) {
-            this._logInvalidObject('Item is invalid: ' + e, a);
-            return false;
-          }
-          return true;
-        }).sort(this.TITLE_SORT)
-      );
+      category.items = category.items.filter(isValidItem).sort(this.TITLE_SORT);
     });
 
     this.uniqueCategoryCount = categories.length;
+
+    // Store unique categories with clean (unexpanded) items
+    this.uniqueCategories = categories
+      .filter(c => c.items.length > 0 || !this.filterCategories)
+      .map(c => ({...c, items: [...c.items]}));
+
+    // Expand category items for display
+    categories.forEach(category => {
+      category.items = this._expandItems(category.items);
+    });
 
     // Expand valid categories
     categories = this._expandItems(categories.filter(c => {
@@ -91,6 +101,8 @@ class Feed extends FeedBase {
   };
 
   getCategories() { return this.categories; }
+
+  getUniqueCategories() { return this.uniqueCategories; }
 
   getUniqueCategoryCount() { return this.uniqueCategoryCount; }
 

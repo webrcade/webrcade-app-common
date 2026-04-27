@@ -193,6 +193,7 @@ const APP_TYPE_KEYS = /*Object.freeze(*/{
 
 const PCE_DEFAULTS = {
   rom: "",
+  cheat: "",
   pad6button: false,
   zoomLevel: 0,
 };
@@ -316,6 +317,7 @@ const types = [{
     extensions: ['smc', 'sfc', 'swc'],
     defaults: {
       rom: "",
+      cheat: "",
       zoomLevel: 0,
       pal: false,
       port2: 0
@@ -357,6 +359,7 @@ const types = [{
       paddleCenter: 0,
       paddleVertical: false,
       paddleInverted: false,
+      cheat: "",
     }
   }, {
     key: APP_TYPE_KEYS.RETRO_COMMODORE_C64,
@@ -409,6 +412,7 @@ const types = [{
       paddleCenter: 0,
       paddleVertical: false,
       paddleInverted: false,
+      cheat: "",
     }
   // }, {
   //   key: APP_TYPE_KEYS.RETRO_PROSYSTEM,
@@ -475,6 +479,7 @@ const types = [{
     testMagic: Genesis.testMagic,
     defaults: {
       rom: "",
+      cheat: "",
       pal: false,
       pad3button: false,
       zoomLevel: 0
@@ -520,6 +525,7 @@ const types = [{
     },
     defaults: {
       rom: "",
+      cheat: "",
       pal: false,
       zoomLevel: 0
     }
@@ -606,6 +612,7 @@ const types = [{
       extensions: ['sms'],
       defaults: {
         rom: "",
+        cheat: "",
         hwType: 0,
         pal: false,
         ym2413: false,
@@ -640,6 +647,7 @@ const types = [{
     extensions: ['sg'],
     defaults: {
       rom: "",
+      cheat: "",
       pal: false,
       zoomLevel: 0
     }
@@ -671,6 +679,7 @@ const types = [{
     extensions: ['gg'],
     defaults: {
       rom: "",
+      cheat: "",
       zoomLevel: 0
     }
   }, {
@@ -713,6 +722,7 @@ const types = [{
     extensions: ['gba'],
     defaults: {
       rom: "",
+      cheat: "",
       rotation: 0,
       rtc: false,
       mirroring: false,
@@ -777,6 +787,7 @@ const types = [{
     extensions: ['gb'],
     defaults: {
       rom: "",
+      cheat: "",
       hwType: 0,
       colors: 0,
       palette: 0,
@@ -797,6 +808,7 @@ const types = [{
     extensions: ['gbc'],
     defaults: {
       rom: "",
+      cheat: "",
       zoomLevel: 0
     }
   }, {
@@ -1036,6 +1048,7 @@ const types = [{
     },
     defaults: {
       rom: "",
+      cheat: "",
       rotation: -1,
       zoomLevel: 0,
     }
@@ -1066,7 +1079,8 @@ const types = [{
       uid: "",
       zoomLevel: 0,
       skipBios: false,
-      disableMemCard1: false
+      disableMemCard1: false,
+      cheat: ""
     }
   // }, {
   //   key: APP_TYPE_KEYS.RETRO_PPSSPP,
@@ -1120,6 +1134,7 @@ const types = [{
     defaults: {
       discs: [],
       uid: "",
+      cheat: "",
       pal: false,
       pad3button: false,
       zoomLevel: 0
@@ -1146,6 +1161,7 @@ const types = [{
     defaults: {
       discs: [],
       uid: "",
+      cheat: "",
       zoomLevel: 0,
       pad6button: false,
       mapRunSelect: false,
@@ -1173,6 +1189,7 @@ const types = [{
     defaults: {
       discs: [],
       uid: "",
+      cheat: "",
       zoomLevel: 0,
       region: 0,
       cdSpeedHack: true,
@@ -1204,6 +1221,7 @@ const types = [{
     defaults: {
       discs: [],
       uid: "",
+      cheat: "",
       zoomLevel: 0,
       hack: 0
     }
@@ -1229,7 +1247,8 @@ const types = [{
     defaults: {
       discs: [],
       uid: "",
-      zoomLevel: 0
+      zoomLevel: 0,
+      cheat: ""
     }
   }, {
     key: APP_TYPE_KEYS.TYRQUAKE,
@@ -1248,7 +1267,8 @@ const types = [{
       wadType: 0,
       wadPath: "",
       uid: "",
-      zoomLevel: 0
+      zoomLevel: 0,
+      cheat: ""
     }
   }, {
     key: APP_TYPE_KEYS.RETRO_DOSBOX_PURE,
@@ -1305,6 +1325,7 @@ const types = [{
       bookMode: false,
       dualAnalog: false,
       microphone: false,
+      cheat: ""
     }
   // }, {
   //   key: APP_TYPE_KEYS.RETRO_SAME_CDI,
@@ -1572,6 +1593,7 @@ const enableExperimentalApps = (b) => {
       },
       defaults: {
         rom: "",
+        cheat: "",
         zoomLevel: 0,
         swap: false,
         analog: false,
@@ -1633,6 +1655,7 @@ const enableExperimentalApps = (b) => {
         forceEmulatedBios: false,
         ramExpansion: 0,
         // hack: 0
+        cheat: ""
       }
     });
     addAlias(types, APP_TYPE_KEYS.SATURN, APP_TYPE_KEYS.RETRO_YABAUSE);

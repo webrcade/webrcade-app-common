@@ -1,5 +1,41 @@
 export const ReleaseData = [
 {
+    version: "v0.2.1-p5",
+    date: "April 26, 2026",
+    preRelease: true,
+    title: "Cheats, Search & Bug Fixes",
+    changes: [
+      {
+        title: "Cheats",
+        items: [
+          "Added *Cheats* support to the following systems: *Atari 2600*, *Atari 5200*, *Atari Lynx*, *NEC PC Engine / TurboGrafx-16*, *NEC PC Engine CD / TurboGrafx-CD*, *NEC SuperGrafx*, *Nintendo NES*, *Nintendo SNES*, *Nintendo Game Boy*, *Nintendo Game Boy Color*, *Nintendo Game Boy Advance*, *Nintendo DS*, *Sega SG-1000*, *Sega Master System*, *Sega Genesis*, *Sega CD*, *Sega Saturn*, *Sega Game Gear*, *Sony PlayStation*, *Quake*."
+        ]
+      },
+      {
+        title: "Player",
+        items: [
+          "Added *Search* support to the player, allowing you to quickly find games across all categories.",
+          "Fixed an issue on *iOS* where closing a search or feed dialog after typing would leave the page scrolled to an incorrect position."
+        ]
+      },
+      {
+        title: "Editor",
+        items: [
+          "Added *Search* tab to the Feed Editor, allowing you to search, edit, copy, and analyze items across all categories.",
+          "Added a *Cheats* tab to item properties for supported systems. A cheat file can be specified via URL, or selected from the built-in cheat database."
+        ]
+      },
+      {
+        title: "Bugs",
+        items: [
+          "Fixed an issue where gamepad navigation was not functioning in the *Shader Settings* tab of the *Nintendo DS* emulator settings.",
+          "Fixed an issue where gamepad navigation was not functioning in the *Display* and *Shader Settings* tabs of the *Pokémon Mini* emulator settings."
+        ]
+      }
+    ],
+    image: "images/update2.png"
+  },
+{
     version: "v0.2.0",
     date: "March 23, 2026",
     title: "New Apps, Defaults & Shaders",
