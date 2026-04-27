@@ -195,6 +195,10 @@ export class RetroAppWrapper extends AppWrapper {
     return this.cheats;
   }
 
+  isOneShotCheats() {
+    return false;
+  }
+
   setRomPointer(ptr) {
     this.romPointer = ptr;
   }

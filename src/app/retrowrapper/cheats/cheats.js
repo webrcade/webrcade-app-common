@@ -64,7 +64,7 @@ export default class CheatsService {
     );
 
     // Apply pre-loaded saved preferences (case-insensitive match)
-    if (this._savedDescs) {
+    if (this._savedDescs && !this.emulator.isOneShotCheats()) {
       const enabledSet = new Set(this._savedDescs.map((d) => d.toLowerCase()));
       sorted.forEach((c) => {
         if (enabledSet.has(c.desc.toLowerCase())) {
@@ -102,6 +102,13 @@ export default class CheatsService {
   }
 
   async save() {
+    if (this.emulator.isOneShotCheats()) {
+      // One-shot cheats (e.g. console commands) fire at the moment they are applied.
+      // Reset all to off so the dialog always opens with a clean slate.
+      this._list.forEach((c) => { c.enabled = false; });
+      await this._save(null);
+      return;
+    }
     const descs = this._list.filter((c) => c.enabled).map((c) => c.desc.toLowerCase());
     await this._save(descs.length > 0 ? descs : null);
   }

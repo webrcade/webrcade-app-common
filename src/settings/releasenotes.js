@@ -1,10 +1,16 @@
 export const ReleaseData = [
 {
-    version: "v0.2.1-p3",
-    date: "April 1, 2026",
+    version: "v0.2.1-p5",
+    date: "April 26, 2026",
     preRelease: true,
-    title: "Search & Bug Fixes",
+    title: "Cheats, Search & Bug Fixes",
     changes: [
+      {
+        title: "Cheats",
+        items: [
+          "Added *Cheats* support to the following systems: *Atari 2600*, *Atari 5200*, *Atari Lynx*, *NEC PC Engine / TurboGrafx-16*, *NEC PC Engine CD / TurboGrafx-CD*, *NEC SuperGrafx*, *Nintendo NES*, *Nintendo SNES*, *Nintendo Game Boy*, *Nintendo Game Boy Color*, *Nintendo Game Boy Advance*, *Nintendo DS*, *Sega SG-1000*, *Sega Master System*, *Sega Genesis*, *Sega CD*, *Sega Saturn*, *Sega Game Gear*, *Sony PlayStation*, *Quake*."
+        ]
+      },
       {
         title: "Player",
         items: [
@@ -15,7 +21,8 @@ export const ReleaseData = [
       {
         title: "Editor",
         items: [
-          "Added *Search* tab to the Feed Editor, allowing you to search, edit, copy, and analyze items across all categories."
+          "Added *Search* tab to the Feed Editor, allowing you to search, edit, copy, and analyze items across all categories.",
+          "Added a *Cheats* tab to item properties for supported systems. A cheat file can be specified via URL, or selected from the built-in cheat database."
         ]
       },
       {
