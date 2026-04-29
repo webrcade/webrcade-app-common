@@ -1,8 +1,7 @@
 export const ReleaseData = [
 {
-    version: "v0.2.1-p5",
-    date: "April 26, 2026",
-    preRelease: true,
+    version: "v0.2.1",
+    date: "April 29, 2026",
     title: "Cheats, Search & Bug Fixes",
     changes: [
       {
