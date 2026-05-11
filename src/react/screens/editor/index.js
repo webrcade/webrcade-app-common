@@ -205,7 +205,7 @@ export class EditorScreen extends Screen {
 
   render() {
     const { okButtonRef, cancelButtonRef, screenContext, screenStyles, focusGrid } = this;
-    const { hidden, okLabel, onOk, onClose, showCancel } = this.props;
+    const { hidden, okLabel, onOk, onClose, showCancel, subheader } = this.props;
     const { tabIndex } = this.state;
 
     // TODO: Fix this, it is fragile and timing based (must render if 50ms)
@@ -236,6 +236,7 @@ export class EditorScreen extends Screen {
                 {this.renderTabButton(false)}
               </div>
             </div>
+            {subheader || null}
             <div className={styles['editor-screen-content']} ref={(content) => { this.contentRef = content; }}>
               <div className={styles['editor-screen-content-container']} key={"tab" + tabIndex}>
                 {this.renderContent(tabIndex)}

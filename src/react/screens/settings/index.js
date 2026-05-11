@@ -1,11 +1,14 @@
 import React from "react";
 import { Component } from "react";
 
+import { achievements } from '../../../achievements';
 import { dropbox } from "../../../storage";
 import { settings } from '../../../settings'
 import { showMessage } from "../../components/message";
 import { CloudWhiteImage } from "../../../images";
+import { EmojiEventsWhiteImage } from "../../../images";
 import { ExtensionImage } from "../../../images";
+import { TextField } from "../../components/text-field";
 import { EditorScreen } from "../editor";
 import { FieldsTab } from "../editor/tabs";
 import { FieldRow } from "../editor/tabs";
@@ -37,7 +40,9 @@ export class SettingsEditor extends Component {
       screenSize: settings.getScreenSize(),
       dbLinked: settings.getDbToken() !== null,
       disableInGame: settings.isGameSavesDisabledAfterState(),
-      overrides: (settings.getOverrides() ? settings.getOverrides() : {})
+      overrides: (settings.getOverrides() ? settings.getOverrides() : {}),
+      raEnabled: settings.isRaEnabled(),
+      raLinked: settings.getRaToken() !== null,
     };
     this.state = {
       tabIndex: null,
@@ -67,6 +72,9 @@ export class SettingsEditor extends Component {
         hidden={ctx && ctx.isAlertScreenOpen()}
         showCancel={true}
         onOk={() => {
+          // If enabled but not linked, turn off
+          if (values.cloudStorage && !values.dbLinked) values.cloudStorage = false;
+          if (values.raEnabled && !values.raLinked) values.raEnabled = false;
           const oldCloudEnabled = settings.isCloudStorageEnabled();
           settings.setExpAppsEnabled(values.expApps);
           settings.setVsyncEnabled(values.vsync);
@@ -75,7 +83,8 @@ export class SettingsEditor extends Component {
           settings.setHideTitleBar(values.hideTitleBar);
           settings.setScreenSize(values.screenSize);
           settings.setGameSavesDisabledAfterState(values.disableInGame);
-          settings.setOverrides(values.overrides)
+          settings.setOverrides(values.overrides);
+          settings.setRaEnabled(values.raEnabled);
           if (originalValues.expApps !== values.expApps) {
             ctx.showAlertScreen(true,
               Resources.getText(TEXT_IDS.RELOAD_EXP_APPS),
@@ -157,11 +166,22 @@ export class SettingsEditor extends Component {
                 />
               )
             }, {
+              image: EmojiEventsWhiteImage,
+              label: 'Achievements',
+              content: (
+                <AchievementsTab
+                  isActive={tabIndex === 3}
+                  setFocusGridComps={setFocusGridComps}
+                  values={values}
+                  setValues={setValues}
+                />
+              )
+            }, {
               image: TuneWhiteImage,
               label: Resources.getText(TEXT_IDS.ADVANCED_SETTINGS),
               content: (
                 <AdvancedSettingsTab
-                  isActive={tabIndex === 3}
+                  isActive={tabIndex === 4}
                   setFocusGridComps={setFocusGridComps}
                   values={values}
                   setValues={setValues}
@@ -475,3 +495,174 @@ class CloudStorageTab extends FieldsTab {
   }
 }
 CloudStorageTab.contextType = WebrcadeContext;
+
+class AchievementsTab extends FieldsTab {
+  constructor() {
+    super();
+    this.raEnabledRef = React.createRef();
+    this.usernameRef = React.createRef();
+    this.passwordRef = React.createRef();
+    this.loginRef = React.createRef();
+    this.state = {
+      username: '',
+      password: '',
+    };
+    this.gridComps = [
+      [this.raEnabledRef],
+    ];
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const { gridComps } = this;
+    const { setFocusGridComps, isActive, values } = this.props;
+
+    if (isActive && (isActive !== prevProps.isActive)) {
+      this.updateGridComps(values);
+      setFocusGridComps(gridComps);
+    }
+  }
+
+  updateGridComps(values) {
+    const { raEnabledRef, usernameRef, passwordRef, loginRef } = this;
+    const raEnabled = values.raEnabled;
+    const raLinked = values.raLinked;
+    const comps = [[raEnabledRef]];
+    if (raEnabled && !raLinked) {
+      comps.push([usernameRef]);
+      comps.push([passwordRef]);
+    }
+    if (raEnabled) {
+      comps.push([loginRef]);
+    }
+    this.gridComps = comps;
+  }
+
+  render() {
+    const { raEnabledRef, usernameRef, passwordRef, loginRef } = this;
+    const { focusGrid } = this.context;
+    const { setFocusGridComps, setValues, values } = this.props;
+    const { username, password } = this.state;
+
+    const raEnabled = values.raEnabled;
+    const raLinked = values.raLinked;
+
+    const refreshGridComps = (newValues) => {
+      this.updateGridComps(newValues);
+      setFocusGridComps(this.gridComps);
+    };
+
+    let conditionalComps = null;
+    if (raEnabled && !raLinked) {
+      conditionalComps = [
+        <FieldRow key="username">
+          <FieldLabel>Username</FieldLabel>
+          <FieldControl>
+            <TextField
+              ref={usernameRef}
+              value={username}
+              width="13rem"
+              placeholder="Username"
+              onPad={e => focusGrid.moveFocus(e.type, usernameRef)}
+              onChange={e => this.setState({ username: e.target.value })}
+            />
+          </FieldControl>
+        </FieldRow>,
+        <FieldRow key="password">
+          <FieldLabel>Password</FieldLabel>
+          <FieldControl>
+            <TextField
+              ref={passwordRef}
+              value={password}
+              width="13rem"
+              type="password"
+              placeholder="Password"
+              onPad={e => focusGrid.moveFocus(e.type, passwordRef)}
+              onChange={e => this.setState({ password: e.target.value })}
+            />
+          </FieldControl>
+        </FieldRow>,
+      ];
+    }
+
+    let loginComp = null;
+    if (raEnabled) {
+      loginComp = [
+        <FieldRow key="login">
+          <FieldLabel>RetroAchievements</FieldLabel>
+          <FieldControl>
+            <div>
+            <ImageButton
+              ref={loginRef}
+              imgSrc={raLinked ? LinkOffBlackImage : LinkBlackImage}
+              hoverImgSrc={raLinked ? LinkOffWhiteImage : LinkWhiteImage}
+              label={raLinked ? 'Logout' : 'Login'}
+              onPad={e => focusGrid.moveFocus(e.type, loginRef)}
+              onClick={() => {
+                if (!raLinked) {
+                  if (!username || !password) {
+                    showMessage('Please enter your RetroAchievements username and password.');
+                    return;
+                  }
+                  achievements.login(username, password)
+                    .then((result) => {
+                      if (result.success) {
+                        const newValues = { ...values, raLinked: true };
+                        this.setState({ username: '', password: '' });
+                        setValues(newValues);
+                        refreshGridComps(newValues);
+                        showMessage('Successfully logged into RetroAchievements.', false, false);
+                      } else {
+                        showMessage(result.error || 'Login failed.');
+                      }
+                    })
+                    .catch((e) => showMessage(e.message || 'Login failed.'));
+                } else {
+                  achievements.logout()
+                    .then(() => {
+                      const newValues = { ...values, raLinked: false };
+                      this.setState({ username: '', password: '' });
+                      setValues(newValues);
+                      refreshGridComps(newValues);
+                    })
+                    .catch((e) => showMessage(e.message || 'Logout failed.'));
+                }
+              }}
+            />
+            </div>
+          </FieldControl>
+        </FieldRow>,
+        <FieldRow key="status">
+          <FieldLabel>{Resources.getText(TEXT_IDS.STATUS)}</FieldLabel>
+          <FieldControl>
+            <div>
+              {raLinked
+                ? Resources.getText(TEXT_IDS.LINKED)
+                : Resources.getText(TEXT_IDS.UNLINKED)}
+            </div>
+          </FieldControl>
+        </FieldRow>,
+      ];
+    }
+
+    return ([
+      <FieldRow key="enabled">
+        <FieldLabel>{Resources.getText(TEXT_IDS.ENABLED)}</FieldLabel>
+        <FieldControl>
+          <Switch
+            ref={raEnabledRef}
+            onPad={e => focusGrid.moveFocus(e.type, raEnabledRef)}
+            onChange={e => {
+              const newValues = { ...values, raEnabled: e.target.checked };
+              setValues(newValues);
+              refreshGridComps(newValues);
+            }}
+            checked={raEnabled}
+          />
+        </FieldControl>
+      </FieldRow>,
+      conditionalComps,
+      loginComp,
+    ]);
+  }
+}
+AchievementsTab.contextType = WebrcadeContext;

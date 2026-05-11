@@ -21,6 +21,9 @@ export class Settings extends BaseSettings {
     this.hideTitleBar = false;
     this.disableGameSavesAfterState = false;
     this.dbToken = null;
+    this.raEnabled = false;
+    this.raToken = null;
+    this.raUsername = null;
     this.screenSize = SCREEN_SIZES.SS_NATIVE;
     this.hideVersion = "";
     this.overrides = {};
@@ -34,11 +37,14 @@ export class Settings extends BaseSettings {
   CLOUD_STORAGE_PROP = this.PREFIX + "cloudStorage";
   HIDE_TITLE_BAR_PROP = this.PREFIX + "hideTitleBar";
   DB_TOKEN = this.PREFIX + "dbToken";
+  RA_ENABLED = this.PREFIX + "raEnabled";
+  RA_TOKEN = this.PREFIX + "raToken";
+  RA_USERNAME = this.PREFIX + "raUsername";
   OVERRIDES = this.PREFIX + "overrides";
   HIDE_VERSION = this.PREFIX + "hideVersion";
   DISABLE_GAME_SAVES_AFTER_STATE = this.PREFIX + "disableGameSavesAfterState"
 
-  VERSION = "0.2.1";
+  VERSION = "0.2.2-p2";
 
   async load() {
     LOG.info("Loading settings.");
@@ -48,6 +54,9 @@ export class Settings extends BaseSettings {
     this.bilinearFilter = await this.loadBool(this.BILINEAR_FILTER_PROP, this.bilinearFilter);
     this.hideTitleBar = await this.loadBool(this.HIDE_TITLE_BAR_PROP, this.hideTitleBar);
     this.dbToken = await this.loadValue(this.DB_TOKEN, this.dbToken);
+    this.raEnabled = await this.loadBool(this.RA_ENABLED, this.raEnabled);
+    this.raToken = await this.loadValue(this.RA_TOKEN, this.raToken);
+    this.raUsername = await this.loadValue(this.RA_USERNAME, this.raUsername);
     this.screenSize = await this.loadValue(this.SCREEN_SIZE_PROP, this.screenSize);
     this.overrides = await this.loadValue(this.OVERRIDES, this.overrides);
     this.hideVersion = await this.loadValue(this.HIDE_VERSION, "");
@@ -66,6 +75,9 @@ export class Settings extends BaseSettings {
     await this.saveBool(this.BILINEAR_FILTER_PROP, this.bilinearFilter);
     await this.saveBool(this.HIDE_TITLE_BAR_PROP, this.hideTitleBar);
     await this.saveValue(this.DB_TOKEN, this.dbToken);
+    await this.saveBool(this.RA_ENABLED, this.raEnabled);
+    await this.saveValue(this.RA_TOKEN, this.raToken);
+    await this.saveValue(this.RA_USERNAME, this.raUsername);
     await this.saveValue(this.SCREEN_SIZE_PROP, this.screenSize);
     await this.saveValue(this.DISABLE_GAME_SAVES_AFTER_STATE, this.disableGameSavesAfterState);
     await this.saveValue(this.OVERRIDES, this.overrides);
@@ -87,6 +99,30 @@ export class Settings extends BaseSettings {
 
   setDbToken(t) {
     this.dbToken = t;
+  }
+
+  isRaEnabled() {
+    return this.raEnabled;
+  }
+
+  setRaEnabled(b) {
+    this.raEnabled = b;
+  }
+
+  getRaToken() {
+    return this.raToken;
+  }
+
+  setRaToken(t) {
+    this.raToken = t;
+  }
+
+  getRaUsername() {
+    return this.raUsername;
+  }
+
+  setRaUsername(u) {
+    this.raUsername = u;
   }
 
   isCloudStorageEnabled() {

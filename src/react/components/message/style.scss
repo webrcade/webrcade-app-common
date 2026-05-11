@@ -27,6 +27,11 @@
   min-width: 30rem;
   max-width: 30rem;
   margin-left: -15rem;
+
+  &.success {
+    background: linear-gradient(rgba(40, 40, 40, 0.9), rgba(80, 80, 80, 1));
+    border: .1rem solid rgba(20, 20, 20, 0.4);
+  }
 }
 
 #snackbar.show,
