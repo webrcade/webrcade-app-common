@@ -1064,6 +1064,7 @@ const types = [{
     description: "A Libretro core renowned for its extremely high accuracy in replicating the original PlayStation hardware. It supports advanced graphical shaders but is more resource-intensive, providing the most authentic experience.",
     validate: checkDiscs,
     extensions: [],
+    ambiguousExtensions: ['.chd', '.pbp'],
     slowExit: true,
     addProps: (feedProps, outProps) => {
       const bios = feedProps.psx_bios;
@@ -1124,6 +1125,7 @@ const types = [{
     description: "This Libretro core extends the highly accurate Genesis Plus GX engine to emulate the Sega CD add-on. It\'s the top choice for reliable and authentic Sega CD gameplay and includes support for advanced graphical shaders",
     validate: checkDiscs,
     extensions: [],
+    ambiguousExtensions: ['.chd'],
     slowExit: true,
     addProps: (feedProps, outProps) => {
       const bios = feedProps.segacd_bios;
@@ -1151,6 +1153,7 @@ const types = [{
     description: "A performance-optimized Libretro core from Mednafen for playing PC Engine CD / TurboGrafx-CD games. It offers a great balance of speed and high compatibility, with support for advanced graphical shaders.",
     validate: checkDiscs,
     extensions: [],
+    ambiguousExtensions: ['.chd'],
     slowExit: true,
     addProps: (feedProps, outProps) => {
       const bios = feedProps.pcecd_bios;
@@ -1179,6 +1182,7 @@ const types = [{
     description: "A specialized Libretro core for the Neo Geo CD that includes options to significantly reduce or skip the console\'s infamous loading times, greatly improving the user experience. This core also supports advanced graphical shaders.",
     validate: checkDiscs,
     extensions: [],
+    ambiguousExtensions: ['.chd'],
     slowExit: true,
     addProps: (feedProps, outProps) => {
       const bios = feedProps.neogeocd_bios;
@@ -1207,6 +1211,7 @@ const types = [{
     description: "A Libretro core for emulating the 3DO Interactive Multiplayer, based on the 4DO emulator. It is the primary choice for playing the 3DO\'s unique library of games and includes support for advanced graphical shaders.",
     validate: checkDiscs,
     extensions: [],
+    ambiguousExtensions: ['.chd'],
     slowExit: true,
     addProps: (feedProps, outProps) => {
       const bios = feedProps.threedo_bios;
@@ -1237,6 +1242,7 @@ const types = [{
     description: "A Libretro core from Mednafen for emulating the 32-bit NEC PC-FX. It provides accurate emulation for this rare, Japan-only console, preserving its unique library of full-motion video games, and includes support for advanced graphical shaders.",
     validate: checkDiscs,
     extensions: [],
+    ambiguousExtensions: ['.chd'],
     slowExit: true,
     addProps: (feedProps, outProps) => {
       const bios = feedProps.pcfx_bios;
@@ -1640,6 +1646,7 @@ const enableExperimentalApps = (b) => {
       thumbnail: 'images/app/saturn-thumb.png',
       validate: checkDiscs,
       extensions: [],
+      ambiguousExtensions: ['.chd'],
       slowExit: true,
       multiThreaded: true,
       addProps: (feedProps, outProps) => {

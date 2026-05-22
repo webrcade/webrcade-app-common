@@ -301,6 +301,41 @@ class AppRegistry {
     return extensions;
   }
 
+  /**
+   * Returns a Set of all unique ambiguous extensions (dot-prefixed) across
+   * every app type that declares an `ambiguousExtensions` array.
+   */
+  getAllAmbiguousExtensions(dotted = true) {
+    const result = new Set();
+    const APP_TYPES = this.APP_TYPES;
+    for (const name in APP_TYPES) {
+      const type = APP_TYPES[name];
+      if (type.ambiguousExtensions) {
+        for (const ext of type.ambiguousExtensions) {
+          result.add(dotted ? ext : ext.replace(/^\./, ''));
+        }
+      }
+    }
+    return result;
+  }
+
+  /**
+   * Returns an array of type keys (non-alias) whose `ambiguousExtensions`
+   * includes the given extension (with or without leading dot).
+   */
+  getTypesForAmbiguousExt(ext) {
+    const normalized = ext.startsWith('.') ? ext : '.' + ext;
+    const result = [];
+    const APP_TYPES = this.APP_TYPES;
+    for (const name in APP_TYPES) {
+      const type = APP_TYPES[name];
+      if (!type.absoluteKey && type.ambiguousExtensions?.includes(normalized)) {
+        result.push(name);
+      }
+    }
+    return result;
+  }
+
   getExtensions(name, dotted = true, nonUnique = false) {
     const extensions = []
     if (nonUnique) {
