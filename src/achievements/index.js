@@ -49,7 +49,7 @@ class RetroAchievements {
   }
 
   _tryFireGameLoaded() {
-    if (this._patchReceived && this._unlocksReceived && this.gameHasAchievements && this._onGameLoaded) {
+    if (this._patchReceived && this._unlocksReceived && this.gameTitle && this._onGameLoaded) {
       const unlockedCount = this.getUnlockedCount();
       const totalCount = this.patchAchievements.length;
       const unlockedPoints = this.getUnlockedPoints();

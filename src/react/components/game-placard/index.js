@@ -69,7 +69,7 @@ export class GamePlacard extends Component {
 
     const subtitle = totalCount > 0
       ? `${unlockedCount} of ${totalCount} achievements \u00b7 ${unlockedPoints} of ${totalPoints} pts`
-      : null;
+      : 'No achievements available for this game.';
 
     return (
       <div className={`${styles['game-placard']} ${styles[phase]}`}>

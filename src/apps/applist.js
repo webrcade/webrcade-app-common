@@ -1293,6 +1293,7 @@ const types = [{
       archive: "",
       autoStartPath: "",
       uid: "",
+      cpuSpeed: 0,
       controllerMode: 0,
       mouseSpeed: 0,
       zoomLevel: 0
@@ -1331,6 +1332,7 @@ const types = [{
       bookMode: false,
       dualAnalog: false,
       microphone: false,
+      firmwareLanguage: 0,
       cheat: ""
     }
   // }, {
