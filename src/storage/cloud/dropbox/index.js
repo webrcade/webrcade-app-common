@@ -178,6 +178,13 @@ class WrcDropbox {
     return result.result.fileBlob;
   }
 
+  httpHeaderSafeJson(v) {
+    const charsToEncode = /[\u007f-\uffff]/g;
+    return JSON.stringify(v).replace(charsToEncode, function(c) {
+      return '\\u' + ('000' + c.charCodeAt(0).toString(16)).slice(-4);
+    });
+  }
+
   async uploadFile(blob, path, onProgress) {
     const UPLOAD_FILE_SIZE_LIMIT = 150 * 1024 * 1024;
 
@@ -192,7 +199,7 @@ class WrcDropbox {
           xhr.open('POST', 'https://content.dropboxapi.com/2/files/upload');
           xhr.setRequestHeader('Authorization',   `Bearer ${token}`);
           xhr.setRequestHeader('Content-Type',    'application/octet-stream');
-          xhr.setRequestHeader('Dropbox-API-Arg', JSON.stringify({
+          xhr.setRequestHeader('Dropbox-API-Arg', this.httpHeaderSafeJson({
             path: file.name,
             mode:       'overwrite',
             autorename: false,
