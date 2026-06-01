@@ -67,6 +67,14 @@ export class PauseScreen extends Screen {
     return null;
   }
 
+  getPrimaryContainerClassName() {
+    return this.pauseStyles['pause-screen-inner-buttons-container'];
+  }
+
+  getSecondaryRow() {
+    return null;
+  }
+
   render() {
     const { exitOrSettingsButtonRef, focusGrid, resumeButtonRef, screenContext,
       screenStyles } = this;
@@ -82,7 +90,7 @@ export class PauseScreen extends Screen {
             <div className={styles['pause-screen-inner-info-app']}>{appProps.app}</div>
           </div>
           <div className={styles['pause-screen-inner-buttons']}>
-            <div className={styles['pause-screen-inner-buttons-container']}>
+            <div className={this.getPrimaryContainerClassName()}>
               {!isStandalone && (
                 <PauseScreenButton
                   className={styles["pause-screen-image-button"]}
@@ -119,6 +127,7 @@ export class PauseScreen extends Screen {
                 onClick={() => this.close()}
               />
             </div>
+            {this.getSecondaryRow()}
           </div>
         </div>
       </div>
@@ -143,15 +152,42 @@ export class PauseScreen extends Screen {
 
 export class CustomPauseScreen extends PauseScreen {
 
+  constructor() {
+    super();
+    this._secBlurTimer = null;
+    this.state = { ...this.state, secondaryFocused: false };
+  }
+
+  _onSecondaryFocus() {
+    if (this._secBlurTimer) {
+      clearTimeout(this._secBlurTimer);
+      this._secBlurTimer = null;
+    }
+    if (!this.state.secondaryFocused) {
+      this.setState({ secondaryFocused: true });
+    }
+  }
+
+  _onSecondaryBlur() {
+    this._secBlurTimer = setTimeout(() => {
+      this._secBlurTimer = null;
+      this.setState({ secondaryFocused: false });
+    }, 0);
+  }
+
   componentDidMount() {
-    const { additionalButtonRefs } = this.props;
+    const { additionalButtonRefs, secondaryButtonRefs } = this.props;
     const { focusGrid } = this;
 
+    const comps = this.getFocusGridComponents();
     if (additionalButtonRefs) {
-      const comps = this.getFocusGridComponents();
       comps[0] = [comps[0][0], ...additionalButtonRefs, comps[0][1]];
-      focusGrid.setComponents(comps);
     }
+    if (secondaryButtonRefs && secondaryButtonRefs.length > 0) {
+      comps.push(secondaryButtonRefs);
+      focusGrid.enableSpatialNavigation();
+    }
+    focusGrid.setComponents(comps);
 
     super.componentDidMount();
   }
@@ -159,5 +195,34 @@ export class CustomPauseScreen extends PauseScreen {
   getAdditionalButtons() {
     const { additionalButtons } = this.props;
     return additionalButtons;
+  }
+
+  getSecondaryButtons() {
+    const { secondaryButtons } = this.props;
+    return secondaryButtons && secondaryButtons.length > 0 ? secondaryButtons : null;
+  }
+
+  getPrimaryContainerClassName() {
+    const { secondaryFocused } = this.state;
+    return (
+      styles['pause-screen-inner-buttons-container'] +
+      (secondaryFocused ? ' ' + styles['pause-screen-inner-buttons-container--dim'] : '')
+    );
+  }
+
+  getSecondaryRow() {
+    const secondaryButtons = this.getSecondaryButtons();
+    if (!secondaryButtons) return null;
+    return (
+      <div
+        className={styles['pause-screen-inner-buttons-container'] + ' ' + styles['pause-screen-inner-buttons-secondary']}
+        onFocus={() => this._onSecondaryFocus()}
+        onBlur={() => this._onSecondaryBlur()}
+      >
+        {secondaryButtons.map((btn, i) =>
+          React.cloneElement(btn, { key: i, className: styles['pause-screen-secondary-image-button'] })
+        )}
+      </div>
+    );
   }
 }

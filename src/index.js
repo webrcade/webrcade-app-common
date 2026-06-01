@@ -1,3 +1,4 @@
+export * from './achievements';
 export * from './app';
 export * from './apps';
 export * from './audio';
@@ -31,4 +32,6 @@ export * from './react/screens/settings';
 export * from './react/screens/app';
 export * from './react/context/webrcadecontext.js';
 export * from './react/components/screen';
+export * from './react/components/achievement-toast';
+export * from './react/components/game-placard';
 export * as LOG from './log';

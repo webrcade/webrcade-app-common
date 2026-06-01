@@ -84,18 +84,19 @@ export class TextField extends Component {
     let style = {};
     if (width) style.width = width;
 
-    const { onChange, placeholder } = this.props;
+    const { onChange, placeholder, type, value } = this.props;
 
     return (
       <input
         className={styles['text-field']}
-        type="text"
+        type={type || 'text'}
         style={style}
         ref={(field) => { this.field = field; }}
         onFocus={this.onFocus}
         onBlur={this.onBlur}
         onChange={onChange}
         placeholder={placeholder}
+        {...(value !== undefined ? { value } : {})}
       />
     );
   }

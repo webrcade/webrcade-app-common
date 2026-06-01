@@ -1,0 +1,122 @@
+.game-placard {
+  position: fixed;
+  bottom: 2.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background-color: rgba(20, 20, 20, 0.96);
+  border-radius: 0.5rem;
+  border-left: 0.3rem solid #2a7fc1;
+  padding: 0.8rem 1.1rem 0.8rem 1rem;
+  min-width: 26rem;
+  max-width: 36rem;
+  box-shadow: 0 0.4rem 1.5rem rgba(0, 0, 0, 0.85);
+  opacity: 0;
+  pointer-events: none;
+
+  &.show {
+    animation: game-placard--fadein 0.4s ease forwards;
+  }
+
+  &.hide {
+    animation: game-placard--fadeout 0.4s ease forwards;
+  }
+}
+
+.game-placard__badge {
+  width: 4rem;
+  height: 4rem;
+  border-radius: 0.35rem;
+  flex-shrink: 0;
+  object-fit: cover;
+  background-color: #333;
+}
+
+.game-placard__info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.game-placard__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin-top: 0.1rem;
+}
+
+.game-placard__tag {
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: #4fa8e8;
+  background-color: rgba(42, 127, 193, 0.18);
+  border: 1px solid rgba(42, 127, 193, 0.45);
+  border-radius: 0.25rem;
+  padding: 0.05rem 0.35rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04rem;
+  white-space: nowrap;
+}
+
+.game-placard__user {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  flex-shrink: 0;
+  padding-left: 0.9rem;
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.game-placard__avatar {
+  width: 2.8rem;
+  height: 2.8rem;
+  border-radius: 50%;
+  flex-shrink: 0;
+  object-fit: cover;
+  background-color: #333;
+  border: 2px solid #2a7fc1;
+}
+
+.game-placard__username {
+  font-size: 0.72rem;
+  color: #4fa8e8;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 6rem;
+  text-align: center;
+}
+
+.game-placard__title {
+  font-size: 1.1rem;
+  color: #ffffff;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.game-placard__subtitle {
+  font-size: 0.85rem;
+  color: #aaaaaa;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@keyframes game-placard--fadein {
+  from { opacity: 0; transform: translateX(-50%) translateY(0.8rem); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+@keyframes game-placard--fadeout {
+  from { opacity: 1; transform: translateX(-50%) translateY(0); }
+  to   { opacity: 0; transform: translateX(-50%) translateY(0.8rem); }
+}

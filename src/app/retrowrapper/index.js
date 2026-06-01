@@ -14,6 +14,10 @@ import { BILINEAR_MODE } from './newprefs';
 import ShadersService from './shaders/shaders'
 import CheatsService from './cheats/cheats'
 import * as LOG from '../../log'
+import { settings } from '../../settings'
+import { achievements } from '../../achievements'
+import { showAchievement, showMastery } from '../../react/components/achievement-toast'
+import { showGamePlacard } from '../../react/components/game-placard'
 
 let STATE_FILE_PATH = "/home/web_user/retroarch/userdata/states/game.state";
 
@@ -137,6 +141,14 @@ export class RetroAppWrapper extends AppWrapper {
 
   getExitOnLoopError() {
     return false;
+  }
+
+  getHashFileExtension() {
+    return null;
+  }
+
+  getRaHash() {
+    return null;
   }
 
   setRoms(uid, frontendArray, biosBuffers, romBytes, ext) {
@@ -500,6 +512,25 @@ export class RetroAppWrapper extends AppWrapper {
 
   preInit(fs) {}
 
+  async raHttpRequest(reqId, url, postData) {
+    const { Module } = window;
+    await achievements.httpRequest(Module, reqId, url, postData);
+  }
+
+  onAchievementUnlocked(title, subtitle, badge) {
+    LOG.info(`Achievement Unlocked: ${title} — ${subtitle} (badge: ${badge})`);
+    showAchievement(title, subtitle, badge);
+  }
+
+  onMastery(gameTitle, gameBadgeName, totalCount, totalPoints, username, gameTags) {
+    LOG.info(`Mastery: ${gameTitle} (badge: ${gameBadgeName})`);
+    showMastery(gameTitle, gameBadgeName, totalCount, totalPoints, username, gameTags);
+  }
+
+  onGameLoaded(gameTitle, gameBadgeName, unlockedCount, totalCount, unlockedPoints, totalPoints, gameTags) {
+    showGamePlacard(gameTitle, gameBadgeName, unlockedCount, totalCount, unlockedPoints, totalPoints, gameTags);
+  }
+
   getShotAspectRatio() { return null; }
   getShotRotation() { return null; }
 
@@ -858,7 +889,13 @@ export class RetroAppWrapper extends AppWrapper {
 
         try {
           const name = this.isArchiveBased() ? this.getArchiveBinaryFileName() : this.game;
-          const raConfigContents = this.getRaConfigContents();
+          let raConfigContents = this.getRaConfigContents();
+          if (settings.isRaEnabled() && settings.getRaToken()) {
+            raConfigContents = (raConfigContents || '') +
+              `\ncheevos_enable = true` +
+              `\ncheevos_username = "${settings.getRaUsername()}"` +
+              `\ncheevos_token = "${settings.getRaToken()}"\n`;
+          }
           if (raConfigContents) {
             LOG.info("RA Config:");
             LOG.info(raConfigContents);
@@ -869,6 +906,10 @@ export class RetroAppWrapper extends AppWrapper {
           }
 
           Module.callMain(['-v', name]);
+          achievements.resetGameState();
+          achievements.setUnlockCallback(this.onAchievementUnlocked.bind(this));
+          achievements.setMasteryCallback(this.onMastery.bind(this));
+          achievements.setGameLoadedCallback(this.onGameLoaded.bind(this));
         } catch (e) {
           LOG.error(e);
         }

@@ -8,6 +8,8 @@ import { settings } from '../../../../settings';
 import { DiscSelectionEditor } from '../../../screens/selectdisc'
 import { FetchAppData } from '../../../../app';
 import { Resources } from '../../../../resources';
+import { AchievementToast } from '../../achievement-toast';
+import { GamePlacard } from '../../game-placard';
 import { UrlUtil, md5Uint8Array } from '../../../../util';
 import { WebrcadeApp } from '..';
 import { AppRegistry } from "../../../../apps";
@@ -528,6 +530,8 @@ export class WebrcadeRetroApp extends WebrcadeApp {
           : null}
         {mode === ModeEnum.PAUSE ? this.renderPauseScreen() : null}
         {this.renderCanvas()}
+        <AchievementToast />
+        <GamePlacard />
       </Fragment>
     );
   }

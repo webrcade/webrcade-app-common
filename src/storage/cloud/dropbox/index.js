@@ -178,22 +178,55 @@ class WrcDropbox {
     return result.result.fileBlob;
   }
 
-  async uploadFile(blob, path) {
+  httpHeaderSafeJson(v) {
+    const charsToEncode = /[\u007f-\uffff]/g;
+    return JSON.stringify(v).replace(charsToEncode, function(c) {
+      return '\\u' + ('000' + c.charCodeAt(0).toString(16)).slice(-4);
+    });
+  }
+
+  async uploadFile(blob, path, onProgress) {
     const UPLOAD_FILE_SIZE_LIMIT = 150 * 1024 * 1024;
 
     const dbx = await this.getDropbox();
     const file = new File([blob], path);
 
-    if (file.size < UPLOAD_FILE_SIZE_LIMIT) { // File is smaller than 150 Mb - use filesUpload API
-      await dbx.filesUpload({
-        path: file.name,
-        contents: file,
-        mode: 'overwrite'
-      })
-      return true;
+    if (file.size < UPLOAD_FILE_SIZE_LIMIT) {
+      if (onProgress) { // Use XHR so progress events fire
+        const token = dbx.auth.getAccessToken();
+        await new Promise((resolve, reject) => {
+          const xhr = new XMLHttpRequest();
+          xhr.open('POST', 'https://content.dropboxapi.com/2/files/upload');
+          xhr.setRequestHeader('Authorization',   `Bearer ${token}`);
+          xhr.setRequestHeader('Content-Type',    'application/octet-stream');
+          xhr.setRequestHeader('Dropbox-API-Arg', this.httpHeaderSafeJson({
+            path: file.name,
+            mode:       'overwrite',
+            autorename: false,
+            mute:       false,
+          }));
+          xhr.upload.onprogress = (e) => {
+            if (e.lengthComputable) onProgress(Math.round((e.loaded / e.total) * 100));
+          };
+          xhr.onload  = () => (xhr.status === 200 ? resolve() : reject(new Error(`Upload failed: ${xhr.status}`)));
+          xhr.onerror = () => reject(new Error('Upload network error'));
+          xhr.onabort = () => reject(new Error('Upload cancelled'));
+          xhr.send(file);
+        });
+        return true;
+      } else { // No progress needed — use the SDK
+        await dbx.filesUpload({
+          path: file.name,
+          contents: file,
+          mode: 'overwrite'
+        });
+        return true;
+      }
     } else { // File is bigger than 150 Mb - use filesUploadSession* API
       const maxBlob = 8 * 1000 * 1000; // 8Mb - Dropbox JavaScript API suggested max file / chunk size
       var offset = 0;
+
+      onProgress?.(0);
 
       // Create array of work items
       let sessionId = null;
@@ -208,6 +241,7 @@ class WrcDropbox {
           const cursor = { session_id: sessionId, offset: file.size - blob.size };
           const commit = { path: file.name, mode: 'overwrite', autorename: true, mute: false };
           await dbx.filesUploadSessionFinish({ cursor: cursor, commit: commit, contents: blob });
+          onProgress?.(100);
           return true;
         } else {
           const cursor = { session_id: sessionId, offset: idx * maxBlob };
@@ -215,6 +249,7 @@ class WrcDropbox {
         }
         offset += chunkSize;
         idx++;
+        onProgress?.(Math.round((offset / file.size) * 100));
       }
       return false;
     }

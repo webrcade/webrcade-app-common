@@ -37,6 +37,9 @@ export function showMessage(message, addConsoleMessage = true, isError = true, t
   const container = document.getElementById(styles['message-container']);
   const el = document.getElementById(styles['snackbar']);
 
+  // Temporarily disable
+  addConsoleMessage = false;
+
   if (anchorId) {
     const parentEl = document.getElementById(anchorId);
     if (parentEl) {
@@ -49,6 +52,11 @@ export function showMessage(message, addConsoleMessage = true, isError = true, t
 
   if (el) {
     el.innerHTML = (message ? (message + "").replaceAll("\n", "<br/>") : "Unknown error") + (addConsoleMessage ? "<br/><br/>See console log for details." : "");
+    if (isError) {
+      el.classList.remove(styles['success']);
+    } else {
+      el.classList.add(styles['success']);
+    }
     el.classList.add(styles['show']);
     el.classList.remove(styles['hide']);
     if (timeoutId > 0) {

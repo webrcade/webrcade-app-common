@@ -43,6 +43,27 @@ class FocusGrid {
     return null;
   }
 
+  _spatialEnabled = false;
+  _lastX = {};
+
+  enableSpatialNavigation() {
+    this._spatialEnabled = true;
+  }
+
+  _findSpatialComp(fromRow, fromX, toRow) {
+    const fromActive = fromRow.filter(c => this.checkComp(c));
+    const toActive = toRow.filter(c => this.checkComp(c));
+    if (toActive.length === 0) return null;
+    const fromPos = (fromX + 0.5) / (fromActive.length || 1);
+    let best = toActive[0];
+    let bestDist = Infinity;
+    for (let j = 0; j < toActive.length; j++) {
+      const dist = Math.abs(fromPos - (j + 0.5) / toActive.length);
+      if (dist < bestDist) { bestDist = dist; best = toActive[j]; }
+    }
+    return best;
+  }
+
   moveFocus(dir, comp) {
     const that = this;
     const { comps } = this;
@@ -59,6 +80,27 @@ class FocusGrid {
     if (loc) {
       let y = loc[0], x = loc[1];
       let row = comps[y];
+
+      // Spatial navigation between primary (row 0) and secondary (last row)
+      if (this._spatialEnabled && comps.length > 1) {
+        const lastRow = comps.length - 1;
+        if (dir === GamepadEnum.DOWN && y === 0) {
+          const targetX = this._lastX[lastRow];
+          const targetRow = comps[lastRow];
+          const comp = (targetX !== undefined && this.checkComp(targetRow[targetX]))
+            ? targetRow[targetX]
+            : this._findSpatialComp(comps[0], x, targetRow);
+          if (comp) { this._lastX[0] = x; return comp.current.focus(); }
+        }
+        if (dir === GamepadEnum.UP && y === lastRow) {
+          const targetX = this._lastX[0];
+          const targetRow = comps[0];
+          const comp = (targetX !== undefined && this.checkComp(targetRow[targetX]))
+            ? targetRow[targetX]
+            : this._findSpatialComp(comps[lastRow], x, targetRow);
+          if (comp) { this._lastX[lastRow] = x; return comp.current.focus(); }
+        }
+      }
 
       let comp = null;
       switch (dir) {

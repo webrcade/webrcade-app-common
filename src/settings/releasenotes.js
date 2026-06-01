@@ -1,5 +1,67 @@
 export const ReleaseData = [
 {
+    version: "v0.2.2-p9",
+    date: "May 31, 2026",
+    title: "RetroAchievements & Local File Upload",
+    preRelease: true,
+    changes: [
+      {
+        title: "RetroAchievements",
+        items: [
+          "Added *RetroAchievements* support. Log in via *Settings* > *RetroAchievements* to earn and track achievements while you play.",
+          "Achievements are supported for the following systems: *Atari 2600*, *Atari Lynx*, *Bandai WonderSwan / Color*, *ColecoVision*, *NEC PC Engine / TurboGrafx-16*, *NEC PC-FX*, *NEC SuperGrafx*, *Nintendo NES*, *Nintendo SNES*, *Nintendo 64*, *Nintendo Game Boy*, *Nintendo Game Boy Color*, *Nintendo Game Boy Advance*, *Nintendo DS*, *Nintendo Pokémon Mini*, *Nintendo Virtual Boy*, *Panasonic 3DO*, *Sega SG-1000*, *Sega Master System*, *Sega Genesis*, *Sega CD*, *Sega Game Gear*, *Sega Saturn*, *SNK Neo Geo CD*, *SNK Neo Geo Pocket / Color*, *Sony PlayStation*.",
+          "When a game has achievements, an *Achievements* button will appear in the pause menu where you can see your progress.",
+          "A notification will pop up on screen whenever an achievement is unlocked.",
+          "Supports *softcore* mode, *rich presence*, and an in-game achievement list showing earned and unearned achievements for the current game.",
+          "Note: *Hardcore mode* is not currently supported."
+        ]
+      },
+      {
+        title: "Player",
+        items: [
+          "Reworked pause menu layout and navigation to accommodate *Cheats* and *Achievements* buttons."
+        ]
+      },
+      {
+        title: "Editor: Cloud Storage",
+        items: [
+          "The editor now supports uploading both the feed and game assets (ROMs, disc images, BIOS files, images, etc.) directly to cloud storage. *Note: Cloud storage must be enabled in Settings to use these features.*",
+          "Feeds can now be exported directly to cloud storage.",
+          "Local files and folders can be uploaded via drag-and-drop onto the editor, or via the new *Add Local Files* and *Add Local Folder* options. Dropping a folder will recursively upload all supported files within it.",
+          "The *Add Local Files* dialog shows upload progress for each file, with separate tabs for completed, skipped, and errored files.",
+          "Image fields (thumbnails, backgrounds) now support uploading local files via drag-and-drop or via the field menu.",
+          "File fields (ROMs, BIOS files, etc.) now support uploading local files via drag-and-drop or via the *Add file(s)...* option in the field menu.",
+          "When adding local files, the editor will automatically determine the application type for files that weren't assigned one during upload, where possible."
+        ]
+      },
+      {
+        title: "Editor: General",
+        items: [
+          "Added a *Merge* dialog for combining like items of the same type into a single item, consolidating their discs and media into one entry."
+        ]
+      },
+      {
+        title: "Atari 2600",
+        items: [
+          "Improved audio support for iOS."
+        ]
+      },
+      {
+        title: "DOS",
+        items: [
+          "Added a *CPU Speed* property to DOS game settings in the editor. This allows selecting a CPU speed preset ranging from an 8086 at 4.77 MHz (1980) up to an AMD Athlon at 1.2 GHz (2000), or Maximum Performance. The default uses DOSBox's automatic CPU speed detection."
+        ]
+      },
+      {
+        title: "Nintendo DS",
+        items: [
+          "Added a *Firmware Language* property to Nintendo DS game settings in the editor. This allows specifying the language reported by the DS firmware ((Auto), English, Japanese, French, German, Italian, Spanish). Note: the selected language is only used if the game supports it."
+        ]
+      }
+    ],
+    image: "images/update3.png"
+  },
+{
     version: "v0.2.1",
     date: "April 29, 2026",
     title: "Cheats, Search & Bug Fixes",
