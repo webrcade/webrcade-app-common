@@ -893,6 +893,7 @@ export class RetroAppWrapper extends AppWrapper {
           if (settings.isRaEnabled() && settings.getRaToken()) {
             raConfigContents = (raConfigContents || '') +
               `\ncheevos_enable = true` +
+              `\ncheevos_hardcore_mode_enable = false` +
               `\ncheevos_username = "${settings.getRaUsername()}"` +
               `\ncheevos_token = "${settings.getRaToken()}"\n`;
           }
