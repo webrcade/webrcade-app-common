@@ -1,9 +1,8 @@
 export const ReleaseData = [
 {
-    version: "v0.2.2-p9",
-    date: "May 31, 2026",
+    version: "v0.2.2",
+    date: "June 3, 2026",
     title: "RetroAchievements & Local File Upload",
-    preRelease: true,
     changes: [
       {
         title: "RetroAchievements",

@@ -44,7 +44,7 @@ export class Settings extends BaseSettings {
   HIDE_VERSION = this.PREFIX + "hideVersion";
   DISABLE_GAME_SAVES_AFTER_STATE = this.PREFIX + "disableGameSavesAfterState"
 
-  VERSION = "0.2.2-p9";
+  VERSION = "0.2.2";
 
   async load() {
     LOG.info("Loading settings.");
