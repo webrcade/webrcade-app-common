@@ -2,6 +2,7 @@ import * as LOG from '../log'
 import { isDebug, uuidv4 } from '../util'
 
 const DB_PREFIX = "https://www.dropbox.com/";
+const DB_DL_PREFIX = "https://dl.dropbox.com/";
 const DB_REMAP_PREFIX = "https://dl.dropboxusercontent.com/";
 const GDRIVE_PREFIX ="https://drive.google.com/file/d/";
 const GDRIVE_REMAP_PREFIX = "https://drive.google.com/uc?export=download&id=";
@@ -16,7 +17,7 @@ const remapDropbox = (urlLower, url) => {
   if (urlLower.substring(0, DB_PREFIX.length) === DB_PREFIX) {
     if (urlLower.includes("&rlkey=") || urlLower.includes("?rlkey=")) {
       url = url.replace("dl=0", "dl=1");
-      url = url.replace(DB_PREFIX, "https://dl.dropbox.com/");
+      url = url.replace(DB_PREFIX, DB_REMAP_PREFIX);
       if (isDebug()) {
         LOG.info("Remapped dropbox url: '" + url + "'");
       }
@@ -30,6 +31,25 @@ const remapDropbox = (urlLower, url) => {
       return url;
     }
   }
+
+  if (urlLower.substring(0, DB_DL_PREFIX.length) === DB_DL_PREFIX) {
+    if (urlLower.includes("&rlkey=") || urlLower.includes("?rlkey=")) {
+      url = url.replace("dl=0", "dl=1");
+      url = url.replace(DB_DL_PREFIX, DB_REMAP_PREFIX);
+      if (isDebug()) {
+        LOG.info("Remapped dropbox url: '" + url + "'");
+      }
+      return url;
+    } else {
+      url = DB_REMAP_PREFIX + url.substring(DB_DL_PREFIX.length);
+      url = url.split('?')[0];
+      if (isDebug()) {
+        LOG.info("Remapped dropbox url: '" + url + "'");
+      }
+      return url;
+    }
+  }
+
   return null;
 }
 
