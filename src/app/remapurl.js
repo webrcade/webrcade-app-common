@@ -25,7 +25,7 @@ const remapDropbox = (urlLower, url) => {
       return url;
     } else {
       url = DB_REMAP_PREFIX + url.substring(DB_PREFIX.length);
-      url = url.split('?')[0];
+      url = url.split('?')[0] + "?dl=1";
       if (isDebug()) {
         LOG.info("Remapped dropbox url: '" + url + "'");
       }
@@ -43,7 +43,7 @@ const remapDropbox = (urlLower, url) => {
       return url;
     } else {
       url = DB_REMAP_PREFIX + url.substring(DB_DL_PREFIX.length);
-      url = url.split('?')[0];
+      url = url.split('?')[0] + "?dl=1";
       if (isDebug()) {
         LOG.info("Remapped dropbox url: '" + url + "'");
       }
