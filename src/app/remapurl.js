@@ -3,7 +3,8 @@ import { isDebug, uuidv4 } from '../util'
 
 const DB_PREFIX = "https://www.dropbox.com/";
 const DB_DL_PREFIX = "https://dl.dropbox.com/";
-const DB_REMAP_PREFIX = "https://dl.dropboxusercontent.com/";
+//const DB_REMAP_PREFIX = "https://dl.dropboxusercontent.com/";
+const DB_REMAP_PREFIX = "https://www.dropbox.com/";
 const GDRIVE_PREFIX ="https://drive.google.com/file/d/";
 const GDRIVE_REMAP_PREFIX = "https://drive.google.com/uc?export=download&id=";
 
