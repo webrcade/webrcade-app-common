@@ -381,6 +381,7 @@ export class RetroAppWrapper extends AppWrapper {
 
   sendInput(controller, input, analog0x, analog0y, analog1x, analog1y) {
     if (!this.getDisableInput()) {
+// console.log(controller + " = " + input);
       window.Module._wrc_set_input(
         controller,
         input,
@@ -465,6 +466,7 @@ export class RetroAppWrapper extends AppWrapper {
         preInit: function () {
           const FS = window.FS;
           FS.mkdir('/home/web_user/retroarch');
+          FS.mkdir('/home/web_user/retroarch/astrocde');
           FS.mkdir('/home/web_user/retroarch/system');
           FS.mkdir('/home/web_user/retroarch/userdata');
           FS.mkdir('/home/web_user/retroarch/userdata/system');
@@ -477,6 +479,11 @@ export class RetroAppWrapper extends AppWrapper {
           FS.mkdir('/home/web_user/retroarch/userdata/saves/opera/per_game');
           FS.mkdir('/home/web_user/retroarch/userdata/states');
           FS.mkdir('/home/web_user/retroarch/userdata/shaders');
+          FS.mkdir('/home/web_user/retroarch/userdata/system/mame');
+          // FS.mkdir('/home/web_user/retroarch/system/mame/bios/');
+          // FS.mkdir('/home/web_user/retroarch/system/mame/bios/astrocde');
+          FS.mkdir('/home/web_user/retroarch/userdata/config');
+          FS.mkdir('/home/web_user/retroarch/userdata/config/MAME');
 
           // Write out the sharp bilinear
           const base64ToUint8Array = (b64) => {
@@ -964,7 +971,16 @@ export class RetroAppWrapper extends AppWrapper {
               this.onFrame();
             }
           } catch (e) {
-            console.log(e)
+            if (typeof e === 'number' && window.Module) {
+              try {
+                const info = window.Module.getExceptionMessage(e);
+                console.error('C++ exception: ' + info[0] + ': ' + info[1]);
+              } catch (ex) {
+                console.error('C++ exception ptr: 0x' + e.toString(16));
+              }
+            } else {
+              console.log(e);
+            }
             if (e.status === 1971) {
               // Menu was displayed, should never happen (bad rom?
               if (!this.exiting) {
