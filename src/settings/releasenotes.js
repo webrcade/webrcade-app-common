@@ -1,5 +1,39 @@
 export const ReleaseData = [
 {
+    version: "v0.2.3-p1",
+    date: "June 13, 2026",
+    title: "New Emulators & Editor Enhancements",
+    preRelease: true,
+    changes: [
+      {
+        title: "The following applications (emulators) have been added:",
+        items: [
+          "*Bally Astrocade*",
+          "*Philips CD-i*",
+          "*Apple II*",
+          "*Apple IIGS*"
+        ]
+      },
+      {
+        title: "Editor: Application Selection",
+        items: [
+          "Added a new *Browse...* dialog for selecting applications when editing items. The dialog features a visual grid layout with platform thumbnails, categorized by manufacturer (Atari, Nintendo, Sega, NEC, Sony, SNK, Arcade, Computers, Other).",
+          "The dialog includes both *Alias* and *Specific* tabs. The Alias tab shows platform families (e.g., NES, SNES), while the Specific tab displays individual emulator cores with indicators for feed and global defaults.",
+          "Added a search field to quickly filter platforms and cores across both tabs.",
+          "The dialog now tracks recently selected applications for quick access."
+        ]
+      },
+      {
+        title: "Editor",
+        items: [
+          "When changing an application type, the editor now preserves ROM/media/discs data if both the old and new types support them.",
+          "Applications in the same family (e.g., different Apple II cores) now preserve their properties when switching between them."
+        ]
+      }
+    ],
+    image: "images/update4.png"
+  },
+{
     version: "v0.2.2",
     date: "June 3, 2026",
     title: "RetroAchievements & Local File Upload",

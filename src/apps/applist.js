@@ -53,8 +53,11 @@ const locRetroMednafenVb = isDev() ? `${http}${localIp}:3382` : 'app/retro-medna
 const locRetroMednafenWswan = isDev() ? `${http}${localIp}:3383` : 'app/retro-mednafen-wswan/';
 const locRetroMgba = isDev() ? `${http}${localIp}:3384` : 'app/retro-mgba/';
 const locRetroSameboy = isDev() ? `${http}${localIp}:3385` : 'app/retro-sameboy/';
+const locRetroMameAstrocade = isDev() ? `${http}${localIp}:3387` : 'app/retro-mame-astrocade/';
+const locRetroMameApple2 = isDev() ? `${http}${localIp}:3388` : 'app/retro-mame-apple2/';
+const locRetroMameApple2Gs = isDev() ? `${http}${localIp}:3389` : 'app/retro-mame-apple2gs/';
 //const locRetroPpsspp = isDev() ? `${http}${localIp}:3386` : 'app/retro-ppsspp/';
-// const locRetroSameCdi = isDev() ? `${http}${localIp}:3386` : 'app/retro-samecdi/';
+const locRetroMameCdi = isDev() ? `${http}${localIp}:3386` : 'app/retro-mame-cdi/';
 // const locRetroParallelN64 = isDev() ? `${http}${localIp}:3309` : 'app/retro-n64/';
 const locStandalone = isDev() ? `${http}${localIp}:3080` : 'app/standalone/';
 
@@ -87,6 +90,8 @@ const checkMedia = app => {
 const APP_TYPE_KEYS = /*Object.freeze(*/{
   // Types
   AT5200: "a5200",
+  APPLE2: "apple2",
+  APPLE2GS: "apple2gs",
   BEETLE_PSX: "beetle-psx",
   BEETLE_PCFX: "beetle-pcfx",
   COLEM: "colem",
@@ -120,6 +125,9 @@ const APP_TYPE_KEYS = /*Object.freeze(*/{
   RETRO_GENPLUSGX_SEGACD: "retro-genplusgx-segacd",
   RETRO_GENPLUSGX_SG: "retro-genplusgx-sg",
   RETRO_GENPLUSGX_SMS: "retro-genplusgx-sms",
+  RETRO_MAME_ASTROCADE: "retro-mame-astrocade",
+  RETRO_MAME_APPLE2: "retro-mame-apple2",
+  RETRO_MAME_APPLE2GS: "retro-mame-apple2gs",
   RETRO_MEDNAFEN_LYNX: "retro-mednafen-lynx",
   RETRO_MEDNAFEN_NGC: "retro-mednafen-npc",
   RETRO_MEDNAFEN_NGP: "retro-mednafen-ngp",
@@ -144,8 +152,9 @@ const APP_TYPE_KEYS = /*Object.freeze(*/{
   RETRO_DOSBOX_PURE: "retro-dosbox-pure",
   RETRO_SAMEBOY_GB: "retro-sameboy-gb",
   RETRO_SAMEBOY_GBC: "retro-sameboy-gbc",
-  // RETRO_SAME_CDI: "retro-same-cdi",
+  RETRO_MAME_CDI: "retro-mame-cdi",
   // RETRO_YABAUSE: "retro-yabause",
+  ASTROCADE: "astrocade",
   SCUMMVM: "scummvm",
   SNES9X: "snes9x",
   TYRQUAKE: "tyrquake",
@@ -158,7 +167,7 @@ const APP_TYPE_KEYS = /*Object.freeze(*/{
   ARCADE: "arcade",
   ARCADE_KONAMI: "arcade-konami",
   ARCADE_CAPCOM: "arcade-capcom",
-  // CDI: "cdi",
+  CDI: "cdi",
   COLECO: "coleco",
   DOOM: "doom",
   GBA: "gba",
@@ -339,6 +348,27 @@ const types = [{
       zoomLevel: 0,
     }
   }, {
+    key: APP_TYPE_KEYS.RETRO_MAME_ASTROCADE,
+    alias: APP_TYPE_KEYS.ASTROCADE,
+    name: 'Bally Astrocade',
+    coreName: 'Libretro MAME Astrocade',
+    location: locRetroMameAstrocade,
+    thumbnail: "images/app/astrocade-thumb.png",
+    background: "images/app/astrocade-background.png",
+    description: "A Libretro core based on MAME for emulating the Bally Astrocade home console. Released in 1977, the Astrocade featured a custom Z80-based design with a unique video and sound chipset capable of impressive graphics for its era. This core supports the full library of commercial cartridges and preserves the system's distinct hand controller with its integrated joystick, paddle, and keypad.",
+    validate: checkRom,
+    extensions: [],
+    addProps: (feedProps, outProps) => {
+      const bios = feedProps.astrocade_bios;
+      if (bios) {
+        outProps.astrocade_bios = bios;
+      }
+    },
+    defaults: {
+      rom: "",
+      zoomLevel: 0,
+    }
+  }, {
     key: APP_TYPE_KEYS.RETRO_STELLA,
     alias: APP_TYPE_KEYS.A2600,
     name: 'Atari 2600',
@@ -390,6 +420,55 @@ const types = [{
       disableTrueDriveEmulation: false,
       ramExpansion: 0,
       mappings: {},
+    }
+  }, {
+    key: APP_TYPE_KEYS.RETRO_MAME_APPLE2,
+    alias: APP_TYPE_KEYS.APPLE2,
+    name: 'Apple II',
+    coreName: 'Libretro MAME Apple II',
+    location: locRetroMameApple2,
+    thumbnail: "images/app/apple2-thumb.png",
+    background: "images/app/apple2-background.png",
+    description: "The Apple IIe (Apple II Enhanced) was one of the most influential personal computers ever made, released by Apple in 1983. It boasted an enormous library of games and educational software, including classics like Oregon Trail, Prince of Persia, Karateka, Lode Runner, Ultima, and Wizardry. This core uses MAME to emulate the Apple IIe with high accuracy, supporting disk images in DSK, WOZ, and ProDOS formats.",
+    validate: checkMedia,
+    family: 'apple2',
+    extensions: ['dsk', 'woz', 'po', 'do'], // TODO: add .nib — requires checkHeader disambiguation against C64 .nib (Apple II GCR prologues D5 AA 96 and D5 AA AD each >100 times)
+    addProps: (feedProps, outProps) => {
+      const bios = feedProps.apple2_bios;
+      if (bios) {
+        outProps.apple2_bios = bios;
+      }
+    },
+    defaults: {
+      uid: "",
+      media: [],
+      zoomLevel: 0,
+    }
+  }, {
+    key: APP_TYPE_KEYS.RETRO_MAME_APPLE2GS,
+    alias: APP_TYPE_KEYS.APPLE2GS,
+    name: 'Apple IIGS',
+    coreName: 'Libretro MAME Apple IIGS',
+    location: locRetroMameApple2Gs,
+    thumbnail: "images/app/apple2gs-thumb.png",
+    background: "images/app/apple2gs-background.png",
+    description: "The Apple IIGS was the most powerful member of the Apple II family, released in 1986. Featuring a 65C816 processor, enhanced graphics, and a rich sound chip, it was capable of running the full Apple II software library while adding its own GS-exclusive titles. This core uses MAME to emulate the Apple IIGS, supporting 5.25\" floppy disks, 3.5\" disks, and hard drive images.",
+    validate: checkMedia,
+    family: 'apple2',
+    extensions: ['2mg', '2meg', 'hdv'],
+    addProps: (feedProps, outProps) => {
+      const bios = feedProps.apple2gs_bios;
+      if (bios) {
+        outProps.apple2gs_bios = bios;
+      }
+    },
+    defaults: {
+      uid: "",
+      media: [],
+      zoomLevel: 0,
+      cpuSpeed: 0,
+      enable2nd525: false,
+      enable2nd35: false,
     }
   }, {
     key: APP_TYPE_KEYS.RETRO_STELLA_LATEST,
@@ -1335,30 +1414,31 @@ const types = [{
       firmwareLanguage: 0,
       cheat: ""
     }
-  // }, {
-  //   key: APP_TYPE_KEYS.RETRO_SAME_CDI,
-  //   alias: APP_TYPE_KEYS.CDI,
-  //   name: 'Philips CDI',
-  //   shortName: 'Philips CDI',
-  //   coreName: 'Libretro SameCDI',
-  //   location: locRetroSameCdi,
-  //   background: 'images/app/neogeocd-background.png',
-  //   thumbnail: 'images/app/neogeocd-thumb.png',
-  //   description: "TODO",
-  //   validate: checkDiscs,
-  //   extensions: [],
-  //   slowExit: true,
-  //   addProps: (feedProps, outProps) => {
-  //     const bios = feedProps.philipscdi_bios;
-  //     if (bios) {
-  //       outProps.philipscdi_bios = bios;
-  //     }
-  //   },
-  //   defaults: {
-  //     discs: [],
-  //     uid: "",
-  //     zoomLevel: 0,
-  //   }
+  }, {
+    key: APP_TYPE_KEYS.RETRO_MAME_CDI,
+    alias: APP_TYPE_KEYS.CDI,
+    name: 'Philips CD-i',
+    shortName: 'Philips CD-i',
+    coreName: 'Libretro MAME CD-i',
+    location: locRetroMameCdi,
+    background: 'images/app/cdi-background.png',
+    thumbnail: 'images/app/cdi-thumb.png',
+    description: "The Philips CD-i (Compact Disc Interactive) was a multimedia entertainment system released in 1991 that combined video games, educational software, music, and interactive video on CD-ROM. Known for its unique library of titles and full-motion video capabilities, it was one of the earliest CD-based home entertainment platforms.",
+    validate: checkDiscs,
+    extensions: [],
+      ambiguousExtensions: ['.chd'],
+    slowExit: true,
+    addProps: (feedProps, outProps) => {
+      const bios = feedProps.philipscdi_bios;
+      if (bios) {
+        outProps.philipscdi_bios = bios;
+      }
+    },
+    defaults: {
+      discs: [],
+      uid: "",
+      zoomLevel: 0,
+    }
   }, {
     key: APP_TYPE_KEYS.SCUMMVM,
     alias: APP_TYPE_KEYS.SCUMM,
@@ -1455,12 +1535,13 @@ if (enable5200) {
 // addAlias(types, APP_TYPE_KEYS.A2600, APP_TYPE_KEYS.RETRO_STELLA);
 addAlias(types, APP_TYPE_KEYS.A2600, APP_TYPE_KEYS.RETRO_STELLA_LATEST);
 addAlias(types, APP_TYPE_KEYS.A7800, APP_TYPE_KEYS.JS7800);
+addAlias(types, APP_TYPE_KEYS.APPLE2, APP_TYPE_KEYS.RETRO_MAME_APPLE2);
 addAlias(types, APP_TYPE_KEYS.ARCADE, APP_TYPE_KEYS.FBNEO_ARCADE);
 addAlias(types, APP_TYPE_KEYS.ARCADE_CAPCOM, APP_TYPE_KEYS.FBNEO_CAPCOM);
 addAlias(types, APP_TYPE_KEYS.ARCADE_KONAMI, APP_TYPE_KEYS.FBNEO_KONAMI);
 addAlias(types, APP_TYPE_KEYS.COLECO, APP_TYPE_KEYS.COLEM);
 addAlias(types, APP_TYPE_KEYS.COMMODORE_C64, APP_TYPE_KEYS.RETRO_COMMODORE_C64);
-// addAlias(types, APP_TYPE_KEYS.CDI, APP_TYPE_KEYS.RETRO_SAME_CDI);
+addAlias(types, APP_TYPE_KEYS.CDI, APP_TYPE_KEYS.RETRO_MAME_CDI);
 addAlias(types, APP_TYPE_KEYS.DOS, APP_TYPE_KEYS.RETRO_DOSBOX_PURE);
 addAlias(types, APP_TYPE_KEYS.GBA, APP_TYPE_KEYS.RETRO_MGBA);
 // addAlias(types, APP_TYPE_KEYS.GBA, APP_TYPE_KEYS.RETRO_MGBA);
@@ -1493,6 +1574,8 @@ addAlias(types, APP_TYPE_KEYS.THREEDO, APP_TYPE_KEYS.RETRO_OPERA);
 addAlias(types, APP_TYPE_KEYS.VB, APP_TYPE_KEYS.RETRO_MEDNAFEN_VB);
 addAlias(types, APP_TYPE_KEYS.WSC, APP_TYPE_KEYS.RETRO_MEDNAFEN_WSC);
 addAlias(types, APP_TYPE_KEYS.WS, APP_TYPE_KEYS.RETRO_MEDNAFEN_WS);
+addAlias(types, APP_TYPE_KEYS.ASTROCADE, APP_TYPE_KEYS.RETRO_MAME_ASTROCADE);
+addAlias(types, APP_TYPE_KEYS.APPLE2GS, APP_TYPE_KEYS.RETRO_MAME_APPLE2GS);
 
 const APP_TYPES = types;
 

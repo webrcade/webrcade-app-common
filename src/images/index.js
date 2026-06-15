@@ -173,6 +173,10 @@ const DosBackground = resolvePath("images/app/dos-background.png");
 const NdsBackground = resolvePath("images/app/nds-background.png");
 const PokeminiBackground = resolvePath("images/app/pokemini-background.png");
 const SaturnBackground = resolvePath("images/app/saturn-background.png");
+const AstrocadeKeypad = resolvePath("images/app/astrocade/keypad.png");
+const AstrocadeBackground = resolvePath("images/app/astrocade-background.png");
+const Apple2Background = resolvePath("images/app/apple2-background.png");
+const CdiBackground = resolvePath("images/app/cdi-background.png");
 
 export {
   AddCircleBlackImage,
@@ -339,6 +343,10 @@ export {
   MicrophoneImage,
   BlurImage,
   BoltWhiteImage,
+  AstrocadeKeypad,
+  AstrocadeBackground,
+  Apple2Background,
+  CdiBackground,
 
   resolvePath as resolveImagePath
 }
