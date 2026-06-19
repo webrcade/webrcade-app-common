@@ -174,8 +174,10 @@ class WrcDropbox {
 
   async downloadFile(path) {
     const dbx = await this.getDropbox();
-    const result = await dbx.filesDownload({path: path});
-    return result.result.fileBlob;
+    const linkResult = await dbx.filesGetTemporaryLink({path: path});
+    const response = await fetch(linkResult.result.link);
+    if (!response.ok) throw new Error(`Dropbox download failed: ${response.status}`);
+    return await response.blob();
   }
 
   httpHeaderSafeJson(v) {
