@@ -196,7 +196,7 @@ class WrcDropbox {
     if (file.size < UPLOAD_FILE_SIZE_LIMIT) {
       if (onProgress) { // Use XHR so progress events fire
         const token = dbx.auth.getAccessToken();
-        await new Promise((resolve, reject) => {
+        const xhrUpload = () => new Promise((resolve, reject) => {
           const xhr = new XMLHttpRequest();
           xhr.open('POST', 'https://content.dropboxapi.com/2/files/upload');
           xhr.setRequestHeader('Authorization',   `Bearer ${token}`);
@@ -215,6 +215,17 @@ class WrcDropbox {
           xhr.onabort = () => reject(new Error('Upload cancelled'));
           xhr.send(file);
         });
+        // Retry on CORS preflight failures — failed preflights are not cached by browsers
+        // so a retry will trigger a fresh OPTIONS request which usually succeeds
+        for (let attempt = 1; attempt <= 5; attempt++) {
+          try {
+            await xhrUpload();
+            break;
+          } catch (e) {
+            if (attempt === 5) throw e;
+            await new Promise(r => setTimeout(r, 500 * attempt));
+          }
+        }
         return true;
       } else { // No progress needed — use the SDK
         await dbx.filesUpload({
