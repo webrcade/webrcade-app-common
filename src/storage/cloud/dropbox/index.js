@@ -223,16 +223,26 @@ class WrcDropbox {
             break;
           } catch (e) {
             if (attempt === 5) throw e;
+            LOG.error(`Upload attempt ${attempt} failed, retrying in ${500 * attempt}ms: ${e.message}`);
             await new Promise(r => setTimeout(r, 500 * attempt));
           }
         }
         return true;
       } else { // No progress needed — use the SDK
-        await dbx.filesUpload({
-          path: file.name,
-          contents: file,
-          mode: 'overwrite'
-        });
+        for (let attempt = 1; attempt <= 5; attempt++) {
+          try {
+            await dbx.filesUpload({
+              path: file.name,
+              contents: file,
+              mode: 'overwrite'
+            });
+            break;
+          } catch (e) {
+            if (attempt === 5) throw e;
+            LOG.error(`Upload attempt ${attempt} failed, retrying in ${500 * attempt}ms: ${e.message}`);
+            await new Promise(r => setTimeout(r, 500 * attempt));
+          }
+        }
         return true;
       }
     } else { // File is bigger than 150 Mb - use filesUploadSession* API
