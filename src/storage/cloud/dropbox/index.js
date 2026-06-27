@@ -174,8 +174,10 @@ class WrcDropbox {
 
   async downloadFile(path) {
     const dbx = await this.getDropbox();
-    const result = await dbx.filesDownload({path: path});
-    return result.result.fileBlob;
+    const linkResult = await dbx.filesGetTemporaryLink({path: path});
+    const response = await fetch(linkResult.result.link);
+    if (!response.ok) throw new Error(`Dropbox download failed: ${response.status}`);
+    return await response.blob();
   }
 
   httpHeaderSafeJson(v) {
@@ -194,7 +196,7 @@ class WrcDropbox {
     if (file.size < UPLOAD_FILE_SIZE_LIMIT) {
       if (onProgress) { // Use XHR so progress events fire
         const token = dbx.auth.getAccessToken();
-        await new Promise((resolve, reject) => {
+        const xhrUpload = () => new Promise((resolve, reject) => {
           const xhr = new XMLHttpRequest();
           xhr.open('POST', 'https://content.dropboxapi.com/2/files/upload');
           xhr.setRequestHeader('Authorization',   `Bearer ${token}`);
@@ -213,13 +215,34 @@ class WrcDropbox {
           xhr.onabort = () => reject(new Error('Upload cancelled'));
           xhr.send(file);
         });
+        // Retry on CORS preflight failures — failed preflights are not cached by browsers
+        // so a retry will trigger a fresh OPTIONS request which usually succeeds
+        for (let attempt = 1; attempt <= 5; attempt++) {
+          try {
+            await xhrUpload();
+            break;
+          } catch (e) {
+            if (attempt === 5) throw e;
+            LOG.error(`Upload attempt ${attempt} failed, retrying in ${500 * attempt}ms: ${e.message}`);
+            await new Promise(r => setTimeout(r, 500 * attempt));
+          }
+        }
         return true;
       } else { // No progress needed — use the SDK
-        await dbx.filesUpload({
-          path: file.name,
-          contents: file,
-          mode: 'overwrite'
-        });
+        for (let attempt = 1; attempt <= 5; attempt++) {
+          try {
+            await dbx.filesUpload({
+              path: file.name,
+              contents: file,
+              mode: 'overwrite'
+            });
+            break;
+          } catch (e) {
+            if (attempt === 5) throw e;
+            LOG.error(`Upload attempt ${attempt} failed, retrying in ${500 * attempt}ms: ${e.message}`);
+            await new Promise(r => setTimeout(r, 500 * attempt));
+          }
+        }
         return true;
       }
     } else { // File is bigger than 150 Mb - use filesUploadSession* API

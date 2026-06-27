@@ -130,6 +130,8 @@ const EightKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/8_K
 const NineKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/9_Key_Dark.png");
 const MinusKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/Minus_Key_Dark.png");
 const EqualsKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/Equals_Key_Dark.png");
+const SlashKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/Slash_Key_Dark.png");
+const BackspaceAltKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/Backspace_Alt_Key_Dark.png");
 
 const F5Key = resolvePath("images/common/controller/Keyboard & Mouse/Dark/F5_Key_Dark.png");
 const F7Key = resolvePath("images/common/controller/Keyboard & Mouse/Dark/F7_Key_Dark.png");
@@ -289,6 +291,8 @@ export {
   NineKey,
   MinusKey,
   EqualsKey,
+  SlashKey,
+  BackspaceAltKey,
   NesBackground,
   SnesBackground,
   GbBackground,

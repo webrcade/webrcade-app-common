@@ -91,7 +91,6 @@ const APP_TYPE_KEYS = /*Object.freeze(*/{
   // Types
   AT5200: "a5200",
   APPLE2: "apple2",
-  APPLE2GS: "apple2gs",
   BEETLE_PSX: "beetle-psx",
   BEETLE_PCFX: "beetle-pcfx",
   COLEM: "colem",
@@ -127,7 +126,6 @@ const APP_TYPE_KEYS = /*Object.freeze(*/{
   RETRO_GENPLUSGX_SMS: "retro-genplusgx-sms",
   RETRO_MAME_ASTROCADE: "retro-mame-astrocade",
   RETRO_MAME_APPLE2: "retro-mame-apple2",
-  RETRO_MAME_APPLE2GS: "retro-mame-apple2gs",
   RETRO_MEDNAFEN_LYNX: "retro-mednafen-lynx",
   RETRO_MEDNAFEN_NGC: "retro-mednafen-npc",
   RETRO_MEDNAFEN_NGP: "retro-mednafen-ngp",
@@ -367,6 +365,11 @@ const types = [{
     defaults: {
       rom: "",
       zoomLevel: 0,
+      descriptions: {},
+      mappings: {},
+      analogDirection: 0,
+      analogInvert: false,
+      controlMode: 0,
     }
   }, {
     key: APP_TYPE_KEYS.RETRO_STELLA,
@@ -443,32 +446,7 @@ const types = [{
       uid: "",
       media: [],
       zoomLevel: 0,
-    }
-  }, {
-    key: APP_TYPE_KEYS.RETRO_MAME_APPLE2GS,
-    alias: APP_TYPE_KEYS.APPLE2GS,
-    name: 'Apple IIGS',
-    coreName: 'Libretro MAME Apple IIGS',
-    location: locRetroMameApple2Gs,
-    thumbnail: "images/app/apple2gs-thumb.png",
-    background: "images/app/apple2gs-background.png",
-    description: "The Apple IIGS was the most powerful member of the Apple II family, released in 1986. Featuring a 65C816 processor, enhanced graphics, and a rich sound chip, it was capable of running the full Apple II software library while adding its own GS-exclusive titles. This core uses MAME to emulate the Apple IIGS, supporting 5.25\" floppy disks, 3.5\" disks, and hard drive images.",
-    validate: checkMedia,
-    family: 'apple2',
-    extensions: ['2mg', '2meg', 'hdv'],
-    addProps: (feedProps, outProps) => {
-      const bios = feedProps.apple2gs_bios;
-      if (bios) {
-        outProps.apple2gs_bios = bios;
-      }
-    },
-    defaults: {
-      uid: "",
-      media: [],
-      zoomLevel: 0,
-      cpuSpeed: 0,
-      enable2nd525: false,
-      enable2nd35: false,
+      mappings: {},
     }
   }, {
     key: APP_TYPE_KEYS.RETRO_STELLA_LATEST,
@@ -1412,6 +1390,9 @@ const types = [{
       dualAnalog: false,
       microphone: false,
       firmwareLanguage: 0,
+      homebrewSdCard: false,
+      sdCardArchive: "",
+      sdCardPath: "",
       cheat: ""
     }
   }, {
@@ -1575,7 +1556,6 @@ addAlias(types, APP_TYPE_KEYS.VB, APP_TYPE_KEYS.RETRO_MEDNAFEN_VB);
 addAlias(types, APP_TYPE_KEYS.WSC, APP_TYPE_KEYS.RETRO_MEDNAFEN_WSC);
 addAlias(types, APP_TYPE_KEYS.WS, APP_TYPE_KEYS.RETRO_MEDNAFEN_WS);
 addAlias(types, APP_TYPE_KEYS.ASTROCADE, APP_TYPE_KEYS.RETRO_MAME_ASTROCADE);
-addAlias(types, APP_TYPE_KEYS.APPLE2GS, APP_TYPE_KEYS.RETRO_MAME_APPLE2GS);
 
 const APP_TYPES = types;
 
@@ -1751,6 +1731,62 @@ const enableExperimentalApps = (b) => {
       }
     });
     addAlias(types, APP_TYPE_KEYS.SATURN, APP_TYPE_KEYS.RETRO_YABAUSE);
+  }
+
+  //
+  // Remove Apple IIGS
+  //
+
+  clone = [...APP_TYPES];
+  APP_TYPES.length = 0;
+  for (let i = 0; i < clone.length; i++) {
+    const t = clone[i];
+    if ((!APP_TYPE_KEYS.RETRO_MAME_APPLE2GS || t.key !== APP_TYPE_KEYS.RETRO_MAME_APPLE2GS) &&
+        (!APP_TYPE_KEYS.APPLE2GS || t.key !== APP_TYPE_KEYS.APPLE2GS)) {
+      APP_TYPES.push(t);
+    }
+  }
+
+  delete APP_TYPE_KEYS.RETRO_MAME_APPLE2GS;
+  delete APP_TYPE_KEYS.APPLE2GS;
+
+  //
+  // Add Apple IIGS
+  //
+
+  if (b) {
+    APP_TYPE_KEYS.RETRO_MAME_APPLE2GS = "retro-mame-apple2gs";
+    APP_TYPE_KEYS.APPLE2GS = "apple2gs";
+
+    APP_TYPES.push({
+      key: APP_TYPE_KEYS.RETRO_MAME_APPLE2GS,
+      alias: APP_TYPE_KEYS.APPLE2GS,
+      name: 'Apple IIGS',
+      coreName: 'Libretro MAME Apple IIGS',
+      location: locRetroMameApple2Gs,
+      thumbnail: "images/app/apple2gs-thumb.png",
+      background: "images/app/apple2gs-background.png",
+      description: "The Apple IIGS was the most powerful member of the Apple II family, released in 1986. Featuring a 65C816 processor, enhanced graphics, and a rich sound chip, it was capable of running the full Apple II software library while adding its own GS-exclusive titles. This core uses MAME to emulate the Apple IIGS, supporting 5.25\" floppy disks, 3.5\" disks, and hard drive images.",
+      validate: checkMedia,
+      family: 'apple2',
+      extensions: ['2mg', '2meg', 'hdv'],
+      addProps: (feedProps, outProps) => {
+        const bios = feedProps.apple2gs_bios;
+        if (bios) {
+          outProps.apple2gs_bios = bios;
+        }
+      },
+      defaults: {
+        uid: "",
+        media: [],
+        zoomLevel: 0,
+        cpuSpeed: 0,
+        enable2nd525: false,
+        enable2nd35: false,
+        mappings: {},
+      }
+    });
+    addAlias(APP_TYPES, APP_TYPE_KEYS.APPLE2GS, APP_TYPE_KEYS.RETRO_MAME_APPLE2GS);
   }
 }
 
