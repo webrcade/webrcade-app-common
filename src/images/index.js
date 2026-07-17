@@ -130,6 +130,8 @@ const EightKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/8_K
 const NineKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/9_Key_Dark.png");
 const MinusKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/Minus_Key_Dark.png");
 const EqualsKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/Equals_Key_Dark.png");
+const SlashKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/Slash_Key_Dark.png");
+const BackspaceAltKey = resolvePath("images/common/controller/Keyboard & Mouse/Dark/Backspace_Alt_Key_Dark.png");
 
 const F5Key = resolvePath("images/common/controller/Keyboard & Mouse/Dark/F5_Key_Dark.png");
 const F7Key = resolvePath("images/common/controller/Keyboard & Mouse/Dark/F7_Key_Dark.png");
@@ -173,6 +175,10 @@ const DosBackground = resolvePath("images/app/dos-background.png");
 const NdsBackground = resolvePath("images/app/nds-background.png");
 const PokeminiBackground = resolvePath("images/app/pokemini-background.png");
 const SaturnBackground = resolvePath("images/app/saturn-background.png");
+const AstrocadeKeypad = resolvePath("images/app/astrocade/keypad.png");
+const AstrocadeBackground = resolvePath("images/app/astrocade-background.png");
+const Apple2Background = resolvePath("images/app/apple2-background.png");
+const CdiBackground = resolvePath("images/app/cdi-background.png");
 
 export {
   AddCircleBlackImage,
@@ -285,6 +291,8 @@ export {
   NineKey,
   MinusKey,
   EqualsKey,
+  SlashKey,
+  BackspaceAltKey,
   NesBackground,
   SnesBackground,
   GbBackground,
@@ -339,6 +347,10 @@ export {
   MicrophoneImage,
   BlurImage,
   BoltWhiteImage,
+  AstrocadeKeypad,
+  AstrocadeBackground,
+  Apple2Background,
+  CdiBackground,
 
   resolvePath as resolveImagePath
 }

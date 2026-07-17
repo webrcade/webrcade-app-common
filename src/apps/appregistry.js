@@ -104,6 +104,12 @@ class AppRegistry {
     return appType.alias;
   }
 
+  getFamily(typeName) {
+    const { APP_TYPES } = this;
+    const appType = APP_TYPES[typeName];
+    return appType ? appType.family : undefined;
+  }
+
   getLocation(app, context, feedProps, otherProps) {
     const { RP_CONTEXT, RP_DEBUG, RP_PROPS } = AppProps;
     const { props } = app;

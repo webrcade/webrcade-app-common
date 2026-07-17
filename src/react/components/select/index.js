@@ -10,6 +10,52 @@ import {
 
 import styles from './style.scss'
 
+function MarqueeText({ children, active }) {
+  const outerRef = React.useRef(null);
+  const innerRef = React.useRef(null);
+  const animRef  = React.useRef(null);
+
+  React.useLayoutEffect(() => {
+    const outer = outerRef.current;
+    const inner = innerRef.current;
+    if (animRef.current) { animRef.current.cancel(); animRef.current = null; }
+    if (!outer || !inner || !active) return;
+    const overflow = inner.offsetWidth - outer.clientWidth;
+    if (overflow <= 1) return;
+    const scrollSec = overflow / 40;
+    const pauseSec  = 1.5;
+    const totalSec  = 2 * pauseSec + 2 * scrollSec;
+    const p1 = pauseSec / totalSec;
+    const p2 = (pauseSec + scrollSec) / totalSec;
+    const p3 = (2 * pauseSec + scrollSec) / totalSec;
+    animRef.current = inner.animate([
+      { transform: 'translateX(0)',               offset: 0  },
+      { transform: 'translateX(0)',               offset: p1 },
+      { transform: `translateX(-${overflow}px)`,  offset: p2 },
+      { transform: `translateX(-${overflow}px)`,  offset: p3 },
+      { transform: 'translateX(0)',               offset: 1  },
+    ], { duration: totalSec * 1000, iterations: Infinity, easing: 'linear' });
+  }, [children, active]);
+
+  return (
+    <span ref={outerRef} style={{ display: 'block', overflow: 'hidden', whiteSpace: 'nowrap' }}>
+      <span
+        ref={innerRef}
+        style={active ? {
+          display: 'inline-block',
+        } : {
+          display: 'block',
+          overflow: 'hidden',
+          whiteSpace: 'nowrap',
+          textOverflow: 'ellipsis',
+        }}
+      >
+        {children}
+      </span>
+    </span>
+  );
+}
+
 class Arrow extends Component {
   render() {
     const { imgSrc, onClick, focused, disabled } = this.props;
@@ -187,7 +233,7 @@ export class Select extends Component {
             minWidth: finalWidth
           }}
         >
-          {options[i].label}
+          <MarqueeText active={i === idx}>{options[i].label}</MarqueeText>
         </div>
       )
     }

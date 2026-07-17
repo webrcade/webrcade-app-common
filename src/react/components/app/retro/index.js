@@ -134,12 +134,9 @@ export class WebrcadeRetroApp extends WebrcadeApp {
     const BIOS_MAP = biosMap ? biosMap : this.getBiosMap();
     const ALT_BIOS_MAP = alternateBiosMap ? alternateBiosMap : this.getAlternateBiosMap();
 
-    for (let i = 0; i < bios.length; i++) {
-      const biosUrl = bios[i];
-      if (biosUrl.trim().length === 0) {
-        continue;
-      }
+    const validUrls = bios.filter(url => url.trim().length > 0);
 
+    const fetchOne = async (biosUrl) => {
       const fad = new FetchAppData(biosUrl);
       const res = await fad.fetch();
       const blob = await res.blob();
@@ -153,7 +150,31 @@ export class WebrcadeRetroApp extends WebrcadeApp {
         name = ALT_BIOS_MAP[md5Hash];
       }
       if (name) {
-        biosBuffers[name] = new Uint8Array(await blob.arrayBuffer());
+        return { name, buffer: new Uint8Array(await blob.arrayBuffer()) };
+      }
+      return null;
+    };
+
+    if (validUrls.length > 1) {
+      // Parallel fetch for multiple BIOS files
+      const results = await Promise.allSettled(validUrls.map(fetchOne));
+      for (let i = 0; i < results.length; i++) {
+        const result = results[i];
+        if (result.status === 'fulfilled' && result.value) {
+          biosBuffers[result.value.name] = result.value.buffer;
+        } else if (result.status === 'rejected') {
+          console.error(`[BIOS] Failed to fetch ${validUrls[i]}:`, result.reason);
+        } else if (result.status === 'fulfilled' && !result.value) {
+          console.warn(`[BIOS] File not found in BIOS map: ${validUrls[i]}`);
+        }
+      }
+    } else {
+      // Sequential for single BIOS — preserve existing behavior exactly
+      for (const biosUrl of validUrls) {
+        const result = await fetchOne(biosUrl);
+        if (result) {
+          biosBuffers[result.name] = result.buffer;
+        }
       }
     }
 

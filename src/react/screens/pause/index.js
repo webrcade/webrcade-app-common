@@ -82,7 +82,7 @@ export class PauseScreen extends Screen {
     const { showSettingsScreen } = this.state;
 
     const buttons = [
-      <div className={screenStyles['screen-transparency']} />,
+      <div className={screenStyles['screen-transparency-dark']} />,
       <div className={styles['pause-screen']}>
         <div className={styles['pause-screen-inner'] + " " + screenStyles.screen}>
           <div className={styles['pause-screen-inner-info']}>

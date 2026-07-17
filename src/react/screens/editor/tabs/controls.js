@@ -68,6 +68,8 @@ import {
   NineKey,
   MinusKey,
   EqualsKey,
+  SlashKey,
+  BackspaceAltKey,
   F5Key,
   F7Key
 } from '../../../../images'
@@ -215,6 +217,10 @@ export class ControlsTab extends EditorTab {
         return MinusKey;
       case 'Equal':
         return EqualsKey;
+      case 'Slash':
+        return SlashKey;
+      case 'Backspace':
+        return BackspaceAltKey;
       case 'KeyF5':
         return F5Key;
       case 'KeyF7':

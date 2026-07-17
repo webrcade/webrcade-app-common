@@ -1,5 +1,40 @@
 export const ReleaseData = [
 {
+    version: "v0.2.3",
+    date: "July 18, 2026",
+    title: "New Emulators & Editor Enhancements",
+    changes: [
+      {
+        title: "The following applications (emulators) have been added:",
+        items: [
+          "*Bally Astrocade*",
+          "*Philips CD-i*",
+          "*Apple II*",
+          "*Apple IIGS*"
+        ]
+      },
+      {
+        title: "Nintendo DS",
+        items: [
+          "Added *Homebrew SD Card* support. When enabled, the emulator provides an SD card via DLDI patching, allowing homebrew games to read and write files. An optional *SD Card Archive* (zip file) and *SD Card Path* can be specified to pre-populate the card with files at startup."
+        ]
+      },
+      {
+        title: "Editor: Application Selection",
+        items: [
+          "Added a new *Browse...* dialog for selecting applications when editing items. The dialog features a visual grid layout with platform thumbnails, categorized by manufacturer (Atari, Nintendo, Sega, NEC, Sony, SNK, Arcade, Computers, Other)."
+        ]
+      },
+      {
+        title: "Cloud Storage (Dropbox)",
+        items: [
+          "Fixed failures that could occur when downloading or uploading files."
+        ]
+      }
+    ],
+    image: "images/update4.png"
+  },
+{
     version: "v0.2.2",
     date: "June 3, 2026",
     title: "RetroAchievements & Local File Upload",
