@@ -1,9 +1,8 @@
 export const ReleaseData = [
 {
-    version: "v0.2.3-p2",
-    date: "June 23, 2026",
+    version: "v0.2.3",
+    date: "July 18, 2026",
     title: "New Emulators & Editor Enhancements",
-    preRelease: true,
     changes: [
       {
         title: "The following applications (emulators) have been added:",
