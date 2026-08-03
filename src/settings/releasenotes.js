@@ -1,5 +1,36 @@
 export const ReleaseData = [
 {
+    version: "v0.2.4-p1",
+    preRelease: true,
+    date: "August 2, 2026",
+    title: "Sega 32X and 32X CD Support, Enhancements & Bug Fixes",
+    changes: [
+      {
+        title: "The following applications (emulators) have been added:",
+        items: [
+          "*Sega 32X*",
+          "*Sega 32X CD*"
+        ]
+      },
+      {
+        title: "Apple II / Apple IIGS",
+        items: [
+          "You can now map the *D-pad* to a keyboard key or gamepad button from the *Feed Editor*.",
+          "*Open Apple* and *Closed Apple* on the virtual keyboard now work like *Shift*/*Control*: tap to hold, tap again to release.",
+          "Fixed an issue where mapping the *A* or *B* button to a keyboard key had no effect.",
+          "Fixed *Apple IIGS* 2nd drive switches always appearing off when reopening an item in the editor."
+        ]
+      },
+      {
+        title: "Improvements",
+        items: [
+          "The on-screen keyboard/gamepad toggle button now appears even when the first keys pressed are mapped to the joystick (Apple II, Apple IIGS, Commodore 8-bit)."
+        ]
+      }
+    ],
+    image: "images/update5.png"
+},
+{
     version: "v0.2.3",
     date: "July 18, 2026",
     title: "New Emulators & Editor Enhancements",

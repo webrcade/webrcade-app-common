@@ -58,6 +58,7 @@ const locRetroMameApple2 = isDev() ? `${http}${localIp}:3388` : 'app/retro-mame-
 const locRetroMameApple2Gs = isDev() ? `${http}${localIp}:3389` : 'app/retro-mame-apple2gs/';
 //const locRetroPpsspp = isDev() ? `${http}${localIp}:3386` : 'app/retro-ppsspp/';
 const locRetroMameCdi = isDev() ? `${http}${localIp}:3386` : 'app/retro-mame-cdi/';
+const locRetroPicodrive32x = isDev() ? `${http}${localIp}:3390` : 'app/retro-picodrive/';
 // const locRetroParallelN64 = isDev() ? `${http}${localIp}:3309` : 'app/retro-n64/';
 const locStandalone = isDev() ? `${http}${localIp}:3080` : 'app/standalone/';
 
@@ -141,6 +142,8 @@ const APP_TYPE_KEYS = /*Object.freeze(*/{
   RETRO_NEOCD: "retro-neocd",
   RETRO_OPERA: "retro-opera",
   RETRO_PARALLEL_N64: "retro-parallel-n64",
+  RETRO_PICODRIVE_32X: "retro-picodrive-32x",
+  RETRO_PICODRIVE_32XCD: "retro-picodrive-32xcd",
   RETRO_POKEMINI: "retro-pokemini",
   // RETRO_PROSYSTEM: "retro-prosystem",
   RETRO_SNES9X: "retro-snes9x",
@@ -187,6 +190,8 @@ const APP_TYPE_KEYS = /*Object.freeze(*/{
   QUAKE: "quake",
   // SATURN: "saturn",
   SCUMM: "scumm",
+  SEGA32X: "32x",
+  SEGA32XCD: "32xcd",
   SEGACD: "segacd",
   SG1000: 'sg1000',
   SGX: 'sgx',
@@ -1171,6 +1176,53 @@ const types = [{
   //     // disableMemCard1: false
   //   }
   }, {
+    key: APP_TYPE_KEYS.RETRO_PICODRIVE_32X,
+    alias: APP_TYPE_KEYS.SEGA32X,
+    name: 'Sega 32X',
+    shortName: 'Sega 32X',
+    coreName: 'Libretro PicoDrive',
+    location: locRetroPicodrive32x,
+    background: 'images/app/32x-background.png',
+    thumbnail: 'images/app/32x-thumb.png',
+    description: "A Libretro core based on PicoDrive for emulating the Sega 32X, an add-on for the Sega Genesis/Mega Drive that added a pair of SH-2 processors for enhanced graphics. This core supports the 32X cartridge library and includes support for advanced graphical shaders.",
+    validate: checkRom,
+    extensions: ['32x'],
+    defaults: {
+      rom: "",
+      cheat: "",
+      pad3button: false,
+      zoomLevel: 0,
+      port2: 0
+    }
+  }, {
+    key: APP_TYPE_KEYS.RETRO_PICODRIVE_32XCD,
+    alias: APP_TYPE_KEYS.SEGA32XCD,
+    name: 'Sega 32X CD',
+    shortName: 'Sega 32X CD',
+    coreName: 'Libretro PicoDrive',
+    location: locRetroPicodrive32x,
+    background: 'images/app/32xcd-background.png',
+    thumbnail: 'images/app/32xcd-thumb.png',
+    description: "A Libretro core based on PicoDrive for emulating Sega CD titles that require the 32X add-on, combining the Sega CD's CD-ROM drive with the 32X's enhanced graphics hardware. This core includes support for advanced graphical shaders.",
+    validate: checkDiscs,
+    extensions: [],
+    ambiguousExtensions: ['.chd'],
+    slowExit: true,
+    addProps: (feedProps, outProps) => {
+      const bios = feedProps.segacd_bios;
+      if (bios) {
+        outProps.segacd_bios = bios;
+      }
+    },
+    defaults: {
+      discs: [],
+      uid: "",
+      cheat: "",
+      pad3button: false,
+      zoomLevel: 0,
+      port2: 0
+    }
+  }, {
     key: APP_TYPE_KEYS.RETRO_GENPLUSGX_SEGACD,
     alias: APP_TYPE_KEYS.SEGACD,
     name: 'Sega CD',
@@ -1546,6 +1598,8 @@ addAlias(types, APP_TYPE_KEYS.PSX, APP_TYPE_KEYS.BEETLE_PSX);
 addAlias(types, APP_TYPE_KEYS.QUAKE, APP_TYPE_KEYS.TYRQUAKE);
 // addAlias(types, APP_TYPE_KEYS.SATURN, APP_TYPE_KEYS.RETRO_YABAUSE);
 addAlias(types, APP_TYPE_KEYS.SCUMM, APP_TYPE_KEYS.SCUMMVM);
+addAlias(types, APP_TYPE_KEYS.SEGA32X, APP_TYPE_KEYS.RETRO_PICODRIVE_32X);
+addAlias(types, APP_TYPE_KEYS.SEGA32XCD, APP_TYPE_KEYS.RETRO_PICODRIVE_32XCD);
 addAlias(types, APP_TYPE_KEYS.SEGACD, APP_TYPE_KEYS.RETRO_GENPLUSGX_SEGACD);
 addAlias(types, APP_TYPE_KEYS.SG1000, APP_TYPE_KEYS.RETRO_GENPLUSGX_SG);
 addAlias(types, APP_TYPE_KEYS.SGX, APP_TYPE_KEYS.RETRO_MEDNAFEN_SGX);

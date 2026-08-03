@@ -179,6 +179,8 @@ const AstrocadeKeypad = resolvePath("images/app/astrocade/keypad.png");
 const AstrocadeBackground = resolvePath("images/app/astrocade-background.png");
 const Apple2Background = resolvePath("images/app/apple2-background.png");
 const CdiBackground = resolvePath("images/app/cdi-background.png");
+const ThirtyTwoXBackground = resolvePath("images/app/32x-background.png");
+const ThirtyTwoXCdBackground = resolvePath("images/app/32xcd-background.png");
 
 export {
   AddCircleBlackImage,
@@ -351,6 +353,8 @@ export {
   AstrocadeBackground,
   Apple2Background,
   CdiBackground,
+  ThirtyTwoXBackground,
+  ThirtyTwoXCdBackground,
 
   resolvePath as resolveImagePath
 }
