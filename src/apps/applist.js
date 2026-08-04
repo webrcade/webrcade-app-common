@@ -452,6 +452,7 @@ const types = [{
       media: [],
       zoomLevel: 0,
       enable2nd525: false,
+      initialKeyboardMode: 0,
       mappings: {},
     }
   }, {
@@ -1838,6 +1839,7 @@ const enableExperimentalApps = (b) => {
         cpuSpeed: 0,
         enable2nd525: false,
         enable2nd35: false,
+        initialKeyboardMode: 0,
         mappings: {},
       }
     });
