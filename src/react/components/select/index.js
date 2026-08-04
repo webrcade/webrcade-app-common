@@ -233,7 +233,7 @@ export class Select extends Component {
             minWidth: finalWidth
           }}
         >
-          <MarqueeText active={i === idx}>{options[i].label}</MarqueeText>
+          <MarqueeText active={i === idx && focused}>{options[i].label}</MarqueeText>
         </div>
       )
     }

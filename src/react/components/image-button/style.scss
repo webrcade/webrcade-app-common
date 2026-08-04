@@ -44,4 +44,15 @@
   &:active {
     outline: none;
   }
+
+  &:disabled {
+    opacity: .4;
+    cursor: default;
+
+    @media (hover) {
+      &:hover {
+        opacity: .4;
+      }
+    }
+  }
 }

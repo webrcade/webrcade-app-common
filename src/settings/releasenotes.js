@@ -1,8 +1,8 @@
 export const ReleaseData = [
 {
-    version: "v0.2.4-p1",
+    version: "v0.2.4-p2",
     preRelease: true,
-    date: "August 2, 2026",
+    date: "August 3, 2026",
     title: "Sega 32X and 32X CD Support, Enhancements & Bug Fixes",
     changes: [
       {
@@ -16,6 +16,8 @@ export const ReleaseData = [
         title: "Apple II / Apple IIGS",
         items: [
           "You can now map the *D-pad* to a keyboard key or gamepad button from the *Feed Editor*.",
+          "Added optional support for a second 5.25\" (Apple II/IIGS) or 3.5\" (Apple IIGS) disk drive, for games that use one. Enable it per item in the *Feed Editor*.",
+          "Improved the disk-swapping menu in the pause screen: switching one disk drive no longer visually disrupts other selectors, and selecting the same disk for two drives is now clearly flagged instead of silently resolved.",
           "*Open Apple* and *Closed Apple* on the virtual keyboard now work like *Shift*/*Control*: tap to hold, tap again to release.",
           "Fixed an issue where mapping the *A* or *B* button to a keyboard key had no effect.",
           "Fixed *Apple IIGS* 2nd drive switches always appearing off when reopening an item in the editor."

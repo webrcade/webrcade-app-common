@@ -451,6 +451,7 @@ const types = [{
       uid: "",
       media: [],
       zoomLevel: 0,
+      enable2nd525: false,
       mappings: {},
     }
   }, {
