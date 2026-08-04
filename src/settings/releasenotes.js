@@ -27,7 +27,9 @@ export const ReleaseData = [
       {
         title: "Editor",
         items: [
-          "Editor dialogs now show an indicator when a tab has more content below than fits on screen, so it's clearer when scrolling is needed."
+          "Editor dialogs now show an indicator when a tab has more content below than fits on screen, so it's clearer when scrolling is needed.",
+          "Added an *Arrange* dialog to the Categories toolbar that lets you quickly drag and drop categories to change their order.",
+          "Fixed dragging to reorder media in the *Merge* dialog not scrolling the list reliably when dragging near the top or bottom edge."
         ]
       },
       {
