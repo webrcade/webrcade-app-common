@@ -18,9 +18,16 @@ export const ReleaseData = [
           "You can now map the *D-pad* to a keyboard key or gamepad button from the *Feed Editor*.",
           "Added optional support for a second 5.25\" (Apple II/IIGS) or 3.5\" (Apple IIGS) disk drive, for games that use one. Enable it per item in the *Feed Editor*.",
           "Improved the disk-swapping menu in the pause screen: switching one disk drive no longer visually disrupts other selectors, and selecting the same disk for two drives is now clearly flagged instead of silently resolved.",
+          "Added an *Initial Keyboard Mode* option (Simulate Joystick / Full Keyboard) in the *Feed Editor*, for keyboard-only applications and games that don't use a joystick. Can still be toggled in-game afterward either way.",
           "*Open Apple* and *Closed Apple* on the virtual keyboard now work like *Shift*/*Control*: tap to hold, tap again to release.",
           "Fixed an issue where mapping the *A* or *B* button to a keyboard key had no effect.",
           "Fixed *Apple IIGS* 2nd drive switches always appearing off when reopening an item in the editor."
+        ]
+      },
+      {
+        title: "Editor",
+        items: [
+          "Editor dialogs now show an indicator when a tab has more content below than fits on screen, so it's clearer when scrolling is needed."
         ]
       },
       {
