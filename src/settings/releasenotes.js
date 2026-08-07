@@ -1,8 +1,8 @@
 export const ReleaseData = [
 {
-    version: "v0.2.4-p2",
+    version: "v0.2.4-p3",
     preRelease: true,
-    date: "August 3, 2026",
+    date: "August 5, 2026",
     title: "Sega 32X and 32X CD Support, Enhancements & Bug Fixes",
     changes: [
       {
@@ -25,11 +25,27 @@ export const ReleaseData = [
         ]
       },
       {
+        title: "Nintendo DS",
+        items: [
+          "Replaced the *melonDS* core's placeholder microphone \"blow\" sound (previously random noise) with a real sample, so mic-blow detection now works reliably in games that use it (e.g. *Zelda: Phantom Hourglass*, *Pokémon*)."
+        ]
+      },
+      {
+        title: "Achievements",
+        items: [
+          "Fixed a missing RetroAchievements condition type that caused some achievements to fail to unlock (e.g. several in *The Legend of Zelda: Phantom Hourglass*)."
+        ]
+      },
+      {
         title: "Editor",
         items: [
           "Editor dialogs now show an indicator when a tab has more content below than fits on screen, so it's clearer when scrolling is needed.",
           "Added an *Arrange* dialog to the Categories toolbar that lets you quickly drag and drop categories to change their order.",
-          "Fixed dragging to reorder media in the *Merge* dialog not scrolling the list reliably when dragging near the top or bottom edge."
+          "Fixed dragging to reorder media in the *Merge* dialog not scrolling the list reliably when dragging near the top or bottom edge.",
+          "URL fields (Discs, Media, BIOS, etc.) now show parsed file names, a full-path toggle, and drag-and-drop reordering for multi-URL fields. *Raw* text mode is still available.",
+          "Added a *Use classic URL entry fields* setting (Settings > Editor) to revert to the previous plain-text fields.",
+          "Deleting categories or items now asks for confirmation, since deleting a category also removes everything inside it.",
+          "Fixed the Cheats tab's *Cheat File* field not supporting local file uploads."
         ]
       },
       {
