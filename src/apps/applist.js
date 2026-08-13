@@ -1947,7 +1947,7 @@ const enableExperimentalApps = (b) => {
         cheat: "",
         zoomLevel: 0,
         disableFastBlitter: false,
-        cdBootMode: "",
+        useRealBios: false,
         m68kClockScale: 0,
         riscClockScale: 0,
         descriptions: {},
