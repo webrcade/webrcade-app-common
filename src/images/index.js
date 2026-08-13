@@ -169,6 +169,7 @@ const A5200Background = resolvePath("images/app/5200-background.png");
 const ColecoVisionBackground = resolvePath("images/app/colecovision-background.png");
 const ColecoController = resolvePath("images/app/coleco/controller.png");
 const A5200Controller = resolvePath("images/app/a5200/controller.png");
+const JaguarController = resolvePath("images/app/jaguar/jagcontroller-real.png");
 const ScummVmBackground = resolvePath("images/app/scummvm-background.png");
 const Commodore64Background = resolvePath("images/app/c64-background.png");
 const DosBackground = resolvePath("images/app/dos-background.png");
@@ -181,6 +182,9 @@ const Apple2Background = resolvePath("images/app/apple2-background.png");
 const CdiBackground = resolvePath("images/app/cdi-background.png");
 const ThirtyTwoXBackground = resolvePath("images/app/32x-background.png");
 const ThirtyTwoXCdBackground = resolvePath("images/app/32xcd-background.png");
+const JaguarBackground = resolvePath("images/app/jaguar-background.png");
+const JaguarCdBackground = resolvePath("images/app/jaguarcd-background.png");
+const PcfxBackground = resolvePath("images/app/pcfx-background.png");
 
 export {
   AddCircleBlackImage,
@@ -326,6 +330,7 @@ export {
   Commodore64Background,
   A5200Controller,
   A5200Background,
+  JaguarController,
   ThreedoBackground,
   Atari2600Background,
   Atari7800Background,
@@ -355,6 +360,9 @@ export {
   CdiBackground,
   ThirtyTwoXBackground,
   ThirtyTwoXCdBackground,
+  JaguarBackground,
+  JaguarCdBackground,
+  PcfxBackground,
 
   resolvePath as resolveImagePath
 }

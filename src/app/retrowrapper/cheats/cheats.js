@@ -46,8 +46,11 @@ export default class CheatsService {
 
   onCheatAdded(idx, desc, enabled, code) {
     if (this._raw) {
-      this._raw[idx] = { idx, code, desc, enabled: !!enabled };
-      LOG.info(`[Cheats]: [${idx}] "${desc}" code=${code} enabled=${!!enabled}`);
+      // Ignore the cheat file's own enabled flag -- cheats always start off
+      // unless the user has explicitly enabled them (restored below from
+      // saved prefs in onCheatsLoadEnd).
+      this._raw[idx] = { idx, code, desc, enabled: false };
+      LOG.info(`[Cheats]: [${idx}] "${desc}" code=${code} fileEnabled=${!!enabled}`);
     }
   }
 
@@ -63,17 +66,23 @@ export default class CheatsService {
       a.desc.localeCompare(b.desc)
     );
 
-    // Apply pre-loaded saved preferences (case-insensitive match)
-    if (this._savedDescs && !this.emulator.isOneShotCheats()) {
-      const enabledSet = new Set(this._savedDescs.map((d) => d.toLowerCase()));
-      sorted.forEach((c) => {
-        if (enabledSet.has(c.desc.toLowerCase())) {
-          c.enabled = true;
-          window.Module._wrc_cheat_toggle(c.idx, 1);
-          LOG.info(`[Cheats]: Applied saved cheat "${c.desc}" (idx=${c.idx})`);
-        }
-      });
-    }
+    // The core may have already applied each cheat's own file-defined enabled
+    // state as it loaded (RetroArch's generic cheat loader calls retro_cheat_set
+    // with the .cht file's baked-in enable flag, independent of anything here).
+    // Explicitly force every cheat's core-side state to match our own saved
+    // prefs -- off unless the user previously enabled it themselves -- rather
+    // than assuming the core started them off.
+    const enabledSet = (this._savedDescs && !this.emulator.isOneShotCheats())
+      ? new Set(this._savedDescs.map((d) => d.toLowerCase()))
+      : new Set();
+    sorted.forEach((c) => {
+      const shouldEnable = enabledSet.has(c.desc.toLowerCase());
+      c.enabled = shouldEnable;
+      window.Module._wrc_cheat_toggle(c.idx, shouldEnable ? 1 : 0);
+      if (shouldEnable) {
+        LOG.info(`[Cheats]: Applied saved cheat "${c.desc}" (idx=${c.idx})`);
+      }
+    });
 
     this._list = sorted;
     LOG.info(

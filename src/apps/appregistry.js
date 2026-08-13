@@ -395,6 +395,18 @@ class AppRegistry {
     return null;
   }
 
+  /**
+   * If the given (already extension-resolved) type declares a
+   * `typeCheck(blob, ext)` callback, invoke it and, if it returns an
+   * overriding type key, return that type instead. Otherwise returns the
+   * original type unchanged.
+   */
+  async applyTypeCheck(type, ext, blob) {
+    if (!type || !type.typeCheck) return type;
+    const overrideKey = await type.typeCheck(blob, ext ? ext.toLowerCase() : ext);
+    return (overrideKey && this.APP_TYPES[overrideKey]) ? this.APP_TYPES[overrideKey] : type;
+  }
+
   async getMd5(blob, type = null) {
     const APP_TYPES = this.APP_TYPES;
     let result = null;

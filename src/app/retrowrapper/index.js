@@ -169,7 +169,11 @@ export class RetroAppWrapper extends AppWrapper {
     if (this.isDiscBased()) {
       const lowerExt = ext.toLowerCase();
       let outExt = "chd";
-      if (lowerExt === 'pbp')
+      if (lowerExt === 'cdi')
+      {
+         outExt = 'cdi';
+      }
+      else if (lowerExt === 'pbp')
       {
          outExt = 'pbp';
       }
@@ -190,10 +194,6 @@ export class RetroAppWrapper extends AppWrapper {
     } else {
       this.game = this.RA_DIR + "game.bin";
     }
-
-    this.game = this.isDiscBased() ?
-      (this.RA_DIR + 'game.' + (ext != null && ext === 'pbp' ? 'pbp' : 'chd')) :
-      (this.RA_DIR + "game.bin");
   }
 
   async setShader(shaderId) {

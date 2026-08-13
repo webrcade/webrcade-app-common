@@ -1,15 +1,17 @@
 export const ReleaseData = [
 {
-    version: "v0.2.4-p3",
+    version: "v0.2.4-p4",
     preRelease: true,
-    date: "August 5, 2026",
-    title: "Sega 32X and 32X CD Support, Enhancements & Bug Fixes",
+    date: "August 11, 2026",
+    title: "New Emulators, Enhancements & Bug Fixes",
     changes: [
       {
         title: "The following applications (emulators) have been added:",
         items: [
           "*Sega 32X*",
-          "*Sega 32X CD*"
+          "*Sega 32X CD*",
+          "*Atari Jaguar* (experimental)",
+          "*Atari Jaguar CD* (experimental)"
         ]
       },
       {
@@ -21,13 +23,15 @@ export const ReleaseData = [
           "Added an *Initial Keyboard Mode* option (Simulate Joystick / Full Keyboard) in the *Feed Editor*, for keyboard-only applications and games that don't use a joystick. Can still be toggled in-game afterward either way.",
           "*Open Apple* and *Closed Apple* on the virtual keyboard now work like *Shift*/*Control*: tap to hold, tap again to release.",
           "Fixed an issue where mapping the *A* or *B* button to a keyboard key had no effect.",
-          "Fixed *Apple IIGS* 2nd drive switches always appearing off when reopening an item in the editor."
+          "Fixed *Apple IIGS* 2nd drive switches always appearing off when reopening an item in the editor.",
+          "Adding a disk image via URL or local upload in the *Feed Editor* now automatically assigns 3.5\" disks (800K or larger) to *Apple IIGS* instead of *Apple II*.",
+          "Fixed *.nib* disk images always being assigned to *Commodore 64* in the *Feed Editor*; Apple II *.nib* images are now detected correctly."
         ]
       },
       {
         title: "Nintendo DS",
         items: [
-          "Replaced the *melonDS* core's placeholder microphone \"blow\" sound (previously random noise) with a real sample, so mic-blow detection now works reliably in games that use it (e.g. *Zelda: Phantom Hourglass*, *Pokémon*)."
+          "Added a selectable microphone \"blow\" type (*Realistic Sample* or *Random Noise*), in the Feed Editor and the in-game pause menu. Different games respond better to different types: a recorded sample fixes blow detection in some games (e.g. *Zelda: Phantom Hourglass*), but reduces reliability in others, so it's now a choice instead of one setting for everyone."
         ]
       },
       {
@@ -45,7 +49,16 @@ export const ReleaseData = [
           "URL fields (Discs, Media, BIOS, etc.) now show parsed file names, a full-path toggle, and drag-and-drop reordering for multi-URL fields. *Raw* text mode is still available.",
           "Added a *Use classic URL entry fields* setting (Settings > Editor) to revert to the previous plain-text fields.",
           "Deleting categories or items now asks for confirmation, since deleting a category also removes everything inside it.",
-          "Fixed the Cheats tab's *Cheat File* field not supporting local file uploads."
+          "Fixed the Cheats tab's *Cheat File* field not supporting local file uploads.",
+          "Fixed local file and URL adds for disc-based systems (CD-i, 32X CD, Jaguar CD, Saturn, etc.) showing the raw filename as the title instead of the matched game's real name, even when artwork was found correctly.",
+          "Fixed matched game titles that include a version number (e.g. \"Sonic R v1.000\") failing to match, and not displaying cleanly when they did.",
+          "Adding a URL for a large disc-image format (.cdi, .chd, .pbp, .cso, .iso) that can't be matched via hash now fails immediately instead of downloading the entire file first."
+        ]
+      },
+      {
+        title: "Cheats",
+        items: [
+          "Fixed some cheats not reverting their effect when disabled, so the last-applied value could stay stuck in memory. This affected a subset of games, not all cheats."
         ]
       },
       {

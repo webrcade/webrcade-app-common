@@ -59,6 +59,7 @@ const locRetroMameApple2Gs = isDev() ? `${http}${localIp}:3389` : 'app/retro-mam
 //const locRetroPpsspp = isDev() ? `${http}${localIp}:3386` : 'app/retro-ppsspp/';
 const locRetroMameCdi = isDev() ? `${http}${localIp}:3386` : 'app/retro-mame-cdi/';
 const locRetroPicodrive32x = isDev() ? `${http}${localIp}:3390` : 'app/retro-picodrive/';
+const locRetroVirtualJaguar = isDev() ? `${http}${localIp}:3391` : 'app/retro-virtual-jaguar/';
 // const locRetroParallelN64 = isDev() ? `${http}${localIp}:3309` : 'app/retro-n64/';
 const locStandalone = isDev() ? `${http}${localIp}:3080` : 'app/standalone/';
 
@@ -87,6 +88,24 @@ const checkMedia = app => {
     throw new Error("Missing 'media' property");
   }
 }
+
+// The Apple II (non-GS) core only supports 5.25" disks (140K, 143,360
+// bytes). 3.5" disks (800K, 819,200 bytes and 1.44MB, 1,474,560 bytes) are
+// only supported by the Apple IIGS core, so any disk 800K or larger is
+// IIGS media.
+const APPLE2GS_MIN_DISK_SIZE = 819200;
+const checkApple2SizeForGs = (blob) => (blob.size >= APPLE2GS_MIN_DISK_SIZE ? APP_TYPE_KEYS.APPLE2GS : null);
+
+// Commodore 64 and Apple II both use a '.nib' extension for raw nibble-level
+// disk images, but they're reliably distinguishable by size alone: Apple II
+// .nib images are a fixed 35 tracks x 6656 bytes = 232,960 bytes, while C64
+// .nib images (nibtools) are considerably larger (~333,744-336,128 bytes
+// depending on track count).
+const APPLE2_NIB_SIZE = 232960;
+const checkC64NibForApple2 = (blob, ext) => {
+  if (ext !== 'nib') return null;
+  return blob.size === APPLE2_NIB_SIZE ? APP_TYPE_KEYS.APPLE2 : null;
+};
 
 const APP_TYPE_KEYS = /*Object.freeze(*/{
   // Types
@@ -145,6 +164,8 @@ const APP_TYPE_KEYS = /*Object.freeze(*/{
   RETRO_PICODRIVE_32X: "retro-picodrive-32x",
   RETRO_PICODRIVE_32XCD: "retro-picodrive-32xcd",
   RETRO_POKEMINI: "retro-pokemini",
+  // RETRO_VIRTUAL_JAGUAR: "retro-virtual-jaguar",
+  // RETRO_VIRTUAL_JAGUAR_CD: "retro-virtual-jaguar-cd",
   // RETRO_PROSYSTEM: "retro-prosystem",
   RETRO_SNES9X: "retro-snes9x",
   RETRO_STELLA: "retro-stella",
@@ -176,6 +197,8 @@ const APP_TYPE_KEYS = /*Object.freeze(*/{
   GBC: "gbc",
   GENESIS: "genesis",
   GG: "gg",
+  // JAGUAR: "jaguar",
+  // JAGUAR_CD: "jaguar-cd",
   LNX: "lnx",
   NDS: "nds",
   NEOGEO: "neogeo",
@@ -410,6 +433,7 @@ const types = [{
     description: "A versatile Libretro core for emulating the Commodore 64 home computer. It aims for high accuracy to support the C64's vast library of software and games, with full support for features like shaders to replicate the look of a classic CRT monitor.",
     validate: checkMedia,
     extensions: ['d64', 'd81', 'g64', 't64', 'tap', 'crt', 'prg', 'nib', 'nbz'], // TODO: More, and check cartridges for proper header
+    typeCheck: checkC64NibForApple2,
     addProps: (feedProps, outProps) => {
       const bios = feedProps.commodore8bit_bios;
       if (bios) {
@@ -440,7 +464,8 @@ const types = [{
     description: "The Apple IIe (Apple II Enhanced) was one of the most influential personal computers ever made, released by Apple in 1983. It boasted an enormous library of games and educational software, including classics like Oregon Trail, Prince of Persia, Karateka, Lode Runner, Ultima, and Wizardry. This core uses MAME to emulate the Apple IIe with high accuracy, supporting disk images in DSK, WOZ, and ProDOS formats.",
     validate: checkMedia,
     family: 'apple2',
-    extensions: ['dsk', 'woz', 'po', 'do'], // TODO: add .nib — requires checkHeader disambiguation against C64 .nib (Apple II GCR prologues D5 AA 96 and D5 AA AD each >100 times)
+    extensions: ['dsk', 'woz', 'po', 'do'],
+    typeCheck: checkApple2SizeForGs,
     addProps: (feedProps, outProps) => {
       const bios = feedProps.apple2_bios;
       if (bios) {
@@ -1442,7 +1467,7 @@ const types = [{
       screenGap: false,
       bookMode: false,
       dualAnalog: false,
-      microphone: false,
+      microphone: 0,
       firmwareLanguage: 0,
       homebrewSdCard: false,
       sdCardArchive: "",
@@ -1844,6 +1869,92 @@ const enableExperimentalApps = (b) => {
       }
     });
     addAlias(APP_TYPES, APP_TYPE_KEYS.APPLE2GS, APP_TYPE_KEYS.RETRO_MAME_APPLE2GS);
+  }
+
+  //
+  // Remove Jaguar / Jaguar CD
+  //
+
+  clone = [...APP_TYPES];
+  APP_TYPES.length = 0;
+  for (let i = 0; i < clone.length; i++) {
+    const t = clone[i];
+    if ((!APP_TYPE_KEYS.RETRO_VIRTUAL_JAGUAR || t.key !== APP_TYPE_KEYS.RETRO_VIRTUAL_JAGUAR) &&
+        (!APP_TYPE_KEYS.JAGUAR || t.key !== APP_TYPE_KEYS.JAGUAR) &&
+        (!APP_TYPE_KEYS.RETRO_VIRTUAL_JAGUAR_CD || t.key !== APP_TYPE_KEYS.RETRO_VIRTUAL_JAGUAR_CD) &&
+        (!APP_TYPE_KEYS.JAGUAR_CD || t.key !== APP_TYPE_KEYS.JAGUAR_CD)) {
+      APP_TYPES.push(t);
+    }
+  }
+
+  delete APP_TYPE_KEYS.RETRO_VIRTUAL_JAGUAR;
+  delete APP_TYPE_KEYS.JAGUAR;
+  delete APP_TYPE_KEYS.RETRO_VIRTUAL_JAGUAR_CD;
+  delete APP_TYPE_KEYS.JAGUAR_CD;
+
+  //
+  // Add Jaguar / Jaguar CD
+  //
+
+  if (b) {
+    APP_TYPE_KEYS.RETRO_VIRTUAL_JAGUAR = "retro-virtual-jaguar";
+    APP_TYPE_KEYS.JAGUAR = "jaguar";
+    APP_TYPE_KEYS.RETRO_VIRTUAL_JAGUAR_CD = "retro-virtual-jaguar-cd";
+    APP_TYPE_KEYS.JAGUAR_CD = "jaguarcd";
+
+    APP_TYPES.push({
+      key: APP_TYPE_KEYS.RETRO_VIRTUAL_JAGUAR,
+      alias: APP_TYPE_KEYS.JAGUAR,
+      name: 'Atari Jaguar',
+      shortName: 'Atari Jaguar',
+      coreName: 'Libretro Virtual Jaguar',
+      location: locRetroVirtualJaguar,
+      background: 'images/app/jaguar-background.png',
+      thumbnail: 'images/app/jaguar-thumb.png',
+      description: "A Libretro core based on Virtual Jaguar for emulating the Atari Jaguar, a 64-bit cartridge-based console released by Atari in 1993.",
+      validate: checkRom,
+      extensions: ['j64', 'jag'],
+      defaults: {
+        rom: "",
+        cheat: "",
+        zoomLevel: 0,
+        disableFastBlitter: false,
+        useRealBios: false,
+        m68kClockScale: 0,
+        riscClockScale: 0,
+        descriptions: {},
+        mappings: {},
+      }
+    });
+    addAlias(APP_TYPES, APP_TYPE_KEYS.JAGUAR, APP_TYPE_KEYS.RETRO_VIRTUAL_JAGUAR);
+
+    APP_TYPES.push({
+      key: APP_TYPE_KEYS.RETRO_VIRTUAL_JAGUAR_CD,
+      alias: APP_TYPE_KEYS.JAGUAR_CD,
+      name: 'Atari Jaguar CD',
+      shortName: 'Atari Jaguar CD',
+      coreName: 'Libretro Virtual Jaguar',
+      location: locRetroVirtualJaguar,
+      background: 'images/app/jaguarcd-background.png',
+      thumbnail: 'images/app/jaguarcd-thumb.png',
+      description: "A Libretro core based on Virtual Jaguar for emulating the Atari Jaguar CD, a CD-ROM add-on for the Atari Jaguar released in 1995. This core includes support for advanced graphical shaders.",
+      validate: checkDiscs,
+      extensions: ['cdi'],
+      slowExit: true,
+      defaults: {
+        discs: [],
+        uid: "",
+        cheat: "",
+        zoomLevel: 0,
+        disableFastBlitter: false,
+        cdBootMode: "",
+        m68kClockScale: 0,
+        riscClockScale: 0,
+        descriptions: {},
+        mappings: {},
+      }
+    });
+    addAlias(APP_TYPES, APP_TYPE_KEYS.JAGUAR_CD, APP_TYPE_KEYS.RETRO_VIRTUAL_JAGUAR_CD);
   }
 }
 
