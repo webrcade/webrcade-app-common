@@ -478,6 +478,7 @@ const types = [{
       zoomLevel: 0,
       enable2nd525: false,
       initialKeyboardMode: 0,
+      saveDisks: 1,
       mappings: {},
     }
   }, {

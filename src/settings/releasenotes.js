@@ -1,8 +1,8 @@
 export const ReleaseData = [
 {
-    version: "v0.2.4-p4",
+    version: "v0.2.4-p5",
     preRelease: true,
-    date: "August 11, 2026",
+    date: "August 18, 2026",
     title: "New Emulators, Enhancements & Bug Fixes",
     changes: [
       {
@@ -25,7 +25,23 @@ export const ReleaseData = [
           "Fixed an issue where mapping the *A* or *B* button to a keyboard key had no effect.",
           "Fixed *Apple IIGS* 2nd drive switches always appearing off when reopening an item in the editor.",
           "Adding a disk image via URL or local upload in the *Feed Editor* now automatically assigns 3.5\" disks (800K or larger) to *Apple IIGS* instead of *Apple II*.",
-          "Fixed *.nib* disk images always being assigned to *Commodore 64* in the *Feed Editor*; Apple II *.nib* images are now detected correctly."
+          "Fixed *.nib* disk images always being assigned to *Commodore 64* in the *Feed Editor*; Apple II *.nib* images are now detected correctly.",
+          "Added a *Save Disks* option (Apple II) in the *Feed Editor*. This lets a player insert blank, pre-formatted disks for games that need one to save progress (e.g. a \"character disk\"), without having to manually source and upload a blank disk image.",
+          "Fixed the pause screen's disk selector freezing when *Disk Drive 1* was set to \"(none)\".",
+          "Fixed save states silently failing to save or load correctly when a 2nd disk drive was in use.",
+          "Fixed loading a save state leaving whatever disk was currently in a drive in place instead of ejecting it, when that drive was empty at the time the state was saved. (*Apple IIGS* fixes apply across all four drive slots.)"
+        ]
+      },
+      {
+        title: "Commodore 64",
+        items: [
+          "Fixed the *Save Disks* setting ignoring an explicit choice of \"(none)\" and silently defaulting to one save disk anyway."
+        ]
+      },
+      {
+        title: "Atari Jaguar / Jaguar CD",
+        items: [
+          "Includes a stick-driven radial menu for quickly selecting from the Jaguar's unique 12-key numeric keypad using the right analog stick. For games that originally shipped with a dedicated keypad overlay, the real button labels from that overlay are shown instead of generic numbers."
         ]
       },
       {
@@ -52,7 +68,8 @@ export const ReleaseData = [
           "Fixed the Cheats tab's *Cheat File* field not supporting local file uploads.",
           "Fixed local file and URL adds for disc-based systems (CD-i, 32X CD, Jaguar CD, Saturn, etc.) showing the raw filename as the title instead of the matched game's real name, even when artwork was found correctly.",
           "Fixed matched game titles that include a version number (e.g. \"Sonic R v1.000\") failing to match, and not displaying cleanly when they did.",
-          "Adding a URL for a large disc-image format (.cdi, .chd, .pbp, .cso, .iso) that can't be matched via hash now fails immediately instead of downloading the entire file first."
+          "Adding a URL for a large disc-image format (.cdi, .chd, .pbp, .cso, .iso) that can't be matched via hash now fails immediately instead of downloading the entire file first.",
+          "Fixed per-game control mappings and settings (Atari 5200, ColecoVision, Bally Astrocade, Atari Jaguar, 3DO) not being applied when a title is picked from the Add Item search dropdown — they previously only applied when a file was matched by hash."
         ]
       },
       {

@@ -21,6 +21,7 @@ const DescriptionBlackImage = Icons.description_black_24dp; //resolvePath("image
 const DescriptionWhiteImage = Icons.description_white_24dp; //resolvePath("images/common/description_white_24dp.svg");
 const GamepadWhiteImage = Icons.gamepad_white_24dp; //resolvePath("images/common/gamepad_white_24dp.svg");
 const KeyboardWhiteImage = Icons.keyboard_white_24dp; //resolvePath("images/common/keyboard_white_24dp.svg");
+const KeypadWhiteImage = Icons.keypad_white_24dp;
 const AddCircleBlackImage = Icons.add_circle_outline_black_24dp; //resolvePath("images/common/add_circle_outline_black_24dp.svg");
 const AddCircleWhiteImage = Icons.add_circle_outline_white_24dp; //resolvePath("images/common/add_circle_outline_white_24dp.svg");
 const PlayArrowBlackImage = Icons.play_arrow_black_24dp; //resolvePath("images/common/play_arrow_black_24dp.svg");
@@ -209,6 +210,7 @@ export {
   FeedBackgroundImage,
   GamepadWhiteImage,
   KeyboardWhiteImage,
+  KeypadWhiteImage,
   LoaderImage,
   LinkBlackImage,
   LinkWhiteImage,

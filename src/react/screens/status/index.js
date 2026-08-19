@@ -57,15 +57,19 @@ export class StatusScreen extends Screen {
   }
 
   render() {
-    const { message } = this.props;
+    const { message, showSpinner = true, icon } = this.props;
 
     return (
       <div className={styles['status-screen']}>
         <div className={styles['status-screen-content']}>
-          <div className={styles['status-screen-content-image']}>
-            <LoaderImage />
-            {/* <object type="image/svg+xml" className={styles['status-screen-content-image']} data={LoaderImage}/> */}
-          </div>
+          {showSpinner ? (
+            <div className={styles['status-screen-content-image']}>
+              <LoaderImage />
+              {/* <object type="image/svg+xml" className={styles['status-screen-content-image']} data={LoaderImage}/> */}
+            </div>
+          ) : icon ? (
+            <img src={icon} alt="" className={styles['status-screen-content-image']} />
+          ) : null}
           <div className={styles['status-screen-content-text']}>{message}</div>
         </div>
       </div>

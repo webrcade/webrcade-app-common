@@ -17,6 +17,7 @@ export * from './react/components/app/retro';
 export * from './react/components/message';
 export * from './react/components/file-button';
 export * from './react/components/image-button';
+export * from './react/components/radial-keypad';
 export * from './react/components/select';
 export * from './react/components/select/screencontrolsselect';
 export * from './react/components/select/screensizeselect';

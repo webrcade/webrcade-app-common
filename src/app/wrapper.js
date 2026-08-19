@@ -41,13 +41,13 @@ export class AppWrapper {
       this.addAudioProcessorCallback(this.audioProcessor);
     }
 
-    this.saveMessageCallback = (message) => {
+    this.saveMessageCallback = (message, showSpinner = true, icon = null) => {
       this.setShowPauseDelay(300);
-      app.setStatusMessage(message);
+      app.setStatusMessage(message, showSpinner, icon);
     };
 
-    this.loadMessageCallback = (message) => {
-      app.setStatusMessage(message);
+    this.loadMessageCallback = (message, showSpinner = true, icon = null) => {
+      app.setStatusMessage(message, showSpinner, icon);
     };
   }
 

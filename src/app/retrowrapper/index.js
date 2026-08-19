@@ -573,7 +573,10 @@ export class RetroAppWrapper extends AppWrapper {
       const FS = window.FS;
       try {
         s = FS.readFile(STATE_FILE_PATH);
-      } catch (e) { }
+        LOG.info('saveStateForSlot() read state file, bytes=' + (s ? s.length : 0));
+      } catch (e) {
+        LOG.error('saveStateForSlot() FS.readFile(' + STATE_FILE_PATH + ') failed: ' + e);
+      }
 
       if (s) {
 

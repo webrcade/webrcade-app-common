@@ -298,7 +298,7 @@ export class WebrcadeApp extends Component {
 
   render() {
     const { ModeEnum } = this;
-    const { mode, showOverlay, showXboxViewMessage, statusMessage, alertInfo } = this.state;
+    const { mode, showOverlay, showXboxViewMessage, statusMessage, statusShowSpinner, statusIcon, alertInfo } = this.state;
 
     let render = null;
     if (showXboxViewMessage) {
@@ -319,13 +319,15 @@ export class WebrcadeApp extends Component {
       <Message/>,
       render,
       statusMessage && (
-        <StatusScreen message={statusMessage} />)
+        <StatusScreen message={statusMessage} showSpinner={statusShowSpinner !== false} icon={statusIcon} />)
     ])
   }
 
-  setStatusMessage(message) {
+  setStatusMessage(message, showSpinner = true, icon = null) {
     this.setState({
-      statusMessage: message
+      statusMessage: message,
+      statusShowSpinner: showSpinner,
+      statusIcon: icon,
     })
   }
 
