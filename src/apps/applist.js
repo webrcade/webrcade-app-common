@@ -56,11 +56,13 @@ const locRetroSameboy = isDev() ? `${http}${localIp}:3385` : 'app/retro-sameboy/
 const locRetroMameAstrocade = isDev() ? `${http}${localIp}:3387` : 'app/retro-mame-astrocade/';
 const locRetroMameApple2 = isDev() ? `${http}${localIp}:3388` : 'app/retro-mame-apple2/';
 const locRetroMameApple2Gs = isDev() ? `${http}${localIp}:3389` : 'app/retro-mame-apple2gs/';
-//const locRetroPpsspp = isDev() ? `${http}${localIp}:3386` : 'app/retro-ppsspp/';
+const locRetroPpsspp = isDev() ? `${http}${localIp}:3386` : 'app/retro-ppsspp/';
 const locRetroMameCdi = isDev() ? `${http}${localIp}:3386` : 'app/retro-mame-cdi/';
 const locRetroPicodrive32x = isDev() ? `${http}${localIp}:3390` : 'app/retro-picodrive/';
 const locRetroVirtualJaguar = isDev() ? `${http}${localIp}:3391` : 'app/retro-virtual-jaguar/';
-// const locRetroParallelN64 = isDev() ? `${http}${localIp}:3309` : 'app/retro-n64/';
+const locRetroMupen64PlusNext = isDev() ? `${http}${localIp}:3556` : 'app/retro-mupen64plus-next/';
+const locRetroParallelN64 = isDev() ? `${http}${localIp}:3309` : 'app/retro-parallel-n64/';
+const locRetroFlycast = isDev() ? `${http}${localIp}:3557` : 'app/retro-flycast/';
 const locStandalone = isDev() ? `${http}${localIp}:3080` : 'app/standalone/';
 
 const checkRom = app => {
@@ -156,11 +158,11 @@ const APP_TYPE_KEYS = /*Object.freeze(*/{
   RETRO_MEDNAFEN_WSC: "retro-mednafen-wsc",
   RETRO_MGBA: "retro-mgba-gba",
   RETRO_PCE_FAST: "retro-pce-fast",
-  //RETRO_PPSSPP: "retro-ppsspp",
   RETRO_MELONDS: "retro-melonds",
   RETRO_NEOCD: "retro-neocd",
   RETRO_OPERA: "retro-opera",
   RETRO_PARALLEL_N64: "retro-parallel-n64",
+  RETRO_MUPEN64PLUS_NEXT: "retro-mupen64plus-next",
   RETRO_PICODRIVE_32X: "retro-picodrive-32x",
   RETRO_PICODRIVE_32XCD: "retro-picodrive-32xcd",
   RETRO_POKEMINI: "retro-pokemini",
@@ -209,7 +211,6 @@ const APP_TYPE_KEYS = /*Object.freeze(*/{
   PCE: "pce",
   PCECD: "pcecd",
   POKEMINI: "pokemini",
-  //PSP: "psp",
   QUAKE: "quake",
   // SATURN: "saturn",
   SCUMM: "scumm",
@@ -1173,36 +1174,6 @@ const types = [{
       disableMemCard1: false,
       cheat: ""
     }
-  // }, {
-  //   key: APP_TYPE_KEYS.RETRO_PPSSPP,
-  //   alias: APP_TYPE_KEYS.PSP,
-  //   name: 'Sony PSP',
-  //   shortName: 'Sony PSP',
-  //   coreName: 'Retro PPSSPP',
-  //   location: locRetroPpsspp,
-  //   background: 'images/app/playstation-background.png',
-  //   thumbnail: 'images/app/playstation-thumb.png',
-  //   description: "",
-  //   validate: checkDiscs,
-  //   extensions: [],
-  //   multiThreaded: true,
-  //   slowExit: true,
-  //   // addProps: (feedProps, outProps) => {
-  //   //   const bios = feedProps.psx_bios;
-  //   //   if (bios) {
-  //   //     outProps.psx_bios = bios;
-  //   //   }
-  //   // },
-  //   defaults: {
-  //     discs: [],
-  //     // sbi: [],
-  //     // multitap: false,
-  //     // analog: false,
-  //     uid: "",
-  //     zoomLevel: 0,
-  //     // skipBios: false,
-  //     // disableMemCard1: false
-  //   }
   }, {
     key: APP_TYPE_KEYS.RETRO_PICODRIVE_32X,
     alias: APP_TYPE_KEYS.SEGA32X,
@@ -1518,21 +1489,6 @@ const types = [{
       zoomLevel: 0
     }
   },
-  // {
-  //   key: APP_TYPE_KEYS.RETRO_PARALLEL_N64,
-  //   name: 'Nintendo 64',
-  //   coreName: 'Libretro paraLLEl N64',
-  //   location: locRetroParallelN64,
-  //   background: 'images/app/n64-background.png',
-  //   thumbnail: 'images/app/n64-thumb.png',
-  //   validate: checkRom,
-  //   extensions: ['n64', 'v64', 'z64'],
-  //   isDelayedExit: true,
-  //   defaults: {
-  //     rom: "",
-  //     zoomLevel: 0
-  //   }
-  // }
 ];
 
 const addAlias = (types, alias, typeKey) => {
@@ -1621,7 +1577,6 @@ addAlias(types, APP_TYPE_KEYS.PCE, APP_TYPE_KEYS.RETRO_MEDNAFEN_PCE);
 addAlias(types, APP_TYPE_KEYS.PCECD, APP_TYPE_KEYS.RETRO_PCE_FAST);
 addAlias(types, APP_TYPE_KEYS.PCFX, APP_TYPE_KEYS.BEETLE_PCFX);
 addAlias(types, APP_TYPE_KEYS.POKEMINI, APP_TYPE_KEYS.RETRO_POKEMINI);
-// addAlias(types, APP_TYPE_KEYS.PSP, APP_TYPE_KEYS.RETRO_PPSSPP);
 addAlias(types, APP_TYPE_KEYS.PSX, APP_TYPE_KEYS.BEETLE_PSX);
 addAlias(types, APP_TYPE_KEYS.QUAKE, APP_TYPE_KEYS.TYRQUAKE);
 // addAlias(types, APP_TYPE_KEYS.SATURN, APP_TYPE_KEYS.RETRO_YABAUSE);
@@ -1652,7 +1607,9 @@ const enableExperimentalApps = (b) => {
   for (let i = 0; i < clone.length; i++) {
     const t = clone[i];
     if ((!APP_TYPE_KEYS.PARALLEL_N64 || t.key !== APP_TYPE_KEYS.PARALLEL_N64) &&
-        (!APP_TYPE_KEYS.N64 || t.key !== APP_TYPE_KEYS.N64)) {
+        (!APP_TYPE_KEYS.N64 || t.key !== APP_TYPE_KEYS.N64) &&
+        t.key !== APP_TYPE_KEYS.RETRO_MUPEN64PLUS_NEXT &&
+        t.key !== APP_TYPE_KEYS.RETRO_PARALLEL_N64) {
       APP_TYPES.push(t);
     }
   }
@@ -1672,7 +1629,7 @@ const enableExperimentalApps = (b) => {
       key: APP_TYPE_KEYS.PARALLEL_N64,
       alias: APP_TYPE_KEYS.N64,
       name: 'Nintendo 64',
-      coreName: 'paraLLEl N64',
+      coreName: 'ParaLLEl N64',
       location: locN64,
       background: 'images/app/n64-background.png',
       thumbnail: 'images/app/n64-thumb.png',
@@ -1702,6 +1659,51 @@ const enableExperimentalApps = (b) => {
       }
     });
     addAlias(APP_TYPES, APP_TYPE_KEYS.N64, APP_TYPE_KEYS.PARALLEL_N64);
+
+    APP_TYPES.push({
+      key: APP_TYPE_KEYS.RETRO_MUPEN64PLUS_NEXT,
+      alias: APP_TYPE_KEYS.N64,
+      name: 'Nintendo 64',
+      coreName: 'Libretro Mupen64Plus-Next',
+      location: locRetroMupen64PlusNext,
+      background: 'images/app/n64-background.png',
+      thumbnail: 'images/app/n64-thumb.png',
+      description: "An actively-maintained, GLideN64-based N64 emulator. Newer and generally more compatible than the default N64 core, but still experimental in this environment.",
+      validate: checkRom,
+      extensions: ['n64', 'v64', 'z64'],
+      isDelayedExit: true,
+      multiThreaded: false,
+      defaults: {
+        rom: "",
+        zoomLevel: 0,
+        cheat: "",
+        disableOpenGL2: false,
+        countPerOp: 0,
+        audioLatency: 0
+      }
+    });
+
+    // WRC - registration disabled for now (user request): don't want to
+    // overwhelm people with a third N64 option yet, want focus on
+    // Mupen64Plus-Next while keeping the old (non-"retro") ParaLLEl N64
+    // app as the other option. Re-enable when ready.
+    // APP_TYPES.push({
+    //   key: APP_TYPE_KEYS.RETRO_PARALLEL_N64,
+    //   alias: APP_TYPE_KEYS.N64,
+    //   name: 'Nintendo 64',
+    //   coreName: 'Libretro ParaLLEl N64',
+    //   location: locRetroParallelN64,
+    //   background: 'images/app/n64-background.png',
+    //   thumbnail: 'images/app/n64-thumb.png',
+    //   description: "An alternate N64 emulator core (EmulatorJS's fork of paraLLEl N64), offered alongside Mupen64Plus-Next for titles that run better on this core. Still experimental in this environment.",
+    //   validate: checkRom,
+    //   extensions: ['n64', 'v64', 'z64'],
+    //   isDelayedExit: true,
+    //   defaults: {
+    //     rom: "",
+    //     zoomLevel: 0
+    //   }
+    // });
   }
 
   //
@@ -1813,6 +1815,104 @@ const enableExperimentalApps = (b) => {
       }
     });
     addAlias(types, APP_TYPE_KEYS.SATURN, APP_TYPE_KEYS.RETRO_YABAUSE);
+  }
+
+  //
+  // Remove Dreamcast
+  //
+
+  clone = [...APP_TYPES];
+  APP_TYPES.length = 0;
+  for (let i = 0; i < clone.length; i++) {
+    const t = clone[i];
+    if ((!APP_TYPE_KEYS.RETRO_FLYCAST || t.key !== APP_TYPE_KEYS.RETRO_FLYCAST) &&
+        (!APP_TYPE_KEYS.DREAMCAST || t.key !== APP_TYPE_KEYS.DREAMCAST)) {
+      APP_TYPES.push(t);
+    }
+  }
+
+  delete APP_TYPE_KEYS.RETRO_FLYCAST;
+  delete APP_TYPE_KEYS.DREAMCAST;
+
+  //
+  // Add Dreamcast
+  //
+
+  if (b) {
+    APP_TYPE_KEYS.RETRO_FLYCAST = "retro-flycast";
+    APP_TYPE_KEYS.DREAMCAST = "dreamcast";
+
+    APP_TYPES.push({
+      key: APP_TYPE_KEYS.RETRO_FLYCAST,
+      alias: APP_TYPE_KEYS.DREAMCAST,
+      name: 'Sega Dreamcast',
+      shortName: 'Sega Dreamcast',
+      coreName: 'Libretro Flycast',
+      location: locRetroFlycast,
+      description: "An early, experimental Libretro-style core for emulating the Sega Dreamcast, based on flycast's from-scratch WebAssembly JIT recompiler. Controller input is not yet functional.",
+      background: 'images/app/dreamcast-background.png',
+      thumbnail: 'images/app/dreamcast-thumb.png',
+      validate: checkDiscs,
+      extensions: [],
+      ambiguousExtensions: ['.chd'],
+      multiThreaded: true,
+      slowExit: true,
+      addProps: (feedProps, outProps) => {
+        const bios = feedProps.flycast_bios;
+        if (bios) {
+          outProps.flycast_bios = bios;
+        }
+      },
+      defaults: {
+        discs: [],
+        uid: "",
+        zoomLevel: 0,
+        cheat: ""
+      }
+    });
+    addAlias(types, APP_TYPE_KEYS.DREAMCAST, APP_TYPE_KEYS.RETRO_FLYCAST);
+  }
+
+  //
+  // Add PSP
+  //
+
+  if (b) {
+    APP_TYPE_KEYS.RETRO_PPSSPP = "retro-ppsspp";
+    APP_TYPE_KEYS.PSP = "psp";
+
+    APP_TYPES.push({
+      key: APP_TYPE_KEYS.RETRO_PPSSPP,
+      alias: APP_TYPE_KEYS.PSP,
+      name: 'Sony PSP',
+      shortName: 'Sony PSP',
+      coreName: 'Libretro PPSSPP',
+      location: locRetroPpsspp,
+      background: 'images/app/psp-background.png',
+      thumbnail: 'images/app/psp-thumb.png',
+      description: "",
+      validate: checkDiscs,
+      extensions: [],
+      multiThreaded: true,
+      slowExit: true,
+      // addProps: (feedProps, outProps) => {
+      //   const bios = feedProps.psx_bios;
+      //   if (bios) {
+      //     outProps.psx_bios = bios;
+      //   }
+      // },
+      defaults: {
+        discs: [],
+        // sbi: [],
+        // multitap: false,
+        // analog: false,
+        uid: "",
+        zoomLevel: 0,
+        // skipBios: false,
+        // disableMemCard1: false
+      }
+    });
+    addAlias(types, APP_TYPE_KEYS.PSP, APP_TYPE_KEYS.RETRO_PPSSPP);
   }
 
   //

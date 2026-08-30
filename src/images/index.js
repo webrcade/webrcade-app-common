@@ -187,6 +187,7 @@ const JaguarBackground = resolvePath("images/app/jaguar-background.png");
 const JaguarCdBackground = resolvePath("images/app/jaguarcd-background.png");
 const PcfxBackground = resolvePath("images/app/pcfx-background.png");
 const DreamcastBackground = resolvePath("images/app/dreamcast-background.png");
+const PspBackground = resolvePath("images/app/psp-background.png");
 
 export {
   AddCircleBlackImage,
@@ -367,6 +368,7 @@ export {
   JaguarCdBackground,
   PcfxBackground,
   DreamcastBackground,
+  PspBackground,
 
   resolvePath as resolveImagePath
 }
