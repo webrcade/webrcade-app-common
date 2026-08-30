@@ -413,6 +413,11 @@ export class RetroAppWrapper extends AppWrapper {
         },
         // Redirect stderr (fprintf) to console.log to stop the red error spam
         printErr: function(text) {
+            // Pre-existing, harmless: Emscripten's WebGL2 glMapBufferRange
+            // shim logs this whenever GL_MAP_READ_BIT/GL_MAP_UNSYNCHRONIZED_BIT
+            // are requested (unsupported under WebGL2's mapping model); the
+            // call just returns 0 and whatever called it already handles that.
+            if (text.indexOf('glMapBufferRange access does not support') !== -1) return;
             //console.log(text);
             // Optional: If you still want to see real errors in red, you could do:
             if (text.toLowerCase().includes('error')) console.error(text); else console.log(text);
@@ -484,22 +489,6 @@ export class RetroAppWrapper extends AppWrapper {
           // FS.mkdir('/home/web_user/retroarch/system/mame/bios/astrocde');
           FS.mkdir('/home/web_user/retroarch/userdata/config');
           FS.mkdir('/home/web_user/retroarch/userdata/config/MAME');
-
-          // Write out the sharp bilinear
-          const base64ToUint8Array = (b64) => {
-            const bin = atob(b64);
-            return Uint8Array.from(bin, c => c.charCodeAt(0));
-          }
-
-          FS.writeFile(
-            SHARP_BILINEAR_GLSLP_PATH,
-            base64ToUint8Array(SHARP_BILINEAR_GLSLP)
-          );
-
-          FS.writeFile(
-            SHARP_BILINEAR_GLSL_PATH,
-            base64ToUint8Array(SHARP_BILINEAR_GLSL)
-          );
 
           window.emulator.preInit(FS);
         },
@@ -654,6 +643,37 @@ export class RetroAppWrapper extends AppWrapper {
     return true;
   }
 
+  // Opt-in for apps whose native RetroArch build has moved off the
+  // full video_driver_reinit()-based _wrc_force_aspect_ratio/
+  // _wrc_enable_bilinear_filter implementation (crash-prone in the WASM/
+  // WebGL build) to lighter-weight equivalents. Queried directly from the
+  // native side (platform_emscripten.c). Default false so every other app
+  // keeps its existing, already-verified behavior.
+  getUseNewResizeStyle() {
+    return false;
+  }
+
+  // Opt-in experiment: skip the manual per-frame Module._emscripten_mainloop()
+  // call below and let Emscripten's own native main-loop scheduler
+  // (emscripten_set_main_loop(), gated on WRC_NATIVE_MAINLOOP - see
+  // platform_emscripten.c) drive the core instead, same as a non-WRC
+  // Emscripten build. Input polling still runs from this JS-driven loop
+  // regardless, since that's how controller state reaches the core
+  // (_wrc_set_input()). Default false so every other app is unaffected.
+  getUseNativeMainLoop() {
+    return false;
+  }
+
+  callEnableBilinearFilter(enable) {
+    if (this.getUseNewResizeStyle()) {
+      setTimeout(() => {
+        window.Module._wrc_enable_bilinear_filter(enable);
+      }, 1);
+    } else {
+      window.Module._wrc_enable_bilinear_filter(enable);
+    }
+  }
+
   updateBilinearFilter() {
 // PPSSPP: Disable or errors
     if (!this.mainStarted) return;
@@ -661,18 +681,38 @@ export class RetroAppWrapper extends AppWrapper {
     const shaderSelected = this.shaders.isShaderSelected();
 
     if (shaderSelected) {
-      window.Module._wrc_enable_bilinear_filter(0);
+      this.callEnableBilinearFilter(0);
       return;
     }
 
     const bilinearMode = this.prefs.getBilinearMode();
     if (bilinearMode === BILINEAR_MODE.BL_OFF) {
       this.shaders.untrackedUnloadShader();
-      window.Module._wrc_enable_bilinear_filter(0);
+      this.callEnableBilinearFilter(0);
     } else if (bilinearMode === BILINEAR_MODE.BL_SOFT) {
       this.shaders.untrackedUnloadShader();
-      window.Module._wrc_enable_bilinear_filter(1);
+      this.callEnableBilinearFilter(1);
     } else {
+      if (!this.sharpWritten) {
+        this.sharpWritten = true;
+
+        // Write out the sharp bilinear
+        const base64ToUint8Array = (b64) => {
+          const bin = atob(b64);
+          return Uint8Array.from(bin, c => c.charCodeAt(0));
+        }
+
+        FS.writeFile(
+          SHARP_BILINEAR_GLSLP_PATH,
+          base64ToUint8Array(SHARP_BILINEAR_GLSLP)
+        );
+
+        FS.writeFile(
+          SHARP_BILINEAR_GLSL_PATH,
+          base64ToUint8Array(SHARP_BILINEAR_GLSL)
+        );
+      }
+
       this.shaders.untrackedLoadShaderByPath(SHARP_BILINEAR_GLSLP_PATH);
     }
   }
@@ -687,7 +727,13 @@ export class RetroAppWrapper extends AppWrapper {
 
     try {
       const enabled = this.isForceAspectRatio();
-      window.Module._wrc_force_aspect_ratio(enabled ? 1 : 0);
+      if (this.getUseNewResizeStyle()) {
+        setTimeout(() => {
+          window.Module._wrc_force_aspect_ratio(enabled ? 1 : 0);
+        }, 1);
+      } else {
+        window.Module._wrc_force_aspect_ratio(enabled ? 1 : 0);
+      }
     } catch (e) {
       LOG.info("Unable to invoke _wrc_force_aspect_ratio.");
     }
@@ -970,7 +1016,9 @@ export class RetroAppWrapper extends AppWrapper {
           try {
             if (!exit) {
               this.pollControls();
-              Module._emscripten_mainloop();
+              if (!this.getUseNativeMainLoop()) {
+                Module._emscripten_mainloop();
+              }
               this.onFrame();
             }
           } catch (e) {

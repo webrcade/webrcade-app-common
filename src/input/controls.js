@@ -147,8 +147,29 @@ export class KeyCodeToControlMapping {
     return this.keyCodeToControlId;
   }
 
+  // Override to return false to opt out of the shared Ctrl+Shift (or
+  // Alt+Shift) pause sequence -- needed when an app's own mapping already
+  // binds Control/Shift to real gameplay functions (e.g. parallel-n64's
+  // analog speed modifiers), where the two collide. The literal Escape key
+  // (if mapped in keyCodeToControlId) and the gamepad pause combo are
+  // unaffected either way.
+  isEscapeKeySequenceEnabled() {
+    return true;
+  }
+
   handleKeyEvent(e, down) {
-    if (isEscapeKeySequence(e)) {
+    // Ignore OS auto-repeat keydowns. Without this, a key held through a
+    // setEnabled(false)/setEnabled(true) cycle (e.g. pause screens that
+    // detach these listeners while open) looks like a brand-new press the
+    // moment listeners reattach: the browser's next event for the
+    // still-held key is a repeat keydown, which this method would
+    // otherwise treat identically to a fresh one, re-triggering whatever
+    // rising-edge logic (open keypad, open pause, etc.) is watching this
+    // control's down state. Repeat events never fire for keyup, so this
+    // only ever short-circuits keydown handling.
+    if (e.repeat) return;
+
+    if (this.isEscapeKeySequenceEnabled() && isEscapeKeySequence(e)) {
       e.preventDefault();
       this.escape = true;
       return;
@@ -312,16 +333,25 @@ export class Controller {
     }
 
     if (cid === CIDS.ESCAPE || cid === CIDS.START || cid == CIDS.SELECT) {
-      // left trigger + (right analog/left analog)
-      // left trigger + (start/select) (not on xbox)
+      // left trigger + left analog (works on every platform, including Xbox)
+      // select + x (not on xbox)
+      //
+      // Restricted to just these two -- previously also matched left
+      // trigger + right analog, and (non-Xbox) left trigger + start/select
+      // -- per the finalized control-mapping-audit doc, which documents
+      // exactly these two as the pause combo set. Left trigger + right
+      // analog specifically is now reserved for opening the on-screen
+      // keypad/virtual keyboard (see BasicAppWrapper/RetroAppWrapper-based
+      // apps' own handleEscape()-style interception), not pause -- apps
+      // that use it for that no longer need to intercept it before it
+      // reaches pause, since it never resolves to CIDS.ESCAPE here at all
+      // anymore, but leaving that interception code in place is harmless.
       if (cid === CIDS.ESCAPE) {
         return (
-          this.isPadButtonDown(CIDS.LTRIG) && (this.isPadButtonDown(CIDS.RANALOG) || this.isPadButtonDown(CIDS.LANALOG))) ||
-          (!isXbox && (
-            (this.isPadButtonDown(CIDS.LTRIG) && (this.isPadButtonDown(CIDS.START) || this.isPadButtonDown(CIDS.SELECT))) ||
-            (this.isPadButtonDown(CIDS.SELECT) && this.isPadButtonDown(CIDS.X))
-          )
-        );
+          this.isPadButtonDown(CIDS.LTRIG) && this.isPadButtonDown(CIDS.LANALOG)) ||
+          (!isXbox &&
+            this.isPadButtonDown(CIDS.SELECT) && this.isPadButtonDown(CIDS.X)
+          );
       // right trigger + right analog
       // start (not available for xbox)
       } else if (cid == CIDS.START) {
@@ -454,7 +484,10 @@ export class Controllers {
   }
 }
 
+// Restricted to Ctrl/Alt+Shift only -- previously also matched Ctrl/Alt+Enter,
+// but per the finalized control-mapping-audit doc, Ctrl+Enter is dropped
+// from the documented pause keyboard set (Ctrl+Shift + Escape only).
 export function isEscapeKeySequence(e) {
   return (e.getModifierState && (e.getModifierState("Control") || e.getModifierState("Alt")) &&
-    (e.code === KCODES.ENTER || e.code === KCODES.SHIFT_LEFT || e.code === KCODES.SHIFT_RIGHT));
+    (e.code === KCODES.SHIFT_LEFT || e.code === KCODES.SHIFT_RIGHT));
 }
