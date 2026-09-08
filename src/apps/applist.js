@@ -21,7 +21,7 @@ const locRetroPceFast = isDev() ? `${http}${localIp}:3202` : 'app/retro-pce-fast
 const locRetroStella = isDev() ? `${http}${localIp}:3312` : 'app/retro-stella/';
 const locRetroStellaLatest = isDev() ? `${http}${localIp}:3314` : 'app/retro-stella-latest/';
 const locRetroCommodore8Bit = isDev() ? `${http}${localIp}:3315` : 'app/retro-commodore-8bit/';
-// const locRetroProsystem = isDev() ? `${http}${localIp}:3314` : 'app/retro-prosystem/';
+const locRetroProsystem = isDev() ? `${http}${localIp}:3314` : 'app/retro-prosystem/';
 const locPsx = isDev() ? `${http}${localIp}:3099` : 'app/psx/';
 const loc7800 = isDev() ? `${http}${localIp}:3020` : 'app/7800/';
 const locNes = isDev() ? `${http}${localIp}:3030` : 'app/nes/';
@@ -111,13 +111,16 @@ const checkC64NibForApple2 = (blob, ext) => {
 
 const APP_TYPE_KEYS = /*Object.freeze(*/{
   // Types
+  A5200: "5200",
   AT5200: "a5200",
   APPLE2: "apple2",
+  APPLE2GS: "apple2gs",
   BEETLE_PSX: "beetle-psx",
   BEETLE_PCFX: "beetle-pcfx",
   COLEM: "colem",
   COMMODORE_C64: "commodore-c64",
   DOS: "dos",
+  DREAMCAST: "dreamcast",
   FBNEO_ARCADE: "fbneo-arcade",
   FBNEO_CAPCOM: "fbneo-capcom",
   FBNEO_KONAMI: "fbneo-konami",
@@ -137,10 +140,15 @@ const APP_TYPE_KEYS = /*Object.freeze(*/{
   MEDNAFEN_VB: "mednafen-vb",
   MEDNAFEN_WSC: "mednafen-wsc",
   MEDNAFEN_WS: "mednafen-ws",
+  N64: "n64",
+  PARALLEL_N64: "parallel-n64",
   PCFX: "pcfx",
   PRBOOM: "prboom",
+  PSP: "psp",
   PSX: "psx",
+  RETRO_A5200: "retro-5200",
   RETRO_COMMODORE_C64: "retro-commodore-c64",
+  RETRO_FLYCAST: "retro-flycast",
   RETRO_GENPLUSGX_GG: "retro-genplusgx-gg",
   RETRO_GENPLUSGX_MD: "retro-genplusgx-md",
   RETRO_GENPLUSGX_SEGACD: "retro-genplusgx-segacd",
@@ -148,6 +156,7 @@ const APP_TYPE_KEYS = /*Object.freeze(*/{
   RETRO_GENPLUSGX_SMS: "retro-genplusgx-sms",
   RETRO_MAME_ASTROCADE: "retro-mame-astrocade",
   RETRO_MAME_APPLE2: "retro-mame-apple2",
+  RETRO_MAME_APPLE2GS: "retro-mame-apple2gs",
   RETRO_MEDNAFEN_LYNX: "retro-mednafen-lynx",
   RETRO_MEDNAFEN_NGC: "retro-mednafen-npc",
   RETRO_MEDNAFEN_NGP: "retro-mednafen-ngp",
@@ -158,6 +167,7 @@ const APP_TYPE_KEYS = /*Object.freeze(*/{
   RETRO_MEDNAFEN_WSC: "retro-mednafen-wsc",
   RETRO_MGBA: "retro-mgba-gba",
   RETRO_PCE_FAST: "retro-pce-fast",
+  RETRO_PPSSPP: "retro-ppsspp",
   RETRO_MELONDS: "retro-melonds",
   RETRO_NEOCD: "retro-neocd",
   RETRO_OPERA: "retro-opera",
@@ -168,7 +178,7 @@ const APP_TYPE_KEYS = /*Object.freeze(*/{
   RETRO_POKEMINI: "retro-pokemini",
   // RETRO_VIRTUAL_JAGUAR: "retro-virtual-jaguar",
   // RETRO_VIRTUAL_JAGUAR_CD: "retro-virtual-jaguar-cd",
-  // RETRO_PROSYSTEM: "retro-prosystem",
+  RETRO_PROSYSTEM: "retro-prosystem",
   RETRO_SNES9X: "retro-snes9x",
   RETRO_STELLA: "retro-stella",
   RETRO_STELLA_LATEST: "retro-stella-latest",
@@ -505,22 +515,24 @@ const types = [{
       paddleInverted: false,
       cheat: "",
     }
-  // }, {
-  //   key: APP_TYPE_KEYS.RETRO_PROSYSTEM,
-  //   alias: APP_TYPE_KEYS.A7800,
-  //   name: 'Atari 7800',
-  //   coreName: 'Libretro ProSystem',
-  //   location: locRetroProsystem,
-  //   thumbnail: "images/app/7800-thumb.png",
-  //   background: "images/app/7800-background.png",
-  //   validate: checkRom,
-  //   extensions: ['a78'],
-  //   testMagic: Atari7800.testMagic,
-  //   getMd5: Atari7800.getMd5,
-  //   defaults: {
-  //     rom: "",
-  //     zoomLevel: 0,
-  //   }
+  }, {
+    key: APP_TYPE_KEYS.RETRO_PROSYSTEM,
+    alias: APP_TYPE_KEYS.A7800,
+    name: 'Atari 7800',
+    coreName: 'Libretro ProSystem-Next',
+    location: locRetroProsystem,
+    thumbnail: "images/app/7800-thumb.png",
+    background: "images/app/7800-background.png",
+    description: "A Libretro core for emulating the Atari 7800, built from a C/WebAssembly port of JS7800, an almost complete rewrite of the original ProSystem emulator. It supports advanced graphical shaders, cheats, and achievements, making it the more full featured choice, while JS7800 remains a lighter weight alternative.",
+    validate: checkRom,
+    extensions: ['a78'],
+    testMagic: Atari7800.testMagic,
+    getMd5: Atari7800.getMd5,
+    defaults: {
+      rom: "",
+      zoomLevel: 0,
+      cheat: "",
+    }
   }, {
     key: APP_TYPE_KEYS.JS7800,
     alias: APP_TYPE_KEYS.A7800,
@@ -529,7 +541,7 @@ const types = [{
     location: loc7800,
     background: 'images/app/7800-background.png',
     thumbnail: 'images/app/7800-thumb.png',
-    description: "A standalone JavaScript-based emulator for the Atari 7800. It has been updated to support all modern homebrew titles and is the core 7800 emulator used in the Atari 2600+/7800+ consoles.",
+    description: "A standalone JavaScript-based emulator for the Atari 7800. It has been updated to support all modern homebrew titles and is the core 7800 emulator used in the Atari 2600+/7800+ consoles. It is lighter weight than the Libretro ProSystem core, but does not support shaders, cheats, or achievements.",
     validate: checkRom,
     extensions: ['a78'],
     testMagic: Atari7800.testMagic,
@@ -1230,7 +1242,7 @@ const types = [{
     location: locRetroGenesis,
     background: 'images/app/segacd-background.png',
     thumbnail: 'images/app/segacd-thumb.png',
-    description: "This Libretro core extends the highly accurate Genesis Plus GX engine to emulate the Sega CD add-on. It\'s the top choice for reliable and authentic Sega CD gameplay and includes support for advanced graphical shaders",
+    description: "This Libretro core extends the highly accurate Genesis Plus GX engine to emulate the Sega CD add-on. It's the top choice for reliable and authentic Sega CD gameplay and includes support for advanced graphical shaders.",
     validate: checkDiscs,
     extensions: [],
     ambiguousExtensions: ['.chd'],
@@ -1489,6 +1501,176 @@ const types = [{
       zoomLevel: 0
     }
   },
+  {
+    key: APP_TYPE_KEYS.PARALLEL_N64,
+    alias: APP_TYPE_KEYS.N64,
+    name: 'Nintendo 64',
+    coreName: 'ParaLLEl N64',
+    location: locN64,
+    background: 'images/app/n64-background.png',
+    thumbnail: 'images/app/n64-thumb.png',
+    description: "A modern, accuracy-focused emulator for the N64. It is very demanding on hardware and has many known quirks and incompatibilities when running the N64\'s notoriously difficult-to-emulate games.",
+    validate: checkRom,
+    extensions: ['n64', 'v64', 'z64'],
+    isDelayedExit: true,
+    addParams: (url) => {
+      url = UrlUtil.addParam(url, "n64", "1");
+      const N64_SKIP_RP = "n64.skip";
+      const n64skip = UrlUtil.getParam(
+        window.location.search, N64_SKIP_RP);
+      if (n64skip) {
+        url = UrlUtil.addParam(url, N64_SKIP_RP, n64skip);
+      }
+      const N64_VBO_RP = "n64.vbo";
+      const n64vbo = UrlUtil.getParam(
+        window.location.search, N64_VBO_RP);
+      if (n64vbo) {
+        url = UrlUtil.addParam(url, N64_VBO_RP, n64vbo);
+      }
+      return url;
+    },
+    defaults: {
+      rom: "",
+      zoomLevel: 0
+    }
+  },
+  {
+    key: APP_TYPE_KEYS.RETRO_MUPEN64PLUS_NEXT,
+    alias: APP_TYPE_KEYS.N64,
+    name: 'Nintendo 64',
+    coreName: 'Libretro Mupen64Plus-Next',
+    location: locRetroMupen64PlusNext,
+    background: 'images/app/n64-background.png',
+    thumbnail: 'images/app/n64-thumb.png',
+    description: "An actively-maintained, GLideN64-based N64 emulator, and the default N64 core. It is newer and generally more compatible than the ParaLLEl N64 alternative.",
+    validate: checkRom,
+    extensions: ['n64', 'v64', 'z64'],
+    isDelayedExit: true,
+    multiThreaded: false,
+    defaults: {
+      rom: "",
+      zoomLevel: 0,
+      cheat: ""
+    }
+  },
+  {
+    key: APP_TYPE_KEYS.RETRO_A5200,
+    alias: APP_TYPE_KEYS.A5200,
+    name: 'Atari 5200',
+    coreName: 'Libretro A5200',
+    location: locRetro5200,
+    background: 'images/app/5200-background.png',
+    thumbnail: 'images/app/5200-thumb.png',
+    description: "A Libretro core for emulating the Atari 5200. It brings the console's library to modern frontends with support for shaders and standardized controls.",
+    validate: checkRom,
+    extensions: ['a52'],
+    addProps: (feedProps, outProps) => {
+      const rom = feedProps.atari5200_rom;
+      if (rom) {
+        outProps.atari5200_rom = rom;
+      }
+    },
+    defaults: {
+      rom: "",
+      cheat: "",
+      zoomLevel: 0,
+      swap: false,
+      analog: false,
+      twinStick: false,
+      descriptions: {},
+      mappings: {},
+    }
+  },
+  {
+    key: APP_TYPE_KEYS.RETRO_FLYCAST,
+    alias: APP_TYPE_KEYS.DREAMCAST,
+    name: 'Sega Dreamcast',
+    shortName: 'Sega Dreamcast',
+    coreName: 'Libretro Flycast',
+    location: locRetroFlycast,
+    description: "An early, experimental Libretro-style core for emulating the Sega Dreamcast, based on flycast's from-scratch WebAssembly JIT recompiler. Controller input is not yet functional.",
+    background: 'images/app/dreamcast-background.png',
+    thumbnail: 'images/app/dreamcast-thumb.png',
+    validate: checkDiscs,
+    extensions: [],
+    ambiguousExtensions: ['.chd'],
+    multiThreaded: true,
+    slowExit: true,
+    addProps: (feedProps, outProps) => {
+      const bios = feedProps.flycast_bios;
+      if (bios) {
+        outProps.flycast_bios = bios;
+      }
+    },
+    defaults: {
+      discs: [],
+      uid: "",
+      zoomLevel: 0,
+      cheat: ""
+    }
+  },
+  {
+    key: APP_TYPE_KEYS.RETRO_PPSSPP,
+    alias: APP_TYPE_KEYS.PSP,
+    name: 'Sony PSP',
+    shortName: 'Sony PSP',
+    coreName: 'Libretro PPSSPP',
+    location: locRetroPpsspp,
+    background: 'images/app/psp-background.png',
+    thumbnail: 'images/app/psp-thumb.png',
+    description: "A Libretro core for emulating the Sony PlayStation Portable, based on PPSSPP, widely regarded as the most accurate and compatible PSP emulator available. It supports advanced graphical shaders.",
+    validate: checkDiscs,
+    extensions: [],
+    ambiguousExtensions: ['.chd', '.iso', '.cso'],
+    multiThreaded: true,
+    slowExit: true,
+    // addProps: (feedProps, outProps) => {
+    //   const bios = feedProps.psx_bios;
+    //   if (bios) {
+    //     outProps.psx_bios = bios;
+    //   }
+    // },
+    defaults: {
+      discs: [],
+      // sbi: [],
+      // multitap: false,
+      // analog: false,
+      uid: "",
+      zoomLevel: 0,
+      // skipBios: false,
+      // disableMemCard1: false
+      cheat: "",
+    }
+  },
+  {
+    key: APP_TYPE_KEYS.RETRO_MAME_APPLE2GS,
+    alias: APP_TYPE_KEYS.APPLE2GS,
+    name: 'Apple IIGS',
+    coreName: 'Libretro MAME Apple IIGS',
+    location: locRetroMameApple2Gs,
+    thumbnail: "images/app/apple2gs-thumb.png",
+    background: "images/app/apple2gs-background.png",
+    description: "The Apple IIGS was the most powerful member of the Apple II family, released in 1986. Featuring a 65C816 processor, enhanced graphics, and a rich sound chip, it was capable of running the full Apple II software library while adding its own GS-exclusive titles. This core uses MAME to emulate the Apple IIGS, supporting 5.25\" floppy disks, 3.5\" disks, and hard drive images.",
+    validate: checkMedia,
+    family: 'apple2',
+    extensions: ['2mg', '2meg', 'hdv'],
+    addProps: (feedProps, outProps) => {
+      const bios = feedProps.apple2gs_bios;
+      if (bios) {
+        outProps.apple2gs_bios = bios;
+      }
+    },
+    defaults: {
+      uid: "",
+      media: [],
+      zoomLevel: 0,
+      cpuSpeed: 0,
+      enable2nd525: false,
+      enable2nd35: false,
+      initialKeyboardMode: 0,
+      mappings: {},
+    }
+  }
 ];
 
 const addAlias = (types, alias, typeKey) => {
@@ -1551,8 +1733,10 @@ if (enable5200) {
 // Aliases
 // addAlias(types, APP_TYPE_KEYS.A2600, APP_TYPE_KEYS.RETRO_STELLA);
 addAlias(types, APP_TYPE_KEYS.A2600, APP_TYPE_KEYS.RETRO_STELLA_LATEST);
-addAlias(types, APP_TYPE_KEYS.A7800, APP_TYPE_KEYS.JS7800);
+addAlias(types, APP_TYPE_KEYS.A5200, APP_TYPE_KEYS.RETRO_A5200);
+addAlias(types, APP_TYPE_KEYS.A7800, APP_TYPE_KEYS.RETRO_PROSYSTEM);
 addAlias(types, APP_TYPE_KEYS.APPLE2, APP_TYPE_KEYS.RETRO_MAME_APPLE2);
+addAlias(types, APP_TYPE_KEYS.APPLE2GS, APP_TYPE_KEYS.RETRO_MAME_APPLE2GS);
 addAlias(types, APP_TYPE_KEYS.ARCADE, APP_TYPE_KEYS.FBNEO_ARCADE);
 addAlias(types, APP_TYPE_KEYS.ARCADE_CAPCOM, APP_TYPE_KEYS.FBNEO_CAPCOM);
 addAlias(types, APP_TYPE_KEYS.ARCADE_KONAMI, APP_TYPE_KEYS.FBNEO_KONAMI);
@@ -1560,6 +1744,7 @@ addAlias(types, APP_TYPE_KEYS.COLECO, APP_TYPE_KEYS.COLEM);
 addAlias(types, APP_TYPE_KEYS.COMMODORE_C64, APP_TYPE_KEYS.RETRO_COMMODORE_C64);
 addAlias(types, APP_TYPE_KEYS.CDI, APP_TYPE_KEYS.RETRO_MAME_CDI);
 addAlias(types, APP_TYPE_KEYS.DOS, APP_TYPE_KEYS.RETRO_DOSBOX_PURE);
+addAlias(types, APP_TYPE_KEYS.DREAMCAST, APP_TYPE_KEYS.RETRO_FLYCAST);
 addAlias(types, APP_TYPE_KEYS.GBA, APP_TYPE_KEYS.RETRO_MGBA);
 // addAlias(types, APP_TYPE_KEYS.GBA, APP_TYPE_KEYS.RETRO_MGBA);
 addAlias(types, APP_TYPE_KEYS.GB, APP_TYPE_KEYS.RETRO_SAMEBOY_GB);
@@ -1567,6 +1752,7 @@ addAlias(types, APP_TYPE_KEYS.GBC, APP_TYPE_KEYS.RETRO_SAMEBOY_GBC);
 addAlias(types, APP_TYPE_KEYS.GENESIS, APP_TYPE_KEYS.RETRO_GENPLUSGX_MD);
 addAlias(types, APP_TYPE_KEYS.GG, APP_TYPE_KEYS.RETRO_GENPLUSGX_GG);
 addAlias(types, APP_TYPE_KEYS.LNX, APP_TYPE_KEYS.RETRO_MEDNAFEN_LYNX);
+addAlias(types, APP_TYPE_KEYS.N64, APP_TYPE_KEYS.RETRO_MUPEN64PLUS_NEXT);
 addAlias(types, APP_TYPE_KEYS.NEOGEO, APP_TYPE_KEYS.FBNEO_NEOGEO);
 addAlias(types, APP_TYPE_KEYS.NEOGEOCD, APP_TYPE_KEYS.RETRO_NEOCD);
 addAlias(types, APP_TYPE_KEYS.NDS, APP_TYPE_KEYS.RETRO_MELONDS);
@@ -1577,6 +1763,7 @@ addAlias(types, APP_TYPE_KEYS.PCE, APP_TYPE_KEYS.RETRO_MEDNAFEN_PCE);
 addAlias(types, APP_TYPE_KEYS.PCECD, APP_TYPE_KEYS.RETRO_PCE_FAST);
 addAlias(types, APP_TYPE_KEYS.PCFX, APP_TYPE_KEYS.BEETLE_PCFX);
 addAlias(types, APP_TYPE_KEYS.POKEMINI, APP_TYPE_KEYS.RETRO_POKEMINI);
+addAlias(types, APP_TYPE_KEYS.PSP, APP_TYPE_KEYS.RETRO_PPSSPP);
 addAlias(types, APP_TYPE_KEYS.PSX, APP_TYPE_KEYS.BEETLE_PSX);
 addAlias(types, APP_TYPE_KEYS.QUAKE, APP_TYPE_KEYS.TYRQUAKE);
 // addAlias(types, APP_TYPE_KEYS.SATURN, APP_TYPE_KEYS.RETRO_YABAUSE);
@@ -1598,167 +1785,30 @@ const APP_TYPES = types;
 
 const enableExperimentalApps = (b) => {
 
-  //
-  // Remove N64
-  //
-
   let clone = [...APP_TYPES];
   APP_TYPES.length = 0;
-  for (let i = 0; i < clone.length; i++) {
-    const t = clone[i];
-    if ((!APP_TYPE_KEYS.PARALLEL_N64 || t.key !== APP_TYPE_KEYS.PARALLEL_N64) &&
-        (!APP_TYPE_KEYS.N64 || t.key !== APP_TYPE_KEYS.N64) &&
-        t.key !== APP_TYPE_KEYS.RETRO_MUPEN64PLUS_NEXT &&
-        t.key !== APP_TYPE_KEYS.RETRO_PARALLEL_N64) {
-      APP_TYPES.push(t);
-    }
-  }
 
-  delete APP_TYPE_KEYS.PARALLEL_N64;
-  delete APP_TYPE_KEYS.N64;
-
-  //
-  // Add N64
-  //
-
-  if (b) {
-    APP_TYPE_KEYS.PARALLEL_N64 = "parallel-n64";
-    APP_TYPE_KEYS.N64 = "n64";
-
-    APP_TYPES.push({
-      key: APP_TYPE_KEYS.PARALLEL_N64,
-      alias: APP_TYPE_KEYS.N64,
-      name: 'Nintendo 64',
-      coreName: 'ParaLLEl N64',
-      location: locN64,
-      background: 'images/app/n64-background.png',
-      thumbnail: 'images/app/n64-thumb.png',
-      description: "A modern, accuracy-focused emulator for the N64. It is very demanding on hardware and has many known quirks and incompatibilities when running the N64\'s notoriously difficult-to-emulate games.",
-      validate: checkRom,
-      extensions: ['n64', 'v64', 'z64'],
-      isDelayedExit: true,
-      addParams: (url) => {
-        url = UrlUtil.addParam(url, "n64", "1");
-        const N64_SKIP_RP = "n64.skip";
-        const n64skip = UrlUtil.getParam(
-          window.location.search, N64_SKIP_RP);
-        if (n64skip) {
-          url = UrlUtil.addParam(url, N64_SKIP_RP, n64skip);
-        }
-        const N64_VBO_RP = "n64.vbo";
-        const n64vbo = UrlUtil.getParam(
-          window.location.search, N64_VBO_RP);
-        if (n64vbo) {
-          url = UrlUtil.addParam(url, N64_VBO_RP, n64vbo);
-        }
-        return url;
-      },
-      defaults: {
-        rom: "",
-        zoomLevel: 0
-      }
-    });
-    addAlias(APP_TYPES, APP_TYPE_KEYS.N64, APP_TYPE_KEYS.PARALLEL_N64);
-
-    APP_TYPES.push({
-      key: APP_TYPE_KEYS.RETRO_MUPEN64PLUS_NEXT,
-      alias: APP_TYPE_KEYS.N64,
-      name: 'Nintendo 64',
-      coreName: 'Libretro Mupen64Plus-Next',
-      location: locRetroMupen64PlusNext,
-      background: 'images/app/n64-background.png',
-      thumbnail: 'images/app/n64-thumb.png',
-      description: "An actively-maintained, GLideN64-based N64 emulator. Newer and generally more compatible than the default N64 core, but still experimental in this environment.",
-      validate: checkRom,
-      extensions: ['n64', 'v64', 'z64'],
-      isDelayedExit: true,
-      multiThreaded: false,
-      defaults: {
-        rom: "",
-        zoomLevel: 0,
-        cheat: "",
-        disableOpenGL2: false,
-        countPerOp: 0,
-        audioLatency: 0
-      }
-    });
-
-    // WRC - registration disabled for now (user request): don't want to
-    // overwhelm people with a third N64 option yet, want focus on
-    // Mupen64Plus-Next while keeping the old (non-"retro") ParaLLEl N64
-    // app as the other option. Re-enable when ready.
-    // APP_TYPES.push({
-    //   key: APP_TYPE_KEYS.RETRO_PARALLEL_N64,
-    //   alias: APP_TYPE_KEYS.N64,
-    //   name: 'Nintendo 64',
-    //   coreName: 'Libretro ParaLLEl N64',
-    //   location: locRetroParallelN64,
-    //   background: 'images/app/n64-background.png',
-    //   thumbnail: 'images/app/n64-thumb.png',
-    //   description: "An alternate N64 emulator core (EmulatorJS's fork of paraLLEl N64), offered alongside Mupen64Plus-Next for titles that run better on this core. Still experimental in this environment.",
-    //   validate: checkRom,
-    //   extensions: ['n64', 'v64', 'z64'],
-    //   isDelayedExit: true,
-    //   defaults: {
-    //     rom: "",
-    //     zoomLevel: 0
-    //   }
-    // });
-  }
-
-  //
-  // Remove 5200
-  //
-
-  for (let i = 0; i < clone.length; i++) {
-    const t = clone[i];
-    if ((!APP_TYPE_KEYS.RETRO_A5200 || t.key !== APP_TYPE_KEYS.RETRO_A5200) &&
-        (!APP_TYPE_KEYS.A5200 || t.key !== APP_TYPE_KEYS.A5200)) {
-      APP_TYPES.push(t);
-    }
-  }
-
-  delete APP_TYPE_KEYS.RETRO_A5200;
-  delete APP_TYPE_KEYS.A5200;
-
-  //
-  // Add 5200
-  //
-
-  if (b) {
-    APP_TYPE_KEYS.RETRO_A5200 = "retro-5200";
-    APP_TYPE_KEYS.A5200 = "5200";
-
-    APP_TYPES.push({
-      key: APP_TYPE_KEYS.RETRO_A5200,
-      alias: APP_TYPE_KEYS.A5200,
-      name: 'Atari 5200',
-      coreName: 'Libretro A5200',
-      location: locRetro5200,
-      background: 'images/app/5200-background.png',
-      thumbnail: 'images/app/5200-thumb.png',
-      description: "A Libretro core for emulating the Atari 5200. It brings the console's library to modern frontends with support for shaders and standardized controls.",
-      validate: checkRom,
-      extensions: ['a52'],
-      addProps: (feedProps, outProps) => {
-        const rom = feedProps.atari5200_rom;
-        if (rom) {
-          outProps.atari5200_rom = rom;
-        }
-      },
-      defaults: {
-        rom: "",
-        cheat: "",
-        zoomLevel: 0,
-        swap: false,
-        analog: false,
-        twinStick: false,
-        descriptions: {},
-        mappings: {},
-      }
-    });
-    addAlias(types, APP_TYPE_KEYS.A5200, APP_TYPE_KEYS.RETRO_A5200);
-  }
+  // WRC - registration disabled for now (user request): don't want to
+  // overwhelm people with a third N64 option yet, want focus on
+  // Mupen64Plus-Next while keeping the old (non-"retro") ParaLLEl N64
+  // app as the other option. Re-enable when ready.
+  // APP_TYPES.push({
+  //   key: APP_TYPE_KEYS.RETRO_PARALLEL_N64,
+  //   alias: APP_TYPE_KEYS.N64,
+  //   name: 'Nintendo 64',
+  //   coreName: 'Libretro ParaLLEl N64',
+  //   location: locRetroParallelN64,
+  //   background: 'images/app/n64-background.png',
+  //   thumbnail: 'images/app/n64-thumb.png',
+  //   description: "An alternate N64 emulator core (EmulatorJS's fork of paraLLEl N64), offered alongside Mupen64Plus-Next for titles that run better on this core. Still experimental in this environment.",
+  //   validate: checkRom,
+  //   extensions: ['n64', 'v64', 'z64'],
+  //   isDelayedExit: true,
+  //   defaults: {
+  //     rom: "",
+  //     zoomLevel: 0
+  //   }
+  // });
 
   //
   // Remove Saturn
@@ -1818,161 +1868,6 @@ const enableExperimentalApps = (b) => {
   }
 
   //
-  // Remove Dreamcast
-  //
-
-  clone = [...APP_TYPES];
-  APP_TYPES.length = 0;
-  for (let i = 0; i < clone.length; i++) {
-    const t = clone[i];
-    if ((!APP_TYPE_KEYS.RETRO_FLYCAST || t.key !== APP_TYPE_KEYS.RETRO_FLYCAST) &&
-        (!APP_TYPE_KEYS.DREAMCAST || t.key !== APP_TYPE_KEYS.DREAMCAST)) {
-      APP_TYPES.push(t);
-    }
-  }
-
-  delete APP_TYPE_KEYS.RETRO_FLYCAST;
-  delete APP_TYPE_KEYS.DREAMCAST;
-
-  //
-  // Add Dreamcast
-  //
-
-  if (b) {
-    APP_TYPE_KEYS.RETRO_FLYCAST = "retro-flycast";
-    APP_TYPE_KEYS.DREAMCAST = "dreamcast";
-
-    APP_TYPES.push({
-      key: APP_TYPE_KEYS.RETRO_FLYCAST,
-      alias: APP_TYPE_KEYS.DREAMCAST,
-      name: 'Sega Dreamcast',
-      shortName: 'Sega Dreamcast',
-      coreName: 'Libretro Flycast',
-      location: locRetroFlycast,
-      description: "An early, experimental Libretro-style core for emulating the Sega Dreamcast, based on flycast's from-scratch WebAssembly JIT recompiler. Controller input is not yet functional.",
-      background: 'images/app/dreamcast-background.png',
-      thumbnail: 'images/app/dreamcast-thumb.png',
-      validate: checkDiscs,
-      extensions: [],
-      ambiguousExtensions: ['.chd'],
-      multiThreaded: true,
-      slowExit: true,
-      addProps: (feedProps, outProps) => {
-        const bios = feedProps.flycast_bios;
-        if (bios) {
-          outProps.flycast_bios = bios;
-        }
-      },
-      defaults: {
-        discs: [],
-        uid: "",
-        zoomLevel: 0,
-        cheat: ""
-      }
-    });
-    addAlias(types, APP_TYPE_KEYS.DREAMCAST, APP_TYPE_KEYS.RETRO_FLYCAST);
-  }
-
-  //
-  // Add PSP
-  //
-
-  if (b) {
-    APP_TYPE_KEYS.RETRO_PPSSPP = "retro-ppsspp";
-    APP_TYPE_KEYS.PSP = "psp";
-
-    APP_TYPES.push({
-      key: APP_TYPE_KEYS.RETRO_PPSSPP,
-      alias: APP_TYPE_KEYS.PSP,
-      name: 'Sony PSP',
-      shortName: 'Sony PSP',
-      coreName: 'Libretro PPSSPP',
-      location: locRetroPpsspp,
-      background: 'images/app/psp-background.png',
-      thumbnail: 'images/app/psp-thumb.png',
-      description: "",
-      validate: checkDiscs,
-      extensions: [],
-      multiThreaded: true,
-      slowExit: true,
-      // addProps: (feedProps, outProps) => {
-      //   const bios = feedProps.psx_bios;
-      //   if (bios) {
-      //     outProps.psx_bios = bios;
-      //   }
-      // },
-      defaults: {
-        discs: [],
-        // sbi: [],
-        // multitap: false,
-        // analog: false,
-        uid: "",
-        zoomLevel: 0,
-        // skipBios: false,
-        // disableMemCard1: false
-      }
-    });
-    addAlias(types, APP_TYPE_KEYS.PSP, APP_TYPE_KEYS.RETRO_PPSSPP);
-  }
-
-  //
-  // Remove Apple IIGS
-  //
-
-  clone = [...APP_TYPES];
-  APP_TYPES.length = 0;
-  for (let i = 0; i < clone.length; i++) {
-    const t = clone[i];
-    if ((!APP_TYPE_KEYS.RETRO_MAME_APPLE2GS || t.key !== APP_TYPE_KEYS.RETRO_MAME_APPLE2GS) &&
-        (!APP_TYPE_KEYS.APPLE2GS || t.key !== APP_TYPE_KEYS.APPLE2GS)) {
-      APP_TYPES.push(t);
-    }
-  }
-
-  delete APP_TYPE_KEYS.RETRO_MAME_APPLE2GS;
-  delete APP_TYPE_KEYS.APPLE2GS;
-
-  //
-  // Add Apple IIGS
-  //
-
-  if (b) {
-    APP_TYPE_KEYS.RETRO_MAME_APPLE2GS = "retro-mame-apple2gs";
-    APP_TYPE_KEYS.APPLE2GS = "apple2gs";
-
-    APP_TYPES.push({
-      key: APP_TYPE_KEYS.RETRO_MAME_APPLE2GS,
-      alias: APP_TYPE_KEYS.APPLE2GS,
-      name: 'Apple IIGS',
-      coreName: 'Libretro MAME Apple IIGS',
-      location: locRetroMameApple2Gs,
-      thumbnail: "images/app/apple2gs-thumb.png",
-      background: "images/app/apple2gs-background.png",
-      description: "The Apple IIGS was the most powerful member of the Apple II family, released in 1986. Featuring a 65C816 processor, enhanced graphics, and a rich sound chip, it was capable of running the full Apple II software library while adding its own GS-exclusive titles. This core uses MAME to emulate the Apple IIGS, supporting 5.25\" floppy disks, 3.5\" disks, and hard drive images.",
-      validate: checkMedia,
-      family: 'apple2',
-      extensions: ['2mg', '2meg', 'hdv'],
-      addProps: (feedProps, outProps) => {
-        const bios = feedProps.apple2gs_bios;
-        if (bios) {
-          outProps.apple2gs_bios = bios;
-        }
-      },
-      defaults: {
-        uid: "",
-        media: [],
-        zoomLevel: 0,
-        cpuSpeed: 0,
-        enable2nd525: false,
-        enable2nd35: false,
-        initialKeyboardMode: 0,
-        mappings: {},
-      }
-    });
-    addAlias(APP_TYPES, APP_TYPE_KEYS.APPLE2GS, APP_TYPE_KEYS.RETRO_MAME_APPLE2GS);
-  }
-
-  //
   // Remove Jaguar / Jaguar CD
   //
 
@@ -2012,7 +1907,7 @@ const enableExperimentalApps = (b) => {
       location: locRetroVirtualJaguar,
       background: 'images/app/jaguar-background.png',
       thumbnail: 'images/app/jaguar-thumb.png',
-      description: "A Libretro core based on Virtual Jaguar for emulating the Atari Jaguar, a 64-bit cartridge-based console released by Atari in 1993.",
+      description: "A Libretro core based on Virtual Jaguar for emulating the Atari Jaguar, a 64-bit cartridge-based console released by Atari in 1993. This core includes support for advanced graphical shaders.",
       validate: checkRom,
       extensions: ['j64', 'jag'],
       defaults: {

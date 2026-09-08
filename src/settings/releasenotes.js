@@ -1,17 +1,38 @@
 export const ReleaseData = [
 {
-    version: "v0.2.4-p5",
+    version: "v0.2.4-p7",
     preRelease: true,
-    date: "August 18, 2026",
+    date: "September 8, 2026",
     title: "New Emulators, Enhancements & Bug Fixes",
     changes: [
       {
         title: "The following applications (emulators) have been added:",
         items: [
-          "*Sega 32X*",
-          "*Sega 32X CD*",
           "*Atari Jaguar* (experimental)",
-          "*Atari Jaguar CD* (experimental)"
+          "*Atari Jaguar CD* (experimental)",
+          "*Sega 32X*",
+          "*Sega 32X CD*"
+        ]
+      },
+      {
+        title: "New application variants have been added for the following aliases (systems):",
+        items: [
+          "*Atari 7800*: Libretro ProSystem-Next (supports shaders, cheats, and achievements)",
+          "*Nintendo 64*: Libretro Mupen64Plus-Next"
+        ]
+      },
+      {
+        title: "The following applications are no longer experimental:",
+        items: [
+          "*Apple IIGS*",
+          "*Atari 5200*",
+          "*Nintendo 64*"
+        ]
+      },
+      {
+        title: "Player",
+        items: [
+          "Started rolling out a standardized on-screen *Pause* button and consistent pause/menu controls across apps (about 25% complete)."
         ]
       },
       {
@@ -33,9 +54,15 @@ export const ReleaseData = [
         ]
       },
       {
-        title: "Commodore 64",
+        title: "Atari 5200",
         items: [
-          "Fixed the *Save Disks* setting ignoring an explicit choice of \"(none)\" and silently defaulting to one save disk anyway."
+          "Added an on-screen *Pause*/*Keypad* button and a stick-driven radial keypad selector, matching *Atari Jaguar* and *ColecoVision*."
+        ]
+      },
+      {
+        title: "Atari 7800",
+        items: [
+          "*Libretro ProSystem-Next* is now the default *Atari 7800* core (previously *JS7800*, which remains available as a lighter-weight alternative)."
         ]
       },
       {
@@ -45,9 +72,40 @@ export const ReleaseData = [
         ]
       },
       {
+        title: "Bally Astrocade",
+        items: [
+          "Fixed the on-screen keypad reopening if *Enter* was still held down when it closed."
+        ]
+      },
+      {
+        title: "ColecoVision",
+        items: [
+          "Added an on-screen *Pause*/*Keypad* button and a stick-driven radial keypad selector, matching *Atari Jaguar*."
+        ]
+      },
+      {
+        title: "Commodore 64",
+        items: [
+          "Fixed the *Save Disks* setting ignoring an explicit choice of \"(none)\" and silently defaulting to one save disk anyway."
+        ]
+      },
+      {
+        title: "Nintendo 64",
+        items: [
+          "*Libretro Mupen64Plus-Next* is now the default *Nintendo 64* core (previously *ParaLLEl N64*, which remains available as an alternative).",
+          "Fixed *paraLLEl N64* accidentally opening *Pause* when using *Ctrl+Shift* as analog movement modifiers during normal play."
+        ]
+      },
+      {
         title: "Nintendo DS",
         items: [
           "Added a selectable microphone \"blow\" type (*Realistic Sample* or *Random Noise*), in the Feed Editor and the in-game pause menu. Different games respond better to different types: a recorded sample fixes blow detection in some games (e.g. *Zelda: Phantom Hourglass*), but reduces reliability in others, so it's now a choice instead of one setting for everyone."
+        ]
+      },
+      {
+        title: "SNES",
+        items: [
+          "Fixed the pause menu occasionally not responding to *Tab*, *Enter*, or *Space*."
         ]
       },
       {
@@ -69,7 +127,8 @@ export const ReleaseData = [
           "Fixed local file and URL adds for disc-based systems (CD-i, 32X CD, Jaguar CD, Saturn, etc.) showing the raw filename as the title instead of the matched game's real name, even when artwork was found correctly.",
           "Fixed matched game titles that include a version number (e.g. \"Sonic R v1.000\") failing to match, and not displaying cleanly when they did.",
           "Adding a URL for a large disc-image format (.cdi, .chd, .pbp, .cso, .iso) that can't be matched via hash now fails immediately instead of downloading the entire file first.",
-          "Fixed per-game control mappings and settings (Atari 5200, ColecoVision, Bally Astrocade, Atari Jaguar, 3DO) not being applied when a title is picked from the Add Item search dropdown — they previously only applied when a file was matched by hash."
+          "Fixed per-game control mappings and settings (Atari 5200, ColecoVision, Bally Astrocade, Atari Jaguar, 3DO) not being applied when a title is picked from the Add Item search dropdown. They previously only applied when a file was matched by hash.",
+          "Selecting an item's platform/core now opens the same Platform Chooser used when adding a new item, instead of a plain dropdown."
         ]
       },
       {
