@@ -19,6 +19,7 @@ export class DisplayLoop {
     this.fps = '';
     this.debugDiv = null;
     this.debugCb = null;
+    this.fpsCb = null;
     this.isAdjustTimestampEnabled = true;
     this.isNoWait = noWait;
 
@@ -224,6 +225,10 @@ export class DisplayLoop {
           let elapsed = NOW - start;
           const fpsVal = (1000.0 / (elapsed / fc));
 
+          if (this.fpsCb) {
+            this.fpsCb(fpsVal);
+          }
+
           if (this.debug && checkSync === 1) {
             LOG.info("Checking VSYNC");
           }
@@ -282,6 +287,13 @@ export class DisplayLoop {
 
   setDebugCallback(cb) {
     this.debugCb = cb;
+  }
+
+  // WRC - unconditional (unlike debugCb, which only fires when debug mode
+  // is on) - lets an app take real action off periodic FPS updates (e.g.
+  // auto frame-skip) for actual players, not just dev builds.
+  setFpsCallback(cb) {
+    this.fpsCb = cb;
   }
 
   getFps() {

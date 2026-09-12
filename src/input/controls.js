@@ -90,6 +90,19 @@ export class PadMapping {
     }
     return 0;
   }
+
+  // WRC - analog PRESSURE (0.0-1.0) for a button-mapped control, distinct
+  // from isPadButtonDown()'s digital pressed/released. Standard Web
+  // Gamepad API buttons carry both .pressed (bool) and .value (analog
+  // float) - most buttons only ever report 0/1 for .value, but triggers
+  // (LTRIG/RTRIG) on gamepads that support it report real pressure.
+  getButtonValue(pad, cid) {
+    const bid = this.getButtonNum(cid);
+    if (pad && pad.buttons && bid >= 0 && bid < pad.buttons.length) {
+      return pad.buttons[bid].value;
+    }
+    return 0;
+  }
 }
 
 export class StandardPadMapping extends PadMapping {
@@ -306,6 +319,11 @@ export class Controller {
     return padMapping.getAxisValue(this.pad, stick, isX);
   }
 
+  getButtonValue(cid) {
+    const { padMapping } = this;
+    return padMapping.getButtonValue(this.pad, cid);
+  }
+
   isAxisLeft(stick) {
     const { padMapping } = this;
     return padMapping.getAxisValue(this.pad, stick, true) < -0.5;
@@ -481,6 +499,10 @@ export class Controllers {
 
   getAxisValue(controllerIdx, stick, isX) {
     return this.controllers[controllerIdx].getAxisValue(stick, isX);
+  }
+
+  getButtonValue(controllerIdx, cid) {
+    return this.controllers[controllerIdx].getButtonValue(cid);
   }
 }
 

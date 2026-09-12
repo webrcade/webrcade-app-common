@@ -1593,7 +1593,7 @@ const types = [{
     thumbnail: 'images/app/dreamcast-thumb.png',
     validate: checkDiscs,
     extensions: [],
-    ambiguousExtensions: ['.chd'],
+    ambiguousExtensions: ['.chd', '.cdi'],
     multiThreaded: true,
     slowExit: true,
     addProps: (feedProps, outProps) => {
@@ -1935,7 +1935,8 @@ const enableExperimentalApps = (b) => {
       thumbnail: 'images/app/jaguarcd-thumb.png',
       description: "A Libretro core based on Virtual Jaguar for emulating the Atari Jaguar CD, a CD-ROM add-on for the Atari Jaguar released in 1995. This core includes support for advanced graphical shaders.",
       validate: checkDiscs,
-      extensions: ['cdi'],
+      extensions: [],
+      ambiguousExtensions: ['.cdi'],
       slowExit: true,
       defaults: {
         discs: [],
