@@ -17,7 +17,17 @@ export const CIDS = {
   START: 13,
   LANALOG: 14,
   RANALOG: 15,
-  ESCAPE: 16
+  ESCAPE: 16,
+  // WRC - synthetic/virtual control, same treatment as ESCAPE/START/SELECT
+  // below: computed from a raw combo rather than read from a real physical
+  // button. Currently means LTRIG+RANALOG - the combo freed up from
+  // ESCAPE's own synthesis (see isControlDown()'s comment below) so apps
+  // could repurpose it for their own custom trigger (opening a virtual
+  // keyboard/keypad, switching an input mode, etc.) without needing to
+  // hand-roll the raw LTRIG+RANALOG check (and its release-wait) themselves
+  // - see retro-mame-apple2/apple2gs, retro-commodore-8bit, retro-dosbox-pure,
+  // and scummvm for the current consumers.
+  WRC_CUSTOM: 17
 }
 
 export const KCODES = {
@@ -350,7 +360,7 @@ export class Controller {
       return true;
     }
 
-    if (cid === CIDS.ESCAPE || cid === CIDS.START || cid == CIDS.SELECT) {
+    if (cid === CIDS.ESCAPE || cid === CIDS.START || cid == CIDS.SELECT || cid === CIDS.WRC_CUSTOM) {
       // left trigger + left analog (works on every platform, including Xbox)
       // select + x (not on xbox)
       //
@@ -358,12 +368,9 @@ export class Controller {
       // trigger + right analog, and (non-Xbox) left trigger + start/select
       // -- per the finalized control-mapping-audit doc, which documents
       // exactly these two as the pause combo set. Left trigger + right
-      // analog specifically is now reserved for opening the on-screen
-      // keypad/virtual keyboard (see BasicAppWrapper/RetroAppWrapper-based
-      // apps' own handleEscape()-style interception), not pause -- apps
-      // that use it for that no longer need to intercept it before it
-      // reaches pause, since it never resolves to CIDS.ESCAPE here at all
-      // anymore, but leaving that interception code in place is harmless.
+      // analog specifically is reserved for CIDS.WRC_CUSTOM below instead
+      // (an app-defined custom trigger - opening a virtual keyboard/keypad,
+      // switching an input mode, etc.), not pause.
       if (cid === CIDS.ESCAPE) {
         return (
           this.isPadButtonDown(CIDS.LTRIG) && this.isPadButtonDown(CIDS.LANALOG)) ||
@@ -380,6 +387,10 @@ export class Controller {
       } else if (cid == CIDS.SELECT) {
         return (this.isPadButtonDown(CIDS.RTRIG) && this.isPadButtonDown(CIDS.LANALOG)) ||
         (!isXbox && this.isPadButtonDown(CIDS.SELECT));
+      // left trigger + right analog - see CIDS.WRC_CUSTOM's own comment.
+      // Works on every platform, including Xbox, same as ESCAPE's LTRIG+LANALOG.
+      } else if (cid === CIDS.WRC_CUSTOM) {
+        return this.isPadButtonDown(CIDS.LTRIG) && this.isPadButtonDown(CIDS.RANALOG);
       }
       return false;
     }

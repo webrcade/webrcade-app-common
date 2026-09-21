@@ -272,8 +272,56 @@ export class RetroAppWrapper extends AppWrapper {
     return "";
   }
 
+  // WRC - decision rule for all three isXEscapeHackEnabled() getters
+  // below (worked out from a real production bug in
+  // webrcade-app-retro-ppsspp and the beetle-psx counter-example - see
+  // docs/escape-hack-audit.md for the per-app audit this rule drives):
+  //
+  //   isEscapeHackEnabled()       -> true if the app uses LEFT TRIGGER
+  //                                  for a real, extended-hold gameplay
+  //                                  function. A long real LTRIG hold
+  //                                  plus an incidental LANALOG click
+  //                                  (from real left-stick use) could
+  //                                  otherwise satisfy LT+LA and pop
+  //                                  Pause by accident.
+  //   isSelectEscapeHackEnabled() -> true only if the app uses RIGHT
+  //                                  TRIGGER for a real, extended-hold
+  //                                  function AND Select is a real,
+  //                                  meaningful button on that console
+  //                                  (an accidental RT+LA is only worth
+  //                                  guarding against if firing Select
+  //                                  actually does something).
+  //   isStartEscapeHackEnabled()  -> true only if the app uses RIGHT
+  //                                  TRIGGER for a real, extended-hold
+  //                                  function AND real right-analog
+  //                                  controls are mapped (camera stick,
+  //                                  etc.) - the accidental RT+RA risk
+  //                                  from a real right-stick tilt/click
+  //                                  during that hold.
+  //
+  // Reference cases: webrcade-app-beetle-psx (PSX's DualShock has a real
+  // analog R2 commonly held AND real L3/R3 functions - all three true)
+  // vs. webrcade-app-retro-flycast (real LTRIG braking pressure but
+  // Select is a no-op and no real second stick - only isEscapeHackEnabled
+  // stays true, the other two use these false defaults).
   isEscapeHackEnabled() {
     return true;
+  }
+
+  // WRC - default false, unlike isEscapeHackEnabled() above - confirmed
+  // via production testing (webrcade-app-retro-ppsspp) that gating
+  // Start/Select this way breaks the RT+LA/RT+RA combos' own legitimate
+  // repeated-use case: holding RTRIG continuously while tapping the
+  // analog click repeatedly (e.g. to cycle menu options) would silently
+  // stop registering after ~1s, once escapeCount crossed the threshold.
+  // See the decision rule above isEscapeHackEnabled() for when to opt a
+  // specific app back in.
+  isStartEscapeHackEnabled() {
+    return false;
+  }
+
+  isSelectEscapeHackEnabled() {
+    return false;
   }
 
   handleEscape(controllers) {}
@@ -285,11 +333,26 @@ export class RetroAppWrapper extends AppWrapper {
 
     const isAnalog = analogMode;
 
+    // WRC - each button is only watched here if something downstream
+    // actually cares about its hold-time: LTRIG is exclusively part of
+    // the ESCAPE combo (LT+LA), RANALOG exclusively part of the Start
+    // combo (RT+RA), RTRIG shared by Select (RT+LA) and Start (RT+RA),
+    // and LANALOG shared by ESCAPE (LT+LA) and Select (RT+LA). Watching
+    // an unneeded button would pollute this same shared escapeCount used
+    // by ALL THREE gates below - e.g. a real, extended RTRIG hold (an
+    // analog trigger) on an app with Start/Select-hack both disabled
+    // would otherwise still climb escapeCount and could suppress the
+    // unrelated Pause combo for as long as it's held.
+    const watchLtrig = this.isEscapeHackEnabled();
+    const watchLanalog = this.isEscapeHackEnabled() || this.isSelectEscapeHackEnabled();
+    const watchRtrig = this.isSelectEscapeHackEnabled() || this.isStartEscapeHackEnabled();
+    const watchRanalog = this.isStartEscapeHackEnabled();
+
     if (
-      controllers.isControlDown(0, CIDS.RTRIG) ||
-      controllers.isControlDown(0, CIDS.LTRIG) ||
-      controllers.isControlDown(0, CIDS.LANALOG) ||
-      controllers.isControlDown(0, CIDS.RANALOG)
+      (watchLtrig && controllers.isControlDown(0, CIDS.LTRIG)) ||
+      (watchLanalog && controllers.isControlDown(0, CIDS.LANALOG)) ||
+      (watchRtrig && controllers.isControlDown(0, CIDS.RTRIG)) ||
+      (watchRanalog && controllers.isControlDown(0, CIDS.RANALOG))
     ) {
       this.escapeCount = this.escapeCount === -1 ? 0 : this.escapeCount + 1;
     } else {
@@ -299,7 +362,13 @@ export class RetroAppWrapper extends AppWrapper {
     for (let i = 0; i < CONTROLLER_COUNT; i++) {
       let input = 0;
 
-      const escapeOk = !this.isEscapeHackEnabled() || (this.escapeCount === -1 || this.escapeCount < 60);
+      // WRC - raw "haven't been held too long yet" signal, shared by all
+      // three isXEscapeHackEnabled() gates below - each independently
+      // decides whether it cares about this signal at all.
+      const escapeHackOk = (this.escapeCount === -1 || this.escapeCount < 60);
+      const escapeOk = !this.isEscapeHackEnabled() || escapeHackOk;
+      const startOk = !this.isStartEscapeHackEnabled() || escapeHackOk;
+      const selectOk = !this.isSelectEscapeHackEnabled() || escapeHackOk;
 
       // Hack to reduce likelihood of accidentally bringing up menu
       if (
@@ -325,10 +394,10 @@ export class RetroAppWrapper extends AppWrapper {
       } else if (controllers.isControlDown(i, CIDS.LEFT, !isAnalog)) {
         input |= this.INP_LEFT;
       }
-      if (controllers.isControlDown(i, CIDS.START) && escapeOk) {
+      if (controllers.isControlDown(i, CIDS.START) && startOk) {
         input |= this.INP_START;
       }
-      if (controllers.isControlDown(i, CIDS.SELECT) && escapeOk) {
+      if (controllers.isControlDown(i, CIDS.SELECT) && selectOk) {
         input |= this.INP_SELECT;
       }
       if (controllers.isControlDown(i, CIDS.A)) {
