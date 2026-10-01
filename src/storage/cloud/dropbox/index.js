@@ -1,6 +1,7 @@
 import {
   Dropbox,
   DropboxAuth,
+  DropboxResponseError,
 } from 'dropbox';
 
 import { Resources, TEXT_IDS } from '../../../resources';
@@ -173,11 +174,27 @@ class WrcDropbox {
   }
 
   async downloadFile(path) {
-    const dbx = await this.getDropbox();
-    const linkResult = await dbx.filesGetTemporaryLink({path: path});
-    const response = await fetch(linkResult.result.link);
-    if (!response.ok) throw new Error(`Dropbox download failed: ${response.status}`);
-    return await response.blob();
+    // Retry on transient failures (temporary link generation or the
+    // subsequent fetch), same pattern as uploadFile() below. But a
+    // DropboxResponseError means the API call went through and Dropbox
+    // gave a definitive answer (e.g. path/not_found for a game with no
+    // cloud save yet) - that's not transient, and retrying it just delays
+    // an expected "no save" outcome by several seconds for nothing. Only
+    // retry genuine network-level failures (the request itself not
+    // completing).
+    for (let attempt = 1; attempt <= 5; attempt++) {
+      try {
+        const dbx = await this.getDropbox();
+        const linkResult = await dbx.filesGetTemporaryLink({path: path});
+        const response = await fetch(linkResult.result.link);
+        if (!response.ok) throw new Error(`Dropbox download failed: ${response.status}`);
+        return await response.blob();
+      } catch (e) {
+        if (attempt === 5 || e instanceof DropboxResponseError) throw e;
+        LOG.error(`Download attempt ${attempt} failed, retrying in ${500 * attempt}ms: ${e.message}`);
+        await new Promise(r => setTimeout(r, 500 * attempt));
+      }
+    }
   }
 
   httpHeaderSafeJson(v) {
@@ -238,7 +255,9 @@ class WrcDropbox {
             });
             break;
           } catch (e) {
-            if (attempt === 5) throw e;
+            // See downloadFile() - a DropboxResponseError is a definitive
+            // API answer (e.g. insufficient_space), not worth retrying.
+            if (attempt === 5 || e instanceof DropboxResponseError) throw e;
             LOG.error(`Upload attempt ${attempt} failed, retrying in ${500 * attempt}ms: ${e.message}`);
             await new Promise(r => setTimeout(r, 500 * attempt));
           }

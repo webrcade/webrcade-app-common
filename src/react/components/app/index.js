@@ -132,9 +132,6 @@ export class WebrcadeApp extends Component {
 
     // Set debug flag
     this.debug = UrlUtil.getBoolParam(url, AppProps.RP_DEBUG);
-
-    // Enable experimental apps
-    AppRegistry.instance.enableExpApps(true);
   }
 
   componentWillUnmount() {

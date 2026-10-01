@@ -1,8 +1,8 @@
 export const ReleaseData = [
 {
-    version: "v0.2.4-p7",
+    version: "v0.2.4-p12",
     preRelease: true,
-    date: "September 8, 2026",
+    date: "September 23, 2026",
     title: "New Emulators, Enhancements & Bug Fixes",
     changes: [
       {
@@ -11,7 +11,9 @@ export const ReleaseData = [
           "*Atari Jaguar* (experimental)",
           "*Atari Jaguar CD* (experimental)",
           "*Sega 32X*",
-          "*Sega 32X CD*"
+          "*Sega 32X CD*",
+          "*Sega Dreamcast* (experimental)",
+          "*Sony PSP* (experimental)"
         ]
       },
       {
@@ -32,7 +34,15 @@ export const ReleaseData = [
       {
         title: "Player",
         items: [
-          "Started rolling out a standardized on-screen *Pause* button and consistent pause/menu controls across apps (about 25% complete)."
+          "Added a standardized on-screen *Pause* button, a consistent *On-Screen Controls* setting, and a matching keyboard/gamepad control scheme across applications."
+        ]
+      },
+      {
+        title: "General",
+        items: [
+          "Fixed an issue where streaming downloads would fail if the server's response didn't include a filename in its headers.",
+          "Removed the *Experimental apps* setting. Experimental applications are no longer hidden behind a toggle - they always appear, and are simply marked with an *experimental* tag in the editor's Platform Chooser instead.",
+          "Cloud storage (Dropbox) downloads now automatically retry on transient failures, matching the retry behavior uploads already had."
         ]
       },
       {
@@ -128,7 +138,8 @@ export const ReleaseData = [
           "Fixed matched game titles that include a version number (e.g. \"Sonic R v1.000\") failing to match, and not displaying cleanly when they did.",
           "Adding a URL for a large disc-image format (.cdi, .chd, .pbp, .cso, .iso) that can't be matched via hash now fails immediately instead of downloading the entire file first.",
           "Fixed per-game control mappings and settings (Atari 5200, ColecoVision, Bally Astrocade, Atari Jaguar, 3DO) not being applied when a title is picked from the Add Item search dropdown. They previously only applied when a file was matched by hash.",
-          "Selecting an item's platform/core now opens the same Platform Chooser used when adding a new item, instead of a plain dropdown."
+          "Selecting an item's platform/core now opens the same Platform Chooser used when adding a new item, instead of a plain dropdown.",
+          "Application/platform icons now appear next to the relevant dropdowns in the Feed Editor (Applications settings, Feed properties, and item type selection), making it easier to confirm the right one is selected."
         ]
       },
       {

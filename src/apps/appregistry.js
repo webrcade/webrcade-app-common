@@ -1,4 +1,4 @@
-import { enableExperimentalApps, getAppStoragePath, APP_TYPES } from './applist.js';
+import { getAppStoragePath, APP_TYPES } from './applist.js';
 import { AppProps } from '../app/props.js';
 import {
   blobToStr,
@@ -20,11 +20,6 @@ class AppRegistry {
   }
 
   APP_TYPES = {}
-
-  enableExpApps(b) {
-    enableExperimentalApps(b);
-    this.updateAppTypes();
-  }
 
   updateAppTypes() {
     this.APP_TYPES = {}

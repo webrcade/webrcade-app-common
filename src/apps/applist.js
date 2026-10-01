@@ -61,7 +61,6 @@ const locRetroMameCdi = isDev() ? `${http}${localIp}:3386` : 'app/retro-mame-cdi
 const locRetroPicodrive32x = isDev() ? `${http}${localIp}:3390` : 'app/retro-picodrive/';
 const locRetroVirtualJaguar = isDev() ? `${http}${localIp}:3391` : 'app/retro-virtual-jaguar/';
 const locRetroMupen64PlusNext = isDev() ? `${http}${localIp}:3556` : 'app/retro-mupen64plus-next/';
-const locRetroParallelN64 = isDev() ? `${http}${localIp}:3309` : 'app/retro-parallel-n64/';
 const locRetroFlycast = isDev() ? `${http}${localIp}:3557` : 'app/retro-flycast/';
 const locStandalone = isDev() ? `${http}${localIp}:3080` : 'app/standalone/';
 
@@ -176,8 +175,8 @@ const APP_TYPE_KEYS = /*Object.freeze(*/{
   RETRO_PICODRIVE_32X: "retro-picodrive-32x",
   RETRO_PICODRIVE_32XCD: "retro-picodrive-32xcd",
   RETRO_POKEMINI: "retro-pokemini",
-  // RETRO_VIRTUAL_JAGUAR: "retro-virtual-jaguar",
-  // RETRO_VIRTUAL_JAGUAR_CD: "retro-virtual-jaguar-cd",
+  RETRO_VIRTUAL_JAGUAR: "retro-virtual-jaguar",
+  RETRO_VIRTUAL_JAGUAR_CD: "retro-virtual-jaguar-cd",
   RETRO_PROSYSTEM: "retro-prosystem",
   RETRO_SNES9X: "retro-snes9x",
   RETRO_STELLA: "retro-stella",
@@ -187,7 +186,7 @@ const APP_TYPE_KEYS = /*Object.freeze(*/{
   RETRO_SAMEBOY_GB: "retro-sameboy-gb",
   RETRO_SAMEBOY_GBC: "retro-sameboy-gbc",
   RETRO_MAME_CDI: "retro-mame-cdi",
-  // RETRO_YABAUSE: "retro-yabause",
+  RETRO_YABAUSE: "retro-yabause",
   ASTROCADE: "astrocade",
   SCUMMVM: "scummvm",
   SNES9X: "snes9x",
@@ -209,8 +208,8 @@ const APP_TYPE_KEYS = /*Object.freeze(*/{
   GBC: "gbc",
   GENESIS: "genesis",
   GG: "gg",
-  // JAGUAR: "jaguar",
-  // JAGUAR_CD: "jaguar-cd",
+  JAGUAR: "jaguar",
+  JAGUAR_CD: "jaguarcd",
   LNX: "lnx",
   NDS: "nds",
   NEOGEO: "neogeo",
@@ -222,7 +221,7 @@ const APP_TYPE_KEYS = /*Object.freeze(*/{
   PCECD: "pcecd",
   POKEMINI: "pokemini",
   QUAKE: "quake",
-  // SATURN: "saturn",
+  SATURN: "saturn",
   SCUMM: "scumm",
   SEGA32X: "32x",
   SEGA32XCD: "32xcd",
@@ -1596,6 +1595,7 @@ const types = [{
     ambiguousExtensions: ['.chd', '.cdi'],
     multiThreaded: true,
     slowExit: true,
+    experimental: true,
     addProps: (feedProps, outProps) => {
       const bios = feedProps.flycast_bios;
       if (bios) {
@@ -1624,6 +1624,7 @@ const types = [{
     ambiguousExtensions: ['.chd', '.iso', '.cso'],
     multiThreaded: true,
     slowExit: true,
+    experimental: true,
     // addProps: (feedProps, outProps) => {
     //   const bios = feedProps.psx_bios;
     //   if (bios) {
@@ -1730,6 +1731,93 @@ if (enable5200) {
   addAlias(types, APP_TYPE_KEYS.A5200, APP_TYPE_KEYS.AT5200);
 }
 
+types.push({
+  key: APP_TYPE_KEYS.RETRO_YABAUSE,
+  alias: APP_TYPE_KEYS.SATURN,
+  name: 'Sega Saturn',
+  shortName: 'Sega Saturn',
+  coreName: 'Libretro Yabause',
+  location: locRetroSaturn,
+  description: "A Libretro core for emulating the Sega Saturn, delivering its classic CD-based library with modern rendering and shader support.",
+  background: 'images/app/saturn-background.png',
+  thumbnail: 'images/app/saturn-thumb.png',
+  validate: checkDiscs,
+  extensions: [],
+  ambiguousExtensions: ['.chd'],
+  slowExit: true,
+  multiThreaded: true,
+  experimental: true,
+  addProps: (feedProps, outProps) => {
+    const bios = feedProps.saturn_bios;
+    if (bios) {
+      outProps.saturn_bios = bios;
+    }
+  },
+  defaults: {
+    discs: [],
+    uid: "",
+    zoomLevel: 0,
+    forceEmulatedBios: false,
+    ramExpansion: 0,
+    cheat: ""
+  }
+});
+
+types.push({
+  key: APP_TYPE_KEYS.RETRO_VIRTUAL_JAGUAR,
+  alias: APP_TYPE_KEYS.JAGUAR,
+  name: 'Atari Jaguar',
+  shortName: 'Atari Jaguar',
+  coreName: 'Libretro Virtual Jaguar',
+  location: locRetroVirtualJaguar,
+  background: 'images/app/jaguar-background.png',
+  thumbnail: 'images/app/jaguar-thumb.png',
+  description: "A Libretro core based on Virtual Jaguar for emulating the Atari Jaguar, a 64-bit cartridge-based console released by Atari in 1993. This core includes support for advanced graphical shaders.",
+  validate: checkRom,
+  extensions: ['j64', 'jag'],
+  experimental: true,
+  defaults: {
+    rom: "",
+    cheat: "",
+    zoomLevel: 0,
+    disableFastBlitter: false,
+    useRealBios: false,
+    m68kClockScale: 0,
+    riscClockScale: 0,
+    descriptions: {},
+    mappings: {},
+  }
+});
+
+types.push({
+  key: APP_TYPE_KEYS.RETRO_VIRTUAL_JAGUAR_CD,
+  alias: APP_TYPE_KEYS.JAGUAR_CD,
+  name: 'Atari Jaguar CD',
+  shortName: 'Atari Jaguar CD',
+  coreName: 'Libretro Virtual Jaguar',
+  location: locRetroVirtualJaguar,
+  background: 'images/app/jaguarcd-background.png',
+  thumbnail: 'images/app/jaguarcd-thumb.png',
+  description: "A Libretro core based on Virtual Jaguar for emulating the Atari Jaguar CD, a CD-ROM add-on for the Atari Jaguar released in 1995. This core includes support for advanced graphical shaders.",
+  validate: checkDiscs,
+  extensions: [],
+  ambiguousExtensions: ['.cdi'],
+  slowExit: true,
+  experimental: true,
+  defaults: {
+    discs: [],
+    uid: "",
+    cheat: "",
+    zoomLevel: 0,
+    disableFastBlitter: false,
+    useRealBios: false,
+    m68kClockScale: 0,
+    riscClockScale: 0,
+    descriptions: {},
+    mappings: {},
+  }
+});
+
 // Aliases
 // addAlias(types, APP_TYPE_KEYS.A2600, APP_TYPE_KEYS.RETRO_STELLA);
 addAlias(types, APP_TYPE_KEYS.A2600, APP_TYPE_KEYS.RETRO_STELLA_LATEST);
@@ -1751,6 +1839,8 @@ addAlias(types, APP_TYPE_KEYS.GB, APP_TYPE_KEYS.RETRO_SAMEBOY_GB);
 addAlias(types, APP_TYPE_KEYS.GBC, APP_TYPE_KEYS.RETRO_SAMEBOY_GBC);
 addAlias(types, APP_TYPE_KEYS.GENESIS, APP_TYPE_KEYS.RETRO_GENPLUSGX_MD);
 addAlias(types, APP_TYPE_KEYS.GG, APP_TYPE_KEYS.RETRO_GENPLUSGX_GG);
+addAlias(types, APP_TYPE_KEYS.JAGUAR, APP_TYPE_KEYS.RETRO_VIRTUAL_JAGUAR);
+addAlias(types, APP_TYPE_KEYS.JAGUAR_CD, APP_TYPE_KEYS.RETRO_VIRTUAL_JAGUAR_CD);
 addAlias(types, APP_TYPE_KEYS.LNX, APP_TYPE_KEYS.RETRO_MEDNAFEN_LYNX);
 addAlias(types, APP_TYPE_KEYS.N64, APP_TYPE_KEYS.RETRO_MUPEN64PLUS_NEXT);
 addAlias(types, APP_TYPE_KEYS.NEOGEO, APP_TYPE_KEYS.FBNEO_NEOGEO);
@@ -1766,7 +1856,7 @@ addAlias(types, APP_TYPE_KEYS.POKEMINI, APP_TYPE_KEYS.RETRO_POKEMINI);
 addAlias(types, APP_TYPE_KEYS.PSP, APP_TYPE_KEYS.RETRO_PPSSPP);
 addAlias(types, APP_TYPE_KEYS.PSX, APP_TYPE_KEYS.BEETLE_PSX);
 addAlias(types, APP_TYPE_KEYS.QUAKE, APP_TYPE_KEYS.TYRQUAKE);
-// addAlias(types, APP_TYPE_KEYS.SATURN, APP_TYPE_KEYS.RETRO_YABAUSE);
+addAlias(types, APP_TYPE_KEYS.SATURN, APP_TYPE_KEYS.RETRO_YABAUSE);
 addAlias(types, APP_TYPE_KEYS.SCUMM, APP_TYPE_KEYS.SCUMMVM);
 addAlias(types, APP_TYPE_KEYS.SEGA32X, APP_TYPE_KEYS.RETRO_PICODRIVE_32X);
 addAlias(types, APP_TYPE_KEYS.SEGA32XCD, APP_TYPE_KEYS.RETRO_PICODRIVE_32XCD);
@@ -1783,178 +1873,6 @@ addAlias(types, APP_TYPE_KEYS.ASTROCADE, APP_TYPE_KEYS.RETRO_MAME_ASTROCADE);
 
 const APP_TYPES = types;
 
-const enableExperimentalApps = (b) => {
-
-  let clone = [...APP_TYPES];
-  APP_TYPES.length = 0;
-
-  // WRC - registration disabled for now (user request): don't want to
-  // overwhelm people with a third N64 option yet, want focus on
-  // Mupen64Plus-Next while keeping the old (non-"retro") ParaLLEl N64
-  // app as the other option. Re-enable when ready.
-  // APP_TYPES.push({
-  //   key: APP_TYPE_KEYS.RETRO_PARALLEL_N64,
-  //   alias: APP_TYPE_KEYS.N64,
-  //   name: 'Nintendo 64',
-  //   coreName: 'Libretro ParaLLEl N64',
-  //   location: locRetroParallelN64,
-  //   background: 'images/app/n64-background.png',
-  //   thumbnail: 'images/app/n64-thumb.png',
-  //   description: "An alternate N64 emulator core (EmulatorJS's fork of paraLLEl N64), offered alongside Mupen64Plus-Next for titles that run better on this core. Still experimental in this environment.",
-  //   validate: checkRom,
-  //   extensions: ['n64', 'v64', 'z64'],
-  //   isDelayedExit: true,
-  //   defaults: {
-  //     rom: "",
-  //     zoomLevel: 0
-  //   }
-  // });
-
-  //
-  // Remove Saturn
-  //
-
-  for (let i = 0; i < clone.length; i++) {
-    const t = clone[i];
-    if ((!APP_TYPE_KEYS.RETRO_YABAUSE || t.key !== APP_TYPE_KEYS.RETRO_YABAUSE) &&
-        (!APP_TYPE_KEYS.SATURN || t.key !== APP_TYPE_KEYS.SATURN)) {
-      APP_TYPES.push(t);
-    }
-  }
-
-  delete APP_TYPE_KEYS.RETRO_YABAUSE;
-  delete APP_TYPE_KEYS.SATURN;
-
-  //
-  // Add Saturn
-  //
-
-  if (b) {
-    APP_TYPE_KEYS.RETRO_YABAUSE = "retro-yabause";
-    APP_TYPE_KEYS.SATURN = "saturn";
-
-    APP_TYPES.push({
-      key: APP_TYPE_KEYS.RETRO_YABAUSE,
-      alias: APP_TYPE_KEYS.SATURN,
-      name: 'Sega Saturn',
-      shortName: 'Sega Saturn',
-      coreName: 'Libretro Yabause',
-      location: locRetroSaturn,
-      description: "A Libretro core for emulating the Sega Saturn, delivering its classic CD-based library with modern rendering and shader support.",
-      background: 'images/app/saturn-background.png',
-      thumbnail: 'images/app/saturn-thumb.png',
-      validate: checkDiscs,
-      extensions: [],
-      ambiguousExtensions: ['.chd'],
-      slowExit: true,
-      multiThreaded: true,
-      addProps: (feedProps, outProps) => {
-        const bios = feedProps.saturn_bios;
-        if (bios) {
-          outProps.saturn_bios = bios;
-        }
-      },
-      defaults: {
-        discs: [],
-        uid: "",
-        zoomLevel: 0,
-        forceEmulatedBios: false,
-        ramExpansion: 0,
-        // hack: 0
-        cheat: ""
-      }
-    });
-    addAlias(types, APP_TYPE_KEYS.SATURN, APP_TYPE_KEYS.RETRO_YABAUSE);
-  }
-
-  //
-  // Remove Jaguar / Jaguar CD
-  //
-
-  clone = [...APP_TYPES];
-  APP_TYPES.length = 0;
-  for (let i = 0; i < clone.length; i++) {
-    const t = clone[i];
-    if ((!APP_TYPE_KEYS.RETRO_VIRTUAL_JAGUAR || t.key !== APP_TYPE_KEYS.RETRO_VIRTUAL_JAGUAR) &&
-        (!APP_TYPE_KEYS.JAGUAR || t.key !== APP_TYPE_KEYS.JAGUAR) &&
-        (!APP_TYPE_KEYS.RETRO_VIRTUAL_JAGUAR_CD || t.key !== APP_TYPE_KEYS.RETRO_VIRTUAL_JAGUAR_CD) &&
-        (!APP_TYPE_KEYS.JAGUAR_CD || t.key !== APP_TYPE_KEYS.JAGUAR_CD)) {
-      APP_TYPES.push(t);
-    }
-  }
-
-  delete APP_TYPE_KEYS.RETRO_VIRTUAL_JAGUAR;
-  delete APP_TYPE_KEYS.JAGUAR;
-  delete APP_TYPE_KEYS.RETRO_VIRTUAL_JAGUAR_CD;
-  delete APP_TYPE_KEYS.JAGUAR_CD;
-
-  //
-  // Add Jaguar / Jaguar CD
-  //
-
-  if (b) {
-    APP_TYPE_KEYS.RETRO_VIRTUAL_JAGUAR = "retro-virtual-jaguar";
-    APP_TYPE_KEYS.JAGUAR = "jaguar";
-    APP_TYPE_KEYS.RETRO_VIRTUAL_JAGUAR_CD = "retro-virtual-jaguar-cd";
-    APP_TYPE_KEYS.JAGUAR_CD = "jaguarcd";
-
-    APP_TYPES.push({
-      key: APP_TYPE_KEYS.RETRO_VIRTUAL_JAGUAR,
-      alias: APP_TYPE_KEYS.JAGUAR,
-      name: 'Atari Jaguar',
-      shortName: 'Atari Jaguar',
-      coreName: 'Libretro Virtual Jaguar',
-      location: locRetroVirtualJaguar,
-      background: 'images/app/jaguar-background.png',
-      thumbnail: 'images/app/jaguar-thumb.png',
-      description: "A Libretro core based on Virtual Jaguar for emulating the Atari Jaguar, a 64-bit cartridge-based console released by Atari in 1993. This core includes support for advanced graphical shaders.",
-      validate: checkRom,
-      extensions: ['j64', 'jag'],
-      defaults: {
-        rom: "",
-        cheat: "",
-        zoomLevel: 0,
-        disableFastBlitter: false,
-        useRealBios: false,
-        m68kClockScale: 0,
-        riscClockScale: 0,
-        descriptions: {},
-        mappings: {},
-      }
-    });
-    addAlias(APP_TYPES, APP_TYPE_KEYS.JAGUAR, APP_TYPE_KEYS.RETRO_VIRTUAL_JAGUAR);
-
-    APP_TYPES.push({
-      key: APP_TYPE_KEYS.RETRO_VIRTUAL_JAGUAR_CD,
-      alias: APP_TYPE_KEYS.JAGUAR_CD,
-      name: 'Atari Jaguar CD',
-      shortName: 'Atari Jaguar CD',
-      coreName: 'Libretro Virtual Jaguar',
-      location: locRetroVirtualJaguar,
-      background: 'images/app/jaguarcd-background.png',
-      thumbnail: 'images/app/jaguarcd-thumb.png',
-      description: "A Libretro core based on Virtual Jaguar for emulating the Atari Jaguar CD, a CD-ROM add-on for the Atari Jaguar released in 1995. This core includes support for advanced graphical shaders.",
-      validate: checkDiscs,
-      extensions: [],
-      ambiguousExtensions: ['.cdi'],
-      slowExit: true,
-      defaults: {
-        discs: [],
-        uid: "",
-        cheat: "",
-        zoomLevel: 0,
-        disableFastBlitter: false,
-        useRealBios: false,
-        m68kClockScale: 0,
-        riscClockScale: 0,
-        descriptions: {},
-        mappings: {},
-      }
-    });
-    addAlias(APP_TYPES, APP_TYPE_KEYS.JAGUAR_CD, APP_TYPE_KEYS.RETRO_VIRTUAL_JAGUAR_CD);
-  }
-}
-
 const getStandaloneLocation = () => {
   return locStandalone;
 }
@@ -1963,4 +1881,4 @@ const getAppStoragePath = (appType, postfix) => {
   return `/wrc/${appType}/${postfix}`;
 }
 
-export { enableExperimentalApps, getStandaloneLocation, getAppStoragePath, APP_TYPE_KEYS, APP_TYPES };
+export { getStandaloneLocation, getAppStoragePath, APP_TYPE_KEYS, APP_TYPES };

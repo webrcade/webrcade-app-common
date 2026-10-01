@@ -32,7 +32,6 @@ export class SettingsEditor extends Component {
   constructor() {
     super();
     const values = {
-      expApps: settings.isExpAppsEnabled(),
       vsync: settings.isVsyncEnabled(),
       bilinear: settings.isBilinearFilterEnabled(),
       cloudStorage: settings.isCloudStorageEnabled(),
@@ -48,7 +47,6 @@ export class SettingsEditor extends Component {
       tabIndex: null,
       focusGridComps: null,
       values: values,
-      originalValues: { ...values }
     };
   }
 
@@ -57,7 +55,7 @@ export class SettingsEditor extends Component {
 
   render() {
     const { ctx, isStandalone, onClose } = this.props;
-    const { originalValues, tabIndex, values, focusGridComps } = this.state;
+    const { tabIndex, values, focusGridComps } = this.state;
 
     const setFocusGridComps = (comps) => {
       this.setState({ focusGridComps: comps });
@@ -76,7 +74,6 @@ export class SettingsEditor extends Component {
           if (values.cloudStorage && !values.dbLinked) values.cloudStorage = false;
           if (values.raEnabled && !values.raLinked) values.raEnabled = false;
           const oldCloudEnabled = settings.isCloudStorageEnabled();
-          settings.setExpAppsEnabled(values.expApps);
           settings.setVsyncEnabled(values.vsync);
           settings.setBilinearFilterEnabled(values.bilinear);
           settings.setCloudStorageEnabled(values.cloudStorage);
@@ -85,23 +82,13 @@ export class SettingsEditor extends Component {
           settings.setGameSavesDisabledAfterState(values.disableInGame);
           settings.setOverrides(values.overrides);
           settings.setRaEnabled(values.raEnabled);
-          if (originalValues.expApps !== values.expApps) {
-            ctx.showAlertScreen(true,
-              Resources.getText(TEXT_IDS.RELOAD_EXP_APPS),
-              () => {
-                settings.save().finally(() => {
-                  window.location.reload();
-                });
-              }, true, true);
-          } else {
-            settings.save().finally(() => {
-              onClose();
-              if (isStandalone && (oldCloudEnabled != values.cloudStorage)) {
-                // Reload the app for now (TODO: Find a better way)
-                window.parent.location.reload();
-              }
-            });
-          }
+          settings.save().finally(() => {
+            onClose();
+            if (isStandalone && (oldCloudEnabled != values.cloudStorage)) {
+              // Reload the app for now (TODO: Find a better way)
+              window.parent.location.reload();
+            }
+          });
         }}
         onClose={onClose}
         focusGridComps={focusGridComps}
@@ -244,10 +231,8 @@ GeneralSettingsTab.contextType = WebrcadeContext;
 class AdvancedSettingsTab extends FieldsTab {
   constructor() {
     super();
-    this.showExperimentalAppsRef = React.createRef();
     this.hideTitleBarRef = React.createRef();
     this.gridComps = [
-      [this.showExperimentalAppsRef],
       [this.hideTitleBarRef],
     ]
   }
@@ -263,26 +248,11 @@ class AdvancedSettingsTab extends FieldsTab {
   }
 
   render() {
-    const { hideTitleBarRef, showExperimentalAppsRef } = this;
+    const { hideTitleBarRef } = this;
     const { focusGrid } = this.context;
     const { setValues, values } = this.props;
 
     return ([
-      <FieldRow>
-        <FieldLabel>
-          {Resources.getText(TEXT_IDS.EXPERIMENTAL_APPS)}
-        </FieldLabel>
-        <FieldControl>
-          <Switch
-            ref={showExperimentalAppsRef}
-            onPad={e => focusGrid.moveFocus(e.type, showExperimentalAppsRef)}
-            onChange={e => {
-              setValues({ ...values, ...{ expApps: e.target.checked } });
-            }}
-            checked={values.expApps}
-          />
-        </FieldControl>
-      </FieldRow>,
       <FieldRow>
         <FieldLabel>
           {Resources.getText(TEXT_IDS.HIDE_TITLE_BAR)}

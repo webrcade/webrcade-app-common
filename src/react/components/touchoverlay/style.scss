@@ -67,12 +67,6 @@
   }
 }
 
-@media (pointer:coarse) {
-  .touch-overlay {
-    display: block;
-  }
-}
-
 @media only screen and (orientation: portrait) {
   .touch-overlay-button>img {
     width: 7rem;
