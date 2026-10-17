@@ -1,8 +1,7 @@
 export const ReleaseData = [
 {
-    version: "v0.2.4-p12",
-    preRelease: true,
-    date: "September 23, 2026",
+    version: "v0.2.4",
+    date: "October 18, 2026",
     title: "New Emulators, Enhancements & Bug Fixes",
     changes: [
       {
