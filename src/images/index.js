@@ -21,6 +21,7 @@ const DescriptionBlackImage = Icons.description_black_24dp; //resolvePath("image
 const DescriptionWhiteImage = Icons.description_white_24dp; //resolvePath("images/common/description_white_24dp.svg");
 const GamepadWhiteImage = Icons.gamepad_white_24dp; //resolvePath("images/common/gamepad_white_24dp.svg");
 const KeyboardWhiteImage = Icons.keyboard_white_24dp; //resolvePath("images/common/keyboard_white_24dp.svg");
+const KeypadWhiteImage = Icons.keypad_white_24dp;
 const AddCircleBlackImage = Icons.add_circle_outline_black_24dp; //resolvePath("images/common/add_circle_outline_black_24dp.svg");
 const AddCircleWhiteImage = Icons.add_circle_outline_white_24dp; //resolvePath("images/common/add_circle_outline_white_24dp.svg");
 const PlayArrowBlackImage = Icons.play_arrow_black_24dp; //resolvePath("images/common/play_arrow_black_24dp.svg");
@@ -169,6 +170,7 @@ const A5200Background = resolvePath("images/app/5200-background.png");
 const ColecoVisionBackground = resolvePath("images/app/colecovision-background.png");
 const ColecoController = resolvePath("images/app/coleco/controller.png");
 const A5200Controller = resolvePath("images/app/a5200/controller.png");
+const JaguarController = resolvePath("images/app/jaguar/jagcontroller-real.png");
 const ScummVmBackground = resolvePath("images/app/scummvm-background.png");
 const Commodore64Background = resolvePath("images/app/c64-background.png");
 const DosBackground = resolvePath("images/app/dos-background.png");
@@ -179,6 +181,13 @@ const AstrocadeKeypad = resolvePath("images/app/astrocade/keypad.png");
 const AstrocadeBackground = resolvePath("images/app/astrocade-background.png");
 const Apple2Background = resolvePath("images/app/apple2-background.png");
 const CdiBackground = resolvePath("images/app/cdi-background.png");
+const ThirtyTwoXBackground = resolvePath("images/app/32x-background.png");
+const ThirtyTwoXCdBackground = resolvePath("images/app/32xcd-background.png");
+const JaguarBackground = resolvePath("images/app/jaguar-background.png");
+const JaguarCdBackground = resolvePath("images/app/jaguarcd-background.png");
+const PcfxBackground = resolvePath("images/app/pcfx-background.png");
+const DreamcastBackground = resolvePath("images/app/dreamcast-background.png");
+const PspBackground = resolvePath("images/app/psp-background.png");
 
 export {
   AddCircleBlackImage,
@@ -203,6 +212,7 @@ export {
   FeedBackgroundImage,
   GamepadWhiteImage,
   KeyboardWhiteImage,
+  KeypadWhiteImage,
   LoaderImage,
   LinkBlackImage,
   LinkWhiteImage,
@@ -324,6 +334,7 @@ export {
   Commodore64Background,
   A5200Controller,
   A5200Background,
+  JaguarController,
   ThreedoBackground,
   Atari2600Background,
   Atari7800Background,
@@ -351,6 +362,13 @@ export {
   AstrocadeBackground,
   Apple2Background,
   CdiBackground,
+  ThirtyTwoXBackground,
+  ThirtyTwoXCdBackground,
+  JaguarBackground,
+  JaguarCdBackground,
+  PcfxBackground,
+  DreamcastBackground,
+  PspBackground,
 
   resolvePath as resolveImagePath
 }

@@ -19,6 +19,8 @@ class GamepadNotifier {
     this.aPressedIndex = 0;
     this.startPressed = null;
     this.startPressedIndex = 0;
+    this.selectPressed = null;
+    this.selectPressedIndex = 0;
     this.mapping = new StandardPadMapping();
     this.buttons = new Array(16);
     this.padCount = 0;
@@ -157,6 +159,16 @@ class GamepadNotifier {
               this.startPressed = true;
               this.startPressedIndex = gamepadIndex;
             }
+          } else if (buttons[mapping.getButtonNum(CIDS.SELECT)].pressed ||
+            (buttons[mapping.getButtonNum(CIDS.RTRIG)].pressed &&
+              buttons[mapping.getButtonNum(CIDS.LANALOG)].pressed)) {
+            // WRC - matches CIDS.SELECT's own synthesis in controls.js
+            // (RTRIG+LANALOG, or literal Select on non-Xbox) - per
+            // docs/control-mapping-audit.md's "SL/RT+LA/Shift-R" notation.
+            if (!padDown && !firstPoll && this.selectPressed === false) {
+              this.selectPressed = true;
+              this.selectPressedIndex = gamepadIndex;
+            }
           } else {
             hit = false;
 
@@ -184,6 +196,15 @@ class GamepadNotifier {
                   this.fireEvent(GamepadEnum.START, this.startPressedIndex);
                 }
                 this.startPressed = false;
+              }
+            }
+
+            if (this.selectPressed !== false) {
+              if (this.selectPressedIndex === gamepadIndex) {
+                if (this.selectPressed === true) {
+                  this.fireEvent(GamepadEnum.SELECT, this.selectPressedIndex);
+                }
+                this.selectPressed = false;
               }
             }
           }

@@ -169,7 +169,11 @@ export class RetroAppWrapper extends AppWrapper {
     if (this.isDiscBased()) {
       const lowerExt = ext.toLowerCase();
       let outExt = "chd";
-      if (lowerExt === 'pbp')
+      if (lowerExt === 'cdi')
+      {
+         outExt = 'cdi';
+      }
+      else if (lowerExt === 'pbp')
       {
          outExt = 'pbp';
       }
@@ -190,10 +194,6 @@ export class RetroAppWrapper extends AppWrapper {
     } else {
       this.game = this.RA_DIR + "game.bin";
     }
-
-    this.game = this.isDiscBased() ?
-      (this.RA_DIR + 'game.' + (ext != null && ext === 'pbp' ? 'pbp' : 'chd')) :
-      (this.RA_DIR + "game.bin");
   }
 
   async setShader(shaderId) {
@@ -272,8 +272,56 @@ export class RetroAppWrapper extends AppWrapper {
     return "";
   }
 
+  // WRC - decision rule for all three isXEscapeHackEnabled() getters
+  // below (worked out from a real production bug in
+  // webrcade-app-retro-ppsspp and the beetle-psx counter-example - see
+  // docs/escape-hack-audit.md for the per-app audit this rule drives):
+  //
+  //   isEscapeHackEnabled()       -> true if the app uses LEFT TRIGGER
+  //                                  for a real, extended-hold gameplay
+  //                                  function. A long real LTRIG hold
+  //                                  plus an incidental LANALOG click
+  //                                  (from real left-stick use) could
+  //                                  otherwise satisfy LT+LA and pop
+  //                                  Pause by accident.
+  //   isSelectEscapeHackEnabled() -> true only if the app uses RIGHT
+  //                                  TRIGGER for a real, extended-hold
+  //                                  function AND Select is a real,
+  //                                  meaningful button on that console
+  //                                  (an accidental RT+LA is only worth
+  //                                  guarding against if firing Select
+  //                                  actually does something).
+  //   isStartEscapeHackEnabled()  -> true only if the app uses RIGHT
+  //                                  TRIGGER for a real, extended-hold
+  //                                  function AND real right-analog
+  //                                  controls are mapped (camera stick,
+  //                                  etc.) - the accidental RT+RA risk
+  //                                  from a real right-stick tilt/click
+  //                                  during that hold.
+  //
+  // Reference cases: webrcade-app-beetle-psx (PSX's DualShock has a real
+  // analog R2 commonly held AND real L3/R3 functions - all three true)
+  // vs. webrcade-app-retro-flycast (real LTRIG braking pressure but
+  // Select is a no-op and no real second stick - only isEscapeHackEnabled
+  // stays true, the other two use these false defaults).
   isEscapeHackEnabled() {
     return true;
+  }
+
+  // WRC - default false, unlike isEscapeHackEnabled() above - confirmed
+  // via production testing (webrcade-app-retro-ppsspp) that gating
+  // Start/Select this way breaks the RT+LA/RT+RA combos' own legitimate
+  // repeated-use case: holding RTRIG continuously while tapping the
+  // analog click repeatedly (e.g. to cycle menu options) would silently
+  // stop registering after ~1s, once escapeCount crossed the threshold.
+  // See the decision rule above isEscapeHackEnabled() for when to opt a
+  // specific app back in.
+  isStartEscapeHackEnabled() {
+    return false;
+  }
+
+  isSelectEscapeHackEnabled() {
+    return false;
   }
 
   handleEscape(controllers) {}
@@ -285,11 +333,26 @@ export class RetroAppWrapper extends AppWrapper {
 
     const isAnalog = analogMode;
 
+    // WRC - each button is only watched here if something downstream
+    // actually cares about its hold-time: LTRIG is exclusively part of
+    // the ESCAPE combo (LT+LA), RANALOG exclusively part of the Start
+    // combo (RT+RA), RTRIG shared by Select (RT+LA) and Start (RT+RA),
+    // and LANALOG shared by ESCAPE (LT+LA) and Select (RT+LA). Watching
+    // an unneeded button would pollute this same shared escapeCount used
+    // by ALL THREE gates below - e.g. a real, extended RTRIG hold (an
+    // analog trigger) on an app with Start/Select-hack both disabled
+    // would otherwise still climb escapeCount and could suppress the
+    // unrelated Pause combo for as long as it's held.
+    const watchLtrig = this.isEscapeHackEnabled();
+    const watchLanalog = this.isEscapeHackEnabled() || this.isSelectEscapeHackEnabled();
+    const watchRtrig = this.isSelectEscapeHackEnabled() || this.isStartEscapeHackEnabled();
+    const watchRanalog = this.isStartEscapeHackEnabled();
+
     if (
-      controllers.isControlDown(0, CIDS.RTRIG) ||
-      controllers.isControlDown(0, CIDS.LTRIG) ||
-      controllers.isControlDown(0, CIDS.LANALOG) ||
-      controllers.isControlDown(0, CIDS.RANALOG)
+      (watchLtrig && controllers.isControlDown(0, CIDS.LTRIG)) ||
+      (watchLanalog && controllers.isControlDown(0, CIDS.LANALOG)) ||
+      (watchRtrig && controllers.isControlDown(0, CIDS.RTRIG)) ||
+      (watchRanalog && controllers.isControlDown(0, CIDS.RANALOG))
     ) {
       this.escapeCount = this.escapeCount === -1 ? 0 : this.escapeCount + 1;
     } else {
@@ -299,7 +362,13 @@ export class RetroAppWrapper extends AppWrapper {
     for (let i = 0; i < CONTROLLER_COUNT; i++) {
       let input = 0;
 
-      const escapeOk = !this.isEscapeHackEnabled() || (this.escapeCount === -1 || this.escapeCount < 60);
+      // WRC - raw "haven't been held too long yet" signal, shared by all
+      // three isXEscapeHackEnabled() gates below - each independently
+      // decides whether it cares about this signal at all.
+      const escapeHackOk = (this.escapeCount === -1 || this.escapeCount < 60);
+      const escapeOk = !this.isEscapeHackEnabled() || escapeHackOk;
+      const startOk = !this.isStartEscapeHackEnabled() || escapeHackOk;
+      const selectOk = !this.isSelectEscapeHackEnabled() || escapeHackOk;
 
       // Hack to reduce likelihood of accidentally bringing up menu
       if (
@@ -325,10 +394,10 @@ export class RetroAppWrapper extends AppWrapper {
       } else if (controllers.isControlDown(i, CIDS.LEFT, !isAnalog)) {
         input |= this.INP_LEFT;
       }
-      if (controllers.isControlDown(i, CIDS.START) && escapeOk) {
+      if (controllers.isControlDown(i, CIDS.START) && startOk) {
         input |= this.INP_START;
       }
-      if (controllers.isControlDown(i, CIDS.SELECT) && escapeOk) {
+      if (controllers.isControlDown(i, CIDS.SELECT) && selectOk) {
         input |= this.INP_SELECT;
       }
       if (controllers.isControlDown(i, CIDS.A)) {
@@ -413,6 +482,11 @@ export class RetroAppWrapper extends AppWrapper {
         },
         // Redirect stderr (fprintf) to console.log to stop the red error spam
         printErr: function(text) {
+            // Pre-existing, harmless: Emscripten's WebGL2 glMapBufferRange
+            // shim logs this whenever GL_MAP_READ_BIT/GL_MAP_UNSYNCHRONIZED_BIT
+            // are requested (unsupported under WebGL2's mapping model); the
+            // call just returns 0 and whatever called it already handles that.
+            if (text.indexOf('glMapBufferRange access does not support') !== -1) return;
             //console.log(text);
             // Optional: If you still want to see real errors in red, you could do:
             if (text.toLowerCase().includes('error')) console.error(text); else console.log(text);
@@ -484,22 +558,6 @@ export class RetroAppWrapper extends AppWrapper {
           // FS.mkdir('/home/web_user/retroarch/system/mame/bios/astrocde');
           FS.mkdir('/home/web_user/retroarch/userdata/config');
           FS.mkdir('/home/web_user/retroarch/userdata/config/MAME');
-
-          // Write out the sharp bilinear
-          const base64ToUint8Array = (b64) => {
-            const bin = atob(b64);
-            return Uint8Array.from(bin, c => c.charCodeAt(0));
-          }
-
-          FS.writeFile(
-            SHARP_BILINEAR_GLSLP_PATH,
-            base64ToUint8Array(SHARP_BILINEAR_GLSLP)
-          );
-
-          FS.writeFile(
-            SHARP_BILINEAR_GLSL_PATH,
-            base64ToUint8Array(SHARP_BILINEAR_GLSL)
-          );
 
           window.emulator.preInit(FS);
         },
@@ -573,7 +631,10 @@ export class RetroAppWrapper extends AppWrapper {
       const FS = window.FS;
       try {
         s = FS.readFile(STATE_FILE_PATH);
-      } catch (e) { }
+        LOG.info('saveStateForSlot() read state file, bytes=' + (s ? s.length : 0));
+      } catch (e) {
+        LOG.error('saveStateForSlot() FS.readFile(' + STATE_FILE_PATH + ') failed: ' + e);
+      }
 
       if (s) {
 
@@ -651,6 +712,37 @@ export class RetroAppWrapper extends AppWrapper {
     return true;
   }
 
+  // Opt-in for apps whose native RetroArch build has moved off the
+  // full video_driver_reinit()-based _wrc_force_aspect_ratio/
+  // _wrc_enable_bilinear_filter implementation (crash-prone in the WASM/
+  // WebGL build) to lighter-weight equivalents. Queried directly from the
+  // native side (platform_emscripten.c). Default false so every other app
+  // keeps its existing, already-verified behavior.
+  getUseNewResizeStyle() {
+    return false;
+  }
+
+  // Opt-in experiment: skip the manual per-frame Module._emscripten_mainloop()
+  // call below and let Emscripten's own native main-loop scheduler
+  // (emscripten_set_main_loop(), gated on WRC_NATIVE_MAINLOOP - see
+  // platform_emscripten.c) drive the core instead, same as a non-WRC
+  // Emscripten build. Input polling still runs from this JS-driven loop
+  // regardless, since that's how controller state reaches the core
+  // (_wrc_set_input()). Default false so every other app is unaffected.
+  getUseNativeMainLoop() {
+    return false;
+  }
+
+  callEnableBilinearFilter(enable) {
+    if (this.getUseNewResizeStyle()) {
+      setTimeout(() => {
+        window.Module._wrc_enable_bilinear_filter(enable);
+      }, 1);
+    } else {
+      window.Module._wrc_enable_bilinear_filter(enable);
+    }
+  }
+
   updateBilinearFilter() {
 // PPSSPP: Disable or errors
     if (!this.mainStarted) return;
@@ -658,18 +750,38 @@ export class RetroAppWrapper extends AppWrapper {
     const shaderSelected = this.shaders.isShaderSelected();
 
     if (shaderSelected) {
-      window.Module._wrc_enable_bilinear_filter(0);
+      this.callEnableBilinearFilter(0);
       return;
     }
 
     const bilinearMode = this.prefs.getBilinearMode();
     if (bilinearMode === BILINEAR_MODE.BL_OFF) {
       this.shaders.untrackedUnloadShader();
-      window.Module._wrc_enable_bilinear_filter(0);
+      this.callEnableBilinearFilter(0);
     } else if (bilinearMode === BILINEAR_MODE.BL_SOFT) {
       this.shaders.untrackedUnloadShader();
-      window.Module._wrc_enable_bilinear_filter(1);
+      this.callEnableBilinearFilter(1);
     } else {
+      if (!this.sharpWritten) {
+        this.sharpWritten = true;
+
+        // Write out the sharp bilinear
+        const base64ToUint8Array = (b64) => {
+          const bin = atob(b64);
+          return Uint8Array.from(bin, c => c.charCodeAt(0));
+        }
+
+        FS.writeFile(
+          SHARP_BILINEAR_GLSLP_PATH,
+          base64ToUint8Array(SHARP_BILINEAR_GLSLP)
+        );
+
+        FS.writeFile(
+          SHARP_BILINEAR_GLSL_PATH,
+          base64ToUint8Array(SHARP_BILINEAR_GLSL)
+        );
+      }
+
       this.shaders.untrackedLoadShaderByPath(SHARP_BILINEAR_GLSLP_PATH);
     }
   }
@@ -684,7 +796,13 @@ export class RetroAppWrapper extends AppWrapper {
 
     try {
       const enabled = this.isForceAspectRatio();
-      window.Module._wrc_force_aspect_ratio(enabled ? 1 : 0);
+      if (this.getUseNewResizeStyle()) {
+        setTimeout(() => {
+          window.Module._wrc_force_aspect_ratio(enabled ? 1 : 0);
+        }, 1);
+      } else {
+        window.Module._wrc_force_aspect_ratio(enabled ? 1 : 0);
+      }
     } catch (e) {
       LOG.info("Unable to invoke _wrc_force_aspect_ratio.");
     }
@@ -967,7 +1085,9 @@ export class RetroAppWrapper extends AppWrapper {
           try {
             if (!exit) {
               this.pollControls();
-              Module._emscripten_mainloop();
+              if (!this.getUseNativeMainLoop()) {
+                Module._emscripten_mainloop();
+              }
               this.onFrame();
             }
           } catch (e) {

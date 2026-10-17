@@ -1,0 +1,230 @@
+// Visual-only pass -- sizing is relative (rem-based), same convention as
+// controllers/style.scss's .controller, no fixed-pixel assumptions.
+//
+// box-sizing: border-box on every sized box below -- this project has no
+// global border-box reset (checked), so padding/border would otherwise
+// ADD to the specified width/height under the browser's content-box
+// default. That's what broke .radial-keypad-center's circle: horizontal-
+// only padding with content-box sizing made the box wider than tall,
+// and border-radius: 50% on a non-square box renders an oval.
+.radial-keypad,
+.radial-keypad * {
+  box-sizing: border-box;
+}
+
+.radial-keypad {
+  position: absolute;
+  z-index: 51;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  // Hidden by default -- RadialKeypad toggles this class directly via a
+  // ref rather than setState, since it's driven from a per-frame call.
+  opacity: 0;
+  transition: opacity .12s ease-out;
+}
+
+.radial-keypad.radial-keypad-visible {
+  opacity: 1;
+}
+
+// --radial-keypad-scale is computed in JS (RadialKeypad.updateScale())
+// and set directly on this element -- transform here carries the whole
+// subtree (ring + everything positioned inside it, since they're
+// descendants) down together proportionally, without needing to touch
+// any of their individual rem values. The dot is included too even
+// though it's a sibling of .radial-keypad-ring, not a descendant of it
+// (moved out specifically to escape the ring's own overflow: hidden) --
+// putting the scale here, one level above both, covers them as one
+// unit without conflicting with either element's own transform (the
+// ring has none of its own, and the dot's rotation is written as an
+// inline style each frame, which would silently replace rather than
+// combine with a scale set directly on that same element).
+.radial-keypad-scale-wrapper {
+  position: relative;
+  transform: scale(var(--radial-keypad-scale, 1));
+}
+
+// Ring diameter 32rem -- every other measurement below is relative to
+// this (24->32, a 4/3 scale factor, was the original size), so the
+// whole ring's proportions stay consistent if this ever changes again.
+.radial-keypad-ring {
+  position: relative;
+  width: 32rem;
+  height: 32rem;
+  aspect-ratio: 1;
+  flex-shrink: 0;
+  border-radius: 50%;
+  // Hard backstop -- nothing was actually clipping children to the
+  // circle before this; every child (pill, divider, dot) was just
+  // relying on its own position/size math being exactly right, with
+  // nothing to catch it if it wasn't (stale cache, a slipped value,
+  // whatever). The math checks out on paper, but this guarantees
+  // nothing can visually render past the ring's edge regardless.
+  overflow: hidden;
+  // Semi-transparent so the game screen shows through the whole overlay,
+  // not just the center -- .radial-keypad-center sits on top of this, so
+  // its own transparency was invisible while this was opaque underneath.
+  background: rgba(28, 28, 36, .6);
+  border: .2rem solid rgba(255, 255, 255, .5);
+}
+
+// Full-circle overlay whose background is set to a conic-gradient wedge
+// (see RadialKeypad.getWedgeGradient()) covering just the pressed
+// segment's angular range -- sized/positioned identically to the ring
+// itself so the gradient's angles line up with the segments. Like the
+// dividers, .radial-keypad-center (painted after this, opaque-ish) sits
+// on top and covers the inner portion, leaving only the band showing.
+.radial-keypad-wedge {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 32rem;
+  height: 32rem;
+  // border-radius: 50% is NOT relied on to clip the outer edge -- Chrome
+  // doesn't reliably combine border-radius clipping with mask-image on
+  // the same element, so that clip silently lost out to the unclipped
+  // square underneath, and whichever segment pointed toward a corner
+  // (135/225/315deg-ish) visibly bulged out past the ring's border. The
+  // mask below now defines the ENTIRE visible shape itself (inner hole
+  // down to the band, band visible, then fades out again at the ring's
+  // own 16rem outer radius), so there's nothing left for border-radius
+  // to need to cooperate on.
+  mask-image: radial-gradient(circle, transparent 9.067rem, black 9.6rem, black 16rem, transparent 16.05rem);
+  -webkit-mask-image: radial-gradient(circle, transparent 9.067rem, black 9.6rem, black 16rem, transparent 16.05rem);
+}
+
+// A spoke confined to the ring band only (from the outer edge inward to
+// where the center circle's edge sits), rotated into place per-segment
+// boundary. Ring radius is 16rem (32rem/2), center circle radius is
+// 9.333rem (18.667rem/2), so the band is 6.667rem wide -- the pivot is
+// set to the ring's true center (16rem below the div's own bottom edge)
+// even though that point falls outside the div's own box, so it still
+// rotates as if drawn from the center, just clipped to the band. Now
+// that the center circle is semi-transparent, the spokes must stop at
+// its edge instead of running underneath it.
+.radial-keypad-divider {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: .133rem;
+  height: 6.667rem;
+  background: rgba(255, 255, 255, .2);
+  transform-origin: center 16rem;
+}
+
+.radial-keypad-segment-pos {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+}
+
+.radial-keypad-segment {
+  position: absolute;
+  top: -12.667rem;
+  left: 50%;
+  // transform is set inline (translate + rotate combined) -- inline
+  // style fully replaces a stylesheet's value for the same property
+  // rather than merging with it, so it can't be split between here and
+  // the rotate the component sets per-segment.
+  width: 3.667rem;
+  height: 2.333rem;
+  border-radius: .667rem;
+  background: #14142c;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.467rem;
+  font-weight: bold;
+  border: .133rem solid rgba(255, 255, 255, .15);
+}
+
+.radial-keypad-segment-highlighted {
+  background: #d81e1e;
+  border-color: rgba(255, 255, 255, .5);
+}
+
+.radial-keypad-dot-pos {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+}
+
+.radial-keypad-dot {
+  position: absolute;
+  top: -16rem;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: .8rem;
+  height: .8rem;
+  border-radius: 50%;
+  background: white;
+  box-shadow: 0 0 .4rem rgba(255, 255, 255, .8);
+}
+
+.radial-keypad-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 18.667rem;
+  height: 18.667rem;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, .6);
+  border: .2rem solid rgba(255, 255, 255, .5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 2rem;
+}
+
+// Both text lines get a dark text-shadow -- the center circle's
+// background is intentionally semi-transparent so the game shows
+// through it, which means bright/glowing gameplay behind can wash out
+// plain white text with no other backing.
+.radial-keypad-center-player {
+  color: rgba(255, 255, 255, .6);
+  font-size: 1.733rem;
+  margin-bottom: .8rem;
+  text-shadow: 0 0 3px rgba(0, 0, 0, .9), 0 0 6px rgba(0, 0, 0, .8);
+}
+
+.radial-keypad-center-description {
+  color: white;
+  font-size: 1.867rem;
+  font-weight: bold;
+  line-height: 1.3;
+  text-shadow: 0 0 3px rgba(0, 0, 0, .9), 0 0 6px rgba(0, 0, 0, .8);
+  // align-items: center on the parent sizes children to their own content
+  // width instead of stretching them to the circle's width, so long text
+  // never wrapped -- it just overflowed past the ring. width: 100% here
+  // forces it back to wrapping within the circle's (padded) width.
+  width: 100%;
+  word-wrap: break-word;
+  // Fixed to the clamped 3-line height (font-size * line-height * 3)
+  // regardless of actual content -- when this box was empty (no
+  // description, e.g. while the ring is closing) it shrank instead,
+  // which changed the center flex column's total content height and
+  // made "Player 1" visibly shift position as it re-centered.
+  min-height: calc(1.867rem * 1.3 * 3);
+  // Safety cap -- real descriptions should always be short, but nothing
+  // stops one from being long, so clamp to 3 lines with an ellipsis
+  // rather than letting it grow past the circle vertically.
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

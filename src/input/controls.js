@@ -17,7 +17,17 @@ export const CIDS = {
   START: 13,
   LANALOG: 14,
   RANALOG: 15,
-  ESCAPE: 16
+  ESCAPE: 16,
+  // WRC - synthetic/virtual control, same treatment as ESCAPE/START/SELECT
+  // below: computed from a raw combo rather than read from a real physical
+  // button. Currently means LTRIG+RANALOG - the combo freed up from
+  // ESCAPE's own synthesis (see isControlDown()'s comment below) so apps
+  // could repurpose it for their own custom trigger (opening a virtual
+  // keyboard/keypad, switching an input mode, etc.) without needing to
+  // hand-roll the raw LTRIG+RANALOG check (and its release-wait) themselves
+  // - see retro-mame-apple2/apple2gs, retro-commodore-8bit, retro-dosbox-pure,
+  // and scummvm for the current consumers.
+  WRC_CUSTOM: 17
 }
 
 export const KCODES = {
@@ -90,6 +100,19 @@ export class PadMapping {
     }
     return 0;
   }
+
+  // WRC - analog PRESSURE (0.0-1.0) for a button-mapped control, distinct
+  // from isPadButtonDown()'s digital pressed/released. Standard Web
+  // Gamepad API buttons carry both .pressed (bool) and .value (analog
+  // float) - most buttons only ever report 0/1 for .value, but triggers
+  // (LTRIG/RTRIG) on gamepads that support it report real pressure.
+  getButtonValue(pad, cid) {
+    const bid = this.getButtonNum(cid);
+    if (pad && pad.buttons && bid >= 0 && bid < pad.buttons.length) {
+      return pad.buttons[bid].value;
+    }
+    return 0;
+  }
 }
 
 export class StandardPadMapping extends PadMapping {
@@ -147,8 +170,29 @@ export class KeyCodeToControlMapping {
     return this.keyCodeToControlId;
   }
 
+  // Override to return false to opt out of the shared Ctrl+Shift (or
+  // Alt+Shift) pause sequence -- needed when an app's own mapping already
+  // binds Control/Shift to real gameplay functions (e.g. parallel-n64's
+  // analog speed modifiers), where the two collide. The literal Escape key
+  // (if mapped in keyCodeToControlId) and the gamepad pause combo are
+  // unaffected either way.
+  isEscapeKeySequenceEnabled() {
+    return true;
+  }
+
   handleKeyEvent(e, down) {
-    if (isEscapeKeySequence(e)) {
+    // Ignore OS auto-repeat keydowns. Without this, a key held through a
+    // setEnabled(false)/setEnabled(true) cycle (e.g. pause screens that
+    // detach these listeners while open) looks like a brand-new press the
+    // moment listeners reattach: the browser's next event for the
+    // still-held key is a repeat keydown, which this method would
+    // otherwise treat identically to a fresh one, re-triggering whatever
+    // rising-edge logic (open keypad, open pause, etc.) is watching this
+    // control's down state. Repeat events never fire for keyup, so this
+    // only ever short-circuits keydown handling.
+    if (e.repeat) return;
+
+    if (this.isEscapeKeySequenceEnabled() && isEscapeKeySequence(e)) {
       e.preventDefault();
       this.escape = true;
       return;
@@ -285,6 +329,11 @@ export class Controller {
     return padMapping.getAxisValue(this.pad, stick, isX);
   }
 
+  getButtonValue(cid) {
+    const { padMapping } = this;
+    return padMapping.getButtonValue(this.pad, cid);
+  }
+
   isAxisLeft(stick) {
     const { padMapping } = this;
     return padMapping.getAxisValue(this.pad, stick, true) < -0.5;
@@ -311,17 +360,23 @@ export class Controller {
       return true;
     }
 
-    if (cid === CIDS.ESCAPE || cid === CIDS.START || cid == CIDS.SELECT) {
-      // left trigger + (right analog/left analog)
-      // left trigger + (start/select) (not on xbox)
+    if (cid === CIDS.ESCAPE || cid === CIDS.START || cid == CIDS.SELECT || cid === CIDS.WRC_CUSTOM) {
+      // left trigger + left analog (works on every platform, including Xbox)
+      // select + x (not on xbox)
+      //
+      // Restricted to just these two -- previously also matched left
+      // trigger + right analog, and (non-Xbox) left trigger + start/select
+      // -- per the finalized control-mapping-audit doc, which documents
+      // exactly these two as the pause combo set. Left trigger + right
+      // analog specifically is reserved for CIDS.WRC_CUSTOM below instead
+      // (an app-defined custom trigger - opening a virtual keyboard/keypad,
+      // switching an input mode, etc.), not pause.
       if (cid === CIDS.ESCAPE) {
         return (
-          this.isPadButtonDown(CIDS.LTRIG) && (this.isPadButtonDown(CIDS.RANALOG) || this.isPadButtonDown(CIDS.LANALOG))) ||
-          (!isXbox && (
-            (this.isPadButtonDown(CIDS.LTRIG) && (this.isPadButtonDown(CIDS.START) || this.isPadButtonDown(CIDS.SELECT))) ||
-            (this.isPadButtonDown(CIDS.SELECT) && this.isPadButtonDown(CIDS.X))
-          )
-        );
+          this.isPadButtonDown(CIDS.LTRIG) && this.isPadButtonDown(CIDS.LANALOG)) ||
+          (!isXbox &&
+            this.isPadButtonDown(CIDS.SELECT) && this.isPadButtonDown(CIDS.X)
+          );
       // right trigger + right analog
       // start (not available for xbox)
       } else if (cid == CIDS.START) {
@@ -332,6 +387,10 @@ export class Controller {
       } else if (cid == CIDS.SELECT) {
         return (this.isPadButtonDown(CIDS.RTRIG) && this.isPadButtonDown(CIDS.LANALOG)) ||
         (!isXbox && this.isPadButtonDown(CIDS.SELECT));
+      // left trigger + right analog - see CIDS.WRC_CUSTOM's own comment.
+      // Works on every platform, including Xbox, same as ESCAPE's LTRIG+LANALOG.
+      } else if (cid === CIDS.WRC_CUSTOM) {
+        return this.isPadButtonDown(CIDS.LTRIG) && this.isPadButtonDown(CIDS.RANALOG);
       }
       return false;
     }
@@ -452,9 +511,16 @@ export class Controllers {
   getAxisValue(controllerIdx, stick, isX) {
     return this.controllers[controllerIdx].getAxisValue(stick, isX);
   }
+
+  getButtonValue(controllerIdx, cid) {
+    return this.controllers[controllerIdx].getButtonValue(cid);
+  }
 }
 
+// Restricted to Ctrl/Alt+Shift only -- previously also matched Ctrl/Alt+Enter,
+// but per the finalized control-mapping-audit doc, Ctrl+Enter is dropped
+// from the documented pause keyboard set (Ctrl+Shift + Escape only).
 export function isEscapeKeySequence(e) {
   return (e.getModifierState && (e.getModifierState("Control") || e.getModifierState("Alt")) &&
-    (e.code === KCODES.ENTER || e.code === KCODES.SHIFT_LEFT || e.code === KCODES.SHIFT_RIGHT));
+    (e.code === KCODES.SHIFT_LEFT || e.code === KCODES.SHIFT_RIGHT));
 }

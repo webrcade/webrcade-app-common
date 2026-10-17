@@ -1,5 +1,162 @@
 export const ReleaseData = [
 {
+    version: "v0.2.4",
+    date: "October 18, 2026",
+    title: "New Emulators, Enhancements & Bug Fixes",
+    changes: [
+      {
+        title: "The following applications (emulators) have been added:",
+        items: [
+          "*Atari Jaguar* (experimental)",
+          "*Atari Jaguar CD* (experimental)",
+          "*Sega 32X*",
+          "*Sega 32X CD*",
+          "*Sega Dreamcast* (experimental)",
+          "*Sony PSP* (experimental)"
+        ]
+      },
+      {
+        title: "New application variants have been added for the following aliases (systems):",
+        items: [
+          "*Atari 7800*: Libretro ProSystem-Next (supports shaders, cheats, and achievements)",
+          "*Nintendo 64*: Libretro Mupen64Plus-Next"
+        ]
+      },
+      {
+        title: "The following applications are no longer experimental:",
+        items: [
+          "*Apple IIGS*",
+          "*Atari 5200*",
+          "*Nintendo 64*"
+        ]
+      },
+      {
+        title: "Player",
+        items: [
+          "Added a standardized on-screen *Pause* button, a consistent *On-Screen Controls* setting, and a matching keyboard/gamepad control scheme across applications."
+        ]
+      },
+      {
+        title: "General",
+        items: [
+          "Fixed an issue where streaming downloads would fail if the server's response didn't include a filename in its headers.",
+          "Removed the *Experimental apps* setting. Experimental applications are no longer hidden behind a toggle - they always appear, and are simply marked with an *experimental* tag in the editor's Platform Chooser instead.",
+          "Cloud storage (Dropbox) downloads now automatically retry on transient failures, matching the retry behavior uploads already had."
+        ]
+      },
+      {
+        title: "Apple II / Apple IIGS",
+        items: [
+          "You can now map the *D-pad* to a keyboard key or gamepad button from the *Feed Editor*.",
+          "Added optional support for a second 5.25\" (Apple II/IIGS) or 3.5\" (Apple IIGS) disk drive, for games that use one. Enable it per item in the *Feed Editor*.",
+          "Improved the disk-swapping menu in the pause screen: switching one disk drive no longer visually disrupts other selectors, and selecting the same disk for two drives is now clearly flagged instead of silently resolved.",
+          "Added an *Initial Keyboard Mode* option (Simulate Joystick / Full Keyboard) in the *Feed Editor*, for keyboard-only applications and games that don't use a joystick. Can still be toggled in-game afterward either way.",
+          "*Open Apple* and *Closed Apple* on the virtual keyboard now work like *Shift*/*Control*: tap to hold, tap again to release.",
+          "Fixed an issue where mapping the *A* or *B* button to a keyboard key had no effect.",
+          "Fixed *Apple IIGS* 2nd drive switches always appearing off when reopening an item in the editor.",
+          "Adding a disk image via URL or local upload in the *Feed Editor* now automatically assigns 3.5\" disks (800K or larger) to *Apple IIGS* instead of *Apple II*.",
+          "Fixed *.nib* disk images always being assigned to *Commodore 64* in the *Feed Editor*; Apple II *.nib* images are now detected correctly.",
+          "Added a *Save Disks* option (Apple II) in the *Feed Editor*. This lets a player insert blank, pre-formatted disks for games that need one to save progress (e.g. a \"character disk\"), without having to manually source and upload a blank disk image.",
+          "Fixed the pause screen's disk selector freezing when *Disk Drive 1* was set to \"(none)\".",
+          "Fixed save states silently failing to save or load correctly when a 2nd disk drive was in use.",
+          "Fixed loading a save state leaving whatever disk was currently in a drive in place instead of ejecting it, when that drive was empty at the time the state was saved. (*Apple IIGS* fixes apply across all four drive slots.)"
+        ]
+      },
+      {
+        title: "Atari 5200",
+        items: [
+          "Added an on-screen *Pause*/*Keypad* button and a stick-driven radial keypad selector, matching *Atari Jaguar* and *ColecoVision*."
+        ]
+      },
+      {
+        title: "Atari 7800",
+        items: [
+          "*Libretro ProSystem-Next* is now the default *Atari 7800* core (previously *JS7800*, which remains available as a lighter-weight alternative)."
+        ]
+      },
+      {
+        title: "Atari Jaguar / Jaguar CD",
+        items: [
+          "Includes a stick-driven radial menu for quickly selecting from the Jaguar's unique 12-key numeric keypad using the right analog stick. For games that originally shipped with a dedicated keypad overlay, the real button labels from that overlay are shown instead of generic numbers."
+        ]
+      },
+      {
+        title: "Bally Astrocade",
+        items: [
+          "Fixed the on-screen keypad reopening if *Enter* was still held down when it closed."
+        ]
+      },
+      {
+        title: "ColecoVision",
+        items: [
+          "Added an on-screen *Pause*/*Keypad* button and a stick-driven radial keypad selector, matching *Atari Jaguar*."
+        ]
+      },
+      {
+        title: "Commodore 64",
+        items: [
+          "Fixed the *Save Disks* setting ignoring an explicit choice of \"(none)\" and silently defaulting to one save disk anyway."
+        ]
+      },
+      {
+        title: "Nintendo 64",
+        items: [
+          "*Libretro Mupen64Plus-Next* is now the default *Nintendo 64* core (previously *ParaLLEl N64*, which remains available as an alternative).",
+          "Fixed *paraLLEl N64* accidentally opening *Pause* when using *Ctrl+Shift* as analog movement modifiers during normal play."
+        ]
+      },
+      {
+        title: "Nintendo DS",
+        items: [
+          "Added a selectable microphone \"blow\" type (*Realistic Sample* or *Random Noise*), in the Feed Editor and the in-game pause menu. Different games respond better to different types: a recorded sample fixes blow detection in some games (e.g. *Zelda: Phantom Hourglass*), but reduces reliability in others, so it's now a choice instead of one setting for everyone."
+        ]
+      },
+      {
+        title: "SNES",
+        items: [
+          "Fixed the pause menu occasionally not responding to *Tab*, *Enter*, or *Space*."
+        ]
+      },
+      {
+        title: "Achievements",
+        items: [
+          "Fixed a missing RetroAchievements condition type that caused some achievements to fail to unlock (e.g. several in *The Legend of Zelda: Phantom Hourglass*)."
+        ]
+      },
+      {
+        title: "Editor",
+        items: [
+          "Editor dialogs now show an indicator when a tab has more content below than fits on screen, so it's clearer when scrolling is needed.",
+          "Added an *Arrange* dialog to the Categories toolbar that lets you quickly drag and drop categories to change their order.",
+          "Fixed dragging to reorder media in the *Merge* dialog not scrolling the list reliably when dragging near the top or bottom edge.",
+          "URL fields (Discs, Media, BIOS, etc.) now show parsed file names, a full-path toggle, and drag-and-drop reordering for multi-URL fields. *Raw* text mode is still available.",
+          "Added a *Use classic URL entry fields* setting (Settings > Editor) to revert to the previous plain-text fields.",
+          "Deleting categories or items now asks for confirmation, since deleting a category also removes everything inside it.",
+          "Fixed the Cheats tab's *Cheat File* field not supporting local file uploads.",
+          "Fixed local file and URL adds for disc-based systems (CD-i, 32X CD, Jaguar CD, Saturn, etc.) showing the raw filename as the title instead of the matched game's real name, even when artwork was found correctly.",
+          "Fixed matched game titles that include a version number (e.g. \"Sonic R v1.000\") failing to match, and not displaying cleanly when they did.",
+          "Adding a URL for a large disc-image format (.cdi, .chd, .pbp, .cso, .iso) that can't be matched via hash now fails immediately instead of downloading the entire file first.",
+          "Fixed per-game control mappings and settings (Atari 5200, ColecoVision, Bally Astrocade, Atari Jaguar, 3DO) not being applied when a title is picked from the Add Item search dropdown. They previously only applied when a file was matched by hash.",
+          "Selecting an item's platform/core now opens the same Platform Chooser used when adding a new item, instead of a plain dropdown.",
+          "Application/platform icons now appear next to the relevant dropdowns in the Feed Editor (Applications settings, Feed properties, and item type selection), making it easier to confirm the right one is selected."
+        ]
+      },
+      {
+        title: "Cheats",
+        items: [
+          "Fixed some cheats not reverting their effect when disabled, so the last-applied value could stay stuck in memory. This affected a subset of games, not all cheats."
+        ]
+      },
+      {
+        title: "Improvements",
+        items: [
+          "The on-screen keyboard/gamepad toggle button now appears even when the first keys pressed are mapped to the joystick (Apple II, Apple IIGS, Commodore 8-bit)."
+        ]
+      }
+    ],
+    image: "images/update5.png"
+},
+{
     version: "v0.2.3",
     date: "July 18, 2026",
     title: "New Emulators & Editor Enhancements",

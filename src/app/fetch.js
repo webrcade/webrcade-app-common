@@ -26,7 +26,7 @@ export function getContentDispositionFilename(headers) {
   if (disposition) {
     //const matches = /filename\*?=['"]?(?:UTF-\d['"]*)?([^;\r\n"']*)['"]?;?/gim.exec(disposition);
     const matches = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/gim.exec(disposition);
-    if (matches.length > 1) {
+    if (matches && matches.length > 1) {
       let match = matches[1];
       match = match.trim();
       if (match.length > 0) {

@@ -14,7 +14,6 @@ export const SCREEN_SIZES = {
 export class Settings extends BaseSettings {
   constructor(storage) {
     super(storage);
-    this.expApps = false;
     this.vsync = true;
     this.bilinearFilter = false;
     this.cloudStorage = false;
@@ -30,7 +29,6 @@ export class Settings extends BaseSettings {
   }
 
   PREFIX = "wrcSettings.";
-  EXP_APPS_PROP = this.PREFIX + "expApps";
   VSYNC_PROP = this.PREFIX + "vsync";
   BILINEAR_FILTER_PROP = this.PREFIX + "bilinearFilter";
   SCREEN_SIZE_PROP = this.PREFIX + "screenSize";
@@ -44,11 +42,10 @@ export class Settings extends BaseSettings {
   HIDE_VERSION = this.PREFIX + "hideVersion";
   DISABLE_GAME_SAVES_AFTER_STATE = this.PREFIX + "disableGameSavesAfterState"
 
-  VERSION = "0.2.3";
+  VERSION = "0.2.4";
 
   async load() {
     LOG.info("Loading settings.");
-    this.expApps = await this.loadBool(this.EXP_APPS_PROP, this.expApps);
     this.vsync = await this.loadBool(this.VSYNC_PROP, this.vsync);
     this.cloudStorage = await this.loadBool(this.CLOUD_STORAGE_PROP, this.cloudStorage);
     this.bilinearFilter = await this.loadBool(this.BILINEAR_FILTER_PROP, this.bilinearFilter);
@@ -63,13 +60,10 @@ export class Settings extends BaseSettings {
     this.disableGameSavesAfterState = await this.loadValue(this.DISABLE_GAME_SAVES_AFTER_STATE, this.disableGameSavesAfterState);
 
     console.log(this.overrides)
-
-    AppRegistry.instance.enableExpApps(this.expApps);
   }
 
   async save() {
     LOG.info("Saving settings.");
-    await this.saveBool(this.EXP_APPS_PROP, this.expApps);
     await this.saveBool(this.VSYNC_PROP, this.vsync);
     await this.saveBool(this.CLOUD_STORAGE_PROP, this.cloudStorage);
     await this.saveBool(this.BILINEAR_FILTER_PROP, this.bilinearFilter);
@@ -82,15 +76,6 @@ export class Settings extends BaseSettings {
     await this.saveValue(this.DISABLE_GAME_SAVES_AFTER_STATE, this.disableGameSavesAfterState);
     await this.saveValue(this.OVERRIDES, this.overrides);
     await this.saveValue(this.HIDE_VERSION, this.hideVersion);
-    AppRegistry.instance.enableExpApps(this.expApps);
-  }
-
-  isExpAppsEnabled() {
-    return this.expApps;
-  }
-
-  setExpAppsEnabled(b) {
-    this.expApps = b;
   }
 
   getDbToken() {
